@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { ProcessosService } from './processos.service.js';
 import { CreateProcessoDto } from './dto/create-processo.dto.js';
 import { UpdateProcessoDto } from './dto/update-processo.dto.js';
@@ -8,6 +19,7 @@ export class ProcessosController {
   constructor(private readonly processosService: ProcessosService) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   create(@Body() createProcessoDto: CreateProcessoDto) {
     return this.processosService.create(createProcessoDto);
   }
@@ -18,17 +30,21 @@ export class ProcessosController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.processosService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.processosService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProcessoDto: UpdateProcessoDto) {
-    return this.processosService.update(+id, updateProcessoDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateProcessoDto: UpdateProcessoDto,
+  ) {
+    return this.processosService.update(id, updateProcessoDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.processosService.remove(+id);
+  @HttpCode(HttpStatus.OK)
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.processosService.remove(id);
   }
 }

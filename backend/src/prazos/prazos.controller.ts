@@ -1,4 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  ParseIntPipe,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
 import { PrazosService } from './prazos.service.js';
 import { CreatePrazoDto } from './dto/create-prazo.dto.js';
 import { UpdatePrazoDto } from './dto/update-prazo.dto.js';
@@ -8,6 +19,7 @@ export class PrazosController {
   constructor(private readonly prazosService: PrazosService) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   create(@Body() createPrazoDto: CreatePrazoDto) {
     return this.prazosService.create(createPrazoDto);
   }
@@ -18,17 +30,21 @@ export class PrazosController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.prazosService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.prazosService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePrazoDto: UpdatePrazoDto) {
-    return this.prazosService.update(+id, updatePrazoDto);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updatePrazoDto: UpdatePrazoDto,
+  ) {
+    return this.prazosService.update(id, updatePrazoDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.prazosService.remove(+id);
+  @HttpCode(HttpStatus.OK)
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.prazosService.remove(id);
   }
 }
