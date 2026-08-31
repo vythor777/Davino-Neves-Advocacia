@@ -24,14 +24,14 @@ export class AuthService implements OnModuleInit {
     try {
       const count = await this.prisma.usuario.count();
       if (count === 0) {
-        const defaultEmail = 'admin@davinoeneves.adv.br';
-        const defaultPassword = 'admin';
+        const defaultEmail = 'admin@davinoneves.com.br';
+        const defaultPassword = 'admin123';
         const salt = await bcrypt.genSalt(10);
         const senha_hash = await bcrypt.hash(defaultPassword, salt);
 
         await this.prisma.usuario.create({
           data: {
-            nome: 'Administrador Davino & Neves',
+            nome: 'Administrador',
             email: defaultEmail,
             senha_hash,
             role: 'ADMINISTRADOR',

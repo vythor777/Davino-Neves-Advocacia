@@ -83,8 +83,8 @@ function LoginForm() {
   };
 
   const fillAdminCredentials = () => {
-    setEmail('admin@davinoeneves.adv.br');
-    setSenha('admin');
+    setEmail('admin@davinoneves.com.br');
+    setSenha('admin123');
     setErrorMsg(null);
   };
 
@@ -210,7 +210,7 @@ function LoginForm() {
               </button>
             </div>
             <p className="text-[11px] text-amber-200/70 font-mono">
-              admin@davinoeneves.adv.br • senha: admin
+              admin@davinoneves.com.br • senha: admin123
             </p>
           </div>
         </div>
