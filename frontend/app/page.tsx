@@ -1,69 +1,162 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import React from 'react';
+import Link from 'next/link';
+import Navbar from '@/components/Navbar';
+import {
+  Users,
+  Briefcase,
+  CalendarClock,
+  Calendar,
+  Search,
+  Sparkles,
+  ArrowUpRight,
+  ShieldCheck,
+} from 'lucide-react';
+
+export default function HomePage() {
+  const modules = [
+    {
+      title: 'Gestão de Clientes',
+      description: 'Cadastro de pessoas físicas e jurídicas, documentos de identificação e vínculos processuais.',
+      href: '/clientes',
+      icon: Users,
+      badge: 'Ativo',
+      badgeColor: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/70 dark:text-emerald-300',
+    },
+    {
+      title: 'Controle de Processos',
+      description: 'Acompanhamento de autos, distribuição, varas e histórico processual unificado.',
+      href: '/processos',
+      icon: Briefcase,
+      badge: 'Integrado',
+      badgeColor: 'bg-amber-100 text-amber-900 dark:bg-amber-950/70 dark:text-amber-300',
+    },
+    {
+      title: 'Prazos Processuais',
+      description: 'Gestão de termos fatais, contagem de prazos CPC/CLT e alertas de vencimento.',
+      href: '/prazos',
+      icon: CalendarClock,
+      badge: 'Prioritário',
+      badgeColor: 'bg-blue-100 text-blue-800 dark:bg-blue-950/70 dark:text-blue-300',
+    },
+    {
+      title: 'Consulta DataJud CNJ',
+      description: 'Integração direta com tribunais de todo o país para busca e sincronização de andamentos.',
+      href: '/datajud',
+      icon: Search,
+      badge: 'Público CNJ',
+      badgeColor: 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950/70 dark:text-indigo-300',
+    },
+    {
+      title: 'Inteligência Artificial Jurídica',
+      description: 'Análise de petições e contratos, resumos executivos e extração de prazos com Gemini 3.7.',
+      href: '/gemini',
+      icon: Sparkles,
+      badge: 'Gemini AI',
+      badgeColor: 'bg-purple-100 text-purple-800 dark:bg-purple-950/70 dark:text-purple-300',
+    },
+    {
+      title: 'Agenda & Audiências',
+      description: 'Pauta de audiências, reuniões com clientes e compromissos dos advogados.',
+      href: '/prazos',
+      icon: Calendar,
+      badge: 'Sincronizado',
+      badgeColor: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
+    },
+  ];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col">
+      <Navbar />
+
+      <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        {/* Banner de Boas-Vindas */}
+        <div className="rounded-2xl border border-amber-900/20 bg-gradient-to-r from-amber-950 via-amber-900 to-stone-900 p-8 text-amber-50 shadow-md">
+          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2 rounded-full bg-amber-800/60 px-3 py-1 text-xs font-semibold tracking-wide text-amber-200 border border-amber-700/50">
+                <ShieldCheck className="h-3.5 w-3.5" />
+                Davino & Neves Advocacia • Painel Operacional
+              </div>
+              <h1 className="mt-3 font-serif text-3xl font-bold tracking-tight text-white sm:text-4xl">
+                Sistema Web de Gestão Jurídica
+              </h1>
+              <p className="mt-2 text-sm text-amber-100/80 sm:text-base leading-relaxed">
+                Plataforma integrada de controladoria jurídica, gestão de clientes, processos judiciais, prazos processuais e IA generativa integrada ao CNJ.
+              </p>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3">
+              <Link
+                href="/clientes"
+                className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-amber-400 active:scale-95"
+              >
+                <Users className="h-4 w-4" />
+                Acessar Módulo de Clientes
+              </Link>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Grid de Módulos */}
+        <div className="mt-10">
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="font-serif text-xl font-bold text-slate-900 dark:text-slate-100">
+                Módulos do Sistema
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400">
+                Acesse as ferramentas e bases de dados do escritório.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {modules.map((mod, idx) => {
+              const Icon = mod.icon;
+              return (
+                <Link
+                  key={idx}
+                  href={mod.href}
+                  className="group relative flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-2xs transition-all hover:-translate-y-0.5 hover:border-amber-700/50 hover:shadow-md dark:border-slate-800 dark:bg-slate-900 dark:hover:border-amber-700/60"
+                >
+                  <div>
+                    <div className="flex items-center justify-between">
+                      <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-amber-50 text-amber-900 transition group-hover:bg-amber-900 group-hover:text-amber-50 dark:bg-amber-950/70 dark:text-amber-300">
+                        <Icon className="h-5 w-5" />
+                      </div>
+                      <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${mod.badgeColor}`}>
+                        {mod.badge}
+                      </span>
+                    </div>
+
+                    <h3 className="mt-4 font-serif text-lg font-bold text-slate-900 group-hover:text-amber-900 dark:text-slate-100 dark:group-hover:text-amber-300">
+                      {mod.title}
+                    </h3>
+                    <p className="mt-1.5 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                      {mod.description}
+                    </p>
+                  </div>
+
+                  <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-3 text-xs font-semibold text-amber-800 dark:border-slate-800 dark:text-amber-400">
+                    <span>Acessar funcionalidade</span>
+                    <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </main>
+
+      {/* Footer sóbrio */}
+      <footer className="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400">
+        <div className="mx-auto max-w-7xl px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
+          <span>Davino & Neves Advocacia © 2026. Todos os direitos reservados.</span>
+          <span>Plataforma Web de Controladoria e Gestão Jurídica</span>
+        </div>
+      </footer>
     </div>
   );
 }

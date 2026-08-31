@@ -8,6 +8,8 @@ import { ProcessosModule } from './processos/processos.module.js';
 import { PrazosModule } from './prazos/prazos.module.js';
 import { DocumentosModule } from './documentos/documentos.module.js';
 import { AgendaModule } from './agenda/agenda.module.js';
+import { DataJudModule } from './datajud/datajud.module.js';
+import { GeminiModule } from './gemini/gemini.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -26,6 +28,8 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     PrazosModule,
     DocumentosModule,
     AgendaModule,
+    DataJudModule,
+    GeminiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
