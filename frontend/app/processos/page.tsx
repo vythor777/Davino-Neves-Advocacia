@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
+import AuthGuard from '@/components/AuthGuard';
 import { processoService, Processo, CreateProcessoInput } from '@/services/processoService';
 import { clienteService, Cliente } from '@/services/clienteService';
 import {
@@ -27,99 +28,6 @@ import {
   Filter,
 } from 'lucide-react';
 
-// Dados iniciais de demonstração (fallback caso o backend esteja em inicialização ou sem registros)
-const MOCK_CLIENTES: Cliente[] = [
-  {
-    id_cliente: 1,
-    nome: 'Carlos Eduardo Silveira',
-    cpf_cnpj: '123.456.789-00',
-    email: 'carlos.silveira@email.com',
-    telefone: '(11) 98765-4321',
-    endereco: 'Av. Paulista, 1000, Apto 42 - Bela Vista, São Paulo/SP',
-    data_criacao: '2026-02-15T10:00:00.000Z',
-    data_atualizacao: '2026-02-15T10:00:00.000Z',
-  },
-  {
-    id_cliente: 2,
-    nome: 'Construtora Horizonte Verde Ltda',
-    cpf_cnpj: '12.345.678/0001-90',
-    email: 'juridico@horizonteverde.com.br',
-    telefone: '(11) 3210-9876',
-    endereco: 'Rua Funchal, 418, 14º andar - Vila Olímpia, São Paulo/SP',
-    data_criacao: '2026-01-20T14:30:00.000Z',
-    data_atualizacao: '2026-01-20T14:30:00.000Z',
-  },
-  {
-    id_cliente: 3,
-    nome: 'Mariana Duarte Souza',
-    cpf_cnpj: '987.654.321-11',
-    email: 'mariana.duarte@adv.br',
-    telefone: '(21) 99887-6655',
-    endereco: 'Rua Visconde de Pirajá, 303 - Ipanema, Rio de Janeiro/RJ',
-    data_criacao: '2026-02-01T09:15:00.000Z',
-    data_atualizacao: '2026-02-01T09:15:00.000Z',
-  },
-];
-
-const MOCK_PROCESSOS: Processo[] = [
-  {
-    id_processo: 1,
-    numero_processo: '1002345-67.2026.8.26.0100',
-    titulo: 'Ação de Cobrança e Indenização por Perdas e Danos',
-    descricao: 'Ação ordinária em trâmite perante a 2ª Vara Cível do Foro Central Cível da Comarca de São Paulo/SP. Cobrança de faturas inadimplidas e reparação civil.',
-    data_abertura: '2026-01-15T00:00:00.000Z',
-    status: 'Em Andamento',
-    id_cliente: 2,
-    data_criacao: '2026-01-15T11:00:00.000Z',
-    data_atualizacao: '2026-02-10T14:20:00.000Z',
-    cliente: MOCK_CLIENTES[1],
-    prazos: [
-      { id_prazo: 1, descricao: 'Apresentar Réplica à Contestação', data_limite: '2026-03-10T23:59:59.000Z', status: 'pendente' },
-    ],
-    documentos: [
-      { id_documento: 1, nome_arquivo: 'Peticao_Inicial.pdf', tipo_documento: 'Petição', data_upload: '2026-01-15T11:00:00.000Z' },
-      { id_documento: 2, nome_arquivo: 'Contrato_Prestacao_Servicos.pdf', tipo_documento: 'Contrato', data_upload: '2026-01-15T11:05:00.000Z' },
-    ],
-    _count: { prazos: 1, documentos: 2 },
-  },
-  {
-    id_processo: 2,
-    numero_processo: '0010456-89.2026.5.02.0045',
-    titulo: 'Reclamação Trabalhista - Horas Extras e Verbas Rescisórias',
-    descricao: '45ª Vara do Trabalho de São Paulo - TRT2. Requerimento de pagamento de horas extraordinárias, reflexos e adicional de insalubridade.',
-    data_abertura: '2026-02-02T00:00:00.000Z',
-    status: 'Distribuído',
-    id_cliente: 1,
-    data_criacao: '2026-02-02T09:30:00.000Z',
-    data_atualizacao: '2026-02-02T09:30:00.000Z',
-    cliente: MOCK_CLIENTES[0],
-    prazos: [
-      { id_prazo: 2, descricao: 'Audiência Una Designada', data_limite: '2026-03-25T14:00:00.000Z', status: 'agendado' },
-    ],
-    documentos: [
-      { id_documento: 3, nome_arquivo: 'Reclamacao_Inicial.pdf', tipo_documento: 'Petição', data_upload: '2026-02-02T09:30:00.000Z' },
-    ],
-    _count: { prazos: 1, documentos: 1 },
-  },
-  {
-    id_processo: 3,
-    numero_processo: '5003412-11.2025.4.02.5101',
-    titulo: 'Mandado de Segurança - Compensação Tributária',
-    descricao: '1ª Vara Federal do Rio de Janeiro - TRF2. Impetração contra ato do Delegado da Receita Federal sobre créditos de PIS/COFINS.',
-    data_abertura: '2025-11-20T00:00:00.000Z',
-    status: 'Concluso para Decisão',
-    id_cliente: 3,
-    data_criacao: '2025-11-20T16:00:00.000Z',
-    data_atualizacao: '2026-02-18T10:15:00.000Z',
-    cliente: MOCK_CLIENTES[2],
-    prazos: [],
-    documentos: [
-      { id_documento: 4, nome_arquivo: 'Inicial_MS_Tributario.pdf', tipo_documento: 'Petição', data_upload: '2025-11-20T16:00:00.000Z' },
-    ],
-    _count: { prazos: 0, documentos: 1 },
-  },
-];
-
 const STATUS_OPCOES = [
   'Distribuído',
   'Em Andamento',
@@ -131,7 +39,6 @@ const STATUS_OPCOES = [
   'Arquivado',
 ];
 
-// Utilitário de formatação de número CNJ do processo: NNNNNNN-DD.YYYY.J.TR.OOOO (20 dígitos)
 function formatarNumeroCNJ(valor: string): string {
   const digits = valor.replace(/\D/g, '').slice(0, 20);
   if (digits.length <= 7) return digits;
@@ -169,13 +76,20 @@ function getStatusBadgeStyle(status: string) {
 }
 
 export default function ProcessosPage() {
+  return (
+    <AuthGuard>
+      <ProcessosContent />
+    </AuthGuard>
+  );
+}
+
+function ProcessosContent() {
   const [processos, setProcessos] = useState<Processo[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [loadingClientes, setLoadingClientes] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
-  const [isUsingMock, setIsUsingMock] = useState<boolean>(false);
 
   // Filtros
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -213,13 +127,9 @@ export default function ProcessosPage() {
     setLoadingClientes(true);
     try {
       const data = await clienteService.getAll();
-      if (data && Array.isArray(data) && data.length > 0) {
-        setClientes(data);
-      } else {
-        setClientes(MOCK_CLIENTES);
-      }
+      setClientes(Array.isArray(data) ? data : []);
     } catch {
-      setClientes(MOCK_CLIENTES);
+      setClientes([]);
     } finally {
       setLoadingClientes(false);
     }
@@ -230,69 +140,24 @@ export default function ProcessosPage() {
     setLoading(true);
     setErrorMsg(null);
     try {
-      const data = await processoService.getAll();
-      if (data && Array.isArray(data)) {
-        setProcessos(data);
-        setIsUsingMock(false);
-      } else {
-        setProcessos([]);
-        setIsUsingMock(false);
-      }
+      const [procData, clientData] = await Promise.all([
+        processoService.getAll(),
+        clienteService.getAll(),
+      ]);
+      setProcessos(Array.isArray(procData) ? procData : []);
+      setClientes(Array.isArray(clientData) ? clientData : []);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Falha na conexão com o servidor.';
-      console.warn('API não conectada ou offline. Carregando dados demonstrativos de processos:', msg);
-      setProcessos(MOCK_PROCESSOS);
-      setIsUsingMock(true);
+      setErrorMsg(msg);
+      setProcessos([]);
     } finally {
       setLoading(false);
     }
   }, []);
 
   useEffect(() => {
-    let active = true;
-
-    async function loadData() {
-      try {
-        const [procData, clientData] = await Promise.allSettled([
-          processoService.getAll(),
-          clienteService.getAll(),
-        ]);
-
-        if (!active) return;
-
-        if (procData.status === 'fulfilled' && Array.isArray(procData.value)) {
-          setProcessos(procData.value);
-          setIsUsingMock(false);
-        } else {
-          setProcessos(MOCK_PROCESSOS);
-          setIsUsingMock(true);
-        }
-
-        if (clientData.status === 'fulfilled' && Array.isArray(clientData.value) && clientData.value.length > 0) {
-          setClientes(clientData.value);
-        } else {
-          setClientes(MOCK_CLIENTES);
-        }
-      } catch (err: unknown) {
-        if (!active) return;
-        const msg = err instanceof Error ? err.message : 'Falha ao carregar dados.';
-        console.warn('Carregando dados padrão:', msg);
-        setProcessos(MOCK_PROCESSOS);
-        setClientes(MOCK_CLIENTES);
-        setIsUsingMock(true);
-      } finally {
-        if (active) {
-          setLoading(false);
-        }
-      }
-    }
-
-    loadData();
-
-    return () => {
-      active = false;
-    };
-  }, []);
+    fetchProcessos();
+  }, [fetchProcessos]);
 
   const handleCopy = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
@@ -305,7 +170,6 @@ export default function ProcessosPage() {
     setNumeroProcesso('');
     setTitulo('');
     setDescricao('');
-    // Padrão: data de hoje no formato YYYY-MM-DD
     const today = new Date().toISOString().split('T')[0];
     setDataAbertura(today);
     setStatus('Em Andamento');
@@ -375,48 +239,16 @@ export default function ProcessosPage() {
       id_cliente: Number(idCliente),
     };
 
-    const clienteObj = clientes.find((c) => c.id_cliente === Number(idCliente));
-
     try {
       if (editingProcesso) {
-        if (isUsingMock) {
-          setProcessos((prev) =>
-            prev.map((p) =>
-              p.id_processo === editingProcesso.id_processo
-                ? {
-                    ...p,
-                    ...payload,
-                    cliente: clienteObj || p.cliente,
-                    data_atualizacao: new Date().toISOString(),
-                  }
-                : p,
-            ),
-          );
-        } else {
-          await processoService.update(editingProcesso.id_processo, payload);
-          await fetchProcessos();
-        }
-        setSuccessMsg(`Processo "${numeroProcesso}" atualizado com sucesso!`);
+        await processoService.update(editingProcesso.id_processo, payload);
+        setSuccessMsg(`Processo "${numeroProcesso}" atualizado com sucesso no banco!`);
       } else {
-        if (isUsingMock) {
-          const newMockProc: Processo = {
-            id_processo: Math.max(...processos.map((p) => p.id_processo), 0) + 1,
-            ...payload,
-            cliente: clienteObj,
-            data_criacao: new Date().toISOString(),
-            data_atualizacao: new Date().toISOString(),
-            prazos: [],
-            documentos: [],
-            _count: { prazos: 0, documentos: 0 },
-          };
-          setProcessos((prev) => [newMockProc, ...prev]);
-        } else {
-          await processoService.create(payload);
-          await fetchProcessos();
-        }
-        setSuccessMsg(`Processo "${numeroProcesso}" cadastrado com sucesso!`);
+        await processoService.create(payload);
+        setSuccessMsg(`Processo "${numeroProcesso}" cadastrado com sucesso no banco!`);
       }
       setModalOpen(false);
+      await fetchProcessos();
       setTimeout(() => setSuccessMsg(null), 4000);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Erro ao salvar processo.';
@@ -429,16 +261,13 @@ export default function ProcessosPage() {
   const handleDeleteProcesso = async () => {
     if (!processoToDelete) return;
     setDeleting(true);
+    setErrorMsg(null);
     try {
-      if (isUsingMock) {
-        setProcessos((prev) => prev.filter((p) => p.id_processo !== processoToDelete.id_processo));
-      } else {
-        await processoService.delete(processoToDelete.id_processo);
-        await fetchProcessos();
-      }
+      await processoService.delete(processoToDelete.id_processo);
       setSuccessMsg(`Processo "${processoToDelete.numero_processo}" removido com sucesso.`);
       setDeleteModalOpen(false);
       setProcessoToDelete(null);
+      await fetchProcessos();
       setTimeout(() => setSuccessMsg(null), 4000);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Falha ao remover processo.';
@@ -451,21 +280,18 @@ export default function ProcessosPage() {
   // Filtragem
   const filteredProcessos = useMemo(() => {
     return processos.filter((proc) => {
-      // Filtro de Status
       if (selectedStatus !== 'todos') {
         if (proc.status.toLowerCase() !== selectedStatus.toLowerCase()) {
           return false;
         }
       }
 
-      // Filtro de Cliente
       if (selectedClienteFilter !== 'todos') {
         if (String(proc.id_cliente) !== selectedClienteFilter) {
           return false;
         }
       }
 
-      // Filtro de Busca Textual (Número, Título, Descrição, Nome do Cliente, CPF/CNPJ)
       if (!searchTerm.trim()) return true;
       const term = searchTerm.toLowerCase();
       const clientName = proc.cliente?.nome?.toLowerCase() || '';
@@ -491,16 +317,16 @@ export default function ProcessosPage() {
   const totalArquivados = processos.filter((p) => p.status.toLowerCase().includes('arquivado') || p.status.toLowerCase().includes('julgado') || p.status.toLowerCase().includes('finalizado')).length;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col">
       <Navbar />
 
-      <main className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
         {/* Banner de Feedback / Alertas */}
         {successMsg && (
-          <div className="mb-6 flex items-center justify-between rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/50 dark:text-emerald-300">
+          <div className="mb-6 flex items-center justify-between rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/50 dark:text-emerald-300 text-xs">
             <div className="flex items-center gap-3">
-              <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-              <span className="text-sm font-medium">{successMsg}</span>
+              <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
+              <span className="font-medium">{successMsg}</span>
             </div>
             <button
               onClick={() => setSuccessMsg(null)}
@@ -512,47 +338,50 @@ export default function ProcessosPage() {
         )}
 
         {errorMsg && (
-          <div className="mb-6 flex items-center justify-between rounded-lg border border-rose-200 bg-rose-50 p-4 text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/50 dark:text-rose-300">
+          <div className="mb-6 flex items-center justify-between rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/50 dark:text-rose-300 text-xs">
             <div className="flex items-center gap-3">
-              <AlertCircle className="h-5 w-5 text-rose-600 dark:text-rose-400" />
-              <span className="text-sm font-medium">{errorMsg}</span>
+              <AlertCircle className="h-4 w-4 text-rose-600 dark:text-rose-400 shrink-0" />
+              <span className="font-medium">{errorMsg}</span>
             </div>
             <button
-              onClick={() => setErrorMsg(null)}
-              className="text-rose-600 hover:text-rose-900 dark:hover:text-rose-100"
+              onClick={fetchProcessos}
+              className="underline font-semibold cursor-pointer ml-3"
             >
-              <X className="h-4 w-4" />
+              Tentar novamente
             </button>
           </div>
         )}
 
         {/* Cabeçalho da Página */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 dark:border-slate-800 pb-6">
           <div>
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-amber-800 dark:text-amber-400">
-              <Scale className="h-4 w-4" />
-              Controladoria Jurídica
+            <div className="flex items-center gap-2">
+              <span className="rounded-md bg-amber-100 p-1.5 text-amber-900 dark:bg-amber-950 dark:text-amber-300">
+                <Briefcase className="h-5 w-5" />
+              </span>
+              <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+                Controle de Processos
+              </h1>
             </div>
-            <h1 className="mt-1 font-serif text-2xl font-bold tracking-tight text-slate-900 sm:text-3xl dark:text-slate-100">
-              Gestão de Processos
-            </h1>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-              Acompanhe autos judiciais, comarcas, clientes vinculados e andamentos processuais.
+            <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+              Acompanhamento de autos judiciais, comarcas, clientes vinculados e andamentos processuais.
             </p>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-3">
             <button
               onClick={fetchProcessos}
               disabled={loading}
-              title="Atualizar lista de processos"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-slate-300 bg-white text-slate-700 transition hover:bg-slate-50 disabled:opacity-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 transition"
+              title="Atualizar lista"
             >
               <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+              Atualizar
             </button>
+
             <button
               onClick={openCreateModal}
-              className="inline-flex items-center gap-2 rounded-lg bg-amber-900 px-4 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-amber-800 active:scale-[0.98] dark:bg-amber-700 dark:hover:bg-amber-600"
+              className="inline-flex items-center gap-2 rounded-xl bg-amber-700 px-4 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-500 transition active:scale-95"
             >
               <PlusCircle className="h-4 w-4" />
               Novo Processo
@@ -560,254 +389,190 @@ export default function ProcessosPage() {
           </div>
         </div>
 
-        {/* Cards de Métricas */}
-        <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
+        {/* Métricas do Módulo */}
+        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
+          <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total de Processos</span>
-              <div className="rounded-lg bg-amber-50 p-2 text-amber-900 dark:bg-amber-950/60 dark:text-amber-300">
-                <Briefcase className="h-4 w-4" />
-              </div>
+              <Briefcase className="h-4 w-4 text-slate-400" />
             </div>
-            <div className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
               {totalProcessos}
-            </div>
-            <span className="text-[11px] text-slate-500 dark:text-slate-400">Na base do escritório</span>
+            </p>
           </div>
 
-          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
+          <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Em Andamento / Ativos</span>
-              <div className="rounded-lg bg-blue-50 p-2 text-blue-800 dark:bg-blue-950/60 dark:text-blue-300">
-                <Clock className="h-4 w-4" />
-              </div>
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Em Andamento</span>
+              <Scale className="h-4 w-4 text-amber-600 dark:text-amber-400" />
             </div>
-            <div className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
               {totalEmAndamento}
-            </div>
-            <span className="text-[11px] text-slate-500 dark:text-slate-400">Distribuídos ou em curso</span>
+            </p>
           </div>
 
-          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
+          <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Conclusos / Pautas</span>
-              <div className="rounded-lg bg-purple-50 p-2 text-purple-800 dark:bg-purple-950/60 dark:text-purple-300">
-                <Scale className="h-4 w-4" />
-              </div>
+              <Clock className="h-4 w-4 text-purple-600 dark:text-purple-400" />
             </div>
-            <div className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
               {totalConclusos}
-            </div>
-            <span className="text-[11px] text-slate-500 dark:text-slate-400">Decisões, audiências e recursos</span>
+            </p>
           </div>
 
-          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
+          <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Baixados / Arquivados</span>
-              <div className="rounded-lg bg-emerald-50 p-2 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
-                <CheckCircle2 className="h-4 w-4" />
-              </div>
+              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Finalizados / Arquivados</span>
+              <FileText className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
             </div>
-            <div className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
               {totalArquivados}
-            </div>
-            <span className="text-[11px] text-slate-500 dark:text-slate-400">Com trânsito em julgado</span>
+            </p>
           </div>
         </div>
 
-        {/* Barra de Filtros e Pesquisa */}
-        <div className="mt-6 flex flex-col gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-2xs lg:flex-row lg:items-center lg:justify-between dark:border-slate-800 dark:bg-slate-900">
-          {/* Campo de Busca */}
-          <div className="relative flex-1">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+        {/* Filtros e Busca */}
+        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="relative flex-1 max-w-md">
+            <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input
               type="text"
+              placeholder="Buscar por número CNJ, título, cliente ou comarca..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Buscar por número CNJ, título da ação, cliente, vara ou comarca..."
-              className="w-full rounded-lg border border-slate-200 bg-slate-50/50 py-2 pl-9 pr-4 text-sm text-slate-900 placeholder-slate-400 transition focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-100 dark:focus:bg-slate-800"
+              className="w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:border-amber-600 focus:outline-hidden focus:ring-1 focus:ring-amber-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
             />
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 border-t border-slate-100 pt-2 lg:border-t-0 lg:pt-0 dark:border-slate-800">
-            {/* Filtro de Status */}
-            <div className="flex items-center gap-1.5">
-              <Filter className="h-3.5 w-3.5 text-slate-400" />
-              <select
-                value={selectedStatus}
-                onChange={(e) => setSelectedStatus(e.target.value)}
-                className="rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-1.5 text-xs font-medium text-slate-700 focus:border-amber-700 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
-              >
-                <option value="todos">Todos os Status</option>
-                {STATUS_OPCOES.map((st) => (
-                  <option key={st} value={st}>
-                    {st}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Filtro por Cliente */}
+          <div className="flex flex-wrap items-center gap-2">
             <select
-              value={selectedClienteFilter}
-              onChange={(e) => setSelectedClienteFilter(e.target.value)}
-              className="max-w-[200px] truncate rounded-lg border border-slate-200 bg-slate-50/50 px-3 py-1.5 text-xs font-medium text-slate-700 focus:border-amber-700 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
+              value={selectedStatus}
+              onChange={(e) => setSelectedStatus(e.target.value)}
+              className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"
             >
-              <option value="todos">Todos os Clientes</option>
-              {clientes.map((c) => (
-                <option key={c.id_cliente} value={String(c.id_cliente)}>
-                  {c.nome}
+              <option value="todos">Todos os Status</option>
+              {STATUS_OPCOES.map((st) => (
+                <option key={st} value={st}>
+                  {st}
                 </option>
               ))}
             </select>
 
-            {(selectedStatus !== 'todos' || selectedClienteFilter !== 'todos' || searchTerm) && (
-              <button
-                onClick={() => {
-                  setSelectedStatus('todos');
-                  setSelectedClienteFilter('todos');
-                  setSearchTerm('');
-                }}
-                className="rounded-lg bg-slate-100 px-2.5 py-1.5 text-xs font-medium text-slate-600 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-300"
+            {clientes.length > 0 && (
+              <select
+                value={selectedClienteFilter}
+                onChange={(e) => setSelectedClienteFilter(e.target.value)}
+                className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"
               >
-                Limpar
-              </button>
+                <option value="todos">Todos os Clientes</option>
+                {clientes.map((c) => (
+                  <option key={c.id_cliente} value={String(c.id_cliente)}>
+                    {c.nome}
+                  </option>
+                ))}
+              </select>
             )}
           </div>
         </div>
 
         {/* Tabela de Processos */}
-        <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200 text-left text-sm dark:divide-slate-800">
-              <thead className="bg-slate-50/80 text-xs font-semibold tracking-wide uppercase text-slate-500 dark:bg-slate-800/60 dark:text-slate-400">
-                <tr>
-                  <th scope="col" className="px-6 py-3.5">
-                    Número do Processo (CNJ)
-                  </th>
-                  <th scope="col" className="px-6 py-3.5">
-                    Ação / Título
-                  </th>
-                  <th scope="col" className="px-6 py-3.5">
-                    Cliente Vinculado
-                  </th>
-                  <th scope="col" className="px-6 py-3.5 text-center">
-                    Status
-                  </th>
-                  <th scope="col" className="px-6 py-3.5 text-center">
-                    Prazos / Docs
-                  </th>
-                  <th scope="col" className="px-6 py-3.5 text-right">
-                    Ações
-                  </th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
-                {loading ? (
+        <div className="mt-6 rounded-2xl border border-slate-200 bg-white shadow-2xs overflow-hidden dark:border-slate-800 dark:bg-slate-900">
+          {loading ? (
+            <div className="py-16 text-center">
+              <RefreshCw className="mx-auto h-8 w-8 animate-spin text-amber-700 dark:text-amber-500" />
+              <p className="mt-3 text-xs font-medium text-slate-500 dark:text-slate-400">
+                Carregando processos do banco de dados...
+              </p>
+            </div>
+          ) : filteredProcessos.length === 0 ? (
+            <div className="py-16 text-center px-4">
+              <Scale className="mx-auto h-10 w-10 text-slate-300 dark:text-slate-600" />
+              <h3 className="mt-3 font-serif text-lg font-bold text-slate-800 dark:text-slate-200">
+                Nenhum processo judicial encontrado
+              </h3>
+              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                {searchTerm || selectedStatus !== 'todos' || selectedClienteFilter !== 'todos'
+                  ? 'Nenhum resultado corresponde aos filtros aplicados.'
+                  : 'Cadastre o primeiro processo para acompanhar termos e prazos.'}
+              </p>
+              <button
+                onClick={openCreateModal}
+                className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-amber-700 px-4 py-2 text-xs font-semibold text-white hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-500"
+              >
+                <PlusCircle className="h-4 w-4" />
+                Cadastrar Processo
+              </button>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs">
+                <thead className="border-b border-slate-200 bg-slate-50 font-semibold text-slate-700 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300">
                   <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-slate-500">
-                      <div className="inline-flex items-center gap-2">
-                        <RefreshCw className="h-5 w-5 animate-spin text-amber-800 dark:text-amber-400" />
-                        <span>Carregando processos...</span>
-                      </div>
-                    </td>
+                    <th className="py-3.5 pl-6 pr-3">Processo (CNJ) / Ação</th>
+                    <th className="px-3 py-3.5">Cliente Vinculado</th>
+                    <th className="px-3 py-3.5">Status</th>
+                    <th className="px-3 py-3.5">Data de Distribuição</th>
+                    <th className="px-3 py-3.5">Prazos</th>
+                    <th className="py-3.5 pl-3 pr-6 text-right">Ações</th>
                   </tr>
-                ) : filteredProcessos.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center">
-                      <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 dark:bg-slate-800">
-                        <Briefcase className="h-6 w-6 text-slate-400" />
-                      </div>
-                      <h3 className="mt-3 text-sm font-semibold text-slate-900 dark:text-slate-100">
-                        Nenhum processo encontrado
-                      </h3>
-                      <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                        {searchTerm || selectedStatus !== 'todos' || selectedClienteFilter !== 'todos'
-                          ? 'Tente ajustar os filtros ou termos da sua busca.'
-                          : 'Inicie distribuindo ou cadastrando o primeiro processo do escritório.'}
-                      </p>
-                      {!searchTerm && selectedStatus === 'todos' && selectedClienteFilter === 'todos' && (
-                        <button
-                          onClick={openCreateModal}
-                          className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-amber-900 px-3.5 py-2 text-xs font-semibold text-white transition hover:bg-amber-800 dark:bg-amber-700"
-                        >
-                          <PlusCircle className="h-3.5 w-3.5" />
-                          Cadastrar Primeiro Processo
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ) : (
-                  filteredProcessos.map((proc) => {
-                    const clientName = proc.cliente?.nome || `Cliente #${proc.id_cliente}`;
-                    const clientDoc = proc.cliente?.cpf_cnpj || '';
-                    const numPrazos = proc._count?.prazos ?? (proc.prazos?.length ?? 0);
-                    const numDocs = proc._count?.documentos ?? (proc.documentos?.length ?? 0);
-
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+                  {filteredProcessos.map((proc) => {
+                    const countPrazos = proc._count?.prazos ?? proc.prazos?.length ?? 0;
                     return (
                       <tr
                         key={proc.id_processo}
-                        className="transition hover:bg-slate-50/80 dark:hover:bg-slate-800/40"
+                        className="hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition"
                       >
-                        {/* Número CNJ */}
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center gap-2">
-                            <div className="font-mono text-xs font-semibold text-slate-900 dark:text-slate-100">
-                              {proc.numero_processo}
+                        <td className="py-4 pl-6 pr-3">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-1.5">
+                              <span className="font-mono font-semibold text-slate-900 dark:text-slate-100">
+                                {formatarNumeroCNJ(proc.numero_processo)}
+                              </span>
+                              <button
+                                onClick={() => handleCopy(proc.numero_processo, `cnj-${proc.id_processo}`)}
+                                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                                title="Copiar número CNJ"
+                              >
+                                {copiedId === `cnj-${proc.id_processo}` ? (
+                                  <Check className="h-3.5 w-3.5 text-emerald-600" />
+                                ) : (
+                                  <Copy className="h-3.5 w-3.5" />
+                                )}
+                              </button>
                             </div>
                             <button
-                              onClick={() => handleCopy(proc.numero_processo, `proc-${proc.id_processo}`)}
-                              title="Copiar número do processo"
-                              className="rounded p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                              onClick={() => {
+                                setSelectedProcesso(proc);
+                                setDetailsModalOpen(true);
+                              }}
+                              className="font-medium text-amber-900 hover:underline dark:text-amber-400 text-left block line-clamp-1"
                             >
-                              {copiedId === `proc-${proc.id_processo}` ? (
-                                <Check className="h-3.5 w-3.5 text-emerald-600" />
-                              ) : (
-                                <Copy className="h-3.5 w-3.5" />
-                              )}
+                              {proc.titulo}
                             </button>
                           </div>
-                          <div className="mt-0.5 flex items-center gap-1 text-[11px] text-slate-500 dark:text-slate-400">
-                            <Calendar className="h-3 w-3" />
-                            <span>
-                              Abertura: {new Date(proc.data_abertura).toLocaleDateString('pt-BR')}
-                            </span>
-                          </div>
                         </td>
 
-                        {/* Ação / Título */}
-                        <td className="px-6 py-4 max-w-xs">
-                          <div className="font-medium text-slate-900 line-clamp-1 dark:text-slate-100">
-                            {proc.titulo}
-                          </div>
-                          <p className="mt-0.5 text-xs text-slate-500 line-clamp-1 dark:text-slate-400">
-                            {proc.descricao}
-                          </p>
-                        </td>
-
-                        {/* Cliente Vinculado */}
-                        <td className="px-6 py-4 whitespace-nowrap">
-                          <div className="flex items-center gap-2">
-                            <div className="flex h-7 w-7 items-center justify-center rounded-md bg-amber-100 text-xs font-bold text-amber-900 dark:bg-amber-950 dark:text-amber-300">
-                              <Users className="h-3.5 w-3.5" />
-                            </div>
+                        <td className="px-3 py-4">
+                          {proc.cliente ? (
                             <div>
-                              <div className="font-medium text-slate-900 dark:text-slate-100 text-xs">
-                                {clientName}
-                              </div>
-                              {clientDoc && (
-                                <div className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
-                                  {clientDoc}
-                                </div>
-                              )}
+                              <span className="font-medium text-slate-800 dark:text-slate-200 block">
+                                {proc.cliente.nome}
+                              </span>
+                              <span className="text-[11px] text-slate-400 font-mono">
+                                {proc.cliente.cpf_cnpj}
+                              </span>
                             </div>
-                          </div>
+                          ) : (
+                            <span className="text-slate-400">ID #{proc.id_cliente}</span>
+                          )}
                         </td>
 
-                        {/* Status */}
-                        <td className="px-6 py-4 text-center whitespace-nowrap">
+                        <td className="px-3 py-4">
                           <span
-                            className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${getStatusBadgeStyle(
+                            className={`inline-flex items-center rounded-md border px-2.5 py-1 text-[11px] font-semibold ${getStatusBadgeStyle(
                               proc.status,
                             )}`}
                           >
@@ -815,61 +580,52 @@ export default function ProcessosPage() {
                           </span>
                         </td>
 
-                        {/* Prazos / Documentos */}
-                        <td className="px-6 py-4 text-center whitespace-nowrap">
-                          <div className="inline-flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
-                            <span
-                              className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-medium ${
-                                numPrazos > 0
-                                  ? 'bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300'
-                                  : 'bg-slate-100 text-slate-500 dark:bg-slate-800'
-                              }`}
-                              title={`${numPrazos} prazo(s) vinculado(s)`}
-                            >
-                              <Clock className="h-3 w-3" />
-                              {numPrazos}
-                            </span>
-                            <span
-                              className={`inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-medium ${
-                                numDocs > 0
-                                  ? 'bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300'
-                                  : 'bg-slate-100 text-slate-500 dark:bg-slate-800'
-                              }`}
-                              title={`${numDocs} documento(s) anexado(s)`}
-                            >
-                              <FileText className="h-3 w-3" />
-                              {numDocs}
-                            </span>
-                          </div>
+                        <td className="px-3 py-4 text-slate-500 dark:text-slate-400">
+                          {new Date(proc.data_abertura).toLocaleDateString('pt-BR')}
                         </td>
 
-                        {/* Ações */}
-                        <td className="px-6 py-4 text-right whitespace-nowrap">
-                          <div className="flex items-center justify-end gap-1">
+                        <td className="px-3 py-4">
+                          <Link
+                            href={`/prazos?processo=${proc.id_processo}`}
+                            className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold transition hover:opacity-80 ${
+                              countPrazos > 0
+                                ? 'bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300'
+                                : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                            }`}
+                          >
+                            <Clock className="h-3 w-3" />
+                            {countPrazos} {countPrazos === 1 ? 'prazo' : 'prazos'}
+                          </Link>
+                        </td>
+
+                        <td className="py-4 pl-3 pr-6 text-right">
+                          <div className="flex items-center justify-end gap-1.5">
                             <button
                               onClick={() => {
                                 setSelectedProcesso(proc);
                                 setDetailsModalOpen(true);
                               }}
-                              title="Visualizar detalhes do processo"
-                              className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                              className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-800 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                              title="Visualizar detalhes"
                             >
                               <Eye className="h-4 w-4" />
                             </button>
+
                             <button
                               onClick={() => openEditModal(proc)}
+                              className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-amber-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-amber-400"
                               title="Editar processo"
-                              className="rounded-lg p-2 text-slate-500 transition hover:bg-amber-50 hover:text-amber-800 dark:text-slate-400 dark:hover:bg-amber-950/60 dark:hover:text-amber-300"
                             >
                               <Edit2 className="h-4 w-4" />
                             </button>
+
                             <button
                               onClick={() => {
                                 setProcessoToDelete(proc);
                                 setDeleteModalOpen(true);
                               }}
+                              className="rounded-lg p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:text-slate-400 dark:hover:bg-red-950/40 dark:hover:text-red-400"
                               title="Excluir processo"
-                              className="rounded-lg p-2 text-slate-500 transition hover:bg-rose-50 hover:text-rose-700 dark:text-slate-400 dark:hover:bg-rose-950/60 dark:hover:text-rose-400"
                             >
                               <Trash2 className="h-4 w-4" />
                             </button>
@@ -877,226 +633,147 @@ export default function ProcessosPage() {
                         </td>
                       </tr>
                     );
-                  })
-                )}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Rodapé da tabela */}
-          <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50/50 px-6 py-3 text-xs text-slate-500 dark:border-slate-800 dark:bg-slate-900/50 dark:text-slate-400">
-            <span>
-              Exibindo <strong>{filteredProcessos.length}</strong> de <strong>{processos.length}</strong> processos
-            </span>
-            {isUsingMock && (
-              <span className="inline-flex items-center gap-1 text-amber-700 dark:text-amber-400">
-                <Info className="h-3.5 w-3.5" />
-                Modo local de demonstração
-              </span>
-            )}
-          </div>
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </main>
 
-      {/* MODAL DE CADASTRO / EDIÇÃO */}
+      {/* Modal de Criação / Edição */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-900/60 p-4 backdrop-blur-xs">
-          <div className="relative w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-slate-900">
-            {/* Header do Modal */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
-              <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-amber-900 text-amber-100 dark:bg-amber-800">
-                  <Briefcase className="h-5 w-5" />
+              <div className="flex items-center gap-2">
+                <div className="rounded-lg bg-amber-100 p-2 text-amber-900 dark:bg-amber-950 dark:text-amber-300">
+                  {editingProcesso ? <Edit2 className="h-5 w-5" /> : <PlusCircle className="h-5 w-5" />}
                 </div>
-                <div>
-                  <h2 className="font-serif text-lg font-bold text-slate-900 dark:text-slate-100">
-                    {editingProcesso ? 'Editar Processo Judicial' : 'Cadastrar Novo Processo'}
-                  </h2>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Preencha os dados dos autos, vincule o cliente e defina o status inicial.
-                  </p>
-                </div>
+                <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white">
+                  {editingProcesso ? 'Editar Processo Judicial' : 'Novo Processo Judicial'}
+                </h3>
               </div>
               <button
                 onClick={() => setModalOpen(false)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            {/* Formulário */}
-            <form onSubmit={handleSaveProcesso} className="mt-5 space-y-4">
-              {/* Cliente Vinculado (Dropdown dinâmico) */}
+            <form onSubmit={handleSaveProcesso} className="mt-4 space-y-4 text-xs">
               <div>
-                <div className="flex items-center justify-between">
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
-                    Cliente Vinculado (Pessoa Física ou Jurídica) *
-                  </label>
-                  <Link
-                    href="/clientes"
-                    className="text-[11px] text-amber-800 hover:underline dark:text-amber-400"
-                  >
-                    + Novo Cliente
-                  </Link>
-                </div>
-                <select
-                  value={idCliente}
-                  onChange={(e) => setIdCliente(e.target.value)}
-                  disabled={loadingClientes}
-                  className={`mt-1 w-full rounded-lg border px-3.5 py-2 text-sm text-slate-900 focus:outline-none dark:bg-slate-800 dark:text-slate-100 ${
-                    formErrors.idCliente
-                      ? 'border-rose-400 focus:border-rose-600 focus:ring-1 focus:ring-rose-600'
-                      : 'border-slate-300 focus:border-amber-700 focus:ring-1 focus:ring-amber-700 dark:border-slate-700'
-                  }`}
-                >
-                  <option value="">Selecione um cliente...</option>
-                  {clientes.map((c) => (
-                    <option key={c.id_cliente} value={c.id_cliente}>
-                      {c.nome} ({c.cpf_cnpj})
-                    </option>
-                  ))}
-                </select>
-                {formErrors.idCliente && (
-                  <p className="mt-1 text-xs text-rose-600 dark:text-rose-400">{formErrors.idCliente}</p>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Número Único CNJ * (20 dígitos)
+                </label>
+                <input
+                  type="text"
+                  value={numeroProcesso}
+                  onChange={(e) => setNumeroProcesso(formatarNumeroCNJ(e.target.value))}
+                  placeholder="0000000-00.0000.0.00.0000"
+                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 font-mono"
+                />
+                {formErrors.numeroProcesso && (
+                  <p className="text-red-500 mt-1">{formErrors.numeroProcesso}</p>
                 )}
               </div>
 
-              {/* Grid Número CNJ e Data de Abertura */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Título / Classe Processual *
+                </label>
+                <input
+                  type="text"
+                  value={titulo}
+                  onChange={(e) => setTitulo(e.target.value)}
+                  placeholder="Ex: Ação de Cobrança e Perdas e Danos"
+                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                />
+                {formErrors.titulo && <p className="text-red-500 mt-1">{formErrors.titulo}</p>}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
-                    Número do Processo (CNJ) *
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                    Cliente Vinculado *
                   </label>
-                  <input
-                    type="text"
-                    value={numeroProcesso}
-                    onChange={(e) => setNumeroProcesso(formatarNumeroCNJ(e.target.value))}
-                    placeholder="0000000-00.0000.0.00.0000"
-                    maxLength={25}
-                    className={`mt-1 w-full font-mono rounded-lg border px-3.5 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:text-slate-100 ${
-                      formErrors.numeroProcesso
-                        ? 'border-rose-400 focus:border-rose-600 focus:ring-1 focus:ring-rose-600'
-                        : 'border-slate-300 focus:border-amber-700 focus:ring-1 focus:ring-amber-700 dark:border-slate-700'
-                    }`}
-                  />
-                  {formErrors.numeroProcesso && (
-                    <p className="mt-1 text-xs text-rose-600 dark:text-rose-400">
-                      {formErrors.numeroProcesso}
-                    </p>
-                  )}
+                  <select
+                    value={idCliente}
+                    onChange={(e) => setIdCliente(e.target.value)}
+                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                  >
+                    <option value="">Selecione o Cliente</option>
+                    {clientes.map((c) => (
+                      <option key={c.id_cliente} value={String(c.id_cliente)}>
+                        {c.nome} ({c.cpf_cnpj})
+                      </option>
+                    ))}
+                  </select>
+                  {formErrors.idCliente && <p className="text-red-500 mt-1">{formErrors.idCliente}</p>}
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
+                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                     Data de Distribuição / Abertura *
                   </label>
                   <input
                     type="date"
                     value={dataAbertura}
                     onChange={(e) => setDataAbertura(e.target.value)}
-                    className={`mt-1 w-full rounded-lg border px-3.5 py-2 text-sm text-slate-900 focus:outline-none dark:bg-slate-800 dark:text-slate-100 ${
-                      formErrors.dataAbertura
-                        ? 'border-rose-400 focus:border-rose-600 focus:ring-1 focus:ring-rose-600'
-                        : 'border-slate-300 focus:border-amber-700 focus:ring-1 focus:ring-amber-700 dark:border-slate-700'
-                    }`}
+                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                   />
                   {formErrors.dataAbertura && (
-                    <p className="mt-1 text-xs text-rose-600 dark:text-rose-400">
-                      {formErrors.dataAbertura}
-                    </p>
+                    <p className="text-red-500 mt-1">{formErrors.dataAbertura}</p>
                   )}
                 </div>
               </div>
 
-              {/* Grid Título da Ação e Status */}
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div className="sm:col-span-2">
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
-                    Título / Tipo de Ação *
-                  </label>
-                  <input
-                    type="text"
-                    value={titulo}
-                    onChange={(e) => setTitulo(e.target.value)}
-                    placeholder="Ex: Ação de Cobrança c/c Danos Morais"
-                    maxLength={100}
-                    className={`mt-1 w-full rounded-lg border px-3.5 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:text-slate-100 ${
-                      formErrors.titulo
-                        ? 'border-rose-400 focus:border-rose-600 focus:ring-1 focus:ring-rose-600'
-                        : 'border-slate-300 focus:border-amber-700 focus:ring-1 focus:ring-amber-700 dark:border-slate-700'
-                    }`}
-                  />
-                  {formErrors.titulo && (
-                    <p className="mt-1 text-xs text-rose-600 dark:text-rose-400">{formErrors.titulo}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
-                    Status Atual *
-                  </label>
-                  <select
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                    className="mt-1 w-full rounded-lg border border-slate-300 px-3.5 py-2 text-sm text-slate-900 focus:border-amber-700 focus:outline-none dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
-                  >
-                    {STATUS_OPCOES.map((st) => (
-                      <option key={st} value={st}>
-                        {st}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Descrição / Objeto da Causa / Vara */}
               <div>
-                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
-                  Descrição dos Fatos, Vara, Comarca e Objeto da Causa *
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Status Atual *
+                </label>
+                <select
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                >
+                  {STATUS_OPCOES.map((st) => (
+                    <option key={st} value={st}>
+                      {st}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Descrição / Objeto da Ação *
                 </label>
                 <textarea
                   rows={3}
                   value={descricao}
                   onChange={(e) => setDescricao(e.target.value)}
-                  placeholder="Ex: 3ª Vara Cível de São Paulo/SP. Ação versando sobre rescisão contratual com pedido de tutela antecipada."
-                  className={`mt-1 w-full rounded-lg border px-3.5 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none dark:bg-slate-800 dark:text-slate-100 ${
-                    formErrors.descricao
-                      ? 'border-rose-400 focus:border-rose-600 focus:ring-1 focus:ring-rose-600'
-                      : 'border-slate-300 focus:border-amber-700 focus:ring-1 focus:ring-amber-700 dark:border-slate-700'
-                  }`}
+                  placeholder="Descreva a vara, foro, síntese dos pedidos e detalhes relevantes..."
+                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 resize-none"
                 />
-                {formErrors.descricao && (
-                  <p className="mt-1 text-xs text-rose-600 dark:text-rose-400">
-                    {formErrors.descricao}
-                  </p>
-                )}
+                {formErrors.descricao && <p className="text-red-500 mt-1">{formErrors.descricao}</p>}
               </div>
 
-              {/* Ações do Modal */}
               <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="rounded-lg border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                  className="rounded-xl border border-slate-300 px-4 py-2 font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center gap-2 rounded-lg bg-amber-900 px-5 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-amber-800 active:scale-[0.98] disabled:opacity-50 dark:bg-amber-700"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-amber-700 px-4 py-2 font-semibold text-white hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-500 disabled:opacity-50"
                 >
-                  {saving ? (
-                    <>
-                      <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                      Gravando...
-                    </>
-                  ) : editingProcesso ? (
-                    'Atualizar Processo'
-                  ) : (
-                    'Cadastrar Processo'
-                  )}
+                  {saving ? 'Salvando...' : editingProcesso ? 'Atualizar Processo' : 'Salvar no Banco'}
                 </button>
               </div>
             </form>
@@ -1104,196 +781,110 @@ export default function ProcessosPage() {
         </div>
       )}
 
-      {/* MODAL DE CONFIRMAÇÃO DE EXCLUSÃO */}
+      {/* Modal de Exclusão */}
       {deleteModalOpen && processoToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-900/60 p-4 backdrop-blur-xs">
-          <div className="relative w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-slate-900">
-            <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-rose-100 dark:bg-rose-950/80">
-                <Trash2 className="h-5 w-5" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-md rounded-2xl border border-red-200 bg-white p-6 shadow-2xl dark:border-red-900/40 dark:bg-slate-900">
+            <div className="flex items-center gap-3 text-red-600 dark:text-red-400">
+              <div className="rounded-xl bg-red-100 p-2 dark:bg-red-950/60">
+                <AlertCircle className="h-6 w-6" />
               </div>
-              <h2 className="font-serif text-lg font-bold text-slate-900 dark:text-slate-100">
-                Excluir Processo?
-              </h2>
+              <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white">
+                Confirmar Exclusão
+              </h3>
             </div>
 
-            <p className="mt-3 text-sm text-slate-600 dark:text-slate-400">
-              Você está prestes a remover o processo{' '}
-              <strong className="font-mono text-slate-900 dark:text-slate-100">
-                {processoToDelete.numero_processo}
-              </strong>{' '}
-              ({processoToDelete.titulo}).
+            <p className="mt-3 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+              Tem certeza que deseja excluir o processo{' '}
+              <strong>{processoToDelete.numero_processo}</strong>? Prazos e documentos associados poderão ser desvinculados.
             </p>
-
-            {((processoToDelete._count?.prazos ?? 0) > 0 || (processoToDelete._count?.documentos ?? 0) > 0) && (
-              <div className="mt-3 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/60 dark:text-amber-300">
-                <AlertCircle className="h-4 w-4 shrink-0 text-amber-600 mt-0.5" />
-                <span>
-                  Aviso: Este processo possui{' '}
-                  <strong>{processoToDelete._count?.prazos ?? 0} prazo(s)</strong> e{' '}
-                  <strong>{processoToDelete._count?.documentos ?? 0} documento(s)</strong> vinculados.
-                </span>
-              </div>
-            )}
 
             <div className="mt-6 flex items-center justify-end gap-3">
               <button
-                onClick={() => {
-                  setDeleteModalOpen(false);
-                  setProcessoToDelete(null);
-                }}
-                className="rounded-lg border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                type="button"
+                onClick={() => setDeleteModalOpen(false)}
+                className="rounded-xl border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
               >
                 Cancelar
               </button>
               <button
+                type="button"
                 onClick={handleDeleteProcesso}
                 disabled={deleting}
-                className="inline-flex items-center gap-1.5 rounded-lg bg-rose-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-rose-700 disabled:opacity-50"
+                className="rounded-xl bg-red-600 px-4 py-2 text-xs font-semibold text-white hover:bg-red-700 transition disabled:opacity-50"
               >
-                {deleting ? (
-                  <>
-                    <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                    Excluindo...
-                  </>
-                ) : (
-                  'Confirmar Exclusão'
-                )}
+                {deleting ? 'Excluindo...' : 'Sim, Excluir'}
               </button>
             </div>
           </div>
         </div>
       )}
 
-      {/* MODAL / FICHA COMPLETA DO PROCESSO */}
+      {/* Drawer / Modal de Detalhes */}
       {detailsModalOpen && selectedProcesso && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-slate-900/60 p-4 backdrop-blur-xs">
-          <div className="relative w-full max-w-2xl rounded-2xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-slate-900">
-            {/* Cabeçalho */}
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
-              <div className="flex items-center gap-3">
-                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-900 text-amber-100 dark:bg-amber-800">
-                  <Scale className="h-6 w-6" />
+              <div className="flex items-center gap-2">
+                <div className="rounded-lg bg-amber-100 p-2 text-amber-900 dark:bg-amber-950 dark:text-amber-300">
+                  <Scale className="h-5 w-5" />
                 </div>
                 <div>
-                  <h2 className="font-serif text-xl font-bold text-slate-900 dark:text-slate-100">
-                    Ficha dos Autos
-                  </h2>
-                  <span className="font-mono text-xs text-amber-800 dark:text-amber-400 font-semibold">
-                    {selectedProcesso.numero_processo}
-                  </span>
+                  <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white">
+                    Autos Processuais #{selectedProcesso.id_processo}
+                  </h3>
+                  <p className="text-[11px] font-mono text-slate-500">
+                    {formatarNumeroCNJ(selectedProcesso.numero_processo)}
+                  </p>
                 </div>
               </div>
               <button
-                onClick={() => {
-                  setDetailsModalOpen(false);
-                  setSelectedProcesso(null);
-                }}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                onClick={() => setDetailsModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            {/* Grid de Informações Chave */}
-            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-slate-800 dark:bg-slate-800/40">
-                <div className="text-[11px] font-medium uppercase text-slate-400">Título da Ação</div>
-                <div className="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
+            <div className="mt-4 space-y-3 text-xs">
+              <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
+                <span className="text-slate-400 block text-[10px] uppercase font-semibold">Ação / Título</span>
+                <span className="text-slate-800 dark:text-slate-200 font-semibold">
                   {selectedProcesso.titulo}
-                </div>
+                </span>
               </div>
 
-              <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-slate-800 dark:bg-slate-800/40">
-                <div className="text-[11px] font-medium uppercase text-slate-400">Status Processual</div>
-                <div className="mt-1">
-                  <span
-                    className={`inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold ${getStatusBadgeStyle(
-                      selectedProcesso.status,
-                    )}`}
-                  >
+              <div className="grid grid-cols-2 gap-2">
+                <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
+                  <span className="text-slate-400 block text-[10px] uppercase font-semibold">Cliente</span>
+                  <span className="text-slate-800 dark:text-slate-200 font-medium">
+                    {selectedProcesso.cliente?.nome || `Cliente #${selectedProcesso.id_cliente}`}
+                  </span>
+                </div>
+                <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
+                  <span className="text-slate-400 block text-[10px] uppercase font-semibold">Status</span>
+                  <span className={`inline-block font-semibold px-2 py-0.5 rounded text-[10px] mt-0.5 ${getStatusBadgeStyle(selectedProcesso.status)}`}>
                     {selectedProcesso.status}
                   </span>
                 </div>
               </div>
 
-              <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-slate-800 dark:bg-slate-800/40">
-                <div className="text-[11px] font-medium uppercase text-slate-400">Cliente / Parte Representada</div>
-                <div className="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
-                  {selectedProcesso.cliente?.nome || `Cliente ID #${selectedProcesso.id_cliente}`}
-                </div>
-                {selectedProcesso.cliente?.cpf_cnpj && (
-                  <div className="text-xs font-mono text-slate-500">
-                    {selectedProcesso.cliente.cpf_cnpj}
-                  </div>
-                )}
-              </div>
-
-              <div className="rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-slate-800 dark:bg-slate-800/40">
-                <div className="text-[11px] font-medium uppercase text-slate-400">Data de Distribuição / Abertura</div>
-                <div className="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
-                  {new Date(selectedProcesso.data_abertura).toLocaleDateString('pt-BR')}
-                </div>
+              <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
+                <span className="text-slate-400 block text-[10px] uppercase font-semibold">Descrição / Objeto</span>
+                <p className="text-slate-800 dark:text-slate-200 mt-1 leading-relaxed">
+                  {selectedProcesso.descricao}
+                </p>
               </div>
             </div>
 
-            {/* Descrição dos Fatos / Objeto */}
-            <div className="mt-4 rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-slate-800 dark:bg-slate-800/40">
-              <div className="text-[11px] font-medium uppercase text-slate-400">Objeto e Detalhes da Causa</div>
-              <div className="mt-1 text-xs text-slate-800 leading-relaxed dark:text-slate-200 whitespace-pre-wrap">
-                {selectedProcesso.descricao}
-              </div>
-            </div>
-
-            {/* Prazos Vinculados */}
-            {selectedProcesso.prazos && selectedProcesso.prazos.length > 0 && (
-              <div className="mt-4 rounded-xl border border-slate-100 bg-slate-50/70 p-3.5 dark:border-slate-800 dark:bg-slate-800/40">
-                <div className="text-[11px] font-medium uppercase text-slate-400 mb-2">Prazos e Audiências</div>
-                <div className="space-y-1.5">
-                  {selectedProcesso.prazos.map((prz) => (
-                    <div key={prz.id_prazo} className="flex items-center justify-between text-xs bg-white dark:bg-slate-800 p-2 rounded-lg border border-slate-200 dark:border-slate-700">
-                      <span className="font-medium text-slate-800 dark:text-slate-200">{prz.descricao}</span>
-                      <span className="font-mono text-amber-800 dark:text-amber-400 font-semibold">
-                        {new Date(prz.data_limite).toLocaleDateString('pt-BR')}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Botões do Rodapé */}
-            <div className="mt-6 flex items-center justify-between border-t border-slate-100 pt-4 dark:border-slate-800">
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleCopy(selectedProcesso.numero_processo, 'details-proc')}
-                  className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
-                >
-                  {copiedId === 'details-proc' ? (
-                    <>
-                      <Check className="h-3.5 w-3.5 text-emerald-600" />
-                      Copiado!
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-3.5 w-3.5" />
-                      Copiar CNJ
-                    </>
-                  )}
-                </button>
-              </div>
-
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => {
-                    setDetailsModalOpen(false);
-                    openEditModal(selectedProcesso);
-                  }}
-                  className="rounded-lg bg-amber-900 px-4 py-2 text-xs font-semibold text-white transition hover:bg-amber-800 dark:bg-amber-700"
-                >
-                  Editar Processo
-                </button>
-              </div>
+            <div className="mt-6 flex items-center justify-end border-t border-slate-100 pt-4 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => setDetailsModalOpen(false)}
+                className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white dark:bg-amber-600 dark:hover:bg-amber-500"
+              >
+                Fechar
+              </button>
             </div>
           </div>
         </div>

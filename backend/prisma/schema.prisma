@@ -10,12 +10,19 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum Role {
+  ADMINISTRADOR
+  ADVOGADO
+  ESTAGIARIO
+}
+
 model Usuario {
   id_usuario       Int         @id @default(autoincrement())
   nome             String      @db.VarChar(100)
   email            String      @unique @db.VarChar(100)
-  senha            String      @db.VarChar(255)
-  tipo             String      @default("advogado") @db.VarChar(50)
+  senha_hash       String      @db.VarChar(255)
+  role             Role        @default(ADVOGADO)
+  ativo            Boolean     @default(true)
   data_criacao     DateTime    @default(now())
   data_atualizacao DateTime    @updatedAt
 

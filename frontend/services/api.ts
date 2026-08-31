@@ -12,9 +12,32 @@ export const api = axios.create({
   timeout: 15000,
 });
 
+// Interceptor de requisição: anexa o token JWT se presente no localStorage/cookies
+api.interceptors.request.use(
+  (config) => {
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('davino_auth_token');
+      if (token && config.headers) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
 api.interceptors.response.use(
   (response) => response,
   (error) => {
+    // Se receber 401 Unauthorized e não estiver na página de login, pode limpar a sessão
+    if (error.response?.status === 401 && typeof window !== 'undefined') {
+      const isLoginPage = window.location.pathname === '/login';
+      if (!isLoginPage && localStorage.getItem('davino_auth_token')) {
+        localStorage.removeItem('davino_auth_token');
+        localStorage.removeItem('davino_auth_user');
+      }
+    }
+
     const message =
       error.response?.data?.message ||
       error.message ||

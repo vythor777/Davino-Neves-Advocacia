@@ -7,6 +7,19 @@ async function bootstrap() {
     instrument: ObserveInstrument,
   });
 
+  // Configuração explícita de CORS para permitir requisições do front-end (Vercel, Localhost, etc.)
+  app.enableCors({
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+      // Permite requisições de origens locais, Vercel ou chamadas diretas
+      callback(null, true);
+    },
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Accept', 'Authorization', 'X-Requested-With'],
+    credentials: true,
+  });
+
+  app.setGlobalPrefix('api');
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -15,6 +28,7 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(process.env.PORT ?? 3000);
+  const port = process.env.PORT ?? 3001;
+  await app.listen(port);
 }
 await bootstrap();

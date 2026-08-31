@@ -3,18 +3,23 @@
 import React from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
+import { useAuth } from '@/context/AuthContext';
 import {
   Users,
   Briefcase,
   CalendarClock,
-  Calendar,
   Search,
   Sparkles,
   ArrowUpRight,
   ShieldCheck,
+  Shield,
+  UserCheck,
+  Lock,
 } from 'lucide-react';
 
 export default function HomePage() {
+  const { user, isAuthenticated, isAdmin } = useAuth();
+
   const modules = [
     {
       title: 'Gestão de Clientes',
@@ -57,12 +62,14 @@ export default function HomePage() {
       badgeColor: 'bg-purple-100 text-purple-800 dark:bg-purple-950/70 dark:text-purple-300',
     },
     {
-      title: 'Agenda & Audiências',
-      description: 'Pauta de audiências, reuniões com clientes e compromissos dos advogados.',
-      href: '/prazos',
-      icon: Calendar,
-      badge: 'Sincronizado',
-      badgeColor: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
+      title: 'Equipe & Usuários (RBAC)',
+      description: 'Controle de acessos e permissões por perfil (Administrador, Advogado, Estagiário).',
+      href: '/usuarios',
+      icon: Shield,
+      badge: isAdmin ? 'Admin' : 'Restrito',
+      badgeColor: isAdmin
+        ? 'bg-amber-100 text-amber-900 dark:bg-amber-950/70 dark:text-amber-300'
+        : 'bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-400',
     },
   ];
 
@@ -77,7 +84,9 @@ export default function HomePage() {
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2 rounded-full bg-amber-800/60 px-3 py-1 text-xs font-semibold tracking-wide text-amber-200 border border-amber-700/50">
                 <ShieldCheck className="h-3.5 w-3.5" />
-                Davino & Neves Advocacia • Painel Operacional
+                {isAuthenticated && user
+                  ? `Sessão Ativa: ${user.nome} (${user.role})`
+                  : 'Davino & Neves Advocacia • Painel Operacional'}
               </div>
               <h1 className="mt-3 font-serif text-3xl font-bold tracking-tight text-white sm:text-4xl">
                 Sistema Web de Gestão Jurídica
@@ -88,13 +97,23 @@ export default function HomePage() {
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
-              <Link
-                href="/clientes"
-                className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-amber-400 active:scale-95"
-              >
-                <Users className="h-4 w-4" />
-                Acessar Módulo de Clientes
-              </Link>
+              {isAuthenticated ? (
+                <Link
+                  href="/processos"
+                  className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-amber-400 active:scale-95"
+                >
+                  <Briefcase className="h-4 w-4" />
+                  Acessar Processos
+                </Link>
+              ) : (
+                <Link
+                  href="/login"
+                  className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-amber-400 active:scale-95"
+                >
+                  <Lock className="h-4 w-4" />
+                  Fazer Login no Sistema
+                </Link>
+              )}
             </div>
           </div>
         </div>
