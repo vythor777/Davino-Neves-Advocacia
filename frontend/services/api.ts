@@ -2,7 +2,8 @@ import axios from 'axios';
 
 // URL base da API configurável via variável de ambiente NEXT_PUBLIC_API_URL
 const baseURL =
-  process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
+  process.env.NEXT_PUBLIC_API_URL ||
+  (typeof window !== 'undefined' ? '/api' : 'http://127.0.0.1:3001/api');
 
 export const api = axios.create({
   baseURL,
