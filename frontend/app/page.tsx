@@ -3,6 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
+import AuthGuard from '@/components/AuthGuard';
 import { useAuth } from '@/context/AuthContext';
 import {
   Users,
@@ -13,12 +14,19 @@ import {
   ArrowUpRight,
   ShieldCheck,
   Shield,
-  UserCheck,
-  Lock,
+  FileText,
 } from 'lucide-react';
 
 export default function HomePage() {
-  const { user, isAuthenticated, isAdmin } = useAuth();
+  return (
+    <AuthGuard>
+      <DashboardContent />
+    </AuthGuard>
+  );
+}
+
+function DashboardContent() {
+  const { user, isAdmin } = useAuth();
 
   const modules = [
     {
@@ -84,9 +92,7 @@ export default function HomePage() {
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2 rounded-full bg-amber-800/60 px-3 py-1 text-xs font-semibold tracking-wide text-amber-200 border border-amber-700/50">
                 <ShieldCheck className="h-3.5 w-3.5" />
-                {isAuthenticated && user
-                  ? `Sessão Ativa: ${user.nome} (${user.role})`
-                  : 'Davino & Neves Advocacia • Painel Operacional'}
+                {user ? `Sessão Ativa: ${user.nome} (${user.role})` : 'Davino & Neves Advocacia'}
               </div>
               <h1 className="mt-3 font-serif text-3xl font-bold tracking-tight text-white sm:text-4xl">
                 Sistema Web de Gestão Jurídica
@@ -97,23 +103,21 @@ export default function HomePage() {
             </div>
 
             <div className="flex flex-wrap items-center gap-3">
-              {isAuthenticated ? (
-                <Link
-                  href="/processos"
-                  className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-amber-400 active:scale-95"
-                >
-                  <Briefcase className="h-4 w-4" />
-                  Acessar Processos
-                </Link>
-              ) : (
-                <Link
-                  href="/login"
-                  className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-amber-400 active:scale-95"
-                >
-                  <Lock className="h-4 w-4" />
-                  Fazer Login no Sistema
-                </Link>
-              )}
+              <Link
+                href="/processos"
+                className="inline-flex items-center gap-2 rounded-xl bg-amber-500 px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-amber-400 active:scale-95"
+              >
+                <Briefcase className="h-4 w-4" />
+                Acessar Processos
+              </Link>
+
+              <Link
+                href="/prazos"
+                className="inline-flex items-center gap-2 rounded-xl bg-amber-900/80 border border-amber-600/40 px-4 py-3 text-sm font-semibold text-amber-100 shadow-sm transition hover:bg-amber-800 active:scale-95"
+              >
+                <CalendarClock className="h-4 w-4" />
+                Agenda de Prazos
+              </Link>
             </div>
           </div>
         </div>

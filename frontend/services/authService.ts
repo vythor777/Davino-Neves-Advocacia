@@ -43,8 +43,9 @@ export const authService = {
     if (typeof window !== 'undefined') {
       localStorage.setItem(TOKEN_KEY, token);
       localStorage.setItem(USER_KEY, JSON.stringify(user));
-      // Configura cookie seguro para suporte a SSR/Middleware
+      // Configura cookies para verificação imediata pelo Middleware do Next.js
       document.cookie = `davino_token=${token}; path=/; max-age=604800; SameSite=Lax`;
+      document.cookie = `davino_auth_token=${token}; path=/; max-age=604800; SameSite=Lax`;
     }
   },
 
@@ -52,13 +53,19 @@ export const authService = {
     if (typeof window !== 'undefined') {
       localStorage.removeItem(TOKEN_KEY);
       localStorage.removeItem(USER_KEY);
-      document.cookie = 'davino_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT';
+      document.cookie = 'davino_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
+      document.cookie = 'davino_auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
     }
   },
 
   getToken(): string | null {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem(TOKEN_KEY);
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (token) return token;
+
+      // Fallback para cookie caso localStorage não esteja populado
+      const match = document.cookie.match(/(?:^|;\s*)(?:davino_token|davino_auth_token)=([^;]*)/);
+      return match ? decodeURIComponent(match[1]) : null;
     }
     return null;
   },

@@ -3,6 +3,7 @@
 import React, { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
+import AuthGuard from '@/components/AuthGuard';
 import Link from 'next/link';
 import {
   Sparkles,
@@ -1139,14 +1140,16 @@ function GeminiContent() {
 
 export default function GeminiPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-slate-50 flex items-center justify-center dark:bg-slate-950">
-          <div className="h-8 w-8 animate-spin rounded-full border-3 border-amber-800 border-t-transparent dark:border-amber-400" />
-        </div>
-      }
-    >
-      <GeminiContent />
-    </Suspense>
+    <AuthGuard>
+      <Suspense
+        fallback={
+          <div className="min-h-screen bg-slate-50 flex items-center justify-center dark:bg-slate-950">
+            <div className="h-8 w-8 animate-spin rounded-full border-3 border-amber-800 border-t-transparent dark:border-amber-400" />
+          </div>
+        }
+      >
+        <GeminiContent />
+      </Suspense>
+    </AuthGuard>
   );
 }

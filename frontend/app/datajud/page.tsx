@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
+import AuthGuard from '@/components/AuthGuard';
 import Link from 'next/link';
 import {
   Search,
@@ -70,6 +71,14 @@ const TRIBUNAIS_OPCOES = [
 ];
 
 export default function DataJudPage() {
+  return (
+    <AuthGuard>
+      <DataJudContent />
+    </AuthGuard>
+  );
+}
+
+function DataJudContent() {
   const [numeroProcesso, setNumeroProcesso] = useState('');
   const [tribunalSelecionado, setTribunalSelecionado] = useState('');
   const [loading, setLoading] = useState(false);
