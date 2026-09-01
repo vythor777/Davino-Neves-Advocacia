@@ -60,7 +60,7 @@ export function Navbar() {
           </div>
           <div>
             <div className="font-serif text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100">
-              Davino & Neves
+              Davino Neves
             </div>
             <div className="text-[10px] font-semibold tracking-widest uppercase text-amber-800 dark:text-amber-400">
               Sociedade de Advogados

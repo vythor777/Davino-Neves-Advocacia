@@ -12,7 +12,6 @@ import {
   ArrowRight,
   AlertCircle,
   ShieldCheck,
-  KeyRound,
 } from 'lucide-react';
 
 export default function LoginPage() {
@@ -82,12 +81,6 @@ function LoginForm() {
     }
   };
 
-  const fillAdminCredentials = () => {
-    setEmail('admin@davinoneves.com.br');
-    setSenha('admin123');
-    setErrorMsg(null);
-  };
-
   return (
     <div className="min-h-screen flex flex-col justify-center bg-slate-900 text-slate-100 relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8">
       {/* Elementos sutis de fundo temático jurídico */}
@@ -102,7 +95,7 @@ function LoginForm() {
             <Scale className="h-8 w-8" />
           </div>
           <h1 className="mt-5 font-serif text-2xl font-bold tracking-tight text-white sm:text-3xl">
-            Davino & Neves
+            Davino Neves
           </h1>
           <p className="text-xs uppercase tracking-widest text-amber-400/90 font-medium mt-0.5">
             Advocacia & Consultoria Jurídica
@@ -140,7 +133,7 @@ function LoginForm() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="usuario@davinoeneves.adv.br"
+                  placeholder="usuario@davinoneves.com.br"
                   className="block w-full rounded-xl border border-slate-700 bg-slate-900/90 pl-10 pr-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:border-amber-500 focus:outline-hidden focus:ring-2 focus:ring-amber-500/20 transition"
                 />
               </div>
@@ -193,31 +186,11 @@ function LoginForm() {
               )}
             </button>
           </form>
-
-          {/* Dica de Acesso Rápido para Avaliação/TCC */}
-          <div className="mt-6 rounded-xl border border-amber-500/20 bg-amber-950/30 p-3.5 text-xs text-amber-200/90">
-            <div className="flex items-center justify-between mb-1">
-              <span className="font-semibold flex items-center gap-1.5 text-amber-300">
-                <KeyRound className="h-3.5 w-3.5" />
-                Acesso Inicial (Seed do Banco):
-              </span>
-              <button
-                type="button"
-                onClick={fillAdminCredentials}
-                className="underline hover:text-white text-[11px] font-medium transition cursor-pointer"
-              >
-                Preencher dados
-              </button>
-            </div>
-            <p className="text-[11px] text-amber-200/70 font-mono">
-              admin@davinoneves.com.br • senha: admin123
-            </p>
-          </div>
         </div>
 
         {/* Rodapé institucional */}
         <p className="mt-8 text-center text-xs text-slate-500">
-          Davino & Neves Advocacia © 2026 • Controladoria e Gestão Processual
+          Davino Neves Advocacia © 2026 • Controladoria e Gestão Processual
         </p>
       </div>
     </div>

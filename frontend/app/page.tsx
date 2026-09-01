@@ -92,7 +92,7 @@ function DashboardContent() {
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2 rounded-full bg-amber-800/60 px-3 py-1 text-xs font-semibold tracking-wide text-amber-200 border border-amber-700/50">
                 <ShieldCheck className="h-3.5 w-3.5" />
-                {user ? `Sessão Ativa: ${user.nome} (${user.role})` : 'Davino & Neves Advocacia'}
+                {user ? `Sessão Ativa: ${user.nome} (${user.role})` : 'Davino Neves Advocacia'}
               </div>
               <h1 className="mt-3 font-serif text-3xl font-bold tracking-tight text-white sm:text-4xl">
                 Sistema Web de Gestão Jurídica
