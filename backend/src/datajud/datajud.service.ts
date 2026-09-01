@@ -17,10 +17,20 @@ export class DataJudService {
     'cDZHYzlZa0JadVREZDJCendQbXZ6YVpmOjE1MDExNWVlLTczYjctNGNiZi1iOWJhLTI4YjQ4ZDRjNzM2NQ==';
 
   /**
+   * Sanitiza e remove todos os caracteres não numéricos do número do processo
+   * (mantendo estritamente os dígitos numéricos limpos para a API do CNJ).
+   */
+  public limparNumeroProcesso(numero: string): string {
+    if (!numero) return '';
+    return numero.replace(/\D/g, '').trim();
+  }
+
+  /**
    * Mapeamento de segmento e código do tribunal pelo padrão CNJ (J.TR)
    * Formato: NNNNNNN-DD.AAAA.J.TR.OOOO
    */
-  private identificarTribunal(numeroProcessoLimpo: string): string {
+  private identificarTribunal(numeroProcesso: string): string {
+    const numeroProcessoLimpo = this.limparNumeroProcesso(numeroProcesso);
     if (numeroProcessoLimpo.length !== 20) {
       return 'tjsp'; // Tribunal padrão de fallback
     }
@@ -89,7 +99,7 @@ export class DataJudService {
 
   async consultarProcesso(dto: ConsultarProcessoDto) {
     const { numero_processo, tribunal } = dto;
-    const numeroLimpo = numero_processo.replace(/\D/g, '');
+    const numeroLimpo = this.limparNumeroProcesso(numero_processo);
 
     if (!numeroLimpo || numeroLimpo.length < 15) {
       throw new BadRequestException(

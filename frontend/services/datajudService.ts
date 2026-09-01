@@ -28,6 +28,15 @@ export interface DataJudProcessoResponse {
   dadosCompletos?: Record<string, unknown>;
 }
 
+/**
+ * Remove qualquer caractere não numérico (pontos, traços, barras, espaços),
+ * garantindo estritamente os 20 dígitos numéricos limpos para a API do CNJ.
+ */
+export function limparNumeroProcesso(numero: string): string {
+  if (!numero) return '';
+  return numero.replace(/\D/g, '').trim();
+}
+
 export interface ConsultarDataJudParams {
   numero_processo: string;
   tribunal?: string;
@@ -35,12 +44,16 @@ export interface ConsultarDataJudParams {
 
 export const datajudService = {
   async consultarProcesso(params: ConsultarDataJudParams): Promise<DataJudProcessoResponse> {
-    const response = await api.post<DataJudProcessoResponse>('/datajud/consultar', params);
+    const payload = {
+      ...params,
+      numero_processo: limparNumeroProcesso(params.numero_processo),
+    };
+    const response = await api.post<DataJudProcessoResponse>('/datajud/consultar', payload);
     return response.data;
   },
 
   async consultarPorNumero(numeroProcesso: string): Promise<DataJudProcessoResponse> {
-    const limpo = numeroProcesso.replace(/\D/g, '');
+    const limpo = limparNumeroProcesso(numeroProcesso);
     const response = await api.get<DataJudProcessoResponse>(`/datajud/${limpo}`);
     return response.data;
   },
