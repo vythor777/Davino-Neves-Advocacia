@@ -11,8 +11,28 @@ import { ConsultarProcessoDto } from './dto/consultar-processo.dto.js';
 export class DataJudService {
   private readonly logger = new Logger(DataJudService.name);
   private getBaseUrl(): string {
-    const url = process.env.DATAJUD_API_URL || process.env.DATA_JUD_API_URL;
-    return (url && url.trim() !== '' ? url.trim() : 'https://api-publica.datajud.cnj.jus.br').replace(/\/$/, '');
+    const rawUrl = process.env.DATAJUD_API_URL || process.env.DATA_JUD_API_URL;
+    if (!rawUrl || rawUrl.trim() === '') {
+      return 'https://api-publica.datajud.cnj.jus.br';
+    }
+
+    let url = rawUrl.trim().replace(/^["']|["']$/g, '').trim();
+    // Remove qualquer rota ou sub-caminho engessado como /api_publica_... ou /_search
+    url = url.replace(/\/api_publica_[^/]+.*$/i, '');
+    url = url.replace(/\/_search.*$/i, '');
+    url = url.replace(/\/+$/, '');
+
+    // Se não tiver protocolo, prefixa com https://
+    if (!url.startsWith('http://') && !url.startsWith('https://')) {
+      url = `https://${url}`;
+    }
+
+    try {
+      const parsed = new URL(url);
+      return `${parsed.protocol}//${parsed.host}`;
+    } catch {
+      return 'https://api-publica.datajud.cnj.jus.br';
+    }
   }
 
   private getApiKey(): string {
@@ -154,10 +174,12 @@ export class DataJudService {
       );
     }
 
-    const siglaTribunal =
+    let siglaTribunal =
       tribunal?.toLowerCase() || this.identificarTribunal(numeroLimpo);
+    siglaTribunal = siglaTribunal.replace(/^api_publica_/i, '').replace(/^_search$/i, '').trim();
 
-    const endpoint = `${this.getBaseUrl()}/api_publica_${siglaTribunal}/_search`;
+    const baseUrl = this.getBaseUrl();
+    const endpoint = `${baseUrl}/api_publica_${siglaTribunal}/_search`;
 
     this.logger.log(
       `Consultando processo ${numeroLimpo} no tribunal ${siglaTribunal} (${endpoint})`,

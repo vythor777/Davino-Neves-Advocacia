@@ -137,7 +137,10 @@ export async function POST(request: Request) {
       );
     }
 
-    siglaTribunal = tribunal?.toLowerCase() || identificarTribunal(numeroLimpo);
+    siglaTribunal = (tribunal?.toLowerCase() || identificarTribunal(numeroLimpo))
+      .replace(/^api_publica_/i, '')
+      .replace(/^_search$/i, '')
+      .trim();
 
     const possibleEnvKeys = [
       'DATAJUD_API_KEY',
@@ -169,11 +172,26 @@ export async function POST(request: Request) {
     }
     rawKey = rawKey.replace(/^["']|["']$/g, '').trim();
 
-    const baseUrl = (
+    let rawBaseUrl = (
       process.env.DATAJUD_API_URL ||
       process.env.DATA_JUD_API_URL ||
       'https://api-publica.datajud.cnj.jus.br'
-    ).replace(/\/$/, '');
+    ).trim().replace(/^["']|["']$/g, '');
+
+    rawBaseUrl = rawBaseUrl.replace(/\/api_publica_[^/]+.*$/i, '');
+    rawBaseUrl = rawBaseUrl.replace(/\/_search.*$/i, '');
+    rawBaseUrl = rawBaseUrl.replace(/\/+$/, '');
+
+    let baseUrl = 'https://api-publica.datajud.cnj.jus.br';
+    try {
+      if (!rawBaseUrl.startsWith('http://') && !rawBaseUrl.startsWith('https://')) {
+        rawBaseUrl = `https://${rawBaseUrl}`;
+      }
+      const parsed = new URL(rawBaseUrl);
+      baseUrl = `${parsed.protocol}//${parsed.host}`;
+    } catch {
+      baseUrl = 'https://api-publica.datajud.cnj.jus.br';
+    }
 
     const authHeader = rawKey.trim().startsWith('APIKey ')
       ? rawKey.trim()
