@@ -16,5 +16,8 @@
   "devDependencies": {
     "ts-node": "^10.9.2",
     "tsx": "^4.23.13"
+  },
+  "dependencies": {
+    "sonner": "^2.0.8"
   }
 }
