@@ -3,6 +3,11 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Navbar from '@/components/Navbar';
 import AuthGuard from '@/components/AuthGuard';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { EmptyState } from '@/components/EmptyState';
+import { TableSkeleton, MetricCardSkeleton } from '@/components/Skeleton';
+import { SecurityBadge } from '@/components/SecurityBadge';
+import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { clienteService, Cliente, CreateClienteInput } from '@/services/clienteService';
 import {
   Users,
@@ -259,7 +264,13 @@ function ClientesContent() {
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col">
       <Navbar />
 
-      <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in-up">
+        {/* Breadcrumbs & Security Indicator */}
+        <div className="flex items-center justify-between pb-4">
+          <Breadcrumbs items={[{ label: 'Clientes', icon: Users }]} />
+          <SecurityBadge variant="compact" className="hidden sm:inline-flex" />
+        </div>
+
         {/* Cabeçalho da Página */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 dark:border-slate-800 pb-6">
           <div>
@@ -327,45 +338,56 @@ function ClientesContent() {
 
         {/* Métricas do Módulo */}
         <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total de Clientes</span>
-              <Users className="h-4 w-4 text-slate-400" />
-            </div>
-            <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
-              {totalClientes}
-            </p>
-          </div>
+          {loading ? (
+            <>
+              <MetricCardSkeleton />
+              <MetricCardSkeleton />
+              <MetricCardSkeleton />
+              <MetricCardSkeleton />
+            </>
+          ) : (
+            <>
+              <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total de Clientes</span>
+                  <Users className="h-4 w-4 text-slate-400" />
+                </div>
+                <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
+                  {totalClientes}
+                </p>
+              </div>
 
-          <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Pessoas Físicas</span>
-              <User className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-            </div>
-            <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
-              {totalPF}
-            </p>
-          </div>
+              <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Pessoas Físicas</span>
+                  <User className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                </div>
+                <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
+                  {totalPF}
+                </p>
+              </div>
 
-          <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Pessoas Jurídicas</span>
-              <Building2 className="h-4 w-4 text-amber-700 dark:text-amber-500" />
-            </div>
-            <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
-              {totalPJ}
-            </p>
-          </div>
+              <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Pessoas Jurídicas</span>
+                  <Building2 className="h-4 w-4 text-amber-700 dark:text-amber-500" />
+                </div>
+                <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
+                  {totalPJ}
+                </p>
+              </div>
 
-          <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Com Processos Ativos</span>
-              <Briefcase className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-            </div>
-            <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
-              {totalComProcessos}
-            </p>
-          </div>
+              <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Com Processos Ativos</span>
+                  <Briefcase className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
+                  {totalComProcessos}
+                </p>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Barra de Filtros e Busca */}
@@ -401,31 +423,26 @@ function ClientesContent() {
         {/* Tabela de Clientes */}
         <div className="mt-6 rounded-2xl border border-slate-200 bg-white shadow-2xs overflow-hidden dark:border-slate-800 dark:bg-slate-900">
           {loading ? (
-            <div className="py-16 text-center">
-              <RefreshCw className="mx-auto h-8 w-8 animate-spin text-amber-700 dark:text-amber-500" />
-              <p className="mt-3 text-xs font-medium text-slate-500 dark:text-slate-400">
-                Carregando clientes do banco de dados...
-              </p>
-            </div>
+            <TableSkeleton rows={6} columns={6} />
           ) : filteredClientes.length === 0 ? (
-            <div className="py-16 text-center px-4">
-              <Users className="mx-auto h-10 w-10 text-slate-300 dark:text-slate-600" />
-              <h3 className="mt-3 font-serif text-lg font-bold text-slate-800 dark:text-slate-200">
-                Nenhum cliente cadastrado
-              </h3>
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                {searchTerm || filtroTipo !== 'todos'
-                  ? 'Nenhum resultado corresponde aos filtros aplicados.'
-                  : 'Cadastre o primeiro cliente para vincular a processos judiciais.'}
-              </p>
-              <button
-                onClick={openCreateModal}
-                className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-amber-700 px-4 py-2 text-xs font-semibold text-white hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-500"
-              >
-                <UserPlus className="h-4 w-4" />
-                Cadastrar Cliente
-              </button>
-            </div>
+            <EmptyState
+              icon={Users}
+              title={searchTerm || filtroTipo !== 'todos' ? "Nenhum cliente localizado" : "Nenhum cliente cadastrado"}
+              description={
+                searchTerm || filtroTipo !== 'todos'
+                  ? "Tente ajustar os filtros ou o termo pesquisado."
+                  : "Cadastre o primeiro cliente da carteira para vincular a processos e prazos."
+              }
+              action={
+                !searchTerm && filtroTipo === 'todos'
+                  ? {
+                      label: "Cadastrar Cliente",
+                      onClick: openCreateModal,
+                      icon: UserPlus,
+                    }
+                  : undefined
+              }
+            />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">

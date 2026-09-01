@@ -5,6 +5,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import AuthGuard from '@/components/AuthGuard';
+import { InstitutionalFooter } from '@/components/InstitutionalFooter';
+import { SecurityBadge } from '@/components/SecurityBadge';
+import { MetricCardSkeleton } from '@/components/Skeleton';
+import { EmptyState } from '@/components/EmptyState';
 import { useAuth } from '@/context/AuthContext';
 import { processoService, Processo } from '@/services/processoService';
 import { prazoService, Prazo } from '@/services/prazoService';
@@ -287,117 +291,126 @@ function AstreaDashboard() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {/* Card 1: Processos */}
-            <Link
-              href="/processos"
-              className="group astrea-card p-5 relative overflow-hidden flex flex-col justify-between"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                    Processos Ativos
-                  </span>
-                  <div className="mt-1 text-2xl font-black text-slate-900 dark:text-white">
-                    {loading ? '...' : processosAtivos}
+          {loading ? (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <MetricCardSkeleton />
+              <MetricCardSkeleton />
+              <MetricCardSkeleton />
+              <MetricCardSkeleton />
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {/* Card 1: Processos */}
+              <Link
+                href="/processos"
+                className="group astrea-card p-5 relative overflow-hidden flex flex-col justify-between hover:-translate-y-0.5 transition-all"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                      Processos Ativos
+                    </span>
+                    <div className="mt-1 text-2xl font-black text-slate-900 dark:text-white">
+                      {processosAtivos}
+                    </div>
+                  </div>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-50 text-sky-600 dark:bg-sky-950/70 dark:text-sky-400 group-hover:scale-110 transition-transform">
+                    <Briefcase className="h-5 w-5" />
                   </div>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-50 text-sky-600 dark:bg-sky-950/70 dark:text-sky-400 group-hover:scale-110 transition-transform">
-                  <Briefcase className="h-5 w-5" />
+                <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800/80 pt-2.5">
+                  <span>Total: {totalProcessos}</span>
+                  <span className="text-sky-600 dark:text-sky-400 font-semibold group-hover:underline flex items-center gap-0.5">
+                    Ver autos <ChevronRight className="h-3 w-3" />
+                  </span>
                 </div>
-              </div>
-              <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800/80 pt-2.5">
-                <span>Total: {totalProcessos}</span>
-                <span className="text-sky-600 dark:text-sky-400 font-semibold group-hover:underline flex items-center gap-0.5">
-                  Ver autos <ChevronRight className="h-3 w-3" />
-                </span>
-              </div>
-            </Link>
+              </Link>
 
-            {/* Card 2: Prazos Fatais / Hoje */}
-            <Link
-              href="/prazos"
-              className="group astrea-card p-5 relative overflow-hidden flex flex-col justify-between"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                    Prazos Esta Semana
-                  </span>
-                  <div className="mt-1 text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-                    <span>{loading ? '...' : prazosUrgentes.length}</span>
-                    {prazosHoje.length > 0 && (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-500 text-white animate-pulse">
-                        <Flame className="h-3 w-3" /> {prazosHoje.length} hoje
-                      </span>
-                    )}
+              {/* Card 2: Prazos Fatais / Hoje */}
+              <Link
+                href="/prazos"
+                className="group astrea-card p-5 relative overflow-hidden flex flex-col justify-between hover:-translate-y-0.5 transition-all"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                      Prazos Esta Semana
+                    </span>
+                    <div className="mt-1 text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
+                      <span>{prazosUrgentes.length}</span>
+                      {prazosHoje.length > 0 && (
+                        <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-500 text-white animate-pulse">
+                          <Flame className="h-3 w-3" /> {prazosHoje.length} hoje
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-950/70 dark:text-amber-400 group-hover:scale-110 transition-transform">
+                    <CalendarClock className="h-5 w-5" />
                   </div>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-950/70 dark:text-amber-400 group-hover:scale-110 transition-transform">
-                  <CalendarClock className="h-5 w-5" />
+                <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800/80 pt-2.5">
+                  <span>{prazosCumpridos} cumpridos</span>
+                  <span className="text-amber-600 dark:text-amber-400 font-semibold group-hover:underline flex items-center gap-0.5">
+                    Ver agenda <ChevronRight className="h-3 w-3" />
+                  </span>
                 </div>
-              </div>
-              <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800/80 pt-2.5">
-                <span>{prazosCumpridos} cumpridos</span>
-                <span className="text-amber-600 dark:text-amber-400 font-semibold group-hover:underline flex items-center gap-0.5">
-                  Ver agenda <ChevronRight className="h-3 w-3" />
-                </span>
-              </div>
-            </Link>
+              </Link>
 
-            {/* Card 3: Clientes */}
-            <Link
-              href="/clientes"
-              className="group astrea-card p-5 relative overflow-hidden flex flex-col justify-between"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                    Carteira de Clientes
-                  </span>
-                  <div className="mt-1 text-2xl font-black text-slate-900 dark:text-white">
-                    {loading ? '...' : totalClientes}
+              {/* Card 3: Clientes */}
+              <Link
+                href="/clientes"
+                className="group astrea-card p-5 relative overflow-hidden flex flex-col justify-between hover:-translate-y-0.5 transition-all"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                      Carteira de Clientes
+                    </span>
+                    <div className="mt-1 text-2xl font-black text-slate-900 dark:text-white">
+                      {totalClientes}
+                    </div>
+                  </div>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/70 dark:text-emerald-400 group-hover:scale-110 transition-transform">
+                    <Users className="h-5 w-5" />
                   </div>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/70 dark:text-emerald-400 group-hover:scale-110 transition-transform">
-                  <Users className="h-5 w-5" />
+                <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800/80 pt-2.5">
+                  <span>{clientesPf} PF / {clientesPj} PJ</span>
+                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold group-hover:underline flex items-center gap-0.5">
+                    Ver contatos <ChevronRight className="h-3 w-3" />
+                  </span>
                 </div>
-              </div>
-              <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800/80 pt-2.5">
-                <span>{clientesPf} PF / {clientesPj} PJ</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-semibold group-hover:underline flex items-center gap-0.5">
-                  Ver contatos <ChevronRight className="h-3 w-3" />
-                </span>
-              </div>
-            </Link>
+              </Link>
 
-            {/* Card 4: DataJud & Gemini IA */}
-            <Link
-              href="/gemini"
-              className="group astrea-card p-5 relative overflow-hidden flex flex-col justify-between"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                    IA Jurídica (Google Gemini)
-                  </span>
-                  <div className="mt-1 text-base font-bold text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
-                    <Sparkles className="h-4 w-4" />
-                    <span>Gemini 3.7 Ativo</span>
+              {/* Card 4: DataJud & Gemini IA */}
+              <Link
+                href="/gemini"
+                className="group astrea-card p-5 relative overflow-hidden flex flex-col justify-between hover:-translate-y-0.5 transition-all"
+              >
+                <div className="flex items-start justify-between">
+                  <div>
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
+                      IA Jurídica (Google Gemini)
+                    </span>
+                    <div className="mt-1 text-base font-bold text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
+                      <Sparkles className="h-4 w-4" />
+                      <span>Gemini 3.7 Ativo</span>
+                    </div>
+                  </div>
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-950/70 dark:text-purple-400 group-hover:scale-110 transition-transform">
+                    <Sparkles className="h-5 w-5" />
                   </div>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-950/70 dark:text-purple-400 group-hover:scale-110 transition-transform">
-                  <Sparkles className="h-5 w-5" />
+                <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800/80 pt-2.5">
+                  <span>Análise de Peças</span>
+                  <span className="text-purple-600 dark:text-purple-400 font-semibold group-hover:underline flex items-center gap-0.5">
+                    Abrir IA <ChevronRight className="h-3 w-3" />
+                  </span>
                 </div>
-              </div>
-              <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800/80 pt-2.5">
-                <span>Análise de Peças</span>
-                <span className="text-purple-600 dark:text-purple-400 font-semibold group-hover:underline flex items-center gap-0.5">
-                  Abrir IA <ChevronRight className="h-3 w-3" />
-                </span>
-              </div>
-            </Link>
-          </div>
+              </Link>
+            </div>
+          )}
         </div>
 
         {/* Seção Central: Prazos Críticos do Dia (Astrea Priority Hub) */}
@@ -620,25 +633,8 @@ function AstreaDashboard() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="border-t border-slate-200 bg-white py-6 text-xs text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 transition-colors">
-        <div className="mx-auto max-w-7xl px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-slate-700 dark:text-slate-300">
-              Davino Neves Advocacia
-            </span>
-            <span>•</span>
-            <span>Gestão & Controladoria Jurídica © 2026</span>
-          </div>
-          <div className="flex items-center gap-4 text-[11px]">
-            <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-medium">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-              Sistemas Operacionais
-            </span>
-            <span>Segurança & RBAC Ativo</span>
-          </div>
-        </div>
-      </footer>
+      {/* Rodapé Institucional Completo */}
+      <InstitutionalFooter />
     </div>
   );
 }

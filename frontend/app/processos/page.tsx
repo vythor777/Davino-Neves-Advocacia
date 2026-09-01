@@ -8,6 +8,9 @@ import { clienteService, Cliente } from '@/services/clienteService';
 import { ProcessosTable, formatarNumeroCNJ, getStatusBadgeStyle } from '@/components/ProcessosTable';
 import { SearchInput } from '@/components/SearchInput';
 import { TableSkeleton, MetricCardSkeleton } from '@/components/Skeleton';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { InstitutionalFooter } from '@/components/InstitutionalFooter';
+import { SecurityBadge } from '@/components/SecurityBadge';
 import { toast } from 'sonner';
 import {
   Briefcase,
@@ -293,7 +296,13 @@ function ProcessosContent() {
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col antialiased">
       <Navbar />
 
-      <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6">
+      <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-6 animate-fade-in-up">
+        {/* Breadcrumb de Navegação */}
+        <div className="flex items-center justify-between">
+          <Breadcrumbs items={[{ label: 'Processos', icon: Briefcase }]} />
+          <SecurityBadge variant="compact" className="hidden sm:inline-flex" />
+        </div>
+
         {/* Cabeçalho Minimalista & Tipografia Sofisticada */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200/80 dark:border-slate-800">
           <div>
@@ -729,6 +738,9 @@ function ProcessosContent() {
           </div>
         </div>
       )}
+
+      {/* Rodapé Institucional */}
+      <InstitutionalFooter />
     </div>
   );
 }
