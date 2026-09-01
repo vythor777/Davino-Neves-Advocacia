@@ -101,7 +101,7 @@ function LoginForm() {
             </div>
           </div>
           <h1 className="mt-5 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-            Davino & Neves <span className="text-sky-400">Advocacia</span>
+            Danino Neves <span className="text-sky-400">Advocacia</span>
           </h1>
           <p className="text-xs font-semibold tracking-wider uppercase text-slate-400 mt-1">
             Sociedade de Advogados • Gestão Integrada
@@ -139,7 +139,7 @@ function LoginForm() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="advogado@davinoneves.com.br"
+                  placeholder="advogado@daninoneves.com.br"
                   className="block w-full rounded-xl border border-slate-700 bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:border-sky-500 focus:outline-hidden focus:ring-2 focus:ring-sky-500/20 transition"
                 />
               </div>

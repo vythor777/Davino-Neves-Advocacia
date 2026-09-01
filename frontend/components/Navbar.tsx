@@ -81,34 +81,34 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-md dark:border-slate-800/90 dark:bg-slate-900/95 transition-colors">
-      {/* Top Banner / Astrea Ribbon */}
-      <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-1 text-[11px] text-slate-500 dark:border-slate-800/60 dark:bg-slate-950/60 dark:text-slate-400 hidden sm:block">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1.5 font-medium text-slate-700 dark:text-slate-300">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              Sincronização DataJud CNJ: <strong className="text-emerald-700 dark:text-emerald-400 font-semibold">Online (91 Tribunais)</strong>
-            </span>
-            <span className="text-slate-300 dark:text-slate-700">|</span>
-            <span className="hidden md:inline text-slate-500">
-              Davino & Neves Sociedade de Advogados
-            </span>
-          </div>
+        {/* Top Banner Ribbon */}
+        <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-1 text-[11px] text-slate-500 dark:border-slate-800/60 dark:bg-slate-950/60 dark:text-slate-400 hidden sm:block">
+          <div className="mx-auto flex max-w-7xl items-center justify-between">
+            <div className="flex items-center gap-4">
+              <span className="flex items-center gap-1.5 font-medium text-slate-700 dark:text-slate-300">
+                <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                Sincronização DataJud CNJ: <strong className="text-emerald-700 dark:text-emerald-400 font-semibold">Online (91 Tribunais)</strong>
+              </span>
+              <span className="text-slate-300 dark:text-slate-700">|</span>
+              <span className="hidden md:inline text-slate-500">
+                Danino Neves Advocacia
+              </span>
+            </div>
 
-          <div className="flex items-center gap-3">
-            <span className="hidden md:inline font-mono text-[10px] text-sky-700 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/60 px-2 py-0.5 rounded-full border border-sky-200 dark:border-sky-800">
-              Davino & Neves Legal Suite
-            </span>
-            <Link
-              href="/gemini"
-              className="flex items-center gap-1 font-semibold text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300"
-            >
-              <Sparkles className="h-3 w-3 text-sky-600 dark:text-sky-400" />
-              <span>Copilot IA Disponível</span>
-            </Link>
+            <div className="flex items-center gap-3">
+              <span className="hidden md:inline font-mono text-[10px] text-sky-700 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/60 px-2 py-0.5 rounded-full border border-sky-200 dark:border-sky-800">
+                Danino Neves Advocacia
+              </span>
+              <Link
+                href="/gemini"
+                className="flex items-center gap-1 font-semibold text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300"
+              >
+                <Sparkles className="h-3 w-3 text-sky-600 dark:text-sky-400" />
+                <span>Copilot IA Disponível</span>
+              </Link>
+            </div>
           </div>
         </div>
-      </div>
 
       {/* Main Navbar */}
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
@@ -127,7 +127,7 @@ export function Navbar() {
           <div>
             <div className="flex items-center gap-1.5">
               <span className="font-sans text-base font-extrabold tracking-tight text-slate-900 dark:text-white">
-                Davino & Neves
+                Danino Neves
               </span>
               <span className="text-xs font-semibold px-1.5 py-0.5 rounded-md bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-200 dark:border-sky-800">
                 Advocacia
@@ -198,7 +198,7 @@ export function Navbar() {
 
         {/* Right Section / Quick Actions & User Profile */}
         <div className="flex items-center gap-2.5">
-          {/* Astrea Signature "+ Novo" Dropdown */}
+          {/* Action "+ Novo" Dropdown */}
           <div className="relative" ref={quickMenuRef}>
             <button
               onClick={() => setQuickMenuOpen(!quickMenuOpen)}
@@ -212,7 +212,7 @@ export function Navbar() {
             {quickMenuOpen && (
               <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl dark:border-slate-800 dark:bg-slate-900 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                 <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                  Ações Rápidas Astrea
+                  Ações Rápidas
                 </div>
                 <div className="space-y-1">
                   <Link

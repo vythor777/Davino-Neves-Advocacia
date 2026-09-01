@@ -207,7 +207,7 @@ function AstreaDashboard() {
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2 rounded-full bg-sky-50 px-3 py-1 text-xs font-bold text-sky-700 border border-sky-200 dark:bg-sky-950/70 dark:text-sky-300 dark:border-sky-800">
                 <span className="h-2 w-2 rounded-full bg-sky-500 animate-pulse" />
-                <span>Davino & Neves • Painel de Gestão Jurídica</span>
+                <span>Danino Neves • Painel de Gestão Jurídica</span>
               </div>
               <h1 className="mt-3 text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
                 Olá, {user?.nome ? user.nome : 'Doutor(a)'} 👋

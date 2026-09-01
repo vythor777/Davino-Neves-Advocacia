@@ -19,7 +19,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Davino Neves Advocacia | Gestão Jurídica",
+  title: "Danino Neves Advocacia | Gestão Jurídica",
   description: "Plataforma corporativa de gestão jurídica com controle de processos, clientes, prazos e inteligência processual.",
 };
 
