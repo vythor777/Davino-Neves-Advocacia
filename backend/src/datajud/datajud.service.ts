@@ -13,17 +13,19 @@ export class DataJudService {
   private readonly baseUrl =
     process.env.DATAJUD_API_URL || 'https://api-publica.datajud.cnj.jus.br';
 
-  private getApiKey(): string {
-    const key =
+  private getAuthHeader(): string {
+    const rawKey =
       process.env.DATAJUD_API_KEY ||
       'cDZHYzlZa0JadVREZDJCendQbXZ6YVpmOjE1MDExNWVlLTczYjctNGNiZi1iOWJhLTI4YjQ4ZDRjNzM2NQ==';
 
-    if (!key || key.trim() === '') {
+    if (!rawKey || rawKey.trim() === '') {
       throw new BadRequestException(
         'A chave de acesso DATAJUD_API_KEY não está configurada no ambiente. Por favor, forneça uma chave pública válida do CNJ.',
       );
     }
-    return key.trim();
+
+    const trimmed = rawKey.trim();
+    return trimmed.startsWith('APIKey ') ? trimmed : `APIKey ${trimmed}`;
   }
 
   /**
@@ -128,15 +130,15 @@ export class DataJudService {
 
     try {
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 7000);
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
 
-      const apiKey = this.getApiKey();
+      const authHeader = this.getAuthHeader();
 
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `APIKey ${apiKey}`,
+          Authorization: authHeader,
         },
         body: JSON.stringify({
           query: {
@@ -151,10 +153,26 @@ export class DataJudService {
       clearTimeout(timeoutId);
 
       if (!response.ok) {
-        this.logger.warn(
-          `DataJud retornou status ${response.status}. Ativando fallback de dados estruturados.`,
+        const errorBody = await response.text();
+        this.logger.error(
+          `[DataJud CNJ Rejeição] HTTP ${response.status} ao consultar ${endpoint} com o processo ${numeroLimpo}. Resposta do CNJ: ${errorBody}`,
         );
-        return this.gerarProcessoSimulado(numeroLimpo, siglaTribunal);
+
+        if (response.status === 401 || response.status === 403) {
+          throw new BadRequestException(
+            `Erro de autenticação na API do DataJud (HTTP ${response.status}): ${errorBody || 'Verifique a chave DATAJUD_API_KEY.'}`,
+          );
+        }
+
+        if (response.status === 404) {
+          throw new NotFoundException(
+            `Tribunal ${siglaTribunal.toUpperCase()} ou processo ${numeroLimpo} não localizado na API do DataJud (HTTP 404): ${errorBody}`,
+          );
+        }
+
+        throw new InternalServerErrorException(
+          `Erro na API pública do DataJud (HTTP ${response.status}) para o tribunal ${siglaTribunal.toUpperCase()}: ${errorBody}`,
+        );
       }
 
       const data = await response.json();
@@ -162,9 +180,11 @@ export class DataJudService {
 
       if (hits.length === 0) {
         this.logger.warn(
-          `Nenhum hit encontrado no DataJud para ${numeroLimpo}. Retornando processo padrão simulado.`,
+          `Nenhum registro retornado pelo DataJud para o processo ${numeroLimpo} no tribunal ${siglaTribunal.toUpperCase()}.`,
         );
-        return this.gerarProcessoSimulado(numeroLimpo, siglaTribunal);
+        throw new NotFoundException(
+          `Nenhum registro localizado no DataJud para o processo ${numeroLimpo} no tribunal ${siglaTribunal.toUpperCase()}.`,
+        );
       }
 
       const processoData = hits[0]._source;
@@ -180,7 +200,7 @@ export class DataJudService {
         dataAjuizamento:
           processoData.dataAjuizamento || new Date().toISOString(),
         grau: processoData.grau || 'G1',
-        nivelSigilo: processoData.nivelSigilo || 0,
+        nivelSigilo: processoData.nivelSigilo ?? 0,
         assuntos:
           processoData.assuntos?.map((a: any) => a.nome) || [
             'Direito Civil',
@@ -195,10 +215,22 @@ export class DataJudService {
         dadosCompletos: processoData,
       };
     } catch (error) {
-      this.logger.warn(
-        `Falha na requisição ao DataJud (${error instanceof Error ? error.message : 'Erro desconhecido'}). Retornando dados simulados de contingência.`,
+      this.logger.error(
+        `[DataJud CNJ Exception] Falha na consulta do processo ${numeroLimpo} (${siglaTribunal}):`,
+        error instanceof Error ? error.stack || error.message : error,
       );
-      return this.gerarProcessoSimulado(numeroLimpo, siglaTribunal);
+
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException ||
+        error instanceof InternalServerErrorException
+      ) {
+        throw error;
+      }
+
+      throw new InternalServerErrorException(
+        `Falha na comunicação com o DataJud do CNJ: ${error instanceof Error ? error.message : 'Erro de conexão/timeout.'}`,
+      );
     }
   }
 

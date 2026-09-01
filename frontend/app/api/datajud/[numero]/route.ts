@@ -130,24 +130,36 @@ export async function GET(
 
   try {
     const { numero } = await params;
-    numeroLimpo = limparNumeroProcesso(numero) || '10234567820248260100';
+    numeroLimpo = limparNumeroProcesso(numero);
+
+    if (!numeroLimpo || numeroLimpo.length < 15) {
+      return NextResponse.json(
+        { message: 'Número de processo inválido. Padrão CNJ com 20 dígitos numéricos.' },
+        { status: 400 }
+      );
+    }
+
     siglaTribunal = identificarTribunal(numeroLimpo);
-    const apiKey =
+    const rawKey =
       process.env.DATAJUD_API_KEY ||
       'cDZHYzlZa0JadVREZDJCendQbXZ6YVpmOjE1MDExNWVlLTczYjctNGNiZi1iOWJhLTI4YjQ4ZDRjNzM2NQ==';
     const baseUrl =
       process.env.DATAJUD_API_URL || 'https://api-publica.datajud.cnj.jus.br';
 
+    const authHeader = rawKey.trim().startsWith('APIKey ')
+      ? rawKey.trim()
+      : `APIKey ${rawKey.trim()}`;
+
     const endpoint = `${baseUrl}/api_publica_${siglaTribunal}/_search`;
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
 
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `APIKey ${apiKey}`,
+        Authorization: authHeader,
       },
       body: JSON.stringify({
         query: {
@@ -162,14 +174,28 @@ export async function GET(
     clearTimeout(timeoutId);
 
     if (!response.ok) {
-      return NextResponse.json(gerarProcessoSimulado(numeroLimpo, siglaTribunal));
+      const errorText = await response.text();
+      console.error(
+        `[DataJud Frontend API Error] Status: ${response.status} | Tribunal: ${siglaTribunal} | Resposta CNJ: ${errorText}`
+      );
+      return NextResponse.json(
+        {
+          message: `Erro ao consultar processo no tribunal ${siglaTribunal.toUpperCase()} (HTTP ${response.status}): ${errorText}`,
+          tribunal: siglaTribunal,
+          endpoint,
+        },
+        { status: response.status }
+      );
     }
 
     const data = await response.json();
     const hits = data?.hits?.hits || [];
 
     if (hits.length === 0) {
-      return NextResponse.json(gerarProcessoSimulado(numeroLimpo, siglaTribunal));
+      return NextResponse.json(
+        { message: `Processo não localizado no tribunal ${siglaTribunal.toUpperCase()}.` },
+        { status: 404 }
+      );
     }
 
     const processoData = hits[0]._source;
@@ -179,10 +205,11 @@ export async function GET(
       tribunal: siglaTribunal.toUpperCase(),
       numeroProcesso: processoData.numeroProcesso,
       classe: processoData.classe?.nome || 'Procedimento Comum Cível',
-      orgaoJulgador: processoData.orgaoJulgador?.nome || `Vara Cível - ${siglaTribunal.toUpperCase()}`,
+      orgaoJulgador:
+        processoData.orgaoJulgador?.nome || `Vara Cível - ${siglaTribunal.toUpperCase()}`,
       dataAjuizamento: processoData.dataAjuizamento || new Date().toISOString(),
       grau: processoData.grau || 'G1',
-      nivelSigilo: processoData.nivelSigilo || 0,
+      nivelSigilo: processoData.nivelSigilo ?? 0,
       assuntos: processoData.assuntos?.map((a: any) => a.nome) || ['Direito Civil'],
       movimentos: (processoData.movimentos || []).map((m: any) => ({
         codigo: m.codigo,
@@ -192,7 +219,11 @@ export async function GET(
       })),
       dadosCompletos: processoData,
     });
-  } catch {
-    return NextResponse.json(gerarProcessoSimulado(numeroLimpo, siglaTribunal));
+  } catch (error: any) {
+    console.error('[DataJud Frontend API Exception]:', error);
+    return NextResponse.json(
+      { message: `Erro interno ao processar a consulta do processo: ${error?.message || 'Erro de conexão/timeout.'}` },
+      { status: 500 }
+    );
   }
 }
