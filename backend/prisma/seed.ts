@@ -8,7 +8,7 @@ async function main() {
   const adminPassword = 'admin123';
   const adminNome = 'Administrador';
 
-  console.log('🌱 [Davino & Neves] Iniciando script de Seed do banco de dados...');
+  console.log('🌱 [Davino Neves] Iniciando script de Seed do banco de dados...');
 
   // 1. Verificar se o usuário com este e-mail já existe
   const existingUser = await prisma.usuario.findUnique({

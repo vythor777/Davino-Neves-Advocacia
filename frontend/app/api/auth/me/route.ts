@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       id: 1,
       id_usuario: 1,
-      nome: 'Administrador Davino & Neves',
+      nome: 'Administrador Davino Neves',
       email: 'admin@davinoneves.com.br',
       role: 'ADMINISTRADOR',
       ativo: true,

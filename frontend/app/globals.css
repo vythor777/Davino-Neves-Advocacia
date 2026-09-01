@@ -34,9 +34,10 @@ body {
 }
 
 /* =========================================================
-   Astrea Design System Custom Utilities
+   Davino Neves UI Custom Utilities
    ========================================================= */
 
+.legal-card,
 .astrea-card {
   background-color: #ffffff;
   border: 1px solid #e2e8f0;
@@ -46,6 +47,7 @@ body {
 }
 
 @media (prefers-color-scheme: dark) {
+  .legal-card,
   .astrea-card {
     background-color: #0f172a;
     border-color: #1e293b;
@@ -53,12 +55,14 @@ body {
   }
 }
 
+.legal-card:hover,
 .astrea-card:hover {
   border-color: #cbd5e1;
   box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
 }
 
 @media (prefers-color-scheme: dark) {
+  .legal-card:hover,
   .astrea-card:hover {
     border-color: #334155;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);

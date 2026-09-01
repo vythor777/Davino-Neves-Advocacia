@@ -269,7 +269,7 @@ function UsuariosContent() {
               </h1>
             </div>
             <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
-              Controle de acessos, papéis (Administrador, Advogado, Estagiário) e credenciais do escritório Davino & Neves.
+              Controle de acessos, papéis (Administrador, Advogado, Estagiário) e credenciais do escritório Davino Neves.
             </p>
           </div>
 

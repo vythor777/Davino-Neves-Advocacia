@@ -251,7 +251,7 @@ export class GeminiService {
       );
     }
 
-    const systemInstruction = `Você é um assistente de inteligência artificial jurídica de alto nível para o escritório Davino & Neves Advocacia.
+    const systemInstruction = `Você é um assistente de inteligência artificial jurídica de alto nível para o escritório Davino Neves Advocacia.
 Sua missão é analisar documentos jurídicos (contratos, petições, sentenças, decisões, despachos, notificações) e fornecer uma análise estruturada, precisa e de alto valor prático para os advogados.
 Analise a validade, pontos fortes, riscos processuais ou contratuais, obrigações, prazos implícitos/explícitos e forneça recomendações práticas objetivas.`;
 
@@ -305,7 +305,7 @@ Por favor, forneça:
         ? 'Linguagem clara, amigável, livre de jargões jurídicos excessivos (linguagem simples/visual law), ideal para envio em relatório de status ao cliente.'
         : 'Linguagem técnica, focada em estratégia processual, status das fases recursais/probatórias e próximos passos para o advogado.';
 
-    const systemInstruction = `Você é o especialista jurídico de IA do escritório Davino & Neves Advocacia.
+    const systemInstruction = `Você é o especialista jurídico de IA do escritório Davino Neves Advocacia.
 Objetivo: Resumir o andamento processual com base no histórico de movimentações fornecido.
 Público-alvo: ${publico.toUpperCase()} (${tomDeVoz})`;
 
@@ -353,7 +353,7 @@ Elabore um resumo conciso contendo:
       );
     }
 
-    const systemInstruction = `Você é um analista processual de controladoria jurídica do escritório Davino & Neves Advocacia.
+    const systemInstruction = `Você é um analista processual de controladoria jurídica do escritório Davino Neves Advocacia.
 Sua função é identificar prazos legais (CPC, CPP, CLT ou Juizados Especiais), providências necessárias, termos fatais e partes intimadas a partir de publicações e intimações judiciais.`;
 
     const prompt = `Data da Publicação/Disponibilização: ${data_publicacao || 'Não informada (assumir data atual)'}

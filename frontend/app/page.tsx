@@ -207,7 +207,7 @@ function AstreaDashboard() {
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2 rounded-full bg-sky-50 px-3 py-1 text-xs font-bold text-sky-700 border border-sky-200 dark:bg-sky-950/70 dark:text-sky-300 dark:border-sky-800">
                 <span className="h-2 w-2 rounded-full bg-sky-500 animate-pulse" />
-                <span>Danino Neves • Painel de Gestão Jurídica</span>
+                <span>Davino Neves • Painel de Gestão Jurídica</span>
               </div>
               <h1 className="mt-3 text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
                 Olá, {user?.nome ? user.nome : 'Doutor(a)'} 👋
@@ -566,14 +566,14 @@ function AstreaDashboard() {
           </div>
         </div>
 
-        {/* Grid de Módulos Astrea (App Grid) */}
+        {/* Grid de Módulos (App Grid) */}
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              Módulos do Sistema Astrea
+              Módulos do Sistema
             </h2>
             <span className="text-xs text-slate-400">
-              Davino & Neves Sociedade de Advogados
+              Davino Neves Advocacia
             </span>
           </div>
 
@@ -620,12 +620,12 @@ function AstreaDashboard() {
         </div>
       </main>
 
-      {/* Footer Estilo Astrea / Aurum */}
+      {/* Footer */}
       <footer className="border-t border-slate-200 bg-white py-6 text-xs text-slate-500 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 transition-colors">
         <div className="mx-auto max-w-7xl px-4 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="font-bold text-slate-700 dark:text-slate-300">
-              Davino & Neves Advocacia
+              Davino Neves Advocacia
             </span>
             <span>•</span>
             <span>Gestão & Controladoria Jurídica © 2026</span>

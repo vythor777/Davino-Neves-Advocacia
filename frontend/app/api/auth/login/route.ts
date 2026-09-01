@@ -19,7 +19,7 @@ export async function POST(request: Request) {
       {
         id: 1,
         id_usuario: 1,
-        nome: 'Administrador Davino & Neves',
+        nome: 'Administrador Davino Neves',
         email: 'admin@davinoneves.com.br',
         senha: 'admin123',
         role: 'ADMINISTRADOR',
@@ -64,7 +64,7 @@ export async function POST(request: Request) {
         const mockAdmin = {
           id: 1,
           id_usuario: 1,
-          nome: 'Administrador Davino & Neves',
+          nome: 'Administrador Davino Neves',
           email: normalizedEmail,
           role: 'ADMINISTRADOR',
           ativo: true,

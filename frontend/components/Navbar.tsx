@@ -91,13 +91,13 @@ export function Navbar() {
               </span>
               <span className="text-slate-300 dark:text-slate-700">|</span>
               <span className="hidden md:inline text-slate-500">
-                Danino Neves Advocacia
+                Davino Neves Advocacia
               </span>
             </div>
 
             <div className="flex items-center gap-3">
               <span className="hidden md:inline font-mono text-[10px] text-sky-700 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/60 px-2 py-0.5 rounded-full border border-sky-200 dark:border-sky-800">
-                Danino Neves Advocacia
+                Davino Neves Advocacia
               </span>
               <Link
                 href="/gemini"
@@ -127,7 +127,7 @@ export function Navbar() {
           <div>
             <div className="flex items-center gap-1.5">
               <span className="font-sans text-base font-extrabold tracking-tight text-slate-900 dark:text-white">
-                Danino Neves
+                Davino Neves
               </span>
               <span className="text-xs font-semibold px-1.5 py-0.5 rounded-md bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-200 dark:border-sky-800">
                 Advocacia
