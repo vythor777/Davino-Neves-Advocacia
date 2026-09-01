@@ -140,15 +140,41 @@ export async function GET(
     }
 
     siglaTribunal = identificarTribunal(numeroLimpo);
-    const rawKey = process.env.DATAJUD_API_KEY;
+    const possibleEnvKeys = [
+      'DATAJUD_API_KEY',
+      'CNJ_DATAJUD_API_KEY',
+      'DATAJUD_KEY',
+      'DATAJUD_TOKEN',
+      'CNJ_API_KEY',
+      'DATA_JUD_API_KEY',
+      'NEXT_PUBLIC_DATAJUD_API_KEY',
+    ];
+
+    let rawKey: string | undefined;
+    for (const keyName of possibleEnvKeys) {
+      const val = process.env[keyName];
+      if (val && typeof val === 'string' && val.trim() !== '') {
+        rawKey = val.trim();
+        break;
+      }
+    }
+
     if (!rawKey || rawKey.trim() === '') {
       return NextResponse.json(
-        { message: 'A chave de acesso DATAJUD_API_KEY não está configurada no ambiente.' },
+        {
+          message:
+            'A chave de acesso DATAJUD_API_KEY não está configurada no ambiente. Configure a variável no servidor.',
+        },
         { status: 400 }
       );
     }
-    const baseUrl =
-      process.env.DATAJUD_API_URL || 'https://api-publica.datajud.cnj.jus.br';
+    rawKey = rawKey.replace(/^["']|["']$/g, '').trim();
+
+    const baseUrl = (
+      process.env.DATAJUD_API_URL ||
+      process.env.DATA_JUD_API_URL ||
+      'https://api-publica.datajud.cnj.jus.br'
+    ).replace(/\/$/, '');
 
     const authHeader = rawKey.trim().startsWith('APIKey ')
       ? rawKey.trim()

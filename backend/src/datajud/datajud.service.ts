@@ -10,18 +10,52 @@ import { ConsultarProcessoDto } from './dto/consultar-processo.dto.js';
 @Injectable()
 export class DataJudService {
   private readonly logger = new Logger(DataJudService.name);
-  private readonly baseUrl =
-    process.env.DATAJUD_API_URL || 'https://api-publica.datajud.cnj.jus.br';
+  private getBaseUrl(): string {
+    const url = process.env.DATAJUD_API_URL || process.env.DATA_JUD_API_URL;
+    return (url && url.trim() !== '' ? url.trim() : 'https://api-publica.datajud.cnj.jus.br').replace(/\/$/, '');
+  }
 
   private getApiKey(): string {
-    const key = process.env.DATAJUD_API_KEY;
+    // Lista de variações de nomes possíveis no ambiente do Render/Docker/Next
+    const possibleEnvKeys = [
+      'DATAJUD_API_KEY',
+      'CNJ_DATAJUD_API_KEY',
+      'DATAJUD_KEY',
+      'DATAJUD_TOKEN',
+      'CNJ_API_KEY',
+      'DATA_JUD_API_KEY',
+      'NEXT_PUBLIC_DATAJUD_API_KEY',
+    ];
 
-    if (!key || key.trim() === '') {
+    let foundKey: string | undefined;
+    let foundVarName: string | undefined;
+
+    for (const varName of possibleEnvKeys) {
+      const val = process.env[varName];
+      if (val && typeof val === 'string' && val.trim() !== '') {
+        foundKey = val.trim();
+        foundVarName = varName;
+        break;
+      }
+    }
+
+    if (!foundKey) {
+      this.logger.warn(
+        `[DataJud Config] Nenhuma chave de API configurada no ambiente. Variáveis verificadas: ${possibleEnvKeys.join(', ')}.`,
+      );
       throw new BadRequestException(
-        'A chave de acesso DATAJUD_API_KEY não está configurada no ambiente. Por favor, configure a chave válida do CNJ.',
+        'A chave de acesso DATAJUD_API_KEY não está configurada no ambiente. Por favor, configure a chave válida do CNJ no painel do servidor.',
       );
     }
-    return key.trim();
+
+    // Limpa eventuais aspas duplas ou simples adicionadas por engano no painel do Render/env
+    foundKey = foundKey.replace(/^["']|["']$/g, '').trim();
+
+    this.logger.debug(
+      `[DataJud Config] Chave de API carregada com sucesso da variável "${foundVarName}" (tamanho: ${foundKey.length} caracteres).`,
+    );
+
+    return foundKey;
   }
 
   private getAuthHeader(): string {
@@ -123,7 +157,7 @@ export class DataJudService {
     const siglaTribunal =
       tribunal?.toLowerCase() || this.identificarTribunal(numeroLimpo);
 
-    const endpoint = `${this.baseUrl}/api_publica_${siglaTribunal}/_search`;
+    const endpoint = `${this.getBaseUrl()}/api_publica_${siglaTribunal}/_search`;
 
     this.logger.log(
       `Consultando processo ${numeroLimpo} no tribunal ${siglaTribunal} (${endpoint})`,
