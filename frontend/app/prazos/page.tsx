@@ -519,24 +519,24 @@ function PrazosContent() {
             <select
               value={selectedFilter}
               onChange={(e) => setSelectedFilter(e.target.value as any)}
-              className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300"
+              className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs font-medium text-slate-100 focus:border-amber-500 focus:outline-hidden"
             >
-              <option value="todos">Todos os Prazos</option>
-              <option value="urgentes">Urgentes / Vencidos</option>
-              <option value="pendentes">Pendentes (Em Aberto)</option>
-              <option value="vencidos">Apenas Vencidos</option>
-              <option value="cumpridos">Apenas Cumpridos</option>
+              <option value="todos" className="bg-slate-900 text-slate-100">Todos os Prazos</option>
+              <option value="urgentes" className="bg-slate-900 text-slate-100">Urgentes / Vencidos</option>
+              <option value="pendentes" className="bg-slate-900 text-slate-100">Pendentes (Em Aberto)</option>
+              <option value="vencidos" className="bg-slate-900 text-slate-100">Apenas Vencidos</option>
+              <option value="cumpridos" className="bg-slate-900 text-slate-100">Apenas Cumpridos</option>
             </select>
 
             {processos.length > 0 && (
               <select
                 value={selectedProcessoFilter}
                 onChange={(e) => setSelectedProcessoFilter(e.target.value)}
-                className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 max-w-[200px] truncate"
+                className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs font-medium text-slate-100 focus:border-amber-500 focus:outline-hidden max-w-[200px] truncate"
               >
-                <option value="todos">Todos os Processos</option>
+                <option value="todos" className="bg-slate-900 text-slate-100">Todos os Processos</option>
                 {processos.map((p) => (
-                  <option key={p.id_processo} value={String(p.id_processo)}>
+                  <option key={p.id_processo} value={String(p.id_processo)} className="bg-slate-900 text-slate-100">
                     {p.numero_processo} - {p.titulo}
                   </option>
                 ))}
@@ -802,11 +802,11 @@ function PrazosContent() {
                 <select
                   value={idProcesso}
                   onChange={(e) => setIdProcesso(e.target.value)}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-amber-500 focus:outline-hidden"
                 >
-                  <option value="">Selecione o Processo</option>
+                  <option value="" className="bg-slate-900 text-slate-100">Selecione o Processo</option>
                   {processos.map((p) => (
-                    <option key={p.id_processo} value={String(p.id_processo)}>
+                    <option key={p.id_processo} value={String(p.id_processo)} className="bg-slate-900 text-slate-100">
                       {p.numero_processo} — {p.titulo}
                     </option>
                   ))}
@@ -825,7 +825,7 @@ function PrazosContent() {
                   value={descricao}
                   onChange={(e) => setDescricao(e.target.value)}
                   placeholder="Ex: Apresentar Réplica à Contestação com documentos"
-                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden"
                 />
                 {formErrors.descricao && (
                   <p className="text-red-500 mt-1">{formErrors.descricao}</p>
@@ -841,7 +841,7 @@ function PrazosContent() {
                     type="date"
                     value={dataVencimento}
                     onChange={(e) => setDataVencimento(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-amber-500 focus:outline-hidden"
                   />
                   {formErrors.dataVencimento && (
                     <p className="text-red-500 mt-1">{formErrors.dataVencimento}</p>
@@ -855,10 +855,10 @@ function PrazosContent() {
                   <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-amber-500 focus:outline-hidden"
                   >
-                    <option value="Pendente">Pendente</option>
-                    <option value="Cumprido">Cumprido</option>
+                    <option value="Pendente" className="bg-slate-900 text-slate-100">Pendente</option>
+                    <option value="Cumprido" className="bg-slate-900 text-slate-100">Cumprido</option>
                   </select>
                 </div>
               </div>

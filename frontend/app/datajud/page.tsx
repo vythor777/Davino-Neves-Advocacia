@@ -246,13 +246,13 @@ function DataJudContent() {
         </div>
 
         {/* Formulário de Busca */}
-        <div className="mt-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
+        <div className="mt-8 rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-md dark:border-slate-800 dark:bg-slate-900">
           <form onSubmit={handleConsultar} className="space-y-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
               <div className="md:col-span-8">
                 <label
                   htmlFor="numeroProcesso"
-                  className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+                  className="block text-xs font-semibold uppercase tracking-wider text-slate-200"
                 >
                   Número do Processo (Padrão CNJ)
                 </label>
@@ -267,7 +267,7 @@ function DataJudContent() {
                     onChange={handleInputChange}
                     placeholder="0000000-00.0000.0.00.0000"
                     maxLength={25}
-                    className="block w-full rounded-xl border border-slate-300 bg-slate-50/50 pl-10 pr-4 py-3 font-mono text-sm tracking-wide text-slate-900 transition focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-100 dark:focus:border-amber-500"
+                    className="block w-full rounded-xl border border-slate-700 bg-slate-950 pl-10 pr-4 py-3 font-mono text-sm tracking-wide text-white placeholder:text-slate-400 transition focus:border-amber-500 focus:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
                   />
                 </div>
               </div>
@@ -275,7 +275,7 @@ function DataJudContent() {
               <div className="md:col-span-4">
                 <label
                   htmlFor="tribunalSelect"
-                  className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+                  className="block text-xs font-semibold uppercase tracking-wider text-slate-200"
                 >
                   Tribunal (Opcional)
                 </label>
@@ -283,10 +283,10 @@ function DataJudContent() {
                   id="tribunalSelect"
                   value={tribunalSelecionado}
                   onChange={(e) => setTribunalSelecionado(e.target.value)}
-                  className="mt-1.5 block w-full rounded-xl border border-slate-300 bg-slate-50/50 px-3 py-3 text-sm text-slate-900 transition focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-100"
+                  className="mt-1.5 block w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-3 text-sm text-white focus:border-amber-500 focus:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
                 >
                   {TRIBUNAIS_OPCOES.map((t) => (
-                    <option key={t.valor} value={t.valor}>
+                    <option key={t.valor} value={t.valor} className="bg-slate-900 text-slate-100 py-1.5">
                       {t.rotulo}
                     </option>
                   ))}
@@ -295,14 +295,14 @@ function DataJudContent() {
             </div>
 
             {/* Exemplos de busca rápida */}
-            <div className="flex flex-wrap items-center gap-2 pt-1 text-xs text-slate-500 dark:text-slate-400">
-              <span className="font-semibold text-slate-600 dark:text-slate-300">Exemplos para teste:</span>
+            <div className="flex flex-wrap items-center gap-2 pt-1 text-xs text-slate-400">
+              <span className="font-semibold text-slate-300">Exemplos para teste:</span>
               {EXEMPLOS_PROCESSOS.map((ex, i) => (
                 <button
                   key={i}
                   type="button"
                   onClick={() => handleAplicarExemplo(ex.numero, ex.tribunal)}
-                  className="rounded-lg border border-slate-200 bg-slate-100 px-2.5 py-1 font-mono text-[11px] text-slate-700 transition hover:border-amber-600 hover:bg-amber-50 hover:text-amber-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-amber-500 dark:hover:bg-amber-950/50 dark:hover:text-amber-200"
+                  className="rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1 font-mono text-[11px] text-slate-200 transition hover:border-amber-500 hover:bg-slate-700 hover:text-amber-300"
                 >
                   {ex.rotulo}
                 </button>
@@ -638,7 +638,7 @@ function DataJudContent() {
                   type="text"
                   disabled
                   value={formatarCNJ(resultado.numeroProcesso)}
-                  className="mt-1 block w-full rounded-xl border border-slate-200 bg-slate-100 px-3.5 py-2 font-mono text-xs text-slate-600 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300"
+                  className="mt-1 block w-full rounded-xl border border-slate-700 bg-slate-800 px-3.5 py-2 font-mono text-xs text-slate-200"
                 />
               </div>
 
@@ -651,16 +651,16 @@ function DataJudContent() {
                     required
                     value={clienteSelecionadoId}
                     onChange={(e) => setClienteSelecionadoId(Number(e.target.value))}
-                    className="mt-1 block w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs text-slate-900 focus:border-amber-700 focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                    className="mt-1 block w-full rounded-xl border border-slate-700 bg-slate-900 px-3.5 py-2 text-xs text-slate-100 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
                   >
                     {clientes.map((c) => (
-                      <option key={c.id_cliente} value={c.id_cliente}>
+                      <option key={c.id_cliente} value={c.id_cliente} className="bg-slate-900 text-slate-100">
                         {c.nome} ({c.cpf_cnpj || 'Sem documento'})
                       </option>
                     ))}
                   </select>
                 ) : (
-                  <div className="mt-1 rounded-lg bg-amber-50 p-2.5 text-xs text-amber-900 border border-amber-200 dark:bg-amber-950/40 dark:border-amber-900 dark:text-amber-300">
+                  <div className="mt-1 rounded-lg bg-amber-950/40 p-2.5 text-xs text-amber-300 border border-amber-800">
                     Nenhum cliente cadastrado. Cadastre um cliente primeiro no módulo de Clientes.
                   </div>
                 )}
@@ -675,7 +675,8 @@ function DataJudContent() {
                   required
                   value={tituloProcesso}
                   onChange={(e) => setTituloProcesso(e.target.value)}
-                  className="mt-1 block w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs text-slate-900 focus:border-amber-700 focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                  placeholder="Título do processo"
+                  className="mt-1 block w-full rounded-xl border border-slate-700 bg-slate-900 px-3.5 py-2 text-xs text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
                 />
               </div>
 
@@ -686,13 +687,13 @@ function DataJudContent() {
                 <select
                   value={statusProcesso}
                   onChange={(e) => setStatusProcesso(e.target.value)}
-                  className="mt-1 block w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs text-slate-900 focus:border-amber-700 focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                  className="mt-1 block w-full rounded-xl border border-slate-700 bg-slate-900 px-3.5 py-2 text-xs text-slate-100 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
                 >
-                  <option value="Em Andamento">Em Andamento</option>
-                  <option value="Aguardando Sentença">Aguardando Sentença</option>
-                  <option value="Fase Recursal">Fase Recursal</option>
-                  <option value="Cumprimento de Sentença">Cumprimento de Sentença</option>
-                  <option value="Arquivado">Arquivado</option>
+                  <option value="Em Andamento" className="bg-slate-900 text-slate-100">Em Andamento</option>
+                  <option value="Aguardando Sentença" className="bg-slate-900 text-slate-100">Aguardando Sentença</option>
+                  <option value="Fase Recursal" className="bg-slate-900 text-slate-100">Fase Recursal</option>
+                  <option value="Cumprimento de Sentença" className="bg-slate-900 text-slate-100">Cumprimento de Sentença</option>
+                  <option value="Arquivado" className="bg-slate-900 text-slate-100">Arquivado</option>
                 </select>
               </div>
 
@@ -704,7 +705,8 @@ function DataJudContent() {
                   rows={3}
                   value={descricaoProcesso}
                   onChange={(e) => setDescricaoProcesso(e.target.value)}
-                  className="mt-1 block w-full rounded-xl border border-slate-300 bg-white p-3 text-xs text-slate-900 focus:border-amber-700 focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                  placeholder="Descrição..."
+                  className="mt-1 block w-full rounded-xl border border-slate-700 bg-slate-900 p-3 text-xs text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
                 />
               </div>
 

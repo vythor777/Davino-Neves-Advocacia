@@ -633,7 +633,7 @@ function ClientesContent() {
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
                   placeholder={formTipo === 'pf' ? 'Ex: Carlos Eduardo Silveira' : 'Ex: Horizonte Verde Engenharia S/A'}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden"
                 />
                 {formErrors.nome && <p className="text-red-500 mt-1">{formErrors.nome}</p>}
               </div>
@@ -648,7 +648,7 @@ function ClientesContent() {
                     value={cpfCnpj}
                     onChange={(e) => setCpfCnpj(formatarCpfCnpj(e.target.value))}
                     placeholder={formTipo === 'pf' ? '000.000.000-00' : '00.000.000/0001-00'}
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 font-mono"
+                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden font-mono"
                   />
                   {formErrors.cpfCnpj && <p className="text-red-500 mt-1">{formErrors.cpfCnpj}</p>}
                 </div>
@@ -662,7 +662,7 @@ function ClientesContent() {
                     value={telefone}
                     onChange={(e) => setTelefone(formatarTelefone(e.target.value))}
                     placeholder="(11) 98765-4321"
-                    className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 font-mono"
+                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden font-mono"
                   />
                   {formErrors.telefone && <p className="text-red-500 mt-1">{formErrors.telefone}</p>}
                 </div>
@@ -677,7 +677,7 @@ function ClientesContent() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="cliente@dominio.com.br"
-                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden"
                 />
                 {formErrors.email && <p className="text-red-500 mt-1">{formErrors.email}</p>}
               </div>
@@ -691,7 +691,7 @@ function ClientesContent() {
                   value={endereco}
                   onChange={(e) => setEndereco(e.target.value)}
                   placeholder="Av. Paulista, 1000, Apto 42 - Bela Vista, São Paulo/SP"
-                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 resize-none"
+                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden resize-none"
                 />
                 {formErrors.endereco && <p className="text-red-500 mt-1">{formErrors.endereco}</p>}
               </div>

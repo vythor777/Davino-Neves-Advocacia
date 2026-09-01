@@ -26,3 +26,54 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* =========================================================
+   Regras Globais de Alto Contraste para Inputs e Selects
+   ========================================================= */
+
+input,
+select,
+textarea {
+  color-scheme: dark;
+}
+
+/* Texto digitado em branco/cinza claro de alto contraste e fundo escuro */
+input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
+select,
+textarea {
+  color: #f8fafc !important;
+  background-color: #0f172a !important;
+}
+
+/* Garante alto contraste em estados focados */
+input:not([type="checkbox"]):not([type="radio"]):focus,
+select:focus,
+textarea:focus {
+  color: #ffffff !important;
+  background-color: #020617 !important;
+}
+
+/* Opções de todos os selects com fundo escuro e texto claro */
+select option {
+  background-color: #0f172a !important;
+  color: #f8fafc !important;
+  padding: 8px 12px;
+}
+
+select option:checked,
+select option:hover {
+  background-color: #1e293b !important;
+  color: #ffffff !important;
+}
+
+/* Placeholders em cinza legível e distinguível do texto digitado */
+input::placeholder,
+textarea::placeholder {
+  color: #94a3b8 !important; /* slate-400 */
+  opacity: 1 !important;
+}
+
+input:focus::placeholder,
+textarea:focus::placeholder {
+  color: #64748b !important; /* slate-500 */
+}
