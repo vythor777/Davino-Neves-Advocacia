@@ -171,12 +171,12 @@ function AstreaDashboard() {
       badgeColor: 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800',
     },
     {
-      title: 'IA Jurídica (Copilot)',
+      title: 'IA Jurídica (Gemini)',
       subtitle: 'Gemini 3.7 Flash & Fallbacks',
       description: 'Análise estruturada de petições, contratos, resumos executivos para clientes e extração automática de prazos.',
       href: '/gemini',
       icon: Sparkles,
-      badge: 'Copilot Ativo',
+      badge: 'Gemini 3.7 Ativo',
       iconBg: 'from-purple-500 to-pink-600',
       badgeColor: 'bg-purple-50 text-purple-700 dark:bg-purple-950/80 dark:text-purple-300 border border-purple-200 dark:border-purple-800',
     },
@@ -371,7 +371,7 @@ function AstreaDashboard() {
               </div>
             </Link>
 
-            {/* Card 4: DataJud & Copilot */}
+            {/* Card 4: DataJud & Gemini IA */}
             <Link
               href="/gemini"
               className="group astrea-card p-5 relative overflow-hidden flex flex-col justify-between"
@@ -379,7 +379,7 @@ function AstreaDashboard() {
               <div className="flex items-start justify-between">
                 <div>
                   <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                    IA Jurídica (Copilot)
+                    IA Jurídica (Google Gemini)
                   </span>
                   <div className="mt-1 text-base font-bold text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
                     <Sparkles className="h-4 w-4" />
@@ -522,17 +522,17 @@ function AstreaDashboard() {
             </div>
           </div>
 
-          {/* Coluna 3: Card de Produtividade & IA Copilot */}
+          {/* Coluna 3: Card de Produtividade & IA Gemini */}
           <div className="astrea-card p-6 bg-gradient-to-br from-sky-900 via-indigo-950 to-slate-900 text-white flex flex-col justify-between relative overflow-hidden border-sky-800/40">
             <div className="absolute top-0 right-0 -mt-6 -mr-6 h-36 w-36 rounded-full bg-cyan-400/20 blur-xl pointer-events-none" />
 
             <div>
               <div className="inline-flex items-center gap-1.5 rounded-full bg-cyan-400/20 px-2.5 py-0.5 text-[10px] font-bold text-cyan-300 border border-cyan-400/30">
                 <Sparkles className="h-3 w-3" />
-                <span>Assistente Inteligente</span>
+                <span>Google Gemini 3.7</span>
               </div>
               <h3 className="mt-3 text-lg font-bold text-white leading-snug">
-                Copilot Jurídico Integrado
+                IA Jurídica Gemini Integrada
               </h3>
               <p className="mt-1.5 text-xs text-sky-100/80 leading-relaxed">
                 Analise intimações, extraia prazos automaticamente e gere minutas de petições com inteligência artificial de última geração.

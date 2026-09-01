@@ -53,7 +53,7 @@ export function Navbar() {
     { label: 'Prazos & Tarefas', href: '/prazos', icon: CalendarClock },
     { label: 'Clientes', href: '/clientes', icon: Users },
     { label: 'DataJud CNJ', href: '/datajud', icon: Search, badge: 'Live' },
-    { label: 'IA Jurídica', href: '/gemini', icon: Sparkles, badge: 'Copilot' },
+    { label: 'IA Jurídica', href: '/gemini', icon: Sparkles, badge: 'Gemini' },
   ];
 
   const navItems = isAdmin
@@ -104,7 +104,7 @@ export function Navbar() {
                 className="flex items-center gap-1 font-semibold text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300"
               >
                 <Sparkles className="h-3 w-3 text-sky-600 dark:text-sky-400" />
-                <span>Copilot IA Disponível</span>
+                <span>Google Gemini Ativo</span>
               </Link>
             </div>
           </div>
@@ -254,7 +254,7 @@ export function Navbar() {
                     className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-purple-50 hover:text-purple-800 dark:text-slate-200 dark:hover:bg-purple-950/60 dark:hover:text-purple-300 transition"
                   >
                     <Sparkles className="h-4 w-4 text-purple-500" />
-                    <span>Análise com Copilot IA</span>
+                    <span>Análise com Google Gemini</span>
                   </Link>
                 </div>
               </div>

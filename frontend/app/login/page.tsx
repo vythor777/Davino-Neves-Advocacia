@@ -193,7 +193,7 @@ function LoginForm() {
             </button>
           </form>
 
-          {/* Destaque de Recursos Astrea */}
+          {/* Destaque de Recursos do Sistema */}
           <div className="mt-6 pt-6 border-t border-slate-800 space-y-2">
             <div className="flex items-center gap-2 text-xs text-slate-400">
               <CheckCircle2 className="h-3.5 w-3.5 text-sky-400 shrink-0" />
@@ -201,14 +201,14 @@ function LoginForm() {
             </div>
             <div className="flex items-center gap-2 text-xs text-slate-400">
               <CheckCircle2 className="h-3.5 w-3.5 text-sky-400 shrink-0" />
-              <span>Inteligência Artificial Copilot para análise processual</span>
+              <span>Inteligência Artificial Google Gemini para análise processual</span>
             </div>
           </div>
         </div>
 
         {/* Rodapé institucional */}
         <p className="mt-8 text-center text-xs text-slate-500">
-          Astrea Legal • Davino Neves Advocacia © 2026
+          Danino Neves Advocacia © 2026
         </p>
       </div>
     </div>
