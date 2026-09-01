@@ -13,19 +13,20 @@ export class DataJudService {
   private readonly baseUrl =
     process.env.DATAJUD_API_URL || 'https://api-publica.datajud.cnj.jus.br';
 
-  private getAuthHeader(): string {
-    const rawKey =
-      process.env.DATAJUD_API_KEY ||
-      'cDZHYzlZa0JadVREZDJCendQbXZ6YVpmOjE1MDExNWVlLTczYjctNGNiZi1iOWJhLTI4YjQ4ZDRjNzM2NQ==';
+  private getApiKey(): string {
+    const key = process.env.DATAJUD_API_KEY;
 
-    if (!rawKey || rawKey.trim() === '') {
+    if (!key || key.trim() === '') {
       throw new BadRequestException(
-        'A chave de acesso DATAJUD_API_KEY não está configurada no ambiente. Por favor, forneça uma chave pública válida do CNJ.',
+        'A chave de acesso DATAJUD_API_KEY não está configurada no ambiente. Por favor, configure a chave válida do CNJ.',
       );
     }
+    return key.trim();
+  }
 
-    const trimmed = rawKey.trim();
-    return trimmed.startsWith('APIKey ') ? trimmed : `APIKey ${trimmed}`;
+  private getAuthHeader(): string {
+    const key = this.getApiKey();
+    return key.startsWith('APIKey ') ? key : `APIKey ${key}`;
   }
 
   /**

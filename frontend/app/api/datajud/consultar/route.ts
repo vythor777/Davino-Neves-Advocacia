@@ -139,9 +139,13 @@ export async function POST(request: Request) {
 
     siglaTribunal = tribunal?.toLowerCase() || identificarTribunal(numeroLimpo);
 
-    const rawKey =
-      process.env.DATAJUD_API_KEY ||
-      'cDZHYzlZa0JadVREZDJCendQbXZ6YVpmOjE1MDExNWVlLTczYjctNGNiZi1iOWJhLTI4YjQ4ZDRjNzM2NQ==';
+    const rawKey = process.env.DATAJUD_API_KEY;
+    if (!rawKey || rawKey.trim() === '') {
+      return NextResponse.json(
+        { message: 'A chave de acesso DATAJUD_API_KEY não está configurada no ambiente.' },
+        { status: 400 }
+      );
+    }
     const baseUrl =
       process.env.DATAJUD_API_URL || 'https://api-publica.datajud.cnj.jus.br';
 
