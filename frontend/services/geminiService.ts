@@ -55,17 +55,23 @@ export interface ExtrairPrazosResponse {
 
 export const geminiService = {
   async analisarDocumento(params: AnalisarDocumentoParams): Promise<AnaliseDocumentoResponse> {
-    const response = await api.post<AnaliseDocumentoResponse>('/gemini/analisar-documento', params);
+    const response = await api.post<AnaliseDocumentoResponse>('/gemini/analisar-documento', params, {
+      timeout: 60000,
+    });
     return response.data;
   },
 
   async resumirProcesso(params: ResumirProcessoParams): Promise<ResumoProcessoResponse> {
-    const response = await api.post<ResumoProcessoResponse>('/gemini/resumir-processo', params);
+    const response = await api.post<ResumoProcessoResponse>('/gemini/resumir-processo', params, {
+      timeout: 60000,
+    });
     return response.data;
   },
 
   async extrairPrazos(params: ExtrairPrazosParams): Promise<ExtrairPrazosResponse> {
-    const response = await api.post<ExtrairPrazosResponse>('/gemini/extrair-prazos', params);
+    const response = await api.post<ExtrairPrazosResponse>('/gemini/extrair-prazos', params, {
+      timeout: 60000,
+    });
     return response.data;
   },
 };
