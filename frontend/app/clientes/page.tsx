@@ -1073,6 +1073,9 @@ function ClientesContent() {
           </div>
         </div>
       )}
+
+      {/* Rodapé Institucional Completo */}
+      <InstitutionalFooter />
     </div>
   );
 }
