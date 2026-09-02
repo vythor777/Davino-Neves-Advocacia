@@ -4,7 +4,6 @@ import React, { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
-import { SecurityBadge } from '@/components/SecurityBadge';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { NumberProcessInput } from '@/components/NumberProcessInput';
 import { toast } from 'sonner';
@@ -30,103 +29,6 @@ import geminiService, {
 } from '@/services/geminiService';
 import processoService, { Processo } from '@/services/processoService';
 import prazoService from '@/services/prazoService';
-
-// Exemplos rápidos para cada aba
-const EXEMPLOS_DOCUMENTOS = [
-  {
-    rotulo: 'Sentença Cível (Indenizatória)',
-    tipo: 'Sentença',
-    texto: `Vistos etc. Trata-se de Ação Indenizatória ajuizada por CONSTRUTORA SILVA LTDA em face de FORNECEDORA DE MATERIAIS S/A, alegando atraso injustificado na entrega de insumos estruturais, culminando em paralisação de obra e lucros cessantes.
-A ré contestou arguindo caso fortuito em decorrência de chuvas torrenciais no período, bem como ausência de comprovação documental do nexo causal.
-É o relatório. DECIDO.
-O pedido é PARCIALMENTE PROCEDENTE.
-Restou incontroverso o inadimplemento da ré quanto ao cronograma firmado em contrato. As intempéries climáticas constituem fortuito interno inerente à atividade empresarial, não elidindo a responsabilidade civil objetiva da contratada.
-Condeno a ré ao pagamento de R$ 120.000,00 a título de perdas e danos materiais, corrigidos pela taxa SELIC a partir da citação, além de custas e honorários advocatícios sucumbenciais fixados em 15% sobre o valor da condenação.
-Publique-se. Registre-se. Intimem-se. Prazo recursal legal de 15 (quinze) dias.`,
-    instrucoes: 'Identificar teses recursais de apelação para a parte ré, focando na quantificação dos honorários e comprovação do prejuízo real.',
-  },
-  {
-    rotulo: 'Contrato de Prestação de Serviços',
-    tipo: 'Contrato',
-    texto: `INSTRUMENTO PARTICULAR DE PRESTAÇÃO DE SERVIÇOS JURÍDICOS E CONSULTORIA.
-CONTRATANTE: ALPHA LOGÍSTICA S.A.
-CONTRATADA: BETA TECNOLOGIA E ASSESSORIA LTDA.
-CLÁUSULA QUINTA - DA RESCISÃO E MULTA:
-O presente contrato possui vigência de 24 meses. Em caso de rescisão imotivada por qualquer das partes antes do término do prazo, incidirá multa compensatória não compensável de 50% (cinquenta por cento) sobre a totalidade das parcelas vincendas restantes até o termo final, com vencimento em 48 horas após notificação.
-CLÁUSULA OITAVA - DO FORO:
-Fica eleito com exclusividade o Foro da Comarca de Manaus/AM para dirimir quaisquer dúvidas, renunciando a qualquer outro por mais privilegiado que seja, ainda que a execução dos serviços ocorra em São Paulo/SP.`,
-    instrucoes: 'Analisar a abusividade da cláusula penal de 50% e a validade da cláusula de eleição de foro sob a ótica do STJ.',
-  },
-];
-
-const EXEMPLOS_MOVIMENTACOES = [
-  {
-    rotulo: 'Ação de Cobrança com Penhora',
-    titulo: 'Cobrança Bancária em Execução',
-    numero: '1004567-89.2023.8.26.0100',
-    movimentos: [
-      {
-        dataHora: '2026-08-25T14:30:00',
-        nome: 'Juntada de comprovante de bloqueio de ativos SISBAJUD',
-        complemento: 'Frutífero bloqueio no valor integral da dívida (R$ 45.890,20)',
-      },
-      {
-        dataHora: '2026-08-20T10:15:00',
-        nome: 'Decisão interlocutória deferindo penhora online',
-      },
-      {
-        dataHora: '2026-07-12T16:00:00',
-        nome: 'Certidão de trânsito em julgado da fase de conhecimento',
-      },
-      {
-        dataHora: '2026-06-01T09:00:00',
-        nome: 'Sentença com resolução do mérito acolhendo o pedido inicial',
-      },
-    ],
-  },
-  {
-    rotulo: 'Ação Trabalhista (Fase Pericial)',
-    titulo: 'Reclamatória Trabalhista - Horas Extras e Insalubridade',
-    numero: '0001234-56.2024.5.02.0015',
-    movimentos: [
-      {
-        dataHora: '2026-08-28T11:00:00',
-        nome: 'Apresentação de Laudo Pericial de Engenharia/Insalubridade',
-        complemento: 'Conclusão favorável à concessão do adicional de 20% (grau médio)',
-      },
-      {
-        dataHora: '2026-08-10T15:20:00',
-        nome: 'Realização de vistoria técnica in loco pelo perito judicial',
-      },
-      {
-        dataHora: '2026-07-05T13:45:00',
-        nome: 'Audiência Una realizada - Fixação de pontos controvertidos e nomeação do perito',
-      },
-    ],
-  },
-];
-
-const EXEMPLOS_INTIMACOES = [
-  {
-    rotulo: 'Intimação para Réplica (CPC)',
-    texto: `PODER JUDICIÁRIO - TRIBUNAL DE JUSTIÇA DO ESTADO DE SÃO PAULO
-Processo Digital nº: 1023456-78.2026.8.26.0100
-Classe: Procedimento Comum Cível
-Autor: João da Silva
-Réu: Banco Nacional S.A.
-INTIMAÇÃO DE ADVOGADOS:
-Fica o autor intimado, na pessoa de seus ilustres procuradores, para que no prazo legal de 15 (quinze) dias úteis manifeste-se em RÉPLICA sobre a contestação e documentos juntados às fls. 89/145, sob pena de preclusão.
-São Paulo, data da disponibilização no DJE.`,
-  },
-  {
-    rotulo: 'Despacho de Emenda à Inicial (15 dias)',
-    texto: `Vistos. Determino ao autor que, no prazo improrrogável de 15 (quinze) dias, emende a petição inicial para juntar comprovante idôneo e atualizado de residência em seu nome, bem como retificar o valor atribuído à causa em estrita conformidade com o proveito econômico almejado (art. 292, II, do CPC), sob pena de indeferimento da exordial e extinção do feito sem julgamento do mérito (art. 321, parágrafo único). Int.`,
-  },
-  {
-    rotulo: 'Publicação de Audiência de Instrução',
-    texto: `Ficam as partes intimadas acerca da designação de AUDIÊNCIA DE INSTRUÇÃO E JULGAMENTO a ser realizada em 15/10/2026 às 14h00 no formato híbrido. O rol de testemunhas deverá ser apresentado no prazo preclusivo de 5 (cinco) dias anteriores à audiência, na forma do art. 357, § 4º do CPC.`,
-  },
-];
 
 function GeminiContent() {
   const searchParams = useSearchParams();
@@ -343,11 +245,10 @@ function GeminiContent() {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 animate-fade-in-up space-y-6">
-      {/* Breadcrumb e Indicador de Segurança */}
-        <div className="flex items-center justify-between">
-          <Breadcrumbs items={[{ label: 'Assistente IA Gemini', icon: Sparkles }]} />
-          <SecurityBadge variant="compact" className="hidden sm:inline-flex" />
-        </div>
+      {/* Breadcrumb de Navegação */}
+      <div>
+        <Breadcrumbs items={[{ label: 'Assistente IA Gemini', icon: Sparkles }]} />
+      </div>
 
         {/* Banner Superior da IA */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200 pb-6 dark:border-slate-800">
@@ -473,30 +374,6 @@ function GeminiContent() {
                       <option value="Notificação Extrajudicial">Notificação Extrajudicial</option>
                       <option value="Parecer Jurídico">Parecer Jurídico</option>
                     </select>
-                  </div>
-
-                  {/* Exemplos Rápidos */}
-                  <div>
-                    <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">
-                      Modelos de exemplo:
-                    </span>
-                    <div className="mt-1.5 flex flex-wrap gap-2">
-                      {EXEMPLOS_DOCUMENTOS.map((ex, i) => (
-                        <button
-                          key={i}
-                          type="button"
-                          onClick={() => {
-                            setDocTipo(ex.tipo);
-                            setDocTexto(ex.texto);
-                            setDocInstrucoes(ex.instrucoes);
-                            setDocErro(null);
-                          }}
-                          className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-700 hover:border-amber-600 hover:bg-amber-50 hover:text-amber-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-amber-500"
-                        >
-                          {ex.rotulo}
-                        </button>
-                      ))}
-                    </div>
                   </div>
 
                   <div>
@@ -694,30 +571,6 @@ function GeminiContent() {
                     />
                   </div>
 
-                  {/* Exemplos de Movimentações */}
-                  <div>
-                    <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">
-                      Exemplos prontos:
-                    </span>
-                    <div className="mt-1.5 flex flex-wrap gap-2">
-                      {EXEMPLOS_MOVIMENTACOES.map((ex, i) => (
-                        <button
-                          key={i}
-                          type="button"
-                          onClick={() => {
-                            setResumoTitulo(ex.titulo);
-                            setResumoNumero(ex.numero);
-                            setResumoMovsTexto(JSON.stringify(ex.movimentos, null, 2));
-                            setResumoErro(null);
-                          }}
-                          className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-700 hover:border-amber-600 hover:bg-amber-50 hover:text-amber-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
-                        >
-                          {ex.rotulo}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
                   <div>
                     <label
                       htmlFor="resumoMovsArea"
@@ -848,28 +701,6 @@ function GeminiContent() {
                       onChange={(e) => setPrazoDataPub(e.target.value)}
                       className="mt-1 block w-full rounded-xl border border-slate-300 bg-slate-50/50 px-3.5 py-2 text-xs text-slate-900 focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
                     />
-                  </div>
-
-                  {/* Exemplos de Intimações */}
-                  <div>
-                    <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">
-                      Exemplos de publicações:
-                    </span>
-                    <div className="mt-1.5 flex flex-wrap gap-2">
-                      {EXEMPLOS_INTIMACOES.map((ex, i) => (
-                        <button
-                          key={i}
-                          type="button"
-                          onClick={() => {
-                            setPrazoTexto(ex.texto);
-                            setPrazoErro(null);
-                          }}
-                          className="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1 text-[11px] font-medium text-slate-700 hover:border-amber-600 hover:bg-amber-50 hover:text-amber-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
-                        >
-                          {ex.rotulo}
-                        </button>
-                      ))}
-                    </div>
                   </div>
 
                   <div>

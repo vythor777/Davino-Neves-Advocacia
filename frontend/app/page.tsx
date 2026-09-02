@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AuthGuard from '@/components/AuthGuard';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
-import { SecurityBadge } from '@/components/SecurityBadge';
 import { MetricCardSkeleton } from '@/components/Skeleton';
 import { EmptyState } from '@/components/EmptyState';
 import { useAuth } from '@/context/AuthContext';

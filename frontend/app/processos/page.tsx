@@ -11,7 +11,6 @@ import { SearchInput } from '@/components/SearchInput';
 import { TableSkeleton, MetricCardSkeleton } from '@/components/Skeleton';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
-import { SecurityBadge } from '@/components/SecurityBadge';
 import { ConfirmModal } from '@/components/ConfirmModal';
 import { AuditTrail } from '@/components/AuditTrail';
 import { toast } from 'sonner';
@@ -297,10 +296,9 @@ function ProcessosContent() {
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6 animate-fade-in-up">
       {/* Breadcrumb de Navegação */}
-        <div className="flex items-center justify-between">
-          <Breadcrumbs items={[{ label: 'Processos', icon: Briefcase }]} />
-          <SecurityBadge variant="compact" className="hidden sm:inline-flex" />
-        </div>
+      <div>
+        <Breadcrumbs items={[{ label: 'Processos', icon: Briefcase }]} />
+      </div>
 
         {/* Cabeçalho Minimalista & Tipografia Sofisticada */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200/80 dark:border-slate-800">

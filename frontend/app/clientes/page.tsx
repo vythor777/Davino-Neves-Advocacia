@@ -5,7 +5,6 @@ import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { EmptyState } from '@/components/EmptyState';
 import { TableSkeleton, MetricCardSkeleton } from '@/components/Skeleton';
-import { SecurityBadge } from '@/components/SecurityBadge';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { ConfirmModal } from '@/components/ConfirmModal';
 import { AuditTrail, AuditLogItem } from '@/components/AuditTrail';
@@ -290,11 +289,10 @@ function ClientesContent() {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6 animate-fade-in-up">
-        {/* Breadcrumb e Título: Hierarquia 'Início > Clientes' com tipografia refinada */}
-        <div className="flex items-center justify-between pb-1">
-          <Breadcrumbs items={[{ label: 'Clientes', icon: Users }]} />
-          <SecurityBadge variant="compact" className="hidden sm:inline-flex" />
-        </div>
+      {/* Breadcrumb e Título: Hierarquia 'Início > Clientes' com tipografia refinada */}
+      <div className="pb-1">
+        <Breadcrumbs items={[{ label: 'Clientes', icon: Users }]} />
+      </div>
 
         {/* Cabeçalho da Página */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-800/80 pb-6">

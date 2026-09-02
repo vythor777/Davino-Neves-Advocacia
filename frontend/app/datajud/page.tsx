@@ -3,7 +3,6 @@
 import React, { useState } from 'react';
 import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
-import { SecurityBadge } from '@/components/SecurityBadge';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { NumberProcessInput } from '@/components/NumberProcessInput';
 import { TribunalSelector } from '@/components/TribunalSelector';
@@ -32,29 +31,6 @@ import {
 import datajudService, { DataJudProcessoResponse, ComplementoDataJud } from '@/services/datajudService';
 import clienteService, { Cliente } from '@/services/clienteService';
 import processoService from '@/services/processoService';
-
-const EXEMPLOS_PROCESSOS = [
-  {
-    rotulo: 'TJSP - Cível (São Paulo)',
-    numero: '1002345-67.2024.8.26.0100',
-    tribunal: 'tjsp',
-  },
-  {
-    rotulo: 'TJRJ - Cível (Rio de Janeiro)',
-    numero: '0012345-88.2023.8.19.0001',
-    tribunal: 'tjrj',
-  },
-  {
-    rotulo: 'TRT2 - Trabalhista (SP)',
-    numero: '1000123-45.2024.5.02.0001',
-    tribunal: 'trt2',
-  },
-  {
-    rotulo: 'TRF3 - Federal (SP/MS)',
-    numero: '5001234-56.2023.4.03.6100',
-    tribunal: 'trf3',
-  },
-];
 
 const TRIBUNAIS_OPCOES = [
   { valor: '', rotulo: 'Detectar automaticamente pelo CNJ' },
@@ -124,14 +100,6 @@ function DataJudContent() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formatado = formatarCNJ(e.target.value);
     setNumeroProcesso(formatado);
-    if (erroValidacao) setErroValidacao(null);
-    if (erroConexao) setErroConexao(null);
-    if (naoEncontrado) setNaoEncontrado(false);
-  };
-
-  const handleAplicarExemplo = (numero: string, tribunal: string) => {
-    setNumeroProcesso(formatarCNJ(numero));
-    setTribunalSelecionado(tribunal);
     if (erroValidacao) setErroValidacao(null);
     if (erroConexao) setErroConexao(null);
     if (naoEncontrado) setNaoEncontrado(false);
@@ -262,84 +230,68 @@ function DataJudContent() {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 animate-fade-in-up space-y-6">
-      {/* Breadcrumb e Indicador de Segurança */}
-        <div className="flex items-center justify-between">
-          <Breadcrumbs items={[{ label: 'Consulta DataJud (CNJ)', icon: Scale }]} />
-          <SecurityBadge variant="compact" className="hidden sm:inline-flex" />
+      {/* Breadcrumb de Navegação */}
+      <div>
+        <Breadcrumbs items={[{ label: 'Consulta DataJud (CNJ)', icon: Scale }]} />
+      </div>
+
+      {/* Cabeçalho da Página */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200 pb-6 dark:border-slate-800">
+        <div>
+          <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-900 border border-indigo-200 dark:bg-indigo-950/60 dark:border-indigo-900 dark:text-indigo-300">
+            <Scale className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
+            Conselho Nacional de Justiça • API Pública
+          </div>
+          <h1 className="mt-2 font-serif text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-3xl">
+            Consulta Processual DataJud
+          </h1>
+          <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            Consulte dados oficiais, classes, órgãos julgadores e andamentos de processos em tribunais de todo o Brasil.
+          </p>
         </div>
 
-        {/* Cabeçalho da Página */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200 pb-6 dark:border-slate-800">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-900 border border-indigo-200 dark:bg-indigo-950/60 dark:border-indigo-900 dark:text-indigo-300">
-              <Scale className="h-3.5 w-3.5 text-indigo-600 dark:text-indigo-400" />
-              Conselho Nacional de Justiça • API Pública
-            </div>
-            <h1 className="mt-2 font-serif text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-3xl">
-              Consulta Processual DataJud
-            </h1>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
-              Consulte dados oficiais, classes, órgãos julgadores e andamentos de processos em tribunais de todo o Brasil.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <Link
-              href="/processos"
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-xs hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 transition"
-            >
-              <Briefcase className="h-4 w-4" />
-              Ver Processos do Escritório
-            </Link>
-          </div>
+        <div className="flex items-center gap-3">
+          <Link
+            href="/processos"
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-xs hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 transition"
+          >
+            <Briefcase className="h-4 w-4" />
+            Ver Processos do Escritório
+          </Link>
         </div>
+      </div>
 
-        {/* Formulário de Busca */}
-        <div className="mt-8 rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-md dark:border-slate-800 dark:bg-slate-900">
-          <form onSubmit={handleConsultar} className="space-y-4">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
-              <div className="md:col-span-8">
-                <NumberProcessInput
-                  id="numeroProcesso"
-                  label="Número do Processo (Padrão CNJ)"
-                  value={numeroProcesso}
-                  onChange={handleInputChange}
-                  helperText="Padrão CNJ unificado: NNNNNNN-DD.AAAA.J.TR.OOOO"
-                  className="py-3 text-sm tracking-wide"
-                />
-              </div>
-
-              <div className="md:col-span-4">
-                <TribunalSelector
-                  id="tribunalSelect"
-                  label="Tribunal (Opcional)"
-                  tribunais={TRIBUNAIS_OPCOES}
-                  value={tribunalSelecionado}
-                  onChange={setTribunalSelecionado}
-                  placeholder="Detectar automaticamente pelo CNJ"
-                  className="py-3 text-sm"
-                  clearable
-                  searchable
-                />
-              </div>
+      {/* Formulário de Busca */}
+      <div className="mt-8 rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-md dark:border-slate-800 dark:bg-slate-900">
+        <form onSubmit={handleConsultar} className="space-y-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
+            <div className="md:col-span-8">
+              <NumberProcessInput
+                id="numeroProcesso"
+                label="Número do Processo (Padrão CNJ)"
+                value={numeroProcesso}
+                onChange={handleInputChange}
+                helperText="Padrão CNJ unificado: NNNNNNN-DD.AAAA.J.TR.OOOO"
+                className="py-3 text-sm tracking-wide"
+              />
             </div>
 
-            {/* Exemplos de busca rápida */}
-            <div className="flex flex-wrap items-center gap-2 pt-1 text-xs text-slate-400">
-              <span className="font-semibold text-slate-300">Exemplos para teste:</span>
-              {EXEMPLOS_PROCESSOS.map((ex, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  onClick={() => handleAplicarExemplo(ex.numero, ex.tribunal)}
-                  className="rounded-lg border border-slate-700 bg-slate-800 px-2.5 py-1 font-mono text-[11px] text-slate-200 transition hover:border-amber-500 hover:bg-slate-700 hover:text-amber-300"
-                >
-                  {ex.rotulo}
-                </button>
-              ))}
+            <div className="md:col-span-4">
+              <TribunalSelector
+                id="tribunalSelect"
+                label="Tribunal (Opcional)"
+                tribunais={TRIBUNAIS_OPCOES}
+                value={tribunalSelecionado}
+                onChange={setTribunalSelecionado}
+                placeholder="Detectar automaticamente pelo CNJ"
+                className="py-3 text-sm"
+                clearable
+                searchable
+              />
             </div>
+          </div>
 
-            <div className="flex items-center justify-end gap-3 pt-2">
+          <div className="flex items-center justify-end gap-3 pt-2">
               {(resultado || naoEncontrado || erroConexao) && (
                 <button
                   type="button"

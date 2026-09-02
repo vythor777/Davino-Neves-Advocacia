@@ -5,7 +5,6 @@ import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { EmptyState } from '@/components/EmptyState';
 import { TableSkeleton, MetricCardSkeleton } from '@/components/Skeleton';
-import { SecurityBadge } from '@/components/SecurityBadge';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { ConfirmModal } from '@/components/ConfirmModal';
 import {
@@ -267,11 +266,10 @@ function UsuariosContent() {
 
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 animate-fade-in-up space-y-6">
-      {/* Breadcrumb e Indicador de Segurança */}
-        <div className="flex items-center justify-between">
-          <Breadcrumbs items={[{ label: 'Equipe & Usuários', icon: Shield }]} />
-          <SecurityBadge variant="compact" className="hidden sm:inline-flex" />
-        </div>
+      {/* Breadcrumb de Navegação */}
+      <div>
+        <Breadcrumbs items={[{ label: 'Equipe & Usuários', icon: Shield }]} />
+      </div>
 
         {/* Cabeçalho da Página */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 dark:border-slate-800 pb-6">

@@ -6,7 +6,6 @@ import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { EmptyState } from '@/components/EmptyState';
 import { TableSkeleton, MetricCardSkeleton, CardGridSkeleton } from '@/components/Skeleton';
-import { SecurityBadge } from '@/components/SecurityBadge';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { ConfirmModal } from '@/components/ConfirmModal';
 import { ProcessCalendar } from '@/components/ProcessCalendar';
@@ -452,10 +451,9 @@ function PrazosContent() {
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 animate-fade-in-up space-y-6">
       {/* Breadcrumb de Navegação */}
-        <div className="flex items-center justify-between">
-          <Breadcrumbs items={[{ label: 'Prazos & Agenda', icon: CalendarClock }]} />
-          <SecurityBadge variant="compact" className="hidden sm:inline-flex" />
-        </div>
+      <div>
+        <Breadcrumbs items={[{ label: 'Prazos & Agenda', icon: CalendarClock }]} />
+      </div>
 
         {/* Banner de Feedback / Alertas */}
         {successMsg && (
