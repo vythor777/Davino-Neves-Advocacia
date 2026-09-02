@@ -7,6 +7,7 @@ import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { SecurityBadge } from '@/components/SecurityBadge';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
+import { NumberProcessInput } from '@/components/NumberProcessInput';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import {
@@ -649,19 +650,13 @@ function GeminiContent() {
                 <form onSubmit={handleResumirProcesso} className="mt-4 space-y-4">
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                     <div>
-                      <label
-                        htmlFor="resumoNumeroInput"
-                        className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
-                      >
-                        Número do Processo (CNJ)
-                      </label>
-                      <input
+                      <NumberProcessInput
                         id="resumoNumeroInput"
-                        type="text"
+                        label="Número do Processo (CNJ)"
                         value={resumoNumero}
                         onChange={(e) => setResumoNumero(e.target.value)}
                         placeholder="0000000-00.0000.0.00.0000"
-                        className="mt-1 block w-full rounded-xl border border-slate-300 bg-slate-50/50 px-3.5 py-2 font-mono text-xs text-slate-900 focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                        helperText="Identificador padrão CNJ"
                       />
                     </div>
 

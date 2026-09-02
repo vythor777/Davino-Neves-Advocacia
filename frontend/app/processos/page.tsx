@@ -6,6 +6,7 @@ import AuthGuard from '@/components/AuthGuard';
 import { processoService, Processo, CreateProcessoInput } from '@/services/processoService';
 import { clienteService, Cliente } from '@/services/clienteService';
 import { ProcessosTable, formatarNumeroCNJ, getStatusBadgeStyle } from '@/components/ProcessosTable';
+import { NumberProcessInput } from '@/components/NumberProcessInput';
 import { SearchInput } from '@/components/SearchInput';
 import { TableSkeleton, MetricCardSkeleton } from '@/components/Skeleton';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
@@ -493,21 +494,15 @@ function ProcessosContent() {
             </div>
 
             <form onSubmit={handleSaveProcesso} className="mt-4 space-y-3.5 text-xs">
-              <div>
-                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Número Único CNJ * (20 dígitos)
-                </label>
-                <input
-                  type="text"
-                  value={numeroProcesso}
-                  onChange={(e) => setNumeroProcesso(formatarNumeroCNJ(e.target.value))}
-                  placeholder="0000000-00.0000.0.00.0000"
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden font-mono"
-                />
-                {formErrors.numeroProcesso && (
-                  <p className="text-rose-500 mt-1">{formErrors.numeroProcesso}</p>
-                )}
-              </div>
+              <NumberProcessInput
+                id="modal-numero-processo"
+                label="Número Único CNJ * (20 dígitos)"
+                required
+                value={numeroProcesso}
+                onChange={(e) => setNumeroProcesso(e.target.value)}
+                error={formErrors.numeroProcesso}
+                helperText="Padrão CNJ: 0000000-00.0000.0.00.0000 (formatação automática)"
+              />
 
               <div>
                 <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">

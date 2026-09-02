@@ -6,6 +6,7 @@ import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { SecurityBadge } from '@/components/SecurityBadge';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
+import { NumberProcessInput } from '@/components/NumberProcessInput';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import {
@@ -265,26 +266,14 @@ function DataJudContent() {
           <form onSubmit={handleConsultar} className="space-y-4">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
               <div className="md:col-span-8">
-                <label
-                  htmlFor="numeroProcesso"
-                  className="block text-xs font-semibold uppercase tracking-wider text-slate-200"
-                >
-                  Número do Processo (Padrão CNJ)
-                </label>
-                <div className="relative mt-1.5">
-                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                    <Search className="h-4 w-4" />
-                  </div>
-                  <input
-                    id="numeroProcesso"
-                    type="text"
-                    value={numeroProcesso}
-                    onChange={handleInputChange}
-                    placeholder="0000000-00.0000.0.00.0000"
-                    maxLength={25}
-                    className="block w-full rounded-xl border border-slate-700 bg-slate-950 pl-10 pr-4 py-3 font-mono text-sm tracking-wide text-white placeholder:text-slate-400 transition focus:border-amber-500 focus:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-                  />
-                </div>
+                <NumberProcessInput
+                  id="numeroProcesso"
+                  label="Número do Processo (Padrão CNJ)"
+                  value={numeroProcesso}
+                  onChange={handleInputChange}
+                  helperText="Padrão CNJ unificado: NNNNNNN-DD.AAAA.J.TR.OOOO"
+                  className="py-3 text-sm tracking-wide"
+                />
               </div>
 
               <div className="md:col-span-4">
