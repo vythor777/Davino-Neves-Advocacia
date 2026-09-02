@@ -7,6 +7,7 @@ export interface Cliente {
   email: string;
   telefone: string;
   endereco: string;
+  data_nascimento?: string | null;
   data_criacao: string;
   data_atualizacao: string;
   processos?: Array<{
@@ -27,6 +28,7 @@ export interface CreateClienteInput {
   email: string;
   telefone: string;
   endereco: string;
+  data_nascimento?: string | null;
 }
 
 export type UpdateClienteInput = Partial<CreateClienteInput>;

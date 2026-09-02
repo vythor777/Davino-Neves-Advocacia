@@ -1,4 +1,4 @@
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength, IsBoolean } from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength, IsBoolean, IsDateString } from 'class-validator';
 import { Role } from '@prisma/client';
 
 export class CreateUsuarioDto {
@@ -22,4 +22,8 @@ export class CreateUsuarioDto {
   @IsBoolean({ message: 'O status ativo deve ser booleano' })
   @IsOptional()
   ativo?: boolean;
+
+  @IsDateString({}, { message: 'Data de nascimento deve estar em formato válido (AAAA-MM-DD)' })
+  @IsOptional()
+  data_nascimento?: string;
 }

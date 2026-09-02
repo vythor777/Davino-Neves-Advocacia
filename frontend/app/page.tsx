@@ -14,6 +14,11 @@ import { processoService, Processo } from '@/services/processoService';
 import { prazoService, Prazo } from '@/services/prazoService';
 import { clienteService, Cliente } from '@/services/clienteService';
 import {
+  aniversarianteService,
+  AniversariantesResponse,
+  AniversarianteItem,
+} from '@/services/aniversarianteService';
+import {
   LayoutDashboard,
   Users,
   Briefcase,
@@ -68,20 +73,24 @@ function AstreaDashboard() {
   const [processos, setProcessos] = useState<Processo[]>([]);
   const [prazos, setPrazos] = useState<Prazo[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
+  const [aniversariantesData, setAniversariantesData] = useState<AniversariantesResponse | null>(null);
+  const [aniversariantesFilter, setAniversariantesFilter] = useState<'TODOS' | 'USUARIO' | 'CLIENTE'>('TODOS');
   const [quickCnj, setQuickCnj] = useState('');
 
   const loadData = async () => {
     try {
       setLoading(true);
-      const [procRes, prazRes, cliRes] = await Promise.allSettled([
+      const [procRes, prazRes, cliRes, anivRes] = await Promise.allSettled([
         processoService.getAll(),
         prazoService.getAll(),
         clienteService.getAll(),
+        aniversarianteService.getAniversariantesDoMes(),
       ]);
 
       if (procRes.status === 'fulfilled') setProcessos(procRes.value || []);
       if (prazRes.status === 'fulfilled') setPrazos(prazRes.value || []);
       if (cliRes.status === 'fulfilled') setClientes(cliRes.value || []);
+      if (anivRes.status === 'fulfilled') setAniversariantesData(anivRes.value);
     } catch (err) {
       console.error('Erro ao carregar dados do dashboard:', err);
     } finally {
@@ -141,49 +150,19 @@ function AstreaDashboard() {
     }
   };
 
-  const aniversariantesMes = [
-    {
-      nome: 'Dra. Camila Alencar',
-      cargo: 'Sócia • Contencioso Empresarial',
-      iniciais: 'CA',
-      data: '08 de Setembro',
-      diasRestantes: 'Em 6 dias',
-      destaque: true,
-      email: 'camila.alencar@davinoneves.adv.br',
-    },
-    {
-      nome: 'Dr. Roberto Davino Neves',
-      cargo: 'Sócio Fundador • Direito Tributário',
-      iniciais: 'RN',
-      data: '14 de Setembro',
-      diasRestantes: 'Em 12 dias',
-      destaque: false,
-      email: 'roberto@davinoneves.adv.br',
-    },
-    {
-      nome: 'Marcos Vinícius Prado',
-      cargo: 'Analista Sênior • Controladoria Jurídica',
-      iniciais: 'MP',
-      data: '21 de Setembro',
-      diasRestantes: 'Em 19 dias',
-      destaque: false,
-      email: 'marcos.prado@davinoneves.adv.br',
-    },
-    {
-      nome: 'Beatriz Mendonça',
-      cargo: 'Advogada Associada • Cível & Contratos',
-      iniciais: 'BM',
-      data: '28 de Setembro',
-      diasRestantes: 'Em 26 dias',
-      destaque: false,
-      email: 'beatriz.mendonca@davinoneves.adv.br',
-    },
-  ];
-
   const handleCopyEmail = (email: string, nome: string) => {
+    if (!email) {
+      toast.error('E-mail não cadastrado para este contato.');
+      return;
+    }
     navigator.clipboard.writeText(email);
     toast.success(`E-mail de ${nome.split(' ')[0]} copiado para felicitação!`);
   };
+
+  const listaAniversariantes = (aniversariantesData?.aniversariantes || []).filter((item) => {
+    if (aniversariantesFilter === 'TODOS') return true;
+    return item.tipo === aniversariantesFilter;
+  });
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col transition-colors">
@@ -583,74 +562,153 @@ function AstreaDashboard() {
                       Aniversariantes do Mês
                     </h2>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                      Setembro • 4 celebrações no período
+                      {aniversariantesData?.nomeMes || 'Mês Atual'} •{' '}
+                      {aniversariantesData?.total || 0} celebrações registradas
                     </p>
                   </div>
                 </div>
-                <span className="rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-[10px] font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                  Gente & Cultura
-                </span>
+                <button
+                  onClick={loadData}
+                  title="Atualizar lista"
+                  className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition"
+                >
+                  <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin text-sky-500' : ''}`} />
+                </button>
+              </div>
+
+              {/* Filtros rápidos: Todos, Equipe, Clientes */}
+              <div className="mt-4 flex items-center gap-1.5 p-1 bg-slate-100/80 dark:bg-slate-900/60 rounded-xl border border-slate-200/50 dark:border-slate-800/50 text-xs">
+                <button
+                  type="button"
+                  onClick={() => setAniversariantesFilter('TODOS')}
+                  className={`flex-1 py-1 px-2 text-center rounded-lg font-medium transition ${
+                    aniversariantesFilter === 'TODOS'
+                      ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-xs font-semibold'
+                      : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+                  }`}
+                >
+                  Todos ({aniversariantesData?.total || 0})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAniversariantesFilter('USUARIO')}
+                  className={`flex-1 py-1 px-2 text-center rounded-lg font-medium transition ${
+                    aniversariantesFilter === 'USUARIO'
+                      ? 'bg-white dark:bg-slate-800 text-sky-700 dark:text-sky-300 shadow-xs font-semibold'
+                      : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+                  }`}
+                >
+                  Equipe ({aniversariantesData?.totalUsuarios || 0})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAniversariantesFilter('CLIENTE')}
+                  className={`flex-1 py-1 px-2 text-center rounded-lg font-medium transition ${
+                    aniversariantesFilter === 'CLIENTE'
+                      ? 'bg-white dark:bg-slate-800 text-amber-700 dark:text-amber-300 shadow-xs font-semibold'
+                      : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
+                  }`}
+                >
+                  Clientes ({aniversariantesData?.totalClientes || 0})
+                </button>
               </div>
 
               {/* Lista Elegante e Minimalista */}
-              <div className="mt-5 space-y-3.5">
-                {aniversariantesMes.map((pessoa, idx) => (
-                  <div
-                    key={idx}
-                    className="group relative flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5 transition-all hover:border-slate-300 hover:bg-white dark:border-slate-800/80 dark:bg-slate-950/40 dark:hover:border-slate-700 dark:hover:bg-slate-900"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      {/* Avatar Circular com Iniciais */}
-                      <div className="relative shrink-0">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-slate-700 via-slate-800 to-sky-900 text-xs font-bold text-white shadow-xs ring-2 ring-slate-200 dark:ring-slate-800">
-                          {pessoa.iniciais}
-                        </div>
-                        {pessoa.destaque && (
-                          <span
-                            title="Próximo aniversariante"
-                            className="absolute -top-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-sky-500 ring-2 ring-white dark:ring-slate-900"
+              <div className="mt-4 space-y-3">
+                {listaAniversariantes.length > 0 ? (
+                  listaAniversariantes.map((pessoa) => (
+                    <div
+                      key={pessoa.id}
+                      className="group relative flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5 transition-all hover:border-slate-300 hover:bg-white dark:border-slate-800/80 dark:bg-slate-950/40 dark:hover:border-slate-700 dark:hover:bg-slate-900"
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        {/* Avatar Circular com Iniciais */}
+                        <div className="relative shrink-0">
+                          <div
+                            className={`flex h-10 w-10 items-center justify-center rounded-full text-xs font-bold shadow-xs ring-2 ${
+                              pessoa.tipo === 'USUARIO'
+                                ? 'bg-gradient-to-tr from-sky-800 via-slate-800 to-indigo-900 text-white ring-sky-200 dark:ring-sky-900/50'
+                                : 'bg-gradient-to-tr from-amber-800 via-slate-800 to-amber-950 text-amber-100 ring-amber-200 dark:ring-amber-900/50'
+                            }`}
                           >
-                            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                            {pessoa.iniciais}
+                          </div>
+                          {pessoa.destaque && (
+                            <span
+                              title="Celebração iminente"
+                              className="absolute -top-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-sky-500 ring-2 ring-white dark:ring-slate-900"
+                            >
+                              <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                            </span>
+                          )}
+                        </div>
+
+                        {/* Informações da Pessoa */}
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-2">
+                            <h3 className="text-xs font-bold text-slate-900 group-hover:text-sky-600 dark:text-white dark:group-hover:text-sky-400 transition-colors truncate">
+                              {pessoa.nome}
+                            </h3>
+                            <span
+                              className={`rounded-md px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider shrink-0 ${
+                                pessoa.tipo === 'USUARIO'
+                                  ? 'bg-sky-100 text-sky-800 dark:bg-sky-950/70 dark:text-sky-300'
+                                  : 'bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300'
+                              }`}
+                            >
+                              {pessoa.tipo === 'USUARIO' ? 'Equipe' : 'Cliente'}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                            {pessoa.subtitulo}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Data e Ação Rápida */}
+                      <div className="flex items-center gap-2 shrink-0 ml-3">
+                        <div className="text-right">
+                          <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                            {pessoa.diaFormatado} {aniversariantesData?.nomeMes?.slice(0, 3)}
+                          </div>
+                          <span className="inline-block text-[10px] font-medium text-slate-500 dark:text-slate-400">
+                            {pessoa.diasRestantesTexto}
                           </span>
+                        </div>
+
+                        {/* Botão sutil de felicitação / copiar e-mail */}
+                        {pessoa.email && (
+                          <button
+                            type="button"
+                            onClick={() => handleCopyEmail(pessoa.email!, pessoa.nome)}
+                            title={`Copiar e-mail de ${pessoa.nome} (${pessoa.email})`}
+                            className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 opacity-80 hover:border-sky-300 hover:text-sky-600 hover:opacity-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-slate-700 dark:hover:text-sky-400 transition"
+                          >
+                            <Mail className="h-3.5 w-3.5" />
+                          </button>
                         )}
                       </div>
-
-                      {/* Informações da Pessoa */}
-                      <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                          <h3 className="text-xs font-bold text-slate-900 group-hover:text-sky-600 dark:text-white dark:group-hover:text-sky-400 transition-colors truncate">
-                            {pessoa.nome}
-                          </h3>
-                        </div>
-                        <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                          {pessoa.cargo}
-                        </p>
-                      </div>
                     </div>
-
-                    {/* Data e Ação Rápida */}
-                    <div className="flex items-center gap-2 shrink-0 ml-3">
-                      <div className="text-right">
-                        <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-                          {pessoa.data.split(' de ')[0]} Set
-                        </div>
-                        <span className="inline-block text-[10px] font-medium text-slate-500 dark:text-slate-400">
-                          {pessoa.diasRestantes}
-                        </span>
-                      </div>
-
-                      {/* Botão sutil de felicitação / copiar e-mail */}
-                      <button
-                        type="button"
-                        onClick={() => handleCopyEmail(pessoa.email, pessoa.nome)}
-                        title={`Copiar e-mail de ${pessoa.nome}`}
-                        className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 opacity-80 hover:border-sky-300 hover:text-sky-600 hover:opacity-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-slate-700 dark:hover:text-sky-400 transition"
-                      >
-                        <Mail className="h-3.5 w-3.5" />
-                      </button>
-                    </div>
+                  ))
+                ) : (
+                  <div className="rounded-2xl border border-dashed border-slate-200 p-6 text-center dark:border-slate-800">
+                    <Cake className="mx-auto h-8 w-8 text-slate-400/80 mb-2" />
+                    <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                      Nenhum aniversariante neste filtro
+                    </p>
+                    <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
+                      Registre datas de nascimento nos módulos de{' '}
+                      <Link href="/usuarios" className="text-sky-600 dark:text-sky-400 underline font-medium">
+                        Equipe
+                      </Link>{' '}
+                      ou{' '}
+                      <Link href="/clientes" className="text-amber-600 dark:text-amber-400 underline font-medium">
+                        Clientes
+                      </Link>{' '}
+                      para exibição automática.
+                    </p>
                   </div>
-                ))}
+                )}
               </div>
             </div>
 
@@ -658,11 +716,23 @@ function AstreaDashboard() {
             <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
               <span className="flex items-center gap-1.5">
                 <Gift className="h-3.5 w-3.5 text-sky-600 dark:text-sky-400" />
-                <span>Lembretes de equipe integrados</span>
+                <span>Integração com Colaboradores & Clientes</span>
               </span>
-              <span className="text-[11px] font-medium text-slate-400">
-                Calendário Institucional
-              </span>
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/usuarios"
+                  className="text-[11px] font-medium text-slate-400 hover:text-sky-600 dark:hover:text-sky-400 transition"
+                >
+                  Equipe
+                </Link>
+                <span>•</span>
+                <Link
+                  href="/clientes"
+                  className="text-[11px] font-medium text-slate-400 hover:text-amber-600 dark:hover:text-amber-400 transition"
+                >
+                  Clientes
+                </Link>
+              </div>
             </div>
           </div>
 

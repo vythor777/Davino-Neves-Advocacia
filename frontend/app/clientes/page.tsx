@@ -30,6 +30,7 @@ import {
   Check,
   RefreshCw,
   Info,
+  Cake,
 } from 'lucide-react';
 
 // Funções utilitárias de formatação
@@ -93,6 +94,7 @@ function ClientesContent() {
   const [email, setEmail] = useState<string>('');
   const [telefone, setTelefone] = useState<string>('');
   const [endereco, setEndereco] = useState<string>('');
+  const [dataNascimento, setDataNascimento] = useState<string>('');
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   // Modal de Exclusão
@@ -140,6 +142,7 @@ function ClientesContent() {
     setEmail('');
     setTelefone('');
     setEndereco('');
+    setDataNascimento('');
     setFormErrors({});
     setModalOpen(true);
   };
@@ -153,6 +156,7 @@ function ClientesContent() {
     setEmail(client.email);
     setTelefone(client.telefone);
     setEndereco(client.endereco);
+    setDataNascimento(client.data_nascimento ? client.data_nascimento.split('T')[0] : '');
     setFormErrors({});
     setModalOpen(true);
   };
@@ -195,6 +199,7 @@ function ClientesContent() {
       email: email.trim().toLowerCase(),
       telefone: telefone.trim(),
       endereco: endereco.trim(),
+      data_nascimento: dataNascimento ? dataNascimento : null,
     };
 
     try {
@@ -823,6 +828,20 @@ function ClientesContent() {
 
               <div>
                 <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Data de Nascimento {formTipo === 'pf' ? '(para aniversariantes do mês)' : '(opcional)'}
+                </label>
+                <div className="relative rounded-xl">
+                  <input
+                    type="date"
+                    value={dataNascimento}
+                    onChange={(e) => setDataNascimento(e.target.value)}
+                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Endereço Completo (Logradouro, Nº, Bairro, Cidade/UF) *
                 </label>
                 <textarea
@@ -897,11 +916,21 @@ function ClientesContent() {
             </div>
 
             <div className="mt-4 space-y-3 text-xs">
-              <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
-                <span className="text-slate-400 block text-[10px] uppercase font-semibold">Documento de Identificação</span>
-                <span className="text-slate-800 dark:text-slate-200 font-mono font-medium">
-                  {formatarCpfCnpj(selectedClient.cpf_cnpj)}
-                </span>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
+                  <span className="text-slate-400 block text-[10px] uppercase font-semibold">Documento de Identificação</span>
+                  <span className="text-slate-800 dark:text-slate-200 font-mono font-medium">
+                    {formatarCpfCnpj(selectedClient.cpf_cnpj)}
+                  </span>
+                </div>
+                <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
+                  <span className="text-slate-400 block text-[10px] uppercase font-semibold">Data de Nascimento</span>
+                  <span className="text-slate-800 dark:text-slate-200 font-medium">
+                    {selectedClient.data_nascimento
+                      ? new Date(selectedClient.data_nascimento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
+                      : 'Não informada'}
+                  </span>
+                </div>
               </div>
 
               <div className="grid grid-cols-2 gap-2">

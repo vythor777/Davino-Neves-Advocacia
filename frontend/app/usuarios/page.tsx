@@ -35,6 +35,7 @@ import {
   ShieldCheck,
   Eye,
   EyeOff,
+  Cake,
 } from 'lucide-react';
 
 export default function UsuariosPage() {
@@ -68,6 +69,7 @@ function UsuariosContent() {
     senha: '',
     role: 'ADVOGADO',
     ativo: true,
+    data_nascimento: '',
   });
 
   const [editFormData, setEditFormData] = useState<UpdateUsuarioInput>({
@@ -76,6 +78,7 @@ function UsuariosContent() {
     senha: '',
     role: 'ADVOGADO',
     ativo: true,
+    data_nascimento: '',
   });
 
   const [showPassword, setShowPassword] = useState(false);
@@ -106,6 +109,7 @@ function UsuariosContent() {
       senha: '',
       role: 'ADVOGADO',
       ativo: true,
+      data_nascimento: '',
     });
     setShowPassword(false);
     setErrorMsg(null);
@@ -120,6 +124,7 @@ function UsuariosContent() {
       senha: '',
       role: usuario.role,
       ativo: usuario.ativo,
+      data_nascimento: usuario.data_nascimento ? usuario.data_nascimento.split('T')[0] : '',
     });
     setShowPassword(false);
     setErrorMsg(null);
@@ -143,7 +148,10 @@ function UsuariosContent() {
     setErrorMsg(null);
 
     try {
-      await usuarioService.create(formData);
+      await usuarioService.create({
+        ...formData,
+        data_nascimento: formData.data_nascimento ? formData.data_nascimento : null,
+      });
       setSuccessMsg('Novo colaborador cadastrado com sucesso na equipe!');
       setIsCreateModalOpen(false);
       await carregarUsuarios();
@@ -169,6 +177,7 @@ function UsuariosContent() {
         email: editFormData.email,
         role: editFormData.role,
         ativo: editFormData.ativo,
+        data_nascimento: editFormData.data_nascimento ? editFormData.data_nascimento : null,
       };
 
       if (editFormData.senha && editFormData.senha.trim().length > 0) {
@@ -582,6 +591,21 @@ function UsuariosContent() {
 
               <div>
                 <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Data de Nascimento (para registro de aniversariante)
+                </label>
+                <div className="relative rounded-xl">
+                  <Cake className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <input
+                    type="date"
+                    value={formData.data_nascimento || ''}
+                    onChange={(e) => setFormData({ ...formData, data_nascimento: e.target.value })}
+                    className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   Senha Inicial de Acesso * (mínimo 6 caracteres)
                 </label>
                 <div className="relative rounded-xl">
@@ -734,6 +758,21 @@ function UsuariosContent() {
                   onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
                   className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                 />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  Data de Nascimento (para registro de aniversariante)
+                </label>
+                <div className="relative rounded-xl">
+                  <Cake className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                  <input
+                    type="date"
+                    value={editFormData.data_nascimento || ''}
+                    onChange={(e) => setEditFormData({ ...editFormData, data_nascimento: e.target.value })}
+                    className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                  />
+                </div>
               </div>
 
               <div>

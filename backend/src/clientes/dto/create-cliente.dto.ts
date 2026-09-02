@@ -1,8 +1,10 @@
 import {
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsString,
   MaxLength,
+  IsDateString,
 } from 'class-validator';
 
 export class CreateClienteDto {
@@ -29,4 +31,8 @@ export class CreateClienteDto {
   @IsString({ message: 'O endereço deve ser um texto.' })
   @IsNotEmpty({ message: 'O endereço é obrigatório.' })
   endereco: string;
+
+  @IsDateString({}, { message: 'Data de nascimento deve estar em formato válido (AAAA-MM-DD).' })
+  @IsOptional()
+  data_nascimento?: string;
 }

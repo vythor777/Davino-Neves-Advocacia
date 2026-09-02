@@ -8,6 +8,7 @@ export interface UsuarioItem {
   email: string;
   role: Role;
   ativo: boolean;
+  data_nascimento?: string | null;
   data_criacao: string;
   data_atualizacao: string;
 }
@@ -18,6 +19,7 @@ export interface CreateUsuarioInput {
   senha: string;
   role: Role;
   ativo?: boolean;
+  data_nascimento?: string | null;
 }
 
 export interface UpdateUsuarioInput {
@@ -26,6 +28,7 @@ export interface UpdateUsuarioInput {
   senha?: string;
   role?: Role;
   ativo?: boolean;
+  data_nascimento?: string | null;
 }
 
 export const usuarioService = {

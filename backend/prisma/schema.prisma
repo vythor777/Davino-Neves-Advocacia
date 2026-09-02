@@ -23,6 +23,7 @@ model Usuario {
   senha_hash       String      @db.VarChar(255)
   role             Role        @default(ADVOGADO)
   ativo            Boolean     @default(true)
+  data_nascimento  DateTime?   @db.Date
   data_criacao     DateTime    @default(now())
   data_atualizacao DateTime    @updatedAt
 
@@ -38,6 +39,7 @@ model Cliente {
   email            String      @db.VarChar(100)
   telefone         String      @db.VarChar(20)
   endereco         String      @db.Text
+  data_nascimento  DateTime?   @db.Date
   data_criacao     DateTime    @default(now())
   data_atualizacao DateTime    @updatedAt
 

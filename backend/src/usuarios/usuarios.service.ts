@@ -14,7 +14,7 @@ export class UsuariosService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createUsuarioDto: CreateUsuarioDto) {
-    const { email, senha, nome, role, ativo } = createUsuarioDto;
+    const { email, senha, nome, role, ativo, data_nascimento } = createUsuarioDto;
 
     const usuarioExistente = await this.prisma.usuario.findUnique({
       where: { email: email.toLowerCase().trim() },
@@ -35,6 +35,7 @@ export class UsuariosService {
           senha_hash,
           role: role || 'ADVOGADO',
           ativo: ativo !== undefined ? ativo : true,
+          data_nascimento: data_nascimento ? new Date(data_nascimento) : null,
         },
         select: {
           id_usuario: true,
@@ -42,6 +43,7 @@ export class UsuariosService {
           email: true,
           role: true,
           ativo: true,
+          data_nascimento: true,
           data_criacao: true,
           data_atualizacao: true,
         },
@@ -62,6 +64,7 @@ export class UsuariosService {
         email: true,
         role: true,
         ativo: true,
+        data_nascimento: true,
         data_criacao: true,
         data_atualizacao: true,
       },
@@ -80,6 +83,7 @@ export class UsuariosService {
         email: true,
         role: true,
         ativo: true,
+        data_nascimento: true,
         data_criacao: true,
         data_atualizacao: true,
       },
@@ -101,12 +105,15 @@ export class UsuariosService {
   async update(id: number, updateUsuarioDto: UpdateUsuarioDto) {
     await this.findOne(id);
 
-    const { email, senha, nome, role, ativo } = updateUsuarioDto;
+    const { email, senha, nome, role, ativo, data_nascimento } = updateUsuarioDto;
     const dataToUpdate: Record<string, any> = {};
 
     if (nome) dataToUpdate.nome = nome.trim();
     if (role) dataToUpdate.role = role;
     if (ativo !== undefined) dataToUpdate.ativo = ativo;
+    if (data_nascimento !== undefined) {
+      dataToUpdate.data_nascimento = data_nascimento ? new Date(data_nascimento) : null;
+    }
 
     if (email) {
       const emailFormatado = email.toLowerCase().trim();
@@ -134,6 +141,7 @@ export class UsuariosService {
         email: true,
         role: true,
         ativo: true,
+        data_nascimento: true,
         data_criacao: true,
         data_atualizacao: true,
       },

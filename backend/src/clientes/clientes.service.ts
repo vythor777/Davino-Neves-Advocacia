@@ -15,8 +15,15 @@ export class ClientesService {
 
   async create(createClienteDto: CreateClienteDto) {
     try {
+      const data: any = {
+        ...createClienteDto,
+        data_nascimento: createClienteDto.data_nascimento
+          ? new Date(createClienteDto.data_nascimento)
+          : null,
+      };
+
       return await this.prisma.cliente.create({
-        data: createClienteDto,
+        data,
       });
     } catch (error) {
       if (
@@ -68,9 +75,16 @@ export class ClientesService {
     await this.findOne(id);
 
     try {
+      const dataToUpdate: any = { ...updateClienteDto };
+      if (updateClienteDto.data_nascimento !== undefined) {
+        dataToUpdate.data_nascimento = updateClienteDto.data_nascimento
+          ? new Date(updateClienteDto.data_nascimento)
+          : null;
+      }
+
       return await this.prisma.cliente.update({
         where: { id_cliente: id },
-        data: updateClienteDto,
+        data: dataToUpdate,
       });
     } catch (error) {
       if (
