@@ -10,13 +10,16 @@ import { Prazo } from '@/services/prazoService';
 import {
   ChevronLeft,
   ChevronRight,
-  Clock,
-  Flame,
-  AlertTriangle,
-  XCircle,
-  CheckCircle2,
   Plus,
 } from 'lucide-react';
+import {
+  calcularStatusPrazo,
+  formatDateForInput,
+  type PrazoStatusCategory,
+} from '@/utils/dateUtils';
+
+export { calcularStatusPrazo };
+export type { PrazoStatusCategory };
 
 const emptySubscribe = () => () => {};
 
@@ -25,62 +28,6 @@ interface ProcessCalendarProps {
   onSelectPrazo: (prazo: Prazo) => void;
   onDateClick?: (dateStr: string) => void;
   loading?: boolean;
-}
-
-export type PrazoStatusCategory = 'urgente' | 'vencido' | 'cumprido' | 'aberto';
-
-export function calcularStatusPrazo(dataVencimentoStr: string, statusAtual: string) {
-  if (statusAtual?.toLowerCase() === 'cumprido') {
-    return {
-      urgencia: 'cumprido' as const,
-      statusCategory: 'cumprido' as const, // 🟢 Cumpridos
-      label: 'Cumprido',
-      dias: 0,
-      badgeText: 'Cumprido',
-      icon: CheckCircle2,
-    };
-  }
-
-  const hoje = new Date();
-  hoje.setHours(0, 0, 0, 0);
-
-  const vencimento = new Date(dataVencimentoStr);
-  vencimento.setHours(0, 0, 0, 0);
-
-  const diffMs = vencimento.getTime() - hoje.getTime();
-  const diffDias = Math.round(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffDias < 0) {
-    const diasVencido = Math.abs(diffDias);
-    return {
-      urgencia: 'vencido' as const,
-      statusCategory: 'vencido' as const, // 🔴 Vencidos
-      label: 'Vencido',
-      dias: diffDias,
-      badgeText: diasVencido === 1 ? 'Vencido há 1 dia' : `Vencido há ${diasVencido} dias`,
-      icon: XCircle,
-    };
-  }
-
-  if (diffDias <= 3) {
-    return {
-      urgencia: diffDias === 0 ? ('hoje' as const) : ('urgente' as const),
-      statusCategory: 'urgente' as const, // 🟡 Urgentes / Hoje
-      label: diffDias === 0 ? 'Vence Hoje' : 'Urgente',
-      dias: diffDias,
-      badgeText: diffDias === 0 ? 'Vence Hoje' : (diffDias === 1 ? 'Vence amanhã' : `Vence em ${diffDias} dias`),
-      icon: diffDias === 0 ? Flame : AlertTriangle,
-    };
-  }
-
-  return {
-    urgencia: 'no_prazo' as const,
-    statusCategory: 'aberto' as const, // 🔵 Em Aberto / Padrão
-    label: 'No Prazo',
-    dias: diffDias,
-    badgeText: `Vence em ${diffDias} dias`,
-    icon: Clock,
-  };
 }
 
 export function ProcessCalendar({
@@ -115,10 +62,8 @@ export function ProcessCalendar({
   // Mapeamento dos prazos para o formato do FullCalendar
   const events = useMemo(() => {
     return prazos.map((prazo) => {
-      const calc = calcularStatusPrazo(prazo.data_vencimento, prazo.status);
-      const dateOnly = prazo.data_vencimento.includes('T')
-        ? prazo.data_vencimento.split('T')[0]
-        : prazo.data_vencimento;
+      const calc = calcularStatusPrazo(prazo.data_vencimento, prazo.status, prazo.hora);
+      const dateOnly = formatDateForInput(prazo.data_vencimento);
 
       const horaStr = prazo.hora ? (prazo.hora.length === 5 ? `${prazo.hora}:00` : prazo.hora) : null;
       const startDateTime = horaStr ? `${dateOnly}T${horaStr}` : dateOnly;

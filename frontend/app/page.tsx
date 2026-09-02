@@ -11,6 +11,7 @@ import { useAuth } from '@/context/AuthContext';
 import { processoService, Processo } from '@/services/processoService';
 import { prazoService, Prazo } from '@/services/prazoService';
 import { clienteService, Cliente } from '@/services/clienteService';
+import { calcularStatusPrazo } from '@/utils/dateUtils';
 import {
   aniversarianteService,
   AniversariantesResponse,
@@ -108,22 +109,17 @@ function AstreaDashboard() {
     (p) => p.status === 'Aguardando Sentença' || p.status === 'Fase Recursal',
   ).length;
 
-  const hojeStr = new Date().toISOString().split('T')[0];
-  const seteDiasFrente = new Date();
-  seteDiasFrente.setDate(seteDiasFrente.getDate() + 7);
-  const seteDiasStr = seteDiasFrente.toISOString().split('T')[0];
-
   const totalPrazos = prazos.length;
-  const prazosPendentes = prazos.filter((p) => p.status === 'Pendente');
+  const prazosPendentes = prazos.filter((p) => p.status?.toLowerCase() !== 'cumprido');
   const prazosHoje = prazosPendentes.filter((p) => {
-    const dataPrazo = p.data_vencimento ? p.data_vencimento.split('T')[0] : '';
-    return dataPrazo === hojeStr;
+    const calc = calcularStatusPrazo(p.data_vencimento, p.status, p.hora);
+    return calc.urgencia === 'hoje';
   });
   const prazosUrgentes = prazosPendentes.filter((p) => {
-    const dataPrazo = p.data_vencimento ? p.data_vencimento.split('T')[0] : '';
-    return dataPrazo <= seteDiasStr;
+    const calc = calcularStatusPrazo(p.data_vencimento, p.status, p.hora);
+    return calc.urgencia === 'vencido' || calc.urgencia === 'hoje' || calc.dias <= 7;
   });
-  const prazosCumpridos = prazos.filter((p) => p.status === 'Cumprido').length;
+  const prazosCumpridos = prazos.filter((p) => p.status?.toLowerCase() === 'cumprido').length;
   const taxaCumprimento =
     totalPrazos > 0 ? Math.round((prazosCumpridos / totalPrazos) * 100) : 100;
 
@@ -389,11 +385,9 @@ function AstreaDashboard() {
                   </div>
                 ) : (
                   prazosUrgentes.slice(0, 4).map((prazo) => {
-                    const dataFormatada = prazo.data_vencimento
-                      ? prazo.data_vencimento.split('T')[0]
-                      : '';
-                    const isHoje = dataFormatada === hojeStr;
-                    const isVencido = dataFormatada < hojeStr;
+                    const calc = calcularStatusPrazo(prazo.data_vencimento, prazo.status, prazo.hora);
+                    const isHoje = calc.urgencia === 'hoje';
+                    const isVencido = calc.urgencia === 'vencido';
 
                     return (
                       <div
@@ -419,18 +413,18 @@ function AstreaDashboard() {
                                 {prazo.descricao}
                               </span>
                               {isHoje && (
-                                <span className="rounded-full bg-rose-500 text-white px-2 py-0.2 text-[9px] font-extrabold uppercase">
+                                <span className="rounded-full bg-amber-500 text-white px-2 py-0.5 text-[9px] font-extrabold uppercase">
                                   Hoje
                                 </span>
                               )}
                               {isVencido && (
-                                <span className="rounded-full bg-red-600 text-white px-2 py-0.2 text-[9px] font-extrabold uppercase">
+                                <span className="rounded-full bg-rose-600 text-white px-2 py-0.5 text-[9px] font-extrabold uppercase">
                                   Vencido
                                 </span>
                               )}
                             </div>
                             <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-2">
-                              <span>Vencimento: <strong>{dataFormatada}</strong></span>
+                              <span>Vencimento: <strong>{calc.dataExibicao}</strong>{prazo.hora ? ` às ${prazo.hora}` : ''}</span>
                               {prazo.processo && (
                                 <>
                                   <span>•</span>

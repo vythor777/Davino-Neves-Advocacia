@@ -38,69 +38,16 @@ import {
   ArrowUpDown,
   FileText,
 } from 'lucide-react';
+import {
+  calcularStatusPrazo,
+  formatPrazoDateBR,
+  formatDateForInput,
+  parsePrazoDateTime,
+  type PrazoStatusCategory,
+} from '@/utils/dateUtils';
 
-export type PrazoStatusCategory = 'urgente' | 'vencido' | 'cumprido' | 'aberto';
 export type FilterType = 'todos' | 'urgentes' | 'vencidos' | 'cumpridos' | 'pendentes' | 'aberto';
-
-function calcularStatusPrazo(dataVencimentoStr: string, statusAtual: string) {
-  if (statusAtual.toLowerCase() === 'cumprido') {
-    return {
-      urgencia: 'cumprido' as const,
-      statusCategory: 'cumprido' as const, // 🟢 Cumpridos
-      label: 'Cumprido',
-      dias: 0,
-      badgeText: 'Cumprido',
-      badgeClass: 'bg-emerald-100 text-emerald-900 border-emerald-200 dark:bg-emerald-950/60 dark:border-emerald-900/60 dark:text-emerald-300',
-      icon: CheckCircle2,
-    };
-  }
-
-  const hoje = new Date();
-  hoje.setHours(0, 0, 0, 0);
-
-  const vencimento = new Date(dataVencimentoStr);
-  vencimento.setHours(0, 0, 0, 0);
-
-  const diffMs = vencimento.getTime() - hoje.getTime();
-  const diffDias = Math.round(diffMs / (1000 * 60 * 60 * 24));
-
-  if (diffDias < 0) {
-    const diasVencido = Math.abs(diffDias);
-    return {
-      urgencia: 'vencido' as const,
-      statusCategory: 'vencido' as const, // 🔴 Vencidos
-      label: 'Vencido',
-      dias: diffDias,
-      badgeText: diasVencido === 1 ? 'Vencido há 1 dia' : `Vencido há ${diasVencido} dias`,
-      badgeClass: 'bg-rose-100 text-rose-900 border-rose-200 dark:bg-rose-950/60 dark:border-rose-900/60 dark:text-rose-300',
-      icon: XCircle,
-    };
-  }
-
-  if (diffDias <= 3) {
-    return {
-      urgencia: diffDias === 0 ? ('hoje' as const) : ('urgente' as const),
-      statusCategory: 'urgente' as const, // 🟡 Urgentes / Hoje
-      label: diffDias === 0 ? 'Vence Hoje' : 'Urgente',
-      dias: diffDias,
-      badgeText: diffDias === 0 ? '⚠️ Vence Hoje!' : (diffDias === 1 ? 'Vence amanhã' : `Vence em ${diffDias} dias`),
-      badgeClass: diffDias === 0
-        ? 'bg-amber-100 text-amber-950 border-amber-300 font-bold dark:bg-amber-950/70 dark:border-amber-700 dark:text-amber-200 animate-pulse'
-        : 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950/60 dark:border-amber-800 dark:text-amber-300',
-      icon: diffDias === 0 ? Flame : AlertTriangle,
-    };
-  }
-
-  return {
-    urgencia: 'no_prazo' as const,
-    statusCategory: 'aberto' as const, // 🔵 Em Aberto / Padrão
-    label: 'No Prazo',
-    dias: diffDias,
-    badgeText: `Vence em ${diffDias} dias`,
-    badgeClass: 'bg-blue-50 text-blue-900 border-blue-200 dark:bg-blue-950/60 dark:border-blue-800 dark:text-blue-300',
-    icon: Clock,
-  };
-}
+export type { PrazoStatusCategory };
 
 export default function PrazosPage() {
   return (
@@ -262,9 +209,7 @@ function PrazosContent() {
   const openEditModal = (prazo: Prazo) => {
     setEditingPrazo(prazo);
     setDescricao(prazo.descricao);
-    const dateFormatted = prazo.data_vencimento
-      ? new Date(prazo.data_vencimento).toISOString().split('T')[0]
-      : new Date().toISOString().split('T')[0];
+    const dateFormatted = formatDateForInput(prazo.data_vencimento);
     setDataVencimento(dateFormatted);
     setHora(prazo.hora || '09:00');
     setTipoCompromisso(prazo.tipoCompromisso || 'Prazo Fatal');
@@ -381,12 +326,12 @@ function PrazosContent() {
     }
   };
 
-  // Ordenação crescente por data de vencimento
+  // Ordenação crescente por data e hora de vencimento exatas
   const sortedPrazos = useMemo(() => {
     return [...prazos].sort((a, b) => {
-      const dateA = new Date(a.data_vencimento).getTime();
-      const dateB = new Date(b.data_vencimento).getTime();
-      return dateA - dateB;
+      const timeA = parsePrazoDateTime(a.data_vencimento, a.hora).getTime();
+      const timeB = parsePrazoDateTime(b.data_vencimento, b.hora).getTime();
+      return timeA - timeB;
     });
   }, [prazos]);
 
@@ -395,7 +340,7 @@ function PrazosContent() {
     const term = searchTerm.trim().toLowerCase();
 
     return sortedPrazos.filter((prazo) => {
-      const calc = calcularStatusPrazo(prazo.data_vencimento, prazo.status);
+      const calc = calcularStatusPrazo(prazo.data_vencimento, prazo.status, prazo.hora);
 
       // 1. Filtro de Status
       if (selectedFilter === 'cumpridos' && calc.statusCategory !== 'cumprido') return false;
@@ -436,15 +381,15 @@ function PrazosContent() {
   // Métricas alinhadas estritamente com as 4 categorias dos cards superiores
   const totalPrazos = prazos.length;
   const totalCumpridos = prazos.filter((p) => {
-    const calc = calcularStatusPrazo(p.data_vencimento, p.status);
+    const calc = calcularStatusPrazo(p.data_vencimento, p.status, p.hora);
     return calc.statusCategory === 'cumprido';
   }).length;
   const totalVencidos = prazos.filter((p) => {
-    const calc = calcularStatusPrazo(p.data_vencimento, p.status);
+    const calc = calcularStatusPrazo(p.data_vencimento, p.status, p.hora);
     return calc.statusCategory === 'vencido';
   }).length;
   const totalUrgentes = prazos.filter((p) => {
-    const calc = calcularStatusPrazo(p.data_vencimento, p.status);
+    const calc = calcularStatusPrazo(p.data_vencimento, p.status, p.hora);
     return calc.statusCategory === 'urgente';
   }).length;
 
@@ -823,7 +768,7 @@ function PrazosContent() {
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                   {filteredPrazos.map((prazo) => {
-                    const calc = calcularStatusPrazo(prazo.data_vencimento, prazo.status);
+                    const calc = calcularStatusPrazo(prazo.data_vencimento, prazo.status, prazo.hora);
                     const Icon = calc.icon;
                     const isCumprido = prazo.status.toLowerCase() === 'cumprido';
 
@@ -890,7 +835,7 @@ function PrazosContent() {
 
                         <td className="px-3 py-4 font-mono font-medium text-slate-800 dark:text-slate-200">
                           <div>
-                            {new Date(prazo.data_vencimento).toLocaleDateString('pt-BR')}
+                            {calc.dataExibicao}
                             {prazo.hora && (
                               <span className="text-[11px] text-slate-500 block font-mono">
                                 às {prazo.hora}
@@ -943,7 +888,7 @@ function PrazosContent() {
           /* Visualização em Cards / Agenda */
           <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {filteredPrazos.map((prazo) => {
-              const calc = calcularStatusPrazo(prazo.data_vencimento, prazo.status);
+              const calc = calcularStatusPrazo(prazo.data_vencimento, prazo.status, prazo.hora);
               const Icon = calc.icon;
               const isCumprido = prazo.status.toLowerCase() === 'cumprido';
 
@@ -1010,7 +955,7 @@ function PrazosContent() {
 
                   <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-slate-800/80 text-xs">
                     <span className="font-mono font-medium text-slate-600 dark:text-slate-400">
-                      Vence: {new Date(prazo.data_vencimento).toLocaleDateString('pt-BR')} {prazo.hora ? `às ${prazo.hora}` : ''}
+                      Vence: {calc.dataExibicao} {prazo.hora ? `às ${prazo.hora}` : ''}
                     </span>
 
                     <div className="flex items-center gap-1">

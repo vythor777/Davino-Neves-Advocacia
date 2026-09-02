@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { Prazo } from '@/services/prazoService';
-import { calcularStatusPrazo } from './ProcessCalendar';
+import { calcularStatusPrazo, formatPrazoExtenso } from '@/utils/dateUtils';
 import {
   X,
   Calendar,
@@ -39,20 +39,12 @@ export function PrazoDetailModal({
 }: PrazoDetailModalProps) {
   if (!isOpen || !prazo) return null;
 
-  const calc = calcularStatusPrazo(prazo.data_vencimento, prazo.status);
+  const calc = calcularStatusPrazo(prazo.data_vencimento, prazo.status, prazo.hora);
   const StatusIcon = calc.icon;
   const isCumprido = prazo.status?.toLowerCase() === 'cumprido';
 
-  // Formatação de data completa (ex: "15 de setembro de 2026")
-  const dataVencimentoDate = new Date(
-    prazo.data_vencimento.includes('T') ? prazo.data_vencimento : `${prazo.data_vencimento}T00:00:00`
-  );
-  const dataFormatada = dataVencimentoDate.toLocaleDateString('pt-BR', {
-    weekday: 'long',
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric',
-  });
+  // Formatação de data completa (ex: "Quarta-feira, 02 de setembro de 2026")
+  const dataFormatada = formatPrazoExtenso(prazo.data_vencimento);
 
   const handleCopyCNJ = (cnj: string) => {
     navigator.clipboard.writeText(cnj);
