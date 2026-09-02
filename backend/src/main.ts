@@ -1,11 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
-import { AppModule, ObserveInstrument } from './app.module.js';
+import { AppModule } from './app.module.js';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    instrument: ObserveInstrument,
-  });
+  const app = await NestFactory.create(AppModule);
 
   // Configuração explícita de CORS para permitir requisições do front-end (Vercel, Localhost, etc.)
   app.enableCors({
@@ -28,7 +26,8 @@ async function bootstrap() {
     }),
   );
 
-  const port = process.env.BACKEND_PORT || 3001;
+  const port = process.env.PORT || 10000;
   await app.listen(port, '0.0.0.0');
+  console.log(`🚀 NestJS rodando na porta ${port}`);
 }
 await bootstrap();
