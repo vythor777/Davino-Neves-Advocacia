@@ -33,21 +33,30 @@ import {
   Cake,
 } from 'lucide-react';
 
-// Funções utilitárias de formatação
-function formatarCpfCnpj(valor: string): string {
-  const digits = valor.replace(/\D/g, '');
-  if (digits.length <= 11) {
-    return digits
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
-  }
+// Funções utilitárias de formatação estrita
+export function formatarCPF(valor: string): string {
+  const digits = valor.replace(/\D/g, '').slice(0, 11);
+  return digits
+    .replace(/^(\d{3})(\d)/, '$1.$2')
+    .replace(/^(\d{3})\.(\d{3})(\d)/, '$1.$2.$3')
+    .replace(/\.(\d{3})(\d{1,2})$/, '.$1-$2');
+}
+
+export function formatarCNPJ(valor: string): string {
+  const digits = valor.replace(/\D/g, '').slice(0, 14);
   return digits
     .replace(/^(\d{2})(\d)/, '$1.$2')
     .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
     .replace(/\.(\d{3})(\d)/, '.$1/$2')
-    .replace(/(\d{4})(\d)/, '$1-$2')
-    .slice(0, 18);
+    .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+}
+
+export function formatarCpfCnpj(valor: string): string {
+  const digits = valor.replace(/\D/g, '');
+  if (digits.length <= 11) {
+    return formatarCPF(digits);
+  }
+  return formatarCNPJ(digits);
 }
 
 function formatarTelefone(valor: string): string {
@@ -150,15 +159,28 @@ function ClientesContent() {
   const openEditModal = (client: Cliente) => {
     setEditingClient(client);
     const digits = client.cpf_cnpj.replace(/\D/g, '');
-    setFormTipo(digits.length > 11 ? 'pj' : 'pf');
+    const isPj = digits.length > 11;
+    setFormTipo(isPj ? 'pj' : 'pf');
     setNome(client.nome);
-    setCpfCnpj(client.cpf_cnpj);
+    setCpfCnpj(isPj ? formatarCNPJ(client.cpf_cnpj) : formatarCPF(client.cpf_cnpj));
     setEmail(client.email);
     setTelefone(client.telefone);
     setEndereco(client.endereco);
     setDataNascimento(client.data_nascimento ? client.data_nascimento.split('T')[0] : '');
     setFormErrors({});
     setModalOpen(true);
+  };
+
+  const handleTrocarTipoPessoa = (novoTipo: 'pf' | 'pj') => {
+    if (formTipo === novoTipo) return;
+    setFormTipo(novoTipo);
+    // Limpeza de estado estrita para evitar resquícios de dígitos e conflito de formatação
+    setCpfCnpj('');
+    setFormErrors((prev) => {
+      const next = { ...prev };
+      delete next.cpfCnpj;
+      return next;
+    });
   };
 
   const validateForm = () => {
@@ -169,9 +191,9 @@ function ClientesContent() {
     } else {
       const digits = cpfCnpj.replace(/\D/g, '');
       if (formTipo === 'pf' && digits.length !== 11) {
-        errors.cpfCnpj = 'CPF deve conter 11 dígitos válidos.';
+        errors.cpfCnpj = 'CPF deve conter 11 dígitos válidos (000.000.000-00).';
       } else if (formTipo === 'pj' && digits.length !== 14) {
-        errors.cpfCnpj = 'CNPJ deve conter 14 dígitos válidos.';
+        errors.cpfCnpj = 'CNPJ deve conter 14 dígitos válidos (00.000.000/0001-00).';
       }
     }
     if (!email.trim()) {
@@ -736,32 +758,32 @@ function ClientesContent() {
             </div>
 
             <form onSubmit={handleSaveClient} className="mt-4 space-y-4 text-xs">
-              {/* Tipo PF ou PJ */}
-              <div className="grid grid-cols-2 gap-2">
+              {/* Tipo PF ou PJ com Reset Estrito de Estado */}
+              <div className="grid grid-cols-2 gap-2" role="tablist" aria-label="Tipo de Pessoa">
                 <button
                   type="button"
-                  onClick={() => {
-                    setFormTipo('pf');
-                    setCpfCnpj('');
-                  }}
-                  className={`rounded-xl border p-2.5 text-center font-semibold transition ${
+                  role="tab"
+                  id="tab-pf"
+                  aria-selected={formTipo === 'pf'}
+                  onClick={() => handleTrocarTipoPessoa('pf')}
+                  className={`rounded-xl border p-2.5 text-center font-semibold transition cursor-pointer ${
                     formTipo === 'pf'
-                      ? 'border-amber-600 bg-amber-50 text-amber-900 dark:border-amber-500 dark:bg-amber-950/50 dark:text-amber-300'
-                      : 'border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300'
+                      ? 'border-amber-600 bg-amber-50 text-amber-900 dark:border-amber-500 dark:bg-amber-950/50 dark:text-amber-300 shadow-2xs'
+                      : 'border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900'
                   }`}
                 >
                   Pessoa Física (CPF)
                 </button>
                 <button
                   type="button"
-                  onClick={() => {
-                    setFormTipo('pj');
-                    setCpfCnpj('');
-                  }}
-                  className={`rounded-xl border p-2.5 text-center font-semibold transition ${
+                  role="tab"
+                  id="tab-pj"
+                  aria-selected={formTipo === 'pj'}
+                  onClick={() => handleTrocarTipoPessoa('pj')}
+                  className={`rounded-xl border p-2.5 text-center font-semibold transition cursor-pointer ${
                     formTipo === 'pj'
-                      ? 'border-amber-600 bg-amber-50 text-amber-900 dark:border-amber-500 dark:bg-amber-950/50 dark:text-amber-300'
-                      : 'border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300'
+                      ? 'border-amber-600 bg-amber-50 text-amber-900 dark:border-amber-500 dark:bg-amber-950/50 dark:text-amber-300 shadow-2xs'
+                      : 'border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900'
                   }`}
                 >
                   Pessoa Jurídica (CNPJ)
@@ -769,10 +791,11 @@ function ClientesContent() {
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label htmlFor="input-nome-cliente" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   {formTipo === 'pf' ? 'Nome Completo *' : 'Razão Social / Nome Fantasia *'}
                 </label>
                 <input
+                  id="input-nome-cliente"
                   type="text"
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
@@ -784,13 +807,28 @@ function ClientesContent() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label htmlFor="input-cpf-cnpj" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                     {formTipo === 'pf' ? 'CPF *' : 'CNPJ *'}
                   </label>
                   <input
+                    id="input-cpf-cnpj"
                     type="text"
+                    inputMode="numeric"
+                    maxLength={formTipo === 'pf' ? 14 : 18}
                     value={cpfCnpj}
-                    onChange={(e) => setCpfCnpj(formatarCpfCnpj(e.target.value))}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      // Separação estrita: nunca compartilha formato misto
+                      const formatted = formTipo === 'pf' ? formatarCPF(val) : formatarCNPJ(val);
+                      setCpfCnpj(formatted);
+                      if (formErrors.cpfCnpj) {
+                        setFormErrors((prev) => {
+                          const next = { ...prev };
+                          delete next.cpfCnpj;
+                          return next;
+                        });
+                      }
+                    }}
                     placeholder={formTipo === 'pf' ? '000.000.000-00' : '00.000.000/0001-00'}
                     className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden font-mono"
                   />
@@ -798,11 +836,14 @@ function ClientesContent() {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label htmlFor="input-telefone-cliente" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                     Telefone de Contato *
                   </label>
                   <input
+                    id="input-telefone-cliente"
                     type="text"
+                    inputMode="tel"
+                    maxLength={15}
                     value={telefone}
                     onChange={(e) => setTelefone(formatarTelefone(e.target.value))}
                     placeholder="(11) 98765-4321"
@@ -813,10 +854,11 @@ function ClientesContent() {
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label htmlFor="input-email-cliente" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
                   E-mail de Contato *
                 </label>
                 <input
+                  id="input-email-cliente"
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
@@ -827,11 +869,14 @@ function ClientesContent() {
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                  Data de Nascimento {formTipo === 'pf' ? '(para aniversariantes do mês)' : '(opcional)'}
+                <label htmlFor="input-data-nascimento" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  {formTipo === 'pf'
+                    ? 'Data de Nascimento (para aniversariantes do mês)'
+                    : 'Data de Fundação / Abertura (opcional)'}
                 </label>
                 <div className="relative rounded-xl">
                   <input
+                    id="input-data-nascimento"
                     type="date"
                     value={dataNascimento}
                     onChange={(e) => setDataNascimento(e.target.value)}
@@ -924,7 +969,11 @@ function ClientesContent() {
                   </span>
                 </div>
                 <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
-                  <span className="text-slate-400 block text-[10px] uppercase font-semibold">Data de Nascimento</span>
+                  <span className="text-slate-400 block text-[10px] uppercase font-semibold">
+                    {selectedClient.cpf_cnpj.replace(/\D/g, '').length > 11
+                      ? 'Data de Fundação / Abertura'
+                      : 'Data de Nascimento'}
+                  </span>
                   <span className="text-slate-800 dark:text-slate-200 font-medium">
                     {selectedClient.data_nascimento
                       ? new Date(selectedClient.data_nascimento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
