@@ -41,10 +41,14 @@ import {
   FileText,
 } from 'lucide-react';
 
+export type PrazoStatusCategory = 'urgente' | 'vencido' | 'cumprido' | 'aberto';
+export type FilterType = 'todos' | 'urgentes' | 'vencidos' | 'cumpridos' | 'pendentes' | 'aberto';
+
 function calcularStatusPrazo(dataVencimentoStr: string, statusAtual: string) {
   if (statusAtual.toLowerCase() === 'cumprido') {
     return {
       urgencia: 'cumprido' as const,
+      statusCategory: 'cumprido' as const, // 🟢 Cumpridos
       label: 'Cumprido',
       dias: 0,
       badgeText: 'Cumprido',
@@ -66,6 +70,7 @@ function calcularStatusPrazo(dataVencimentoStr: string, statusAtual: string) {
     const diasVencido = Math.abs(diffDias);
     return {
       urgencia: 'vencido' as const,
+      statusCategory: 'vencido' as const, // 🔴 Vencidos
       label: 'Vencido',
       dias: diffDias,
       badgeText: diasVencido === 1 ? 'Vencido há 1 dia' : `Vencido há ${diasVencido} dias`,
@@ -74,34 +79,27 @@ function calcularStatusPrazo(dataVencimentoStr: string, statusAtual: string) {
     };
   }
 
-  if (diffDias === 0) {
-    return {
-      urgencia: 'hoje' as const,
-      label: 'Vence Hoje',
-      dias: 0,
-      badgeText: '⚠️ Vence Hoje!',
-      badgeClass: 'bg-red-100 text-red-900 border-red-300 font-bold dark:bg-red-950/70 dark:border-red-900 dark:text-red-300 animate-pulse',
-      icon: Flame,
-    };
-  }
-
   if (diffDias <= 3) {
     return {
-      urgencia: 'urgente' as const,
-      label: 'Urgente',
+      urgencia: diffDias === 0 ? ('hoje' as const) : ('urgente' as const),
+      statusCategory: 'urgente' as const, // 🟡 Urgentes / Hoje
+      label: diffDias === 0 ? 'Vence Hoje' : 'Urgente',
       dias: diffDias,
-      badgeText: diffDias === 1 ? 'Vence amanhã' : `Vence em ${diffDias} dias`,
-      badgeClass: 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950/60 dark:border-amber-900/60 dark:text-amber-300',
-      icon: AlertTriangle,
+      badgeText: diffDias === 0 ? '⚠️ Vence Hoje!' : (diffDias === 1 ? 'Vence amanhã' : `Vence em ${diffDias} dias`),
+      badgeClass: diffDias === 0
+        ? 'bg-amber-100 text-amber-950 border-amber-300 font-bold dark:bg-amber-950/70 dark:border-amber-700 dark:text-amber-200 animate-pulse'
+        : 'bg-amber-100 text-amber-900 border-amber-300 dark:bg-amber-950/60 dark:border-amber-800 dark:text-amber-300',
+      icon: diffDias === 0 ? Flame : AlertTriangle,
     };
   }
 
   return {
     urgencia: 'no_prazo' as const,
+    statusCategory: 'aberto' as const, // 🔵 Em Aberto / Padrão
     label: 'No Prazo',
     dias: diffDias,
     badgeText: `Vence em ${diffDias} dias`,
-    badgeClass: 'bg-slate-100 text-slate-800 border-slate-200 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300',
+    badgeClass: 'bg-blue-50 text-blue-900 border-blue-200 dark:bg-blue-950/60 dark:border-blue-800 dark:text-blue-300',
     icon: Clock,
   };
 }
@@ -131,7 +129,7 @@ function PrazosContent() {
 
   // Filtros
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [selectedFilter, setSelectedFilter] = useState<'todos' | 'urgentes' | 'pendentes' | 'vencidos' | 'cumpridos'>('todos');
+  const [selectedFilter, setSelectedFilter] = useState<FilterType>('todos');
   const [selectedProcessoFilter, setSelectedProcessoFilter] = useState<string>('todos');
 
   // Modal de Criação / Edição
@@ -394,53 +392,62 @@ function PrazosContent() {
     });
   }, [prazos]);
 
-  // Filtragem
+  // Filtragem recalculada em tempo real via useMemo
   const filteredPrazos = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+
     return sortedPrazos.filter((prazo) => {
       const calc = calcularStatusPrazo(prazo.data_vencimento, prazo.status);
 
-      if (selectedFilter === 'cumpridos' && calc.urgencia !== 'cumprido') return false;
-      if (selectedFilter === 'vencidos' && calc.urgencia !== 'vencido') return false;
-      if (selectedFilter === 'pendentes' && calc.urgencia === 'cumprido') return false;
-      if (
-        selectedFilter === 'urgentes' &&
-        calc.urgencia !== 'hoje' &&
-        calc.urgencia !== 'urgente' &&
-        calc.urgencia !== 'vencido'
-      ) {
-        return false;
-      }
+      // 1. Filtro de Status
+      if (selectedFilter === 'cumpridos' && calc.statusCategory !== 'cumprido') return false;
+      if (selectedFilter === 'vencidos' && calc.statusCategory !== 'vencido') return false;
+      if (selectedFilter === 'urgentes' && calc.statusCategory !== 'urgente') return false;
+      if (selectedFilter === 'pendentes' && calc.statusCategory === 'cumprido') return false;
+      if (selectedFilter === 'aberto' && calc.statusCategory !== 'aberto') return false;
 
+      // 2. Filtro por Processo
       if (selectedProcessoFilter !== 'todos') {
         if (String(prazo.id_processo) !== selectedProcessoFilter) return false;
       }
 
-      if (!searchTerm.trim()) return true;
-      const term = searchTerm.toLowerCase();
-      const desc = prazo.descricao.toLowerCase();
-      const procNum = prazo.processo?.numero_processo?.toLowerCase() || '';
-      const procTitle = prazo.processo?.titulo?.toLowerCase() || '';
-      const clientName = prazo.processo?.cliente?.nome?.toLowerCase() || '';
+      // 3. Busca textual em tempo real: descrição do prazo, número do processo, título do processo, cliente e responsável
+      if (term) {
+        const desc = (prazo.descricao || '').toLowerCase();
+        const procNum = (prazo.processo?.numero_processo || '').toLowerCase();
+        const procTitle = (prazo.processo?.titulo || '').toLowerCase();
+        const clientName = (prazo.processo?.cliente?.nome || '').toLowerCase();
+        const respName = (prazo.responsavel || '').toLowerCase();
+        const tipoComp = (prazo.tipoCompromisso || '').toLowerCase();
 
-      return (
-        desc.includes(term) ||
-        procNum.includes(term) ||
-        procTitle.includes(term) ||
-        clientName.includes(term)
-      );
+        const matches =
+          desc.includes(term) ||
+          procNum.includes(term) ||
+          procTitle.includes(term) ||
+          clientName.includes(term) ||
+          respName.includes(term) ||
+          tipoComp.includes(term);
+
+        if (!matches) return false;
+      }
+
+      return true;
     });
   }, [sortedPrazos, searchTerm, selectedFilter, selectedProcessoFilter]);
 
-  // Métricas
+  // Métricas alinhadas estritamente com as 4 categorias dos cards superiores
   const totalPrazos = prazos.length;
-  const totalCumpridos = prazos.filter((p) => p.status.toLowerCase() === 'cumprido').length;
+  const totalCumpridos = prazos.filter((p) => {
+    const calc = calcularStatusPrazo(p.data_vencimento, p.status);
+    return calc.statusCategory === 'cumprido';
+  }).length;
   const totalVencidos = prazos.filter((p) => {
     const calc = calcularStatusPrazo(p.data_vencimento, p.status);
-    return calc.urgencia === 'vencido';
+    return calc.statusCategory === 'vencido';
   }).length;
   const totalUrgentes = prazos.filter((p) => {
     const calc = calcularStatusPrazo(p.data_vencimento, p.status);
-    return calc.urgencia === 'hoje' || calc.urgencia === 'urgente';
+    return calc.statusCategory === 'urgente';
   }).length;
 
   return (
@@ -519,7 +526,7 @@ function PrazosContent() {
           </div>
         </div>
 
-        {/* Métricas e Painéis de Urgência */}
+        {/* Métricas e Painéis de Urgência Interativos (Filtro por Clique) */}
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {loading ? (
             <>
@@ -530,45 +537,141 @@ function PrazosContent() {
             </>
           ) : (
             <>
-              <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
+              {/* Card 1: Total de Prazos */}
+              <button
+                type="button"
+                onClick={() => setSelectedFilter('todos')}
+                aria-pressed={selectedFilter === 'todos'}
+                className={`text-left rounded-xl border p-4 transition-all duration-200 cursor-pointer shadow-2xs group active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 ${
+                  selectedFilter === 'todos'
+                    ? 'border-blue-400 bg-blue-50/60 dark:border-blue-500 dark:bg-blue-950/40 ring-2 ring-blue-500/60 shadow-xs'
+                    : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700'
+                }`}
+                title="Clique para exibir todos os prazos"
+              >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total de Prazos</span>
-                  <CalendarClock className="h-4 w-4 text-slate-400" />
+                  <span className="text-xs font-medium text-slate-600 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200 transition-colors">
+                    Total de Prazos
+                  </span>
+                  <CalendarClock className="h-4 w-4 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors" />
                 </div>
-                <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
-                  {totalPrazos}
-                </p>
-              </div>
+                <div className="mt-2 flex items-baseline justify-between">
+                  <p className="text-2xl font-bold font-serif text-slate-900 dark:text-white">
+                    {totalPrazos}
+                  </p>
+                  {selectedFilter === 'todos' ? (
+                    <span className="text-[10px] font-semibold text-blue-700 dark:text-blue-300 bg-blue-100/80 dark:bg-blue-900/60 px-1.5 py-0.5 rounded-sm">
+                      Todos
+                    </span>
+                  ) : (
+                    <span className="text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Ver todos
+                    </span>
+                  )}
+                </div>
+              </button>
 
-              <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-4 dark:border-amber-900/60 dark:bg-amber-950/20 shadow-2xs">
+              {/* Card 2: 🟡 Urgentes / Hoje (Laranja/Amarelo) */}
+              <button
+                type="button"
+                onClick={() => setSelectedFilter((prev) => (prev === 'urgentes' ? 'todos' : 'urgentes'))}
+                aria-pressed={selectedFilter === 'urgentes'}
+                className={`text-left rounded-xl border p-4 transition-all duration-200 cursor-pointer shadow-2xs group active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                  selectedFilter === 'urgentes'
+                    ? 'border-amber-400 bg-amber-100/70 dark:border-amber-500 dark:bg-amber-950/60 ring-2 ring-amber-500 shadow-xs'
+                    : 'border-amber-200 bg-amber-50/50 hover:border-amber-300 hover:bg-amber-50 dark:border-amber-900/60 dark:bg-amber-950/20 dark:hover:border-amber-800'
+                }`}
+                title="Clique para filtrar apenas prazos Urgentes e de Hoje"
+              >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-amber-900 dark:text-amber-300">Urgentes / Hoje</span>
+                  <span className="text-xs font-medium text-amber-900 dark:text-amber-300">
+                    Urgentes / Hoje
+                  </span>
                   <Flame className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                 </div>
-                <p className="mt-2 text-2xl font-bold font-serif text-amber-900 dark:text-amber-200">
-                  {totalUrgentes}
-                </p>
-              </div>
+                <div className="mt-2 flex items-baseline justify-between">
+                  <p className="text-2xl font-bold font-serif text-amber-900 dark:text-amber-200">
+                    {totalUrgentes}
+                  </p>
+                  {selectedFilter === 'urgentes' ? (
+                    <span className="text-[10px] font-semibold text-amber-800 dark:text-amber-300 bg-amber-200/90 dark:bg-amber-900/80 px-1.5 py-0.5 rounded-sm">
+                      Filtrado
+                    </span>
+                  ) : (
+                    <span className="text-[10px] text-amber-700/70 dark:text-amber-400/60 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Filtrar
+                    </span>
+                  )}
+                </div>
+              </button>
 
-              <div className="rounded-xl border border-rose-200 bg-rose-50/50 p-4 dark:border-rose-900/60 dark:bg-rose-950/20 shadow-2xs">
+              {/* Card 3: 🔴 Prazos Vencidos (Vermelho/Rosa) */}
+              <button
+                type="button"
+                onClick={() => setSelectedFilter((prev) => (prev === 'vencidos' ? 'todos' : 'vencidos'))}
+                aria-pressed={selectedFilter === 'vencidos'}
+                className={`text-left rounded-xl border p-4 transition-all duration-200 cursor-pointer shadow-2xs group active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-rose-500 ${
+                  selectedFilter === 'vencidos'
+                    ? 'border-rose-400 bg-rose-100/70 dark:border-rose-500 dark:bg-rose-950/60 ring-2 ring-rose-500 shadow-xs'
+                    : 'border-rose-200 bg-rose-50/50 hover:border-rose-300 hover:bg-rose-50 dark:border-rose-900/60 dark:bg-rose-950/20 dark:hover:border-rose-800'
+                }`}
+                title="Clique para filtrar apenas prazos Vencidos"
+              >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-rose-900 dark:text-rose-300">Prazos Vencidos</span>
+                  <span className="text-xs font-medium text-rose-900 dark:text-rose-300">
+                    Prazos Vencidos
+                  </span>
                   <XCircle className="h-4 w-4 text-rose-600 dark:text-rose-400" />
                 </div>
-                <p className="mt-2 text-2xl font-bold font-serif text-rose-900 dark:text-rose-200">
-                  {totalVencidos}
-                </p>
-              </div>
+                <div className="mt-2 flex items-baseline justify-between">
+                  <p className="text-2xl font-bold font-serif text-rose-900 dark:text-rose-200">
+                    {totalVencidos}
+                  </p>
+                  {selectedFilter === 'vencidos' ? (
+                    <span className="text-[10px] font-semibold text-rose-800 dark:text-rose-300 bg-rose-200/90 dark:bg-rose-900/80 px-1.5 py-0.5 rounded-sm">
+                      Filtrado
+                    </span>
+                  ) : (
+                    <span className="text-[10px] text-rose-700/70 dark:text-rose-400/60 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Filtrar
+                    </span>
+                  )}
+                </div>
+              </button>
 
-              <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-4 dark:border-emerald-900/60 dark:bg-emerald-950/20 shadow-2xs">
+              {/* Card 4: 🟢 Cumpridos (Verde) */}
+              <button
+                type="button"
+                onClick={() => setSelectedFilter((prev) => (prev === 'cumpridos' ? 'todos' : 'cumpridos'))}
+                aria-pressed={selectedFilter === 'cumpridos'}
+                className={`text-left rounded-xl border p-4 transition-all duration-200 cursor-pointer shadow-2xs group active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-500 ${
+                  selectedFilter === 'cumpridos'
+                    ? 'border-emerald-400 bg-emerald-100/70 dark:border-emerald-500 dark:bg-emerald-950/60 ring-2 ring-emerald-500 shadow-xs'
+                    : 'border-emerald-200 bg-emerald-50/50 hover:border-emerald-300 hover:bg-emerald-50 dark:border-emerald-900/60 dark:bg-emerald-950/20 dark:hover:border-emerald-800'
+                }`}
+                title="Clique para filtrar apenas prazos Cumpridos"
+              >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-emerald-900 dark:text-emerald-300">Cumpridos</span>
+                  <span className="text-xs font-medium text-emerald-900 dark:text-emerald-300">
+                    Cumpridos
+                  </span>
                   <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <p className="mt-2 text-2xl font-bold font-serif text-emerald-900 dark:text-emerald-200">
-                  {totalCumpridos}
-                </p>
-              </div>
+                <div className="mt-2 flex items-baseline justify-between">
+                  <p className="text-2xl font-bold font-serif text-emerald-900 dark:text-emerald-200">
+                    {totalCumpridos}
+                  </p>
+                  {selectedFilter === 'cumpridos' ? (
+                    <span className="text-[10px] font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-200/90 dark:bg-emerald-900/80 px-1.5 py-0.5 rounded-sm">
+                      Filtrado
+                    </span>
+                  ) : (
+                    <span className="text-[10px] text-emerald-700/70 dark:text-emerald-400/60 opacity-0 group-hover:opacity-100 transition-opacity">
+                      Filtrar
+                    </span>
+                  )}
+                </div>
+              </button>
             </>
           )}
         </div>
@@ -590,7 +693,7 @@ function PrazosContent() {
             <div className="flex items-center rounded-xl bg-slate-200 p-1 dark:bg-slate-800">
               <button
                 onClick={() => setViewMode('calendar')}
-                className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition cursor-pointer ${
                   viewMode === 'calendar'
                     ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-700 dark:text-white'
                     : 'text-slate-600 hover:text-slate-900 dark:text-slate-400'
@@ -602,7 +705,7 @@ function PrazosContent() {
               </button>
               <button
                 onClick={() => setViewMode('table')}
-                className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition cursor-pointer ${
                   viewMode === 'table'
                     ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-700 dark:text-white'
                     : 'text-slate-600 hover:text-slate-900 dark:text-slate-400'
@@ -614,7 +717,7 @@ function PrazosContent() {
               </button>
               <button
                 onClick={() => setViewMode('cards')}
-                className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition cursor-pointer ${
                   viewMode === 'cards'
                     ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-700 dark:text-white'
                     : 'text-slate-600 hover:text-slate-900 dark:text-slate-400'
@@ -626,27 +729,29 @@ function PrazosContent() {
               </button>
             </div>
 
+            {/* Select de Status sincronizado */}
             <select
               value={selectedFilter}
-              onChange={(e) => setSelectedFilter(e.target.value as any)}
-              className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs font-medium text-slate-100 focus:border-amber-500 focus:outline-hidden"
+              onChange={(e) => setSelectedFilter(e.target.value as FilterType)}
+              className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-medium text-slate-800 dark:text-slate-100 focus:border-blue-500 focus:outline-hidden cursor-pointer"
             >
-              <option value="todos" className="bg-slate-900 text-slate-100">Todos os Prazos</option>
-              <option value="urgentes" className="bg-slate-900 text-slate-100">Urgentes / Vencidos</option>
-              <option value="pendentes" className="bg-slate-900 text-slate-100">Pendentes (Em Aberto)</option>
-              <option value="vencidos" className="bg-slate-900 text-slate-100">Apenas Vencidos</option>
-              <option value="cumpridos" className="bg-slate-900 text-slate-100">Apenas Cumpridos</option>
+              <option value="todos">Todos os Prazos</option>
+              <option value="urgentes">🟡 Urgentes / Hoje</option>
+              <option value="vencidos">🔴 Vencidos</option>
+              <option value="cumpridos">🟢 Cumpridos</option>
+              <option value="pendentes">Em Aberto (Todos Pendentes)</option>
+              <option value="aberto">🔵 Em Aberto / Padrão</option>
             </select>
 
             {processos.length > 0 && (
               <select
                 value={selectedProcessoFilter}
                 onChange={(e) => setSelectedProcessoFilter(e.target.value)}
-                className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs font-medium text-slate-100 focus:border-amber-500 focus:outline-hidden max-w-[200px] truncate"
+                className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-medium text-slate-800 dark:text-slate-100 focus:border-blue-500 focus:outline-hidden max-w-[200px] truncate cursor-pointer"
               >
-                <option value="todos" className="bg-slate-900 text-slate-100">Todos os Processos</option>
+                <option value="todos">Todos os Processos</option>
                 {processos.map((p) => (
-                  <option key={p.id_processo} value={String(p.id_processo)} className="bg-slate-900 text-slate-100">
+                  <option key={p.id_processo} value={String(p.id_processo)}>
                     {p.numero_processo} - {p.titulo}
                   </option>
                 ))}
@@ -654,6 +759,54 @@ function PrazosContent() {
             )}
           </div>
         </div>
+
+        {/* Indicador de Filtros Ativos com Ação de Reset */}
+        {(selectedFilter !== 'todos' || selectedProcessoFilter !== 'todos' || searchTerm.trim() !== '') && (
+          <div className="flex flex-wrap items-center justify-between gap-2 px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs">
+            <div className="flex items-center gap-2 text-slate-700 dark:text-slate-300">
+              <span className="font-semibold">Filtros aplicados:</span>
+              <span>
+                Exibindo <strong className="text-slate-900 dark:text-white">{filteredPrazos.length}</strong> de{' '}
+                <strong className="text-slate-900 dark:text-white">{totalPrazos}</strong> prazos
+              </span>
+              {selectedFilter !== 'todos' && (
+                <span className="rounded-md bg-white dark:bg-slate-900 px-2 py-0.5 font-medium border border-slate-200 dark:border-slate-700">
+                  Status:{' '}
+                  {selectedFilter === 'urgentes'
+                    ? '🟡 Urgentes / Hoje'
+                    : selectedFilter === 'vencidos'
+                    ? '🔴 Vencidos'
+                    : selectedFilter === 'cumpridos'
+                    ? '🟢 Cumpridos'
+                    : selectedFilter === 'pendentes'
+                    ? 'Em Aberto (Pendentes)'
+                    : '🔵 Em Aberto / Padrão'}
+                </span>
+              )}
+              {selectedProcessoFilter !== 'todos' && (
+                <span className="rounded-md bg-white dark:bg-slate-900 px-2 py-0.5 font-medium border border-slate-200 dark:border-slate-700">
+                  Processo: #{selectedProcessoFilter}
+                </span>
+              )}
+              {searchTerm.trim() && (
+                <span className="rounded-md bg-white dark:bg-slate-900 px-2 py-0.5 font-medium border border-slate-200 dark:border-slate-700">
+                  Busca: &ldquo;{searchTerm.trim()}&rdquo;
+                </span>
+              )}
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setSelectedFilter('todos');
+                setSelectedProcessoFilter('todos');
+                setSearchTerm('');
+              }}
+              className="text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline underline-offset-2 cursor-pointer transition"
+            >
+              Limpar filtros
+            </button>
+          </div>
+        )}
 
         {/* Conteúdo: Calendário Interativo, Tabela ou Cards */}
         {loading ? (

@@ -26,10 +26,13 @@ interface ProcessCalendarProps {
   loading?: boolean;
 }
 
+export type PrazoStatusCategory = 'urgente' | 'vencido' | 'cumprido' | 'aberto';
+
 export function calcularStatusPrazo(dataVencimentoStr: string, statusAtual: string) {
   if (statusAtual?.toLowerCase() === 'cumprido') {
     return {
       urgencia: 'cumprido' as const,
+      statusCategory: 'cumprido' as const, // 🟢 Cumpridos
       label: 'Cumprido',
       dias: 0,
       badgeText: 'Cumprido',
@@ -50,6 +53,7 @@ export function calcularStatusPrazo(dataVencimentoStr: string, statusAtual: stri
     const diasVencido = Math.abs(diffDias);
     return {
       urgencia: 'vencido' as const,
+      statusCategory: 'vencido' as const, // 🔴 Vencidos
       label: 'Vencido',
       dias: diffDias,
       badgeText: diasVencido === 1 ? 'Vencido há 1 dia' : `Vencido há ${diasVencido} dias`,
@@ -57,28 +61,20 @@ export function calcularStatusPrazo(dataVencimentoStr: string, statusAtual: stri
     };
   }
 
-  if (diffDias === 0) {
-    return {
-      urgencia: 'hoje' as const,
-      label: 'Vence Hoje',
-      dias: 0,
-      badgeText: 'Vence Hoje',
-      icon: Flame,
-    };
-  }
-
   if (diffDias <= 3) {
     return {
-      urgencia: 'urgente' as const,
-      label: 'Urgente',
+      urgencia: diffDias === 0 ? ('hoje' as const) : ('urgente' as const),
+      statusCategory: 'urgente' as const, // 🟡 Urgentes / Hoje
+      label: diffDias === 0 ? 'Vence Hoje' : 'Urgente',
       dias: diffDias,
-      badgeText: diffDias === 1 ? 'Vence amanhã' : `Vence em ${diffDias} dias`,
-      icon: AlertTriangle,
+      badgeText: diffDias === 0 ? 'Vence Hoje' : (diffDias === 1 ? 'Vence amanhã' : `Vence em ${diffDias} dias`),
+      icon: diffDias === 0 ? Flame : AlertTriangle,
     };
   }
 
   return {
     urgencia: 'no_prazo' as const,
+    statusCategory: 'aberto' as const, // 🔵 Em Aberto / Padrão
     label: 'No Prazo',
     dias: diffDias,
     badgeText: `Vence em ${diffDias} dias`,
@@ -133,35 +129,44 @@ export function ProcessCalendar({
         allDay: !horaStr,
         extendedProps: {
           prazo,
+          statusCategory: calc.statusCategory,
           urgencia: calc.urgencia,
         },
       };
     });
   }, [prazos]);
 
-  // Renderizador personalizado da pílula do evento
+  // Renderizador personalizado da pílula do evento rigorosamente alinhado com as 4 cores dos status
   const renderEventContent = (eventInfo: EventContentArg) => {
-    const { prazo, urgencia } = eventInfo.event.extendedProps as {
+    const { prazo, statusCategory } = eventInfo.event.extendedProps as {
       prazo: Prazo;
+      statusCategory: PrazoStatusCategory;
       urgencia: 'vencido' | 'hoje' | 'urgente' | 'cumprido' | 'no_prazo';
     };
 
-    const isCumprido = prazo.status?.toLowerCase() === 'cumprido';
-    const isUrgenteOuVencido = urgencia === 'vencido' || urgencia === 'hoje' || urgencia === 'urgente';
+    const isCumprido = statusCategory === 'cumprido';
 
-    // Regras estritas de estilo conforme especificado no pedido:
-    // Urgentes/Vencidos: bg-red-900/50 border-red-500 text-red-200
-    // Cumpridos: bg-emerald-900/50 border-emerald-500 text-emerald-200
-    // Padrão: bg-blue-900/50 border-blue-500 text-blue-200
-    let pillStyle = 'bg-blue-50 border-blue-300 text-blue-800 dark:bg-blue-900/50 dark:border-blue-500 dark:text-blue-200';
+    // 4 cores rigorosamente alinhadas com os 4 status dos cards superiores:
+    // 🟡 Urgentes / Hoje (Laranja/Amarelo - amber)
+    // 🔴 Vencidos (Vermelho/Rosa - rose)
+    // 🟢 Cumpridos (Verde - emerald)
+    // 🔵 Em Aberto / Padrão (Azul - blue)
+    let pillStyle =
+      'bg-blue-50 border-blue-300 text-blue-900 dark:bg-blue-950/60 dark:border-blue-500/70 dark:text-blue-200 hover:bg-blue-100/80 dark:hover:bg-blue-900/60';
     let dotStyle = 'bg-blue-500 dark:bg-blue-400';
 
-    if (isCumprido) {
-      pillStyle = 'bg-emerald-50 border-emerald-300 text-emerald-800 dark:bg-emerald-900/50 dark:border-emerald-500 dark:text-emerald-200';
+    if (statusCategory === 'urgente') {
+      pillStyle =
+        'bg-amber-50 border-amber-300 text-amber-900 dark:bg-amber-950/60 dark:border-amber-500/70 dark:text-amber-200 hover:bg-amber-100/80 dark:hover:bg-amber-900/60';
+      dotStyle = 'bg-amber-500 dark:bg-amber-400';
+    } else if (statusCategory === 'vencido') {
+      pillStyle =
+        'bg-rose-50 border-rose-300 text-rose-900 dark:bg-rose-950/60 dark:border-rose-500/70 dark:text-rose-200 hover:bg-rose-100/80 dark:hover:bg-rose-900/60';
+      dotStyle = 'bg-rose-500 dark:bg-rose-400';
+    } else if (statusCategory === 'cumprido') {
+      pillStyle =
+        'bg-emerald-50 border-emerald-300 text-emerald-900 dark:bg-emerald-950/60 dark:border-emerald-500/70 dark:text-emerald-200 hover:bg-emerald-100/80 dark:hover:bg-emerald-900/60';
       dotStyle = 'bg-emerald-500 dark:bg-emerald-400';
-    } else if (isUrgenteOuVencido) {
-      pillStyle = 'bg-red-50 border-red-300 text-red-800 dark:bg-red-900/50 dark:border-red-500 dark:text-red-200';
-      dotStyle = 'bg-red-500 dark:bg-red-400';
     }
 
     return (
@@ -171,7 +176,7 @@ export function ProcessCalendar({
       >
         <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${dotStyle}`} />
         {prazo.hora && (
-          <span className="font-mono text-[10px] opacity-80 shrink-0 font-semibold">
+          <span className="font-mono text-[10px] opacity-85 shrink-0 font-semibold">
             {prazo.hora}
           </span>
         )}
@@ -204,7 +209,7 @@ export function ProcessCalendar({
           <button
             onClick={handleToday}
             type="button"
-            className="rounded-xl border border-slate-300 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-750 transition active:scale-95 shadow-2xs"
+            className="rounded-xl border border-slate-300 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-750 transition active:scale-95 shadow-2xs cursor-pointer"
           >
             Hoje
           </button>
@@ -213,7 +218,7 @@ export function ProcessCalendar({
             <button
               onClick={handlePrev}
               type="button"
-              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-750 transition active:scale-95 shadow-2xs"
+              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-750 transition active:scale-95 shadow-2xs cursor-pointer"
               title="Mês anterior"
               aria-label="Mês anterior"
             >
@@ -222,7 +227,7 @@ export function ProcessCalendar({
             <button
               onClick={handleNext}
               type="button"
-              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-750 transition active:scale-95 shadow-2xs"
+              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-750 transition active:scale-95 shadow-2xs cursor-pointer"
               title="Próximo mês"
               aria-label="Próximo mês"
             >
@@ -235,21 +240,25 @@ export function ProcessCalendar({
           </h2>
         </div>
 
-        {/* Direita: Legenda Semântica + Alternância de Visão (Mês, Semana, Dia) */}
+        {/* Direita: Legenda Semântica com os 4 Status + Alternância de Visão (Mês, Semana, Dia) */}
         <div className="flex flex-wrap items-center gap-3 self-end lg:self-auto">
-          {/* Legenda de Pílulas */}
-          <div className="hidden sm:flex items-center gap-3 text-[11px] font-medium text-slate-600 dark:text-slate-400 border-r border-slate-200 dark:border-slate-800 pr-4">
-            <div className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-red-500" />
-              <span>Urgentes / Vencidos</span>
+          {/* Legenda de Pílulas com os 4 status idênticos aos cards superiores */}
+          <div className="hidden sm:flex flex-wrap items-center gap-2.5 sm:gap-3 text-[11px] font-medium text-slate-600 dark:text-slate-400 border-r border-slate-200 dark:border-slate-800 pr-4">
+            <div className="flex items-center gap-1.5" title="Vence hoje ou nos próximos 3 dias">
+              <span className="h-2 w-2 rounded-full bg-amber-500 shrink-0" />
+              <span>Urgentes / Hoje</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-emerald-500" />
+            <div className="flex items-center gap-1.5" title="Prazo com data de vencimento expirada">
+              <span className="h-2 w-2 rounded-full bg-rose-500 shrink-0" />
+              <span>Vencidos</span>
+            </div>
+            <div className="flex items-center gap-1.5" title="Prazo já cumprido">
+              <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
               <span>Cumpridos</span>
             </div>
-            <div className="flex items-center gap-1.5">
-              <span className="h-2 w-2 rounded-full bg-blue-500" />
-              <span>Padrão</span>
+            <div className="flex items-center gap-1.5" title="Prazo regular em aberto">
+              <span className="h-2 w-2 rounded-full bg-blue-500 shrink-0" />
+              <span>Em Aberto / Padrão</span>
             </div>
           </div>
 
