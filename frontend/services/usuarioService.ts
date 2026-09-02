@@ -13,6 +13,14 @@ export interface UsuarioItem {
   data_atualizacao: string;
 }
 
+export interface ResponsavelItem {
+  id: number;
+  id_usuario: number;
+  nome: string;
+  cargo: string;
+  role: Role;
+}
+
 export interface CreateUsuarioInput {
   nome: string;
   email: string;
@@ -34,6 +42,11 @@ export interface UpdateUsuarioInput {
 export const usuarioService = {
   async getAll(): Promise<UsuarioItem[]> {
     const response = await api.get<UsuarioItem[]>('/usuarios');
+    return response.data;
+  },
+
+  async getResponsaveis(): Promise<ResponsavelItem[]> {
+    const response = await api.get<ResponsavelItem[]>('/usuarios/responsaveis');
     return response.data;
   },
 

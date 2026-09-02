@@ -15,6 +15,7 @@ import { PrazoDetailModal } from '@/components/PrazoDetailModal';
 import { toast } from 'sonner';
 import { prazoService, Prazo, CreatePrazoInput } from '@/services/prazoService';
 import { processoService, Processo } from '@/services/processoService';
+import { usuarioService, ResponsavelItem } from '@/services/usuarioService';
 import {
   CalendarClock,
   PlusCircle,
@@ -144,6 +145,8 @@ function PrazosContent() {
   const [hora, setHora] = useState<string>('09:00');
   const [tipoCompromisso, setTipoCompromisso] = useState<string>('Prazo Fatal');
   const [responsavel, setResponsavel] = useState<string>('');
+  const [responsaveis, setResponsaveis] = useState<ResponsavelItem[]>([]);
+  const [loadingResponsaveis, setLoadingResponsaveis] = useState<boolean>(false);
   const [status, setStatus] = useState<string>('Pendente');
   const [idProcesso, setIdProcesso] = useState<string>('');
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -155,6 +158,20 @@ function PrazosContent() {
 
   // Cópia
   const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  // Carregar Responsáveis (Advogados e Estagiários)
+  const fetchResponsaveis = useCallback(async () => {
+    setLoadingResponsaveis(true);
+    try {
+      const data = await usuarioService.getResponsaveis();
+      setResponsaveis(Array.isArray(data) ? data : []);
+    } catch (err) {
+      console.error('Falha ao buscar equipe de responsáveis:', err);
+      setResponsaveis([]);
+    } finally {
+      setLoadingResponsaveis(false);
+    }
+  }, []);
 
   // Carregar Processos para o Select Dinâmico
   const fetchProcessosList = useCallback(async () => {
@@ -191,7 +208,8 @@ function PrazosContent() {
 
   useEffect(() => {
     fetchPrazos();
-  }, [fetchPrazos]);
+    fetchResponsaveis();
+  }, [fetchPrazos, fetchResponsaveis]);
 
   const handleCopy = (text: string, id: string) => {
     navigator.clipboard.writeText(text);
@@ -216,6 +234,9 @@ function PrazosContent() {
     if (processos.length === 0) {
       fetchProcessosList();
     }
+    if (responsaveis.length === 0) {
+      fetchResponsaveis();
+    }
   };
 
   const handleSelectPrazoFromCalendar = (prazo: Prazo) => {
@@ -237,6 +258,9 @@ function PrazosContent() {
     if (processos.length === 0) {
       fetchProcessosList();
     }
+    if (responsaveis.length === 0) {
+      fetchResponsaveis();
+    }
   };
 
   const openEditModal = (prazo: Prazo) => {
@@ -253,6 +277,9 @@ function PrazosContent() {
     setIdProcesso(String(prazo.id_processo));
     setFormErrors({});
     setModalOpen(true);
+    if (responsaveis.length === 0) {
+      fetchResponsaveis();
+    }
   };
 
   const validateForm = () => {
@@ -1025,7 +1052,7 @@ function PrazosContent() {
                 </div>
               </div>
 
-              {/* Campo opcional de Responsável (Select com opções fictícias) */}
+              {/* Campo opcional de Responsável pelo Cumprimento com Usuários Reais */}
               <div>
                 <label className="block font-semibold text-slate-200 mb-1">
                   Responsável pelo Cumprimento <span className="text-slate-400 font-normal">(Opcional)</span>
@@ -1035,12 +1062,22 @@ function PrazosContent() {
                   onChange={(e) => setResponsavel(e.target.value)}
                   className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-orange-500 focus:outline-hidden"
                 >
-                  <option value="" className="bg-[#0F172A] text-slate-300">Selecione um Responsável (Opcional)</option>
-                  <option value="Dr. Roberto Davino" className="bg-[#0F172A] text-slate-100">Dr. Roberto Davino (Sócio Titular)</option>
-                  <option value="Dra. Juliana Neves" className="bg-[#0F172A] text-slate-100">Dra. Juliana Neves (Sócia Coordenadora)</option>
-                  <option value="Dr. Marcelo Queiroz" className="bg-[#0F172A] text-slate-100">Dr. Marcelo Queiroz (Advogado Sênior)</option>
-                  <option value="Dra. Beatriz Fontana" className="bg-[#0F172A] text-slate-100">Dra. Beatriz Fontana (Advogada Associada)</option>
-                  <option value="Lucas Silveira" className="bg-[#0F172A] text-slate-100">Lucas Silveira (Assistente Jurídico)</option>
+                  <option value="" className="bg-[#0F172A] text-slate-300">
+                    {loadingResponsaveis ? 'Carregando equipe...' : 'Selecione um Responsável (Opcional)'}
+                  </option>
+                  {responsaveis.map((u) => {
+                    const cargoFormatado = u.cargo || (u.role === 'ADVOGADO' ? 'Advogado' : 'Estagiário');
+                    return (
+                      <option key={u.id || u.id_usuario} value={u.nome} className="bg-[#0F172A] text-slate-100">
+                        {u.nome} ({cargoFormatado})
+                      </option>
+                    );
+                  })}
+                  {responsavel && !responsaveis.some((u) => u.nome === responsavel) && (
+                    <option value={responsavel} className="bg-[#0F172A] text-slate-100">
+                      {responsavel}
+                    </option>
+                  )}
                 </select>
               </div>
 

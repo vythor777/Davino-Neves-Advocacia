@@ -57,6 +57,48 @@ async function main() {
     console.log(`   - Status: ${novoAdmin.ativo ? 'Ativo' : 'Inativo'}`);
   }
 
+  // 2. Garantir usuários de exemplo para a equipe jurídica (Advogados e Estagiários)
+  const defaultTeam = [
+    {
+      nome: 'Dr. Carlos Silva',
+      email: 'carlos.silva@davinoneves.com.br',
+      role: Role.ADVOGADO,
+    },
+    {
+      nome: 'Dra. Juliana Neves',
+      email: 'juliana.neves@davinoneves.com.br',
+      role: Role.ADVOGADO,
+    },
+    {
+      nome: 'Ana Souza',
+      email: 'ana.souza@davinoneves.com.br',
+      role: Role.ESTAGIARIO,
+    },
+    {
+      nome: 'Lucas Silveira',
+      email: 'lucas.silveira@davinoneves.com.br',
+      role: Role.ESTAGIARIO,
+    },
+  ];
+
+  for (const member of defaultTeam) {
+    const exists = await prisma.usuario.findUnique({ where: { email: member.email } });
+    if (!exists) {
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash('equipe123', salt);
+      await prisma.usuario.create({
+        data: {
+          nome: member.nome,
+          email: member.email,
+          senha_hash: hash,
+          role: member.role,
+          ativo: true,
+        },
+      });
+      console.log(`👤 Membro da equipe criado: ${member.nome} (${member.role})`);
+    }
+  }
+
   console.log('✨ Seed finalizado com êxito!');
 }
 

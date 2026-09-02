@@ -74,6 +74,33 @@ export class UsuariosService {
     });
   }
 
+  async findResponsaveis() {
+    const usuarios = await this.prisma.usuario.findMany({
+      where: {
+        role: {
+          in: ['ADVOGADO', 'ESTAGIARIO'],
+        },
+        ativo: true,
+      },
+      select: {
+        id_usuario: true,
+        nome: true,
+        role: true,
+      },
+      orderBy: {
+        nome: 'asc',
+      },
+    });
+
+    return usuarios.map((u) => ({
+      id: u.id_usuario,
+      id_usuario: u.id_usuario,
+      nome: u.nome,
+      cargo: u.role === 'ADVOGADO' ? 'Advogado' : 'Estagiário',
+      role: u.role,
+    }));
+  }
+
   async findOne(id: number) {
     const usuario = await this.prisma.usuario.findUnique({
       where: { id_usuario: id },

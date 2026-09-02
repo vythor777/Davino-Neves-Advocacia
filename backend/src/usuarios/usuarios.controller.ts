@@ -36,6 +36,16 @@ export class UsuariosController {
     return this.usuariosService.findAll();
   }
 
+  @Get('responsaveis')
+  findResponsaveis() {
+    return this.usuariosService.findResponsaveis();
+  }
+
+  @Get('equipe')
+  findEquipe() {
+    return this.usuariosService.findResponsaveis();
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.usuariosService.findOne(id);
