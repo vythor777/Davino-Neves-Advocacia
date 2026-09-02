@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AniversariantesService } from './aniversariantes.service';
-import { AniversariantesController } from './aniversariantes.controller';
-import { PrismaModule } from '../prisma/prisma.module';
+import { AniversariantesService } from './aniversariantes.service.js';
+import { AniversariantesController } from './aniversariantes.controller.js';
+import { PrismaModule } from '../prisma/prisma.module.js';
 
 @Module({
   imports: [PrismaModule],
