@@ -38,6 +38,17 @@ import {
   Building2,
   Layers,
   Sparkle,
+  Cake,
+  Gift,
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  Wallet,
+  CreditCard,
+  BarChart3,
+  Mail,
+  Copy,
+  Percent,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -130,69 +141,49 @@ function AstreaDashboard() {
     }
   };
 
-  const modules = [
+  const aniversariantesMes = [
     {
-      title: 'Controle de Processos',
-      subtitle: `${processosAtivos} processos ativos`,
-      description: 'Acompanhamento unificado de autos, varas, foros e histórico de andamentos com o cliente.',
-      href: '/processos',
-      icon: Briefcase,
-      badge: 'Principal',
-      isLive: false,
-      iconBox: 'bg-sky-50 text-sky-700 dark:bg-sky-950/70 dark:text-sky-300',
+      nome: 'Dra. Camila Alencar',
+      cargo: 'Sócia • Contencioso Empresarial',
+      iniciais: 'CA',
+      data: '08 de Setembro',
+      diasRestantes: 'Em 6 dias',
+      destaque: true,
+      email: 'camila.alencar@davinoneves.adv.br',
     },
     {
-      title: 'Prazos & Agenda',
-      subtitle: `${prazosUrgentes.length} termos para esta semana`,
-      description: 'Gestão de termos fatais, contagem de prazos CPC/CLT e alertas de vencimento.',
-      href: '/prazos',
-      icon: CalendarClock,
-      badge: prazosHoje.length > 0 ? `${prazosHoje.length} hoje` : 'Agenda',
-      isLive: false,
-      isUrgent: prazosHoje.length > 0,
-      iconBox: 'bg-amber-50 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300',
+      nome: 'Dr. Roberto Davino Neves',
+      cargo: 'Sócio Fundador • Direito Tributário',
+      iniciais: 'RN',
+      data: '14 de Setembro',
+      diasRestantes: 'Em 12 dias',
+      destaque: false,
+      email: 'roberto@davinoneves.adv.br',
     },
     {
-      title: 'Contatos & Clientes',
-      subtitle: `${totalClientes} clientes cadastrados`,
-      description: 'Gestão completa de pessoas físicas e jurídicas, documentos de identificação e vínculos aos autos.',
-      href: '/clientes',
-      icon: Users,
-      badge: 'CRM',
-      isLive: false,
-      iconBox: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
+      nome: 'Marcos Vinícius Prado',
+      cargo: 'Analista Sênior • Controladoria Jurídica',
+      iniciais: 'MP',
+      data: '21 de Setembro',
+      diasRestantes: 'Em 19 dias',
+      destaque: false,
+      email: 'marcos.prado@davinoneves.adv.br',
     },
     {
-      title: 'DataJud Tribunais',
-      subtitle: 'Consulta unificada de autos',
-      description: 'Sincronização com a API pública dos tribunais para consulta de movimentações e andamentos.',
-      href: '/datajud',
-      icon: Search,
-      badge: 'Online',
-      isLive: true,
-      iconBox: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
-    },
-    {
-      title: 'IA Jurídica',
-      subtitle: 'Análise de peças e minutas',
-      description: 'Análise estruturada de petições, contratos, resumos executivos para clientes e triagem de prazos.',
-      href: '/gemini',
-      icon: Sparkles,
-      badge: 'Ativo',
-      isLive: true,
-      iconBox: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
-    },
-    {
-      title: 'Equipe & Permissões',
-      subtitle: 'Controle de acesso RBAC',
-      description: 'Gerenciamento de membros do escritório por perfil (Administrador, Advogado, Estagiário).',
-      href: '/usuarios',
-      icon: Shield,
-      badge: isAdmin ? 'Admin' : 'Membro',
-      isLive: false,
-      iconBox: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
+      nome: 'Beatriz Mendonça',
+      cargo: 'Advogada Associada • Cível & Contratos',
+      iniciais: 'BM',
+      data: '28 de Setembro',
+      diasRestantes: 'Em 26 dias',
+      destaque: false,
+      email: 'beatriz.mendonca@davinoneves.adv.br',
     },
   ];
+
+  const handleCopyEmail = (email: string, nome: string) => {
+    navigator.clipboard.writeText(email);
+    toast.success(`E-mail de ${nome.split(' ')[0]} copiado para felicitação!`);
+  };
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col transition-colors">
@@ -576,68 +567,258 @@ function AstreaDashboard() {
           </div>
         </div>
 
-        {/* Grid de Módulos (App Grid) */}
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              Módulos do Sistema
-            </h2>
-            <span className="text-xs text-slate-400">
-              Davino Neves Advocacia
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {modules.map((mod, idx) => {
-              const Icon = mod.icon;
-              return (
-                <Link
-                  key={idx}
-                  href={mod.href}
-                  className="group astrea-card p-6 flex flex-col justify-between transition-all hover:-translate-y-1 hover:border-sky-500/40"
-                >
+        {/* Seção Executiva de Duas Colunas: Aniversariantes do Mês & Indícios Financeiros */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Lado Esquerdo: Aniversariantes do Mês (lg:col-span-5) */}
+          <div className="lg:col-span-5 astrea-card p-6 flex flex-col justify-between">
+            <div>
+              {/* Header do Card */}
+              <div className="flex items-start justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                    <Cake className="h-5 w-5 text-sky-600 dark:text-sky-400" />
+                  </div>
                   <div>
-                    <div className="flex items-center justify-between">
-                      <div
-                        className={`flex h-11 w-11 items-center justify-center rounded-2xl ${mod.iconBox} shadow-xs group-hover:scale-105 transition-transform`}
-                      >
-                        <Icon className="h-5 w-5" />
-                      </div>
-                      
-                      {mod.isLive ? (
-                        <div className="flex items-center gap-1.5 rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 text-[10px] font-semibold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                          <span>{mod.badge}</span>
+                    <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                      Aniversariantes do Mês
+                    </h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Setembro • 4 celebrações no período
+                    </p>
+                  </div>
+                </div>
+                <span className="rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-[10px] font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                  Gente & Cultura
+                </span>
+              </div>
+
+              {/* Lista Elegante e Minimalista */}
+              <div className="mt-5 space-y-3.5">
+                {aniversariantesMes.map((pessoa, idx) => (
+                  <div
+                    key={idx}
+                    className="group relative flex items-center justify-between rounded-2xl border border-slate-100 bg-slate-50/70 p-3.5 transition-all hover:border-slate-300 hover:bg-white dark:border-slate-800/80 dark:bg-slate-950/40 dark:hover:border-slate-700 dark:hover:bg-slate-900"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      {/* Avatar Circular com Iniciais */}
+                      <div className="relative shrink-0">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-tr from-slate-700 via-slate-800 to-sky-900 text-xs font-bold text-white shadow-xs ring-2 ring-slate-200 dark:ring-slate-800">
+                          {pessoa.iniciais}
                         </div>
-                      ) : mod.isUrgent ? (
-                        <span className="rounded-full bg-amber-50 text-amber-700 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-200 dark:border-amber-800 px-2.5 py-0.5 text-[10px] font-semibold">
-                          {mod.badge}
-                        </span>
-                      ) : (
-                        <span className="rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700 px-2.5 py-0.5 text-[10px] font-medium">
-                          {mod.badge}
-                        </span>
-                      )}
+                        {pessoa.destaque && (
+                          <span
+                            title="Próximo aniversariante"
+                            className="absolute -top-0.5 -right-0.5 flex h-3 w-3 items-center justify-center rounded-full bg-sky-500 ring-2 ring-white dark:ring-slate-900"
+                          >
+                            <span className="h-1.5 w-1.5 rounded-full bg-white" />
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Informações da Pessoa */}
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                          <h3 className="text-xs font-bold text-slate-900 group-hover:text-sky-600 dark:text-white dark:group-hover:text-sky-400 transition-colors truncate">
+                            {pessoa.nome}
+                          </h3>
+                        </div>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                          {pessoa.cargo}
+                        </p>
+                      </div>
                     </div>
 
-                    <h3 className="mt-4 text-base font-bold text-slate-900 group-hover:text-sky-600 dark:text-white dark:group-hover:text-sky-400 transition-colors">
-                      {mod.title}
-                    </h3>
-                    <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5">
-                      {mod.subtitle}
-                    </p>
-                    <p className="mt-2 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-                      {mod.description}
-                    </p>
-                  </div>
+                    {/* Data e Ação Rápida */}
+                    <div className="flex items-center gap-2 shrink-0 ml-3">
+                      <div className="text-right">
+                        <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
+                          {pessoa.data.split(' de ')[0]} Set
+                        </div>
+                        <span className="inline-block text-[10px] font-medium text-slate-500 dark:text-slate-400">
+                          {pessoa.diasRestantes}
+                        </span>
+                      </div>
 
-                  <div className="mt-6 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80 pt-3 text-xs font-semibold text-slate-700 group-hover:text-sky-600 dark:text-slate-300 dark:group-hover:text-sky-400">
-                    <span>Acessar módulo</span>
-                    <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                      {/* Botão sutil de felicitação / copiar e-mail */}
+                      <button
+                        type="button"
+                        onClick={() => handleCopyEmail(pessoa.email, pessoa.nome)}
+                        title={`Copiar e-mail de ${pessoa.nome}`}
+                        className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 opacity-80 hover:border-sky-300 hover:text-sky-600 hover:opacity-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-400 dark:hover:border-slate-700 dark:hover:text-sky-400 transition"
+                      >
+                        <Mail className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
                   </div>
-                </Link>
-              );
-            })}
+                ))}
+              </div>
+            </div>
+
+            {/* Rodapé do Card de Aniversariantes */}
+            <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+              <span className="flex items-center gap-1.5">
+                <Gift className="h-3.5 w-3.5 text-sky-600 dark:text-sky-400" />
+                <span>Lembretes de equipe integrados</span>
+              </span>
+              <span className="text-[11px] font-medium text-slate-400">
+                Calendário Institucional
+              </span>
+            </div>
+          </div>
+
+          {/* Lado Direito: Indícios Financeiros (lg:col-span-7) */}
+          <div className="lg:col-span-7 astrea-card p-6 flex flex-col justify-between">
+            <div>
+              {/* Header do Card */}
+              <div className="flex items-start justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                    <TrendingUp className="h-5 w-5 text-sky-600 dark:text-sky-400" />
+                  </div>
+                  <div>
+                    <h2 className="text-base font-bold text-slate-900 dark:text-white">
+                      Indícios Financeiros
+                    </h2>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                      Fluxo de caixa, honorários previstos e performance
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-1 text-[10px] font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                    Mês Corrente
+                  </span>
+                </div>
+              </div>
+
+              {/* Grid de 4 Cards de KPI Financeiro */}
+              <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {/* KPI 1: Faturamento Previsto */}
+                <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4 dark:border-slate-800/80 dark:bg-slate-950/40">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                      Honorários Previstos
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+                      <TrendingUp className="h-3 w-3" /> +12.4%
+                    </span>
+                  </div>
+                  <div className="mt-2 text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                    R$ 148.500<span className="text-sm font-semibold text-slate-400">,00</span>
+                  </div>
+                  <div className="mt-2 flex items-center justify-between">
+                    <span className="text-[11px] text-slate-500 dark:text-slate-400">
+                      Meta: R$ 160.000,00
+                    </span>
+                    {/* Mini Sparkline SVG */}
+                    <svg className="h-5 w-16 text-emerald-500 overflow-visible" viewBox="0 0 64 20" fill="none">
+                      <path
+                        d="M0 16 L14 13 L28 15 L42 7 L56 9 L64 2"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                </div>
+
+                {/* KPI 2: Honorários Liquidados */}
+                <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4 dark:border-slate-800/80 dark:bg-slate-950/40">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                      Honorários Realizados
+                    </span>
+                    <span className="rounded-full bg-slate-200/80 px-1.5 py-0.5 text-[10px] font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                      62.1%
+                    </span>
+                  </div>
+                  <div className="mt-2 text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                    R$ 92.300<span className="text-sm font-semibold text-slate-400">,00</span>
+                  </div>
+                  <div className="mt-2.5">
+                    <div className="h-1.5 w-full rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
+                      <div className="h-full rounded-full bg-sky-500" style={{ width: '62.1%' }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* KPI 3: Inadimplência / Pendências */}
+                <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4 dark:border-slate-800/80 dark:bg-slate-950/40">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                      Pendências & Atrasos
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
+                      <TrendingDown className="h-3 w-3" /> -3.5%
+                    </span>
+                  </div>
+                  <div className="mt-2 text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                    R$ 8.200<span className="text-sm font-semibold text-slate-400">,00</span>
+                  </div>
+                  <p className="mt-2 text-[11px] text-slate-500 dark:text-slate-400">
+                    2 faturas em cobrança preventiva
+                  </p>
+                </div>
+
+                {/* KPI 4: Ticket Médio por Causa */}
+                <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4 dark:border-slate-800/80 dark:bg-slate-950/40">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                      Ticket Médio / Causa
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-600 dark:text-slate-300">
+                      +5.8%
+                    </span>
+                  </div>
+                  <div className="mt-2 text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                    R$ 14.850<span className="text-sm font-semibold text-slate-400">,00</span>
+                  </div>
+                  <p className="mt-2 text-[11px] text-slate-500 dark:text-slate-400">
+                    Base: 12 novos contratos ativos
+                  </p>
+                </div>
+              </div>
+
+              {/* Bloco de Composição de Receita Minimalista */}
+              <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-3.5 dark:border-slate-800/60 dark:bg-slate-950/30">
+                <div className="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
+                  <span>Composição de Honorários</span>
+                  <span className="text-[11px] font-normal text-slate-500">Distribuição mensal</span>
+                </div>
+                {/* Barra Segmentada */}
+                <div className="flex h-2 w-full rounded-full overflow-hidden bg-slate-200 dark:bg-slate-800">
+                  <div className="h-full bg-sky-500" style={{ width: '58%' }} title="Contratual Fixo: 58%" />
+                  <div className="h-full bg-indigo-500" style={{ width: '28%' }} title="Êxito & Sucumbência: 28%" />
+                  <div className="h-full bg-slate-400 dark:bg-slate-600" style={{ width: '14%' }} title="Consultivo: 14%" />
+                </div>
+                <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-sky-500" />
+                    <span>Contratual (58%)</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-indigo-500" />
+                    <span>Êxito (28%)</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-slate-400 dark:bg-slate-600" />
+                    <span>Consultivo (14%)</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Rodapé do Card Financeiro */}
+            <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+              <span className="flex items-center gap-1.5">
+                <BarChart3 className="h-3.5 w-3.5 text-sky-600 dark:text-sky-400" />
+                <span>Conciliação bancária atualizada</span>
+              </span>
+              <span className="font-semibold text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 cursor-pointer flex items-center gap-1 transition-colors">
+                Demonstrativo completo <ArrowUpRight className="h-3 w-3" />
+              </span>
+            </div>
           </div>
         </div>
       </main>
