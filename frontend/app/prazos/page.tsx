@@ -542,7 +542,7 @@ function PrazosContent() {
                 type="button"
                 onClick={() => setSelectedFilter('todos')}
                 aria-pressed={selectedFilter === 'todos'}
-                className={`text-left rounded-xl border p-4 transition-all duration-200 cursor-pointer shadow-2xs group active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 ${
+                className={`text-left rounded-xl border p-4 transition-all duration-200 cursor-pointer shadow-2xs group active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 h-24 flex flex-col justify-between ${
                   selectedFilter === 'todos'
                     ? 'border-blue-400 bg-blue-50/60 dark:border-blue-500 dark:bg-blue-950/40 ring-2 ring-blue-500/60 shadow-xs'
                     : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700'
@@ -555,20 +555,9 @@ function PrazosContent() {
                   </span>
                   <CalendarClock className="h-4 w-4 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors" />
                 </div>
-                <div className="mt-2 flex items-baseline justify-between">
-                  <p className="text-2xl font-bold font-serif text-slate-900 dark:text-white">
-                    {totalPrazos}
-                  </p>
-                  {selectedFilter === 'todos' ? (
-                    <span className="text-[10px] font-semibold text-blue-700 dark:text-blue-300 bg-blue-100/80 dark:bg-blue-900/60 px-1.5 py-0.5 rounded-sm">
-                      Todos
-                    </span>
-                  ) : (
-                    <span className="text-[10px] text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">
-                      Ver todos
-                    </span>
-                  )}
-                </div>
+                <p className="text-2xl font-bold font-serif text-slate-900 dark:text-white">
+                  {totalPrazos}
+                </p>
               </button>
 
               {/* Card 2: 🟡 Urgentes / Hoje (Laranja/Amarelo) */}
@@ -576,7 +565,7 @@ function PrazosContent() {
                 type="button"
                 onClick={() => setSelectedFilter((prev) => (prev === 'urgentes' ? 'todos' : 'urgentes'))}
                 aria-pressed={selectedFilter === 'urgentes'}
-                className={`text-left rounded-xl border p-4 transition-all duration-200 cursor-pointer shadow-2xs group active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 ${
+                className={`text-left rounded-xl border p-4 transition-all duration-200 cursor-pointer shadow-2xs group active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 h-24 flex flex-col justify-between ${
                   selectedFilter === 'urgentes'
                     ? 'border-amber-400 bg-amber-100/70 dark:border-amber-500 dark:bg-amber-950/60 ring-2 ring-amber-500 shadow-xs'
                     : 'border-amber-200 bg-amber-50/50 hover:border-amber-300 hover:bg-amber-50 dark:border-amber-900/60 dark:bg-amber-950/20 dark:hover:border-amber-800'
@@ -589,20 +578,9 @@ function PrazosContent() {
                   </span>
                   <Flame className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                 </div>
-                <div className="mt-2 flex items-baseline justify-between">
-                  <p className="text-2xl font-bold font-serif text-amber-900 dark:text-amber-200">
-                    {totalUrgentes}
-                  </p>
-                  {selectedFilter === 'urgentes' ? (
-                    <span className="text-[10px] font-semibold text-amber-800 dark:text-amber-300 bg-amber-200/90 dark:bg-amber-900/80 px-1.5 py-0.5 rounded-sm">
-                      Filtrado
-                    </span>
-                  ) : (
-                    <span className="text-[10px] text-amber-700/70 dark:text-amber-400/60 opacity-0 group-hover:opacity-100 transition-opacity">
-                      Filtrar
-                    </span>
-                  )}
-                </div>
+                <p className="text-2xl font-bold font-serif text-amber-900 dark:text-amber-200">
+                  {totalUrgentes}
+                </p>
               </button>
 
               {/* Card 3: 🔴 Prazos Vencidos (Vermelho/Rosa) */}
@@ -610,7 +588,7 @@ function PrazosContent() {
                 type="button"
                 onClick={() => setSelectedFilter((prev) => (prev === 'vencidos' ? 'todos' : 'vencidos'))}
                 aria-pressed={selectedFilter === 'vencidos'}
-                className={`text-left rounded-xl border p-4 transition-all duration-200 cursor-pointer shadow-2xs group active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-rose-500 ${
+                className={`text-left rounded-xl border p-4 transition-all duration-200 cursor-pointer shadow-2xs group active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-rose-500 h-24 flex flex-col justify-between ${
                   selectedFilter === 'vencidos'
                     ? 'border-rose-400 bg-rose-100/70 dark:border-rose-500 dark:bg-rose-950/60 ring-2 ring-rose-500 shadow-xs'
                     : 'border-rose-200 bg-rose-50/50 hover:border-rose-300 hover:bg-rose-50 dark:border-rose-900/60 dark:bg-rose-950/20 dark:hover:border-rose-800'
@@ -623,20 +601,9 @@ function PrazosContent() {
                   </span>
                   <XCircle className="h-4 w-4 text-rose-600 dark:text-rose-400" />
                 </div>
-                <div className="mt-2 flex items-baseline justify-between">
-                  <p className="text-2xl font-bold font-serif text-rose-900 dark:text-rose-200">
-                    {totalVencidos}
-                  </p>
-                  {selectedFilter === 'vencidos' ? (
-                    <span className="text-[10px] font-semibold text-rose-800 dark:text-rose-300 bg-rose-200/90 dark:bg-rose-900/80 px-1.5 py-0.5 rounded-sm">
-                      Filtrado
-                    </span>
-                  ) : (
-                    <span className="text-[10px] text-rose-700/70 dark:text-rose-400/60 opacity-0 group-hover:opacity-100 transition-opacity">
-                      Filtrar
-                    </span>
-                  )}
-                </div>
+                <p className="text-2xl font-bold font-serif text-rose-900 dark:text-rose-200">
+                  {totalVencidos}
+                </p>
               </button>
 
               {/* Card 4: 🟢 Cumpridos (Verde) */}
@@ -644,7 +611,7 @@ function PrazosContent() {
                 type="button"
                 onClick={() => setSelectedFilter((prev) => (prev === 'cumpridos' ? 'todos' : 'cumpridos'))}
                 aria-pressed={selectedFilter === 'cumpridos'}
-                className={`text-left rounded-xl border p-4 transition-all duration-200 cursor-pointer shadow-2xs group active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-500 ${
+                className={`text-left rounded-xl border p-4 transition-all duration-200 cursor-pointer shadow-2xs group active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-500 h-24 flex flex-col justify-between ${
                   selectedFilter === 'cumpridos'
                     ? 'border-emerald-400 bg-emerald-100/70 dark:border-emerald-500 dark:bg-emerald-950/60 ring-2 ring-emerald-500 shadow-xs'
                     : 'border-emerald-200 bg-emerald-50/50 hover:border-emerald-300 hover:bg-emerald-50 dark:border-emerald-900/60 dark:bg-emerald-950/20 dark:hover:border-emerald-800'
@@ -657,20 +624,9 @@ function PrazosContent() {
                   </span>
                   <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                 </div>
-                <div className="mt-2 flex items-baseline justify-between">
-                  <p className="text-2xl font-bold font-serif text-emerald-900 dark:text-emerald-200">
-                    {totalCumpridos}
-                  </p>
-                  {selectedFilter === 'cumpridos' ? (
-                    <span className="text-[10px] font-semibold text-emerald-800 dark:text-emerald-300 bg-emerald-200/90 dark:bg-emerald-900/80 px-1.5 py-0.5 rounded-sm">
-                      Filtrado
-                    </span>
-                  ) : (
-                    <span className="text-[10px] text-emerald-700/70 dark:text-emerald-400/60 opacity-0 group-hover:opacity-100 transition-opacity">
-                      Filtrar
-                    </span>
-                  )}
-                </div>
+                <p className="text-2xl font-bold font-serif text-emerald-900 dark:text-emerald-200">
+                  {totalCumpridos}
+                </p>
               </button>
             </>
           )}

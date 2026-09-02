@@ -5,7 +5,7 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { EventContentArg } from '@fullcalendar/core';
+import { EventContentArg, DayCellContentArg } from '@fullcalendar/core';
 import { Prazo } from '@/services/prazoService';
 import {
   ChevronLeft,
@@ -15,6 +15,7 @@ import {
   AlertTriangle,
   XCircle,
   CheckCircle2,
+  Plus,
 } from 'lucide-react';
 
 const emptySubscribe = () => () => {};
@@ -165,14 +166,16 @@ export function ProcessCalendar({
       dotStyle = 'bg-rose-500 dark:bg-rose-400';
     } else if (statusCategory === 'cumprido') {
       pillStyle =
-        'bg-emerald-50 border-emerald-300 text-emerald-900 dark:bg-emerald-950/60 dark:border-emerald-500/70 dark:text-emerald-200 hover:bg-emerald-100/80 dark:hover:bg-emerald-900/60';
+        'bg-emerald-50 border-emerald-300 text-emerald-900 dark:bg-emerald-950/60 dark:border-emerald-500/40 dark:text-emerald-100 hover:bg-emerald-100/80 dark:hover:bg-emerald-900/60';
       dotStyle = 'bg-emerald-500 dark:bg-emerald-400';
     }
 
+    const tooltipText = `${prazo.descricao}${prazo.processo ? ` • Processo: ${prazo.processo.numero_processo}` : ''}${prazo.hora ? ` • Hora: ${prazo.hora}` : ''}${isCumprido ? ' • Status: Cumprido' : ''}`;
+
     return (
       <div
-        className={`w-full flex items-center gap-1.5 px-2 py-1 rounded-md border text-[11px] font-medium transition-all hover:scale-[1.02] cursor-pointer shadow-2xs overflow-hidden ${pillStyle}`}
-        title={`${prazo.descricao} - ${prazo.processo?.numero_processo || ''}${prazo.hora ? ` (${prazo.hora})` : ''}`}
+        className={`w-full flex items-center gap-1.5 px-2 py-1 rounded-md border text-[11px] font-medium transition-all hover:scale-[1.01] cursor-pointer shadow-2xs overflow-hidden ${pillStyle}`}
+        title={tooltipText}
       >
         <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${dotStyle}`} />
         {prazo.hora && (
@@ -180,9 +183,55 @@ export function ProcessCalendar({
             {prazo.hora}
           </span>
         )}
-        <span className={`truncate flex-1 font-semibold ${isCumprido ? 'line-through opacity-75' : ''}`}>
+        <span
+          className={`truncate flex-1 font-semibold ${
+            isCumprido
+              ? 'line-through text-emerald-900 dark:text-emerald-100 opacity-95'
+              : ''
+          }`}
+        >
           {eventInfo.event.title}
         </span>
+      </div>
+    );
+  };
+
+  // Renderizador personalizado das células de cada dia (estilo Google Agenda + ação rápida de criação)
+  const renderDayCellContent = (arg: DayCellContentArg) => {
+    const y = arg.date.getFullYear();
+    const m = String(arg.date.getMonth() + 1).padStart(2, '0');
+    const d = String(arg.date.getDate()).padStart(2, '0');
+    const dateStr = `${y}-${m}-${d}`;
+    const dayNumber = arg.date.getDate();
+
+    return (
+      <div className="flex items-center justify-between w-full select-none">
+        <span
+          className={
+            arg.isToday
+              ? 'w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-semibold shadow-xs'
+              : `text-xs font-semibold px-1 py-0.5 ${
+                  arg.isOther
+                    ? 'text-slate-400 dark:text-slate-600'
+                    : 'text-slate-700 dark:text-slate-300'
+                }`
+          }
+        >
+          {dayNumber}
+        </span>
+
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDateClick?.(dateStr);
+          }}
+          className="fc-day-add-btn h-6 w-6 rounded-md flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/60 dark:hover:text-blue-400 transition cursor-pointer"
+          title={`Cadastrar novo prazo para o dia ${dayNumber}`}
+          aria-label={`Novo prazo em ${dateStr}`}
+        >
+          <Plus className="h-3.5 w-3.5" />
+        </button>
       </div>
     );
   };
@@ -241,33 +290,33 @@ export function ProcessCalendar({
         </div>
 
         {/* Direita: Legenda Semântica com os 4 Status + Alternância de Visão (Mês, Semana, Dia) */}
-        <div className="flex flex-wrap items-center gap-3 self-end lg:self-auto">
-          {/* Legenda de Pílulas com os 4 status idênticos aos cards superiores */}
-          <div className="hidden sm:flex flex-wrap items-center gap-2.5 sm:gap-3 text-[11px] font-medium text-slate-600 dark:text-slate-400 border-r border-slate-200 dark:border-slate-800 pr-4">
-            <div className="flex items-center gap-1.5" title="Vence hoje ou nos próximos 3 dias">
-              <span className="h-2 w-2 rounded-full bg-amber-500 shrink-0" />
+        <div className="flex flex-wrap items-center gap-4 self-end lg:self-auto">
+          {/* Legenda de Status com as 4 cores rigorosamente alinhadas */}
+          <div className="hidden sm:flex flex-wrap items-center gap-4 text-xs font-medium text-slate-500 dark:text-slate-400 border-r border-slate-200 dark:border-slate-800 pr-4">
+            <div className="flex items-center gap-2" title="Vence hoje ou nos próximos 3 dias">
+              <span className="h-2.5 w-2.5 rounded-full bg-amber-500 shrink-0" />
               <span>Urgentes / Hoje</span>
             </div>
-            <div className="flex items-center gap-1.5" title="Prazo com data de vencimento expirada">
-              <span className="h-2 w-2 rounded-full bg-rose-500 shrink-0" />
+            <div className="flex items-center gap-2" title="Prazo com data de vencimento expirada">
+              <span className="h-2.5 w-2.5 rounded-full bg-rose-500 shrink-0" />
               <span>Vencidos</span>
             </div>
-            <div className="flex items-center gap-1.5" title="Prazo já cumprido">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 shrink-0" />
+            <div className="flex items-center gap-2" title="Prazo já cumprido">
+              <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 shrink-0" />
               <span>Cumpridos</span>
             </div>
-            <div className="flex items-center gap-1.5" title="Prazo regular em aberto">
-              <span className="h-2 w-2 rounded-full bg-blue-500 shrink-0" />
+            <div className="flex items-center gap-2" title="Prazo regular em aberto">
+              <span className="h-2.5 w-2.5 rounded-full bg-blue-500 shrink-0" />
               <span>Em Aberto / Padrão</span>
             </div>
           </div>
 
-          {/* Seletor de Visão (Mês, Semana, Dia) */}
-          <div className="flex items-center rounded-xl bg-slate-200 p-1 dark:bg-slate-800">
+          {/* Seletor de Visão (Mês, Semana, Dia) - Segmented Control Moderno */}
+          <div className="flex items-center rounded-xl bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200/80 dark:border-slate-700/60 shadow-2xs">
             <button
               type="button"
               onClick={() => handleChangeView('dayGridMonth')}
-              className={`rounded-lg px-3 py-1 text-xs font-semibold transition ${
+              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition cursor-pointer ${
                 currentView === 'dayGridMonth'
                   ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-700 dark:text-white'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
@@ -278,7 +327,7 @@ export function ProcessCalendar({
             <button
               type="button"
               onClick={() => handleChangeView('timeGridWeek')}
-              className={`rounded-lg px-3 py-1 text-xs font-semibold transition ${
+              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition cursor-pointer ${
                 currentView === 'timeGridWeek'
                   ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-700 dark:text-white'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
@@ -289,7 +338,7 @@ export function ProcessCalendar({
             <button
               type="button"
               onClick={() => handleChangeView('timeGridDay')}
-              className={`rounded-lg px-3 py-1 text-xs font-semibold transition ${
+              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition cursor-pointer ${
                 currentView === 'timeGridDay'
                   ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-700 dark:text-white'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
@@ -318,6 +367,7 @@ export function ProcessCalendar({
           moreLinkContent={(args) => `+${args.num} mais`}
           events={events}
           eventContent={renderEventContent}
+          dayCellContent={renderDayCellContent}
           eventClick={(info) => {
             const prazo = info.event.extendedProps.prazo as Prazo;
             if (prazo) {
