@@ -7,6 +7,7 @@ import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { SecurityBadge } from '@/components/SecurityBadge';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { NumberProcessInput } from '@/components/NumberProcessInput';
+import { TribunalSelector } from '@/components/TribunalSelector';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import {
@@ -277,24 +278,17 @@ function DataJudContent() {
               </div>
 
               <div className="md:col-span-4">
-                <label
-                  htmlFor="tribunalSelect"
-                  className="block text-xs font-semibold uppercase tracking-wider text-slate-200"
-                >
-                  Tribunal (Opcional)
-                </label>
-                <select
+                <TribunalSelector
                   id="tribunalSelect"
+                  label="Tribunal (Opcional)"
+                  tribunais={TRIBUNAIS_OPCOES}
                   value={tribunalSelecionado}
-                  onChange={(e) => setTribunalSelecionado(e.target.value)}
-                  className="mt-1.5 block w-full rounded-xl border border-slate-700 bg-slate-950 px-3 py-3 text-sm text-white focus:border-amber-500 focus:bg-slate-950 focus:outline-none focus:ring-2 focus:ring-amber-500/20"
-                >
-                  {TRIBUNAIS_OPCOES.map((t) => (
-                    <option key={t.valor} value={t.valor} className="bg-slate-900 text-slate-100 py-1.5">
-                      {t.rotulo}
-                    </option>
-                  ))}
-                </select>
+                  onChange={setTribunalSelecionado}
+                  placeholder="Detectar automaticamente pelo CNJ"
+                  className="py-3 text-sm"
+                  clearable
+                  searchable
+                />
               </div>
             </div>
 
