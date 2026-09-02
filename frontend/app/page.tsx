@@ -137,9 +137,9 @@ function AstreaDashboard() {
       description: 'Acompanhamento unificado de autos, varas, foros e histórico de andamentos com o cliente.',
       href: '/processos',
       icon: Briefcase,
-      badge: 'Operacional',
+      badge: 'Principal',
+      isLive: false,
       iconBox: 'bg-sky-50 text-sky-700 dark:bg-sky-950/70 dark:text-sky-300',
-      badgeColor: 'bg-sky-50 text-sky-700 dark:bg-sky-950/80 dark:text-sky-300 border border-sky-200 dark:border-sky-800',
     },
     {
       title: 'Prazos & Agenda',
@@ -147,12 +147,10 @@ function AstreaDashboard() {
       description: 'Gestão de termos fatais, contagem de prazos CPC/CLT e alertas de vencimento.',
       href: '/prazos',
       icon: CalendarClock,
-      badge: prazosHoje.length > 0 ? `${prazosHoje.length} Hoje` : 'Agenda',
+      badge: prazosHoje.length > 0 ? `${prazosHoje.length} hoje` : 'Agenda',
+      isLive: false,
+      isUrgent: prazosHoje.length > 0,
       iconBox: 'bg-amber-50 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300',
-      badgeColor:
-        prazosHoje.length > 0
-          ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/80 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
-          : 'bg-amber-50 text-amber-700 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-200 dark:border-amber-800',
     },
     {
       title: 'Contatos & Clientes',
@@ -160,9 +158,9 @@ function AstreaDashboard() {
       description: 'Gestão completa de pessoas físicas e jurídicas, documentos de identificação e vínculos aos autos.',
       href: '/clientes',
       icon: Users,
-      badge: 'Contatos',
-      iconBox: 'bg-sky-50 text-sky-700 dark:bg-sky-950/70 dark:text-sky-300',
-      badgeColor: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700',
+      badge: 'CRM',
+      isLive: false,
+      iconBox: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
     },
     {
       title: 'DataJud Tribunais',
@@ -170,9 +168,9 @@ function AstreaDashboard() {
       description: 'Sincronização com a API pública dos tribunais para consulta de movimentações e andamentos.',
       href: '/datajud',
       icon: Search,
-      badge: 'Consulta',
-      iconBox: 'bg-sky-50 text-sky-700 dark:bg-sky-950/70 dark:text-sky-300',
-      badgeColor: 'bg-sky-50 text-sky-700 dark:bg-sky-950/80 dark:text-sky-300 border border-sky-200 dark:border-sky-800',
+      badge: 'Online',
+      isLive: true,
+      iconBox: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
     },
     {
       title: 'IA Jurídica',
@@ -180,9 +178,9 @@ function AstreaDashboard() {
       description: 'Análise estruturada de petições, contratos, resumos executivos para clientes e triagem de prazos.',
       href: '/gemini',
       icon: Sparkles,
-      badge: 'Inteligência',
+      badge: 'Ativo',
+      isLive: true,
       iconBox: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
-      badgeColor: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700',
     },
     {
       title: 'Equipe & Permissões',
@@ -191,10 +189,8 @@ function AstreaDashboard() {
       href: '/usuarios',
       icon: Shield,
       badge: isAdmin ? 'Admin' : 'Membro',
+      isLive: false,
       iconBox: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
-      badgeColor: isAdmin
-        ? 'bg-sky-50 text-sky-700 dark:bg-sky-950/80 dark:text-sky-300 border border-sky-200 dark:border-sky-800'
-        : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700',
     },
   ];
 
@@ -607,9 +603,21 @@ function AstreaDashboard() {
                       >
                         <Icon className="h-5 w-5" />
                       </div>
-                      <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${mod.badgeColor}`}>
-                        {mod.badge}
-                      </span>
+                      
+                      {mod.isLive ? (
+                        <div className="flex items-center gap-1.5 rounded-full bg-slate-100 dark:bg-slate-800 px-2.5 py-0.5 text-[10px] font-semibold text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                          <span>{mod.badge}</span>
+                        </div>
+                      ) : mod.isUrgent ? (
+                        <span className="rounded-full bg-amber-50 text-amber-700 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-200 dark:border-amber-800 px-2.5 py-0.5 text-[10px] font-semibold">
+                          {mod.badge}
+                        </span>
+                      ) : (
+                        <span className="rounded-full bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700 px-2.5 py-0.5 text-[10px] font-medium">
+                          {mod.badge}
+                        </span>
+                      )}
                     </div>
 
                     <h3 className="mt-4 text-base font-bold text-slate-900 group-hover:text-sky-600 dark:text-white dark:group-hover:text-sky-400 transition-colors">
