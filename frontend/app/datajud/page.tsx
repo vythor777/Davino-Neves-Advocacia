@@ -9,6 +9,8 @@ import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { NumberProcessInput } from '@/components/NumberProcessInput';
 import { TribunalSelector } from '@/components/TribunalSelector';
 import { ProcessTimeline } from '@/components/ProcessTimeline';
+import { ErrorBoundaryView } from '@/components/ErrorBoundaryView';
+import { NoProcessFoundView } from '@/components/NoProcessFoundView';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import {
@@ -89,7 +91,13 @@ function DataJudContent() {
   const [numeroProcesso, setNumeroProcesso] = useState('');
   const [tribunalSelecionado, setTribunalSelecionado] = useState('');
   const [loading, setLoading] = useState(false);
-  const [erro, setErro] = useState<string | null>(null);
+  const [erroValidacao, setErroValidacao] = useState<string | null>(null);
+  const [erroConexao, setErroConexao] = useState<{
+    mensagem: string;
+    statusCode?: number | string;
+    detalhes?: string;
+  } | null>(null);
+  const [naoEncontrado, setNaoEncontrado] = useState(false);
   const [resultado, setResultado] = useState<DataJudProcessoResponse | null>(null);
   const [copiado, setCopiado] = useState(false);
 
@@ -117,13 +125,17 @@ function DataJudContent() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formatado = formatarCNJ(e.target.value);
     setNumeroProcesso(formatado);
-    if (erro) setErro(null);
+    if (erroValidacao) setErroValidacao(null);
+    if (erroConexao) setErroConexao(null);
+    if (naoEncontrado) setNaoEncontrado(false);
   };
 
   const handleAplicarExemplo = (numero: string, tribunal: string) => {
     setNumeroProcesso(formatarCNJ(numero));
     setTribunalSelecionado(tribunal);
-    if (erro) setErro(null);
+    if (erroValidacao) setErroValidacao(null);
+    if (erroConexao) setErroConexao(null);
+    if (naoEncontrado) setNaoEncontrado(false);
   };
 
   const handleConsultar = async (e?: React.FormEvent) => {
@@ -131,12 +143,14 @@ function DataJudContent() {
     const limpo = numeroProcesso.replace(/\D/g, '');
 
     if (!limpo || limpo.length < 15) {
-      setErro('Por favor, informe o número completo do processo no padrão CNJ (20 dígitos).');
+      setErroValidacao('Por favor, informe o número completo do processo no padrão CNJ (20 dígitos).');
       return;
     }
 
     setLoading(true);
-    setErro(null);
+    setErroValidacao(null);
+    setErroConexao(null);
+    setNaoEncontrado(false);
     setResultado(null);
     setSucessoVinculo(null);
 
@@ -145,10 +159,31 @@ function DataJudContent() {
         numero_processo: limpo,
         tribunal: tribunalSelecionado || undefined,
       });
-      setResultado(data);
+
+      if (!data || !data.numeroProcesso) {
+        setNaoEncontrado(true);
+      } else {
+        setResultado(data);
+      }
     } catch (err: unknown) {
-      const mensagem = err instanceof Error ? err.message : 'Não foi possível consultar os dados no DataJud CNJ.';
-      setErro(mensagem);
+      const status = (err as { status?: number })?.status;
+      const mensagem = err instanceof Error ? err.message : 'Não foi possível conectar ao tribunal.';
+
+      const isNotFound =
+        status === 404 ||
+        mensagem.toLowerCase().includes('não localizado') ||
+        mensagem.toLowerCase().includes('não encontrado') ||
+        mensagem.toLowerCase().includes('nenhum registro');
+
+      if (isNotFound) {
+        setNaoEncontrado(true);
+      } else {
+        setErroConexao({
+          mensagem: 'Não foi possível conectar ao tribunal',
+          statusCode: status || (mensagem.includes('401') ? 401 : 500),
+          detalhes: mensagem,
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -189,7 +224,7 @@ function DataJudContent() {
   const handleSalvarVinculo = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!resultado || !clienteSelecionadoId) {
-      setErro('Selecione um cliente para vincular o processo.');
+      toast.error('Selecione um cliente para vincular o processo.');
       return;
     }
 
@@ -309,13 +344,15 @@ function DataJudContent() {
             </div>
 
             <div className="flex items-center justify-end gap-3 pt-2">
-              {resultado && (
+              {(resultado || naoEncontrado || erroConexao) && (
                 <button
                   type="button"
                   onClick={() => {
                     setResultado(null);
                     setNumeroProcesso('');
-                    setErro(null);
+                    setErroValidacao(null);
+                    setErroConexao(null);
+                    setNaoEncontrado(false);
                   }}
                   className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
                 >
@@ -345,22 +382,40 @@ function DataJudContent() {
           </form>
         </div>
 
-        {/* Mensagem de Erro */}
-        {erro && (
-          <div className="mt-6 rounded-2xl border border-red-200 bg-red-50/80 p-5 text-red-900 dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300">
-            <div className="flex items-start gap-3">
-              <ShieldAlert className="h-5 w-5 shrink-0 text-red-600 dark:text-red-400 mt-0.5" />
-              <div>
-                <h4 className="font-semibold text-sm">Não foi possível localizar o processo</h4>
-                <p className="mt-1 text-xs leading-relaxed">{erro}</p>
-                <div className="mt-3 flex items-center gap-3 text-xs">
-                  <span className="font-medium text-red-800 dark:text-red-200">Dica:</span>
-                  <span>
-                    Confira se o número do processo possui 20 dígitos e se o tribunal correto foi selecionado.
-                  </span>
-                </div>
-              </div>
+        {/* Validação de campo incompleto */}
+        {erroValidacao && (
+          <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50/80 p-4 text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-300">
+            <div className="flex items-center gap-3">
+              <ShieldAlert className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
+              <p className="text-xs sm:text-sm font-medium">{erroValidacao}</p>
             </div>
+          </div>
+        )}
+
+        {/* ErrorBoundaryView: Exibido quando a API do DataJud falhar (HTTP 401, 500, timeout, conexão) */}
+        {erroConexao && (
+          <div className="mt-6">
+            <ErrorBoundaryView
+              title={erroConexao.mensagem}
+              statusCode={erroConexao.statusCode}
+              errorDetails={erroConexao.detalhes}
+              onRetry={() => handleConsultar()}
+              isRetrying={loading}
+            />
+          </div>
+        )}
+
+        {/* NoProcessFoundView: Exibido quando a consulta retornar vazia ou sem registros */}
+        {naoEncontrado && (
+          <div className="mt-6">
+            <NoProcessFoundView
+              numeroProcesso={numeroProcesso}
+              tribunal={tribunalSelecionado}
+              onResetSearch={() => {
+                setNumeroProcesso('');
+                setNaoEncontrado(false);
+              }}
+            />
           </div>
         )}
 

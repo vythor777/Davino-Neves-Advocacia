@@ -43,7 +43,9 @@ api.interceptors.response.use(
       error.response?.data?.message ||
       error.message ||
       'Ocorreu um erro ao processar a requisição.';
-    return Promise.reject(new Error(Array.isArray(message) ? message.join(', ') : message));
+    const customError = new Error(Array.isArray(message) ? message.join(', ') : message);
+    (customError as unknown as { status?: number }).status = error.response?.status;
+    return Promise.reject(customError);
   },
 );
 
