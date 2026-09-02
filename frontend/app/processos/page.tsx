@@ -6,6 +6,7 @@ import AuthGuard from '@/components/AuthGuard';
 import { processoService, Processo, CreateProcessoInput } from '@/services/processoService';
 import { clienteService, Cliente } from '@/services/clienteService';
 import { ProcessosTable, formatarNumeroCNJ, getStatusBadgeStyle } from '@/components/ProcessosTable';
+import { ProcessDataTable } from '@/components/ProcessDataTable';
 import { NumberProcessInput } from '@/components/NumberProcessInput';
 import { SearchInput } from '@/components/SearchInput';
 import { TableSkeleton, MetricCardSkeleton } from '@/components/Skeleton';
@@ -446,29 +447,28 @@ function ProcessosContent() {
         </div>
 
         {/* Tabela de Alta Performance com Sticky Header e Paginação */}
-        {loading ? (
-          <TableSkeleton rows={8} columns={6} />
-        ) : (
-          <ProcessosTable
-            processos={paginatedProcessos}
-            loading={loading}
-            onViewDetails={(proc) => {
-              setSelectedProcesso(proc);
-              setDetailsModalOpen(true);
-            }}
-            onEdit={openEditModal}
-            onDelete={(proc) => {
-              setProcessoToDelete(proc);
-              setDeleteModalOpen(true);
-            }}
-            onCreateNew={openCreateModal}
-            currentPage={currentPage}
-            pageSize={pageSize}
-            totalItems={filteredProcessos.length}
-            onPageChange={setCurrentPage}
-            onPageSizeChange={setPageSize}
-          />
-        )}
+        <ProcessDataTable
+          processos={paginatedProcessos}
+          loading={loading}
+          skeletonRows={6}
+          onViewDetails={(proc) => {
+            setSelectedProcesso(proc);
+            setDetailsModalOpen(true);
+          }}
+          onEdit={(proc) => {
+            openEditModal(proc);
+          }}
+          onDelete={(proc) => {
+            setProcessoToDelete(proc);
+            setDeleteModalOpen(true);
+          }}
+          onEmptyAction={openCreateModal}
+          emptyActionLabel="Cadastrar Novo Processo"
+          currentPage={currentPage}
+          pageSize={pageSize}
+          totalItems={filteredProcessos.length}
+          onPageChange={setCurrentPage}
+        />
       </main>
 
       {/* Modal de Criação / Edição */}
