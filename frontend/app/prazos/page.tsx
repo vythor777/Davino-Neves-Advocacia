@@ -10,6 +10,8 @@ import { TableSkeleton, MetricCardSkeleton, CardGridSkeleton } from '@/component
 import { SecurityBadge } from '@/components/SecurityBadge';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { ConfirmModal } from '@/components/ConfirmModal';
+import { ProcessCalendar } from '@/components/ProcessCalendar';
+import { PrazoDetailModal } from '@/components/PrazoDetailModal';
 import { toast } from 'sonner';
 import { prazoService, Prazo, CreatePrazoInput } from '@/services/prazoService';
 import { processoService, Processo } from '@/services/processoService';
@@ -119,8 +121,12 @@ function PrazosContent() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
-  // Modo de exibição: Lista Tabela vs Cards
-  const [viewMode, setViewMode] = useState<'table' | 'cards'>('table');
+  // Modo de exibição: Calendário (Padrão no estilo Google Calendar) vs Tabela vs Cards
+  const [viewMode, setViewMode] = useState<'calendar' | 'table' | 'cards'>('calendar');
+
+  // Modal de Detalhes do Prazo (ao clicar no calendário)
+  const [selectedPrazoDetails, setSelectedPrazoDetails] = useState<Prazo | null>(null);
+  const [detailsModalOpen, setDetailsModalOpen] = useState<boolean>(false);
 
   // Filtros
   const [searchTerm, setSearchTerm] = useState<string>('');
@@ -197,6 +203,24 @@ function PrazosContent() {
     target.setDate(target.getDate() + 5);
     const suggestedDate = target.toISOString().split('T')[0];
     setDataVencimento(suggestedDate);
+    setStatus('Pendente');
+    setIdProcesso(processos.length > 0 ? String(processos[0].id_processo) : '');
+    setFormErrors({});
+    setModalOpen(true);
+    if (processos.length === 0) {
+      fetchProcessosList();
+    }
+  };
+
+  const handleSelectPrazoFromCalendar = (prazo: Prazo) => {
+    setSelectedPrazoDetails(prazo);
+    setDetailsModalOpen(true);
+  };
+
+  const handleDateClickFromCalendar = (dateStr: string) => {
+    setEditingPrazo(null);
+    setDescricao('');
+    setDataVencimento(dateStr);
     setStatus('Pendente');
     setIdProcesso(processos.length > 0 ? String(processos[0].id_processo) : '');
     setFormErrors({});
@@ -517,8 +541,20 @@ function PrazosContent() {
           <div className="flex flex-wrap items-center gap-2">
             <div className="flex items-center rounded-xl bg-slate-200 p-1 dark:bg-slate-800">
               <button
+                onClick={() => setViewMode('calendar')}
+                className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                  viewMode === 'calendar'
+                    ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-700 dark:text-white'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400'
+                }`}
+                title="Visualização em Calendário"
+              >
+                <Calendar className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Calendário</span>
+              </button>
+              <button
                 onClick={() => setViewMode('table')}
-                className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
                   viewMode === 'table'
                     ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-700 dark:text-white'
                     : 'text-slate-600 hover:text-slate-900 dark:text-slate-400'
@@ -526,10 +562,11 @@ function PrazosContent() {
                 title="Visualização em Tabela"
               >
                 <ListFilter className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Tabela</span>
               </button>
               <button
                 onClick={() => setViewMode('cards')}
-                className={`rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
+                className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition ${
                   viewMode === 'cards'
                     ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-700 dark:text-white'
                     : 'text-slate-600 hover:text-slate-900 dark:text-slate-400'
@@ -537,6 +574,7 @@ function PrazosContent() {
                 title="Visualização em Cards"
               >
                 <LayoutGrid className="h-3.5 w-3.5" />
+                <span className="hidden sm:inline">Cards</span>
               </button>
             </div>
 
@@ -569,13 +607,32 @@ function PrazosContent() {
           </div>
         </div>
 
-        {/* Conteúdo: Tabela ou Cards */}
+        {/* Conteúdo: Calendário Interativo, Tabela ou Cards */}
         {loading ? (
-          viewMode === 'table' ? (
+          viewMode === 'calendar' ? (
+            <div className="w-full rounded-2xl border border-slate-200 bg-white p-6 shadow-2xs dark:border-slate-800 dark:bg-slate-900 animate-pulse">
+              <div className="h-10 bg-slate-100 dark:bg-slate-800 rounded-xl mb-6 w-1/3"></div>
+              <div className="grid grid-cols-7 gap-2">
+                {Array.from({ length: 35 }).map((_, i) => (
+                  <div key={i} className="h-24 bg-slate-50 dark:bg-slate-800/40 rounded-lg border border-slate-100 dark:border-slate-800"></div>
+                ))}
+              </div>
+            </div>
+          ) : viewMode === 'table' ? (
             <TableSkeleton rows={6} columns={6} />
           ) : (
             <CardGridSkeleton count={6} />
           )
+        ) : viewMode === 'calendar' ? (
+          /* Grid de Calendário que ocupa 100% da largura disponível */
+          <div className="w-full">
+            <ProcessCalendar
+              prazos={filteredPrazos}
+              onSelectPrazo={handleSelectPrazoFromCalendar}
+              onDateClick={handleDateClickFromCalendar}
+              loading={loading}
+            />
+          </div>
         ) : filteredPrazos.length === 0 ? (
           <EmptyState
             icon={CalendarClock}
@@ -931,6 +988,21 @@ function PrazosContent() {
         cancelLabel="Cancelar"
         variant="danger"
         isLoading={deleting}
+      />
+
+      {/* Modal Interativo com Detalhes do Prazo Selecionado no Calendário */}
+      <PrazoDetailModal
+        prazo={selectedPrazoDetails}
+        isOpen={detailsModalOpen}
+        onClose={() => setDetailsModalOpen(false)}
+        onToggleStatus={handleToggleStatus}
+        onEdit={(prazo) => {
+          openEditModal(prazo);
+        }}
+        onDelete={(prazo) => {
+          setPrazoToDelete(prazo);
+          setDeleteModalOpen(true);
+        }}
       />
 
       {/* Rodapé Institucional */}

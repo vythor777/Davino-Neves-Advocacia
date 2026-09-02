@@ -191,3 +191,212 @@ textarea:focus::placeholder {
   color: #64748b !important; /* slate-500 */
 }
 
+/* =========================================================
+   FullCalendar Dark Mode & Modern Legal UI Overrides
+   ========================================================= */
+
+:root {
+  --fc-border-color: #e2e8f0;
+  --fc-page-bg-color: #ffffff;
+  --fc-neutral-bg-color: #f8fafc;
+  --fc-neutral-text-color: #64748b;
+  --fc-today-bg-color: rgba(0, 71, 171, 0.04);
+}
+
+.dark,
+[data-theme="dark"] {
+  --fc-border-color: #1e293b;
+  --fc-page-bg-color: #0f172a;
+  --fc-neutral-bg-color: #020617;
+  --fc-neutral-text-color: #94a3b8;
+  --fc-today-bg-color: rgba(59, 130, 246, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --fc-border-color: #1e293b;
+    --fc-page-bg-color: #0f172a;
+    --fc-neutral-bg-color: #020617;
+    --fc-neutral-text-color: #94a3b8;
+    --fc-today-bg-color: rgba(59, 130, 246, 0.08);
+  }
+}
+
+/* FullCalendar Container & Grid */
+.fc {
+  font-family: inherit;
+}
+
+.fc-theme-standard td,
+.fc-theme-standard th {
+  border-color: var(--fc-border-color) !important;
+}
+
+.fc-theme-standard .fc-scrollgrid {
+  border: 1px solid var(--fc-border-color) !important;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+/* Headers dos dias da semana (DOM, SEG, TER...) */
+.fc-col-header-cell {
+  background-color: var(--fc-neutral-bg-color) !important;
+  padding: 8px 0 !important;
+  border-bottom: 1px solid var(--fc-border-color) !important;
+}
+
+.fc-col-header-cell-cushion {
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--fc-neutral-text-color) !important;
+  text-decoration: none !important;
+}
+
+/* Células do mês */
+.fc-daygrid-day-frame {
+  min-height: 105px !important;
+  background-color: var(--fc-page-bg-color);
+  transition: background-color 0.15s ease;
+}
+
+.fc-daygrid-day:hover .fc-daygrid-day-frame {
+  background-color: rgba(148, 163, 184, 0.04);
+}
+
+.fc-daygrid-day-number {
+  font-size: 0.8125rem !important;
+  font-weight: 600 !important;
+  color: #64748b;
+  padding: 6px 8px !important;
+  text-decoration: none !important;
+}
+
+.dark .fc-daygrid-day-number,
+@media (prefers-color-scheme: dark) {
+  .fc-daygrid-day-number {
+    color: #94a3b8;
+  }
+}
+
+/* Dia Atual (Hoje) */
+.fc-day-today {
+  background-color: var(--fc-today-bg-color) !important;
+}
+
+.fc-day-today .fc-daygrid-day-number {
+  color: #0047ab !important;
+  font-weight: 700 !important;
+}
+
+.dark .fc-day-today .fc-daygrid-day-number,
+@media (prefers-color-scheme: dark) {
+  .fc-day-today .fc-daygrid-day-number {
+    color: #60a5fa !important;
+  }
+}
+
+/* Dias de outros meses */
+.fc-day-other {
+  opacity: 0.45;
+  background-color: rgba(241, 245, 249, 0.5) !important;
+}
+
+.dark .fc-day-other,
+@media (prefers-color-scheme: dark) {
+  .fc-day-other {
+    background-color: rgba(2, 6, 23, 0.5) !important;
+  }
+}
+
+/* Eventos & Pílulas */
+.fc-event,
+.fc-h-event,
+.fc-v-event {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  margin-top: 2px !important;
+  margin-bottom: 2px !important;
+  outline: none !important;
+}
+
+.fc-event:focus {
+  outline: none !important;
+}
+
+.fc-daygrid-event-harness {
+  margin: 1px 4px !important;
+}
+
+/* Link "+ mais N" */
+.fc-more-link {
+  font-size: 0.6875rem !important;
+  font-weight: 600 !important;
+  color: #0047ab !important;
+  padding: 1px 4px !important;
+  border-radius: 4px;
+}
+
+.dark .fc-more-link,
+@media (prefers-color-scheme: dark) {
+  .fc-more-link {
+    color: #60a5fa !important;
+  }
+}
+
+/* Popover do "+ mais N" */
+.fc-popover {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0 !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.15), 0 8px 10px -6px rgba(15, 23, 42, 0.1) !important;
+  overflow: hidden;
+  z-index: 50 !important;
+}
+
+.fc-popover-header {
+  background-color: #f8fafc !important;
+  padding: 8px 12px !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  color: #1e293b !important;
+}
+
+.dark .fc-popover,
+@media (prefers-color-scheme: dark) {
+  .fc-popover {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6) !important;
+  }
+  .fc-popover-header {
+    background-color: #1e293b !important;
+    border-bottom-color: #334155 !important;
+    color: #f8fafc !important;
+  }
+  .fc-popover-body {
+    background-color: #0f172a !important;
+  }
+}
+
+/* TimeGrid (Semana / Dia) */
+.fc-timegrid-slot {
+  height: 2.25rem !important;
+  border-color: var(--fc-border-color) !important;
+}
+
+.fc-timegrid-slot-label-cushion {
+  font-size: 0.6875rem !important;
+  color: var(--fc-neutral-text-color) !important;
+}
+
+.fc-timegrid-axis-cushion {
+  font-size: 0.6875rem !important;
+  color: var(--fc-neutral-text-color) !important;
+}
+
+

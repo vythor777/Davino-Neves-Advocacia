@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Search, RefreshCw, ArrowLeft, ExternalLink, HelpCircle } from 'lucide-react';
+import { Search, RefreshCw, HelpCircle } from 'lucide-react';
 import { formatarNumeroCNJ } from '@/components/ProcessosTable';
 
 export interface NoProcessFoundViewProps {

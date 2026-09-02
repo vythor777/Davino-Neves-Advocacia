@@ -7,7 +7,6 @@ import {
   ChevronDown,
   ChevronUp,
   ServerCrash,
-  WifiOff,
   Lock,
 } from 'lucide-react';
 
@@ -81,7 +80,6 @@ export function ErrorBoundaryView({
   const [showDetails, setShowDetails] = useState(false);
 
   const helperText = description || getErrorMessageHelper(statusCode);
-  const isServerOrAuth = Number(statusCode) >= 500 || Number(statusCode) === 401 || Number(statusCode) === 403;
 
   return (
     <div
