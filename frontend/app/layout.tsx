@@ -21,6 +21,35 @@ const jetbrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   title: "Davino Neves Advocacia | Gestão Jurídica",
   description: "Plataforma corporativa de gestão jurídica com controle de processos, clientes, prazos e inteligência processual.",
+  applicationName: "Davino Neves Advocacia",
+  authors: [{ name: "Davino Neves Advocacia" }],
+  keywords: [
+    "gestão jurídica",
+    "advocacia",
+    "processos judiciais",
+    "prazos processuais",
+    "DataJud CNJ",
+    "controladoria jurídica",
+    "Davino Neves",
+  ],
+  creator: "Davino Neves Advocacia",
+  publisher: "Davino Neves Advocacia",
+  openGraph: {
+    title: "Davino Neves Advocacia | Gestão Jurídica",
+    description: "Plataforma corporativa de gestão jurídica com controle de processos, clientes, prazos e inteligência processual.",
+    siteName: "Davino Neves Advocacia",
+    locale: "pt_BR",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Davino Neves Advocacia | Gestão Jurídica",
+    description: "Plataforma corporativa de gestão jurídica com controle de processos, clientes, prazos e inteligência processual.",
+  },
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function RootLayout({

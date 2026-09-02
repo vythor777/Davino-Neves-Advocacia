@@ -18,13 +18,8 @@ import {
   User,
   Plus,
   ChevronDown,
-  Activity,
-  FileText,
-  Clock,
   UserPlus,
-  Compass,
   X,
-  SlidersHorizontal,
 } from 'lucide-react';
 
 export function Navbar() {
@@ -32,7 +27,6 @@ export function Navbar() {
   const router = useRouter();
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
   const [quickMenuOpen, setQuickMenuOpen] = useState(false);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const quickMenuRef = useRef<HTMLDivElement>(null);
 
@@ -64,19 +58,6 @@ export function Navbar() {
     e.preventDefault();
     if (!searchQuery.trim()) return;
     router.push(`/processos?q=${encodeURIComponent(searchQuery.trim())}`);
-  };
-
-  const getRoleBadge = (role?: string) => {
-    switch (role) {
-      case 'ADMINISTRADOR':
-        return { label: 'Admin', color: 'bg-sky-500/10 text-sky-400 border-sky-500/30' };
-      case 'ADVOGADO':
-        return { label: 'Advogado', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' };
-      case 'ESTAGIARIO':
-        return { label: 'Estagiário', color: 'bg-amber-500/10 text-amber-400 border-amber-500/30' };
-      default:
-        return { label: 'Membro', color: 'bg-slate-500/10 text-slate-400 border-slate-500/30' };
-    }
   };
 
   return (

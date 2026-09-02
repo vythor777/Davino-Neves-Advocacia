@@ -3,6 +3,10 @@
 import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import AuthGuard from '@/components/AuthGuard';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { SecurityBadge } from '@/components/SecurityBadge';
+import { InstitutionalFooter } from '@/components/InstitutionalFooter';
+import { toast } from 'sonner';
 import Link from 'next/link';
 import {
   Search,
@@ -206,19 +210,30 @@ function DataJudContent() {
         titulo: novoProcesso.titulo,
       });
       setModalVincularAberto(false);
+      toast.success('Processo importado com sucesso!', {
+        description: `O processo "${novoProcesso.titulo}" foi adicionado ao acervo ativo do escritório.`,
+      });
     } catch (err: unknown) {
-      const mensagem = err instanceof Error ? err.message : 'Falha na requisição';
-      alert(`Erro ao vincular processo: ${mensagem}`);
+      const mensagem = err instanceof Error ? err.message : 'Falha na requisição ao servidor.';
+      toast.error('Erro ao vincular processo ao acervo', {
+        description: mensagem,
+      });
     } finally {
       setSalvandoVinculo(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col antialiased">
       <Navbar />
 
-      <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in-up space-y-6">
+        {/* Breadcrumb e Indicador de Segurança */}
+        <div className="flex items-center justify-between">
+          <Breadcrumbs items={[{ label: 'Consulta DataJud (CNJ)', icon: Scale }]} />
+          <SecurityBadge variant="compact" className="hidden sm:inline-flex" />
+        </div>
+
         {/* Cabeçalho da Página */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200 pb-6 dark:border-slate-800">
           <div>
@@ -237,7 +252,7 @@ function DataJudContent() {
           <div className="flex items-center gap-3">
             <Link
               href="/processos"
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-xs hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-xs hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 transition"
             >
               <Briefcase className="h-4 w-4" />
               Ver Processos do Escritório
@@ -730,6 +745,9 @@ function DataJudContent() {
           </div>
         </div>
       )}
+
+      {/* Rodapé Institucional */}
+      <InstitutionalFooter />
     </div>
   );
 }

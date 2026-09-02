@@ -3,6 +3,12 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Navbar from '@/components/Navbar';
 import AuthGuard from '@/components/AuthGuard';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { EmptyState } from '@/components/EmptyState';
+import { TableSkeleton, MetricCardSkeleton } from '@/components/Skeleton';
+import { SecurityBadge } from '@/components/SecurityBadge';
+import { InstitutionalFooter } from '@/components/InstitutionalFooter';
+import { ConfirmModal } from '@/components/ConfirmModal';
 import {
   usuarioService,
   UsuarioItem,
@@ -27,7 +33,6 @@ import {
   Mail,
   User,
   ShieldCheck,
-  Check,
   Eye,
   EyeOff,
 } from 'lucide-react';
@@ -253,10 +258,16 @@ function UsuariosContent() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col antialiased">
       <Navbar />
 
-      <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in-up space-y-6">
+        {/* Breadcrumb e Indicador de Segurança */}
+        <div className="flex items-center justify-between">
+          <Breadcrumbs items={[{ label: 'Equipe & Usuários', icon: Shield }]} />
+          <SecurityBadge variant="compact" className="hidden sm:inline-flex" />
+        </div>
+
         {/* Cabeçalho da Página */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 dark:border-slate-800 pb-6">
           <div>
@@ -296,7 +307,7 @@ function UsuariosContent() {
 
         {/* Mensagens de Feedback */}
         {successMsg && (
-          <div className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-xs text-emerald-800 flex items-center justify-between dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300">
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-xs text-emerald-800 flex items-center justify-between dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300 shadow-2xs">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
               <span>{successMsg}</span>
@@ -308,7 +319,7 @@ function UsuariosContent() {
         )}
 
         {errorMsg && (
-          <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-xs text-red-800 flex items-center justify-between dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300">
+          <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-xs text-red-800 flex items-center justify-between dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300 shadow-2xs">
             <div className="flex items-center gap-2">
               <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
               <span>{errorMsg}</span>
@@ -320,55 +331,66 @@ function UsuariosContent() {
         )}
 
         {/* Cards de Métricas */}
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Equipe</span>
-              <Users className="h-4 w-4 text-slate-400" />
-            </div>
-            <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
-              {stats.total}
-            </p>
-          </div>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {loading ? (
+            <>
+              <MetricCardSkeleton />
+              <MetricCardSkeleton />
+              <MetricCardSkeleton />
+              <MetricCardSkeleton />
+            </>
+          ) : (
+            <>
+              <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Equipe</span>
+                  <Users className="h-4 w-4 text-slate-400" />
+                </div>
+                <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
+                  {stats.total}
+                </p>
+              </div>
 
-          <div className="rounded-xl border border-purple-200 bg-purple-50/50 p-4 dark:border-purple-900/30 dark:bg-purple-950/20 shadow-2xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-purple-700 dark:text-purple-300">Administradores</span>
-              <ShieldCheck className="h-4 w-4 text-purple-600 dark:text-purple-400" />
-            </div>
-            <p className="mt-2 text-2xl font-bold font-serif text-purple-900 dark:text-purple-200">
-              {stats.administradores}
-            </p>
-          </div>
+              <div className="rounded-xl border border-purple-200 bg-purple-50/50 p-4 dark:border-purple-900/30 dark:bg-purple-950/20 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-purple-700 dark:text-purple-300">Administradores</span>
+                  <ShieldCheck className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                </div>
+                <p className="mt-2 text-2xl font-bold font-serif text-purple-900 dark:text-purple-200">
+                  {stats.administradores}
+                </p>
+              </div>
 
-          <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-4 dark:border-amber-900/30 dark:bg-amber-950/20 shadow-2xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-amber-800 dark:text-amber-300">Advogados</span>
-              <Briefcase className="h-4 w-4 text-amber-700 dark:text-amber-400" />
-            </div>
-            <p className="mt-2 text-2xl font-bold font-serif text-amber-950 dark:text-amber-200">
-              {stats.advogados}
-            </p>
-          </div>
+              <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-4 dark:border-amber-900/30 dark:bg-amber-950/20 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-amber-800 dark:text-amber-300">Advogados</span>
+                  <Briefcase className="h-4 w-4 text-amber-700 dark:text-amber-400" />
+                </div>
+                <p className="mt-2 text-2xl font-bold font-serif text-amber-950 dark:text-amber-200">
+                  {stats.advogados}
+                </p>
+              </div>
 
-          <div className="rounded-xl border border-blue-200 bg-blue-50/50 p-4 dark:border-blue-900/30 dark:bg-blue-950/20 shadow-2xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-blue-700 dark:text-blue-300">Estagiários</span>
-              <GraduationCap className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-            </div>
-            <p className="mt-2 text-2xl font-bold font-serif text-blue-900 dark:text-blue-200">
-              {stats.estagiarios}
-            </p>
-          </div>
+              <div className="rounded-xl border border-blue-200 bg-blue-50/50 p-4 dark:border-blue-900/30 dark:bg-blue-950/20 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-blue-800 dark:text-blue-300">Estagiários</span>
+                  <GraduationCap className="h-4 w-4 text-blue-700 dark:text-blue-400" />
+                </div>
+                <p className="mt-2 text-2xl font-bold font-serif text-blue-950 dark:text-blue-200">
+                  {stats.estagiarios}
+                </p>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Filtros e Busca */}
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div className="relative flex-1 max-w-md">
             <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input
               type="text"
-              placeholder="Buscar por nome ou e-mail..."
+              placeholder="Buscar por nome ou e-mail corporativo..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:border-amber-600 focus:outline-hidden focus:ring-1 focus:ring-amber-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
@@ -399,33 +421,28 @@ function UsuariosContent() {
         </div>
 
         {/* Tabela de Usuários */}
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white shadow-2xs overflow-hidden dark:border-slate-800 dark:bg-slate-900">
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-2xs overflow-hidden dark:border-slate-800 dark:bg-slate-900">
           {loading ? (
-            <div className="py-16 text-center">
-              <RefreshCw className="mx-auto h-8 w-8 animate-spin text-amber-700 dark:text-amber-500" />
-              <p className="mt-3 text-xs font-medium text-slate-500 dark:text-slate-400">
-                Carregando colaboradores do banco de dados...
-              </p>
-            </div>
+            <TableSkeleton rows={5} columns={6} />
           ) : filteredUsuarios.length === 0 ? (
-            <div className="py-16 text-center px-4">
-              <Users className="mx-auto h-10 w-10 text-slate-300 dark:text-slate-600" />
-              <h3 className="mt-3 font-serif text-lg font-bold text-slate-800 dark:text-slate-200">
-                Nenhum usuário encontrado
-              </h3>
-              <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                {searchTerm || selectedRole !== 'TODOS'
-                  ? 'Nenhum resultado corresponde aos filtros aplicados.'
-                  : 'Cadastre o primeiro colaborador da equipe do escritório.'}
-              </p>
-              <button
-                onClick={handleOpenCreate}
-                className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-amber-700 px-4 py-2 text-xs font-semibold text-white hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-500"
-              >
-                <UserPlus className="h-4 w-4" />
-                Cadastrar Colaborador
-              </button>
-            </div>
+            <EmptyState
+              icon={Users}
+              title={searchTerm || selectedRole !== 'TODOS' ? "Nenhum colaborador localizado" : "Nenhum colaborador cadastrado"}
+              description={
+                searchTerm || selectedRole !== 'TODOS'
+                  ? "Tente ajustar o perfil de acesso ou a busca por nome/e-mail."
+                  : "Cadastre novos advogados, administradores ou estagiários na equipe."
+              }
+              action={
+                !searchTerm && selectedRole === 'TODOS'
+                  ? {
+                      label: "Cadastrar Colaborador",
+                      onClick: handleOpenCreate,
+                      icon: UserPlus,
+                    }
+                  : undefined
+              }
+            />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
@@ -823,43 +840,24 @@ function UsuariosContent() {
         </div>
       )}
 
-      {/* Modal de Exclusão */}
-      {isDeleteModalOpen && selectedUsuario && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-md rounded-2xl border border-red-200 bg-white p-6 shadow-2xl dark:border-red-900/40 dark:bg-slate-900">
-            <div className="flex items-center gap-3 text-red-600 dark:text-red-400">
-              <div className="rounded-xl bg-red-100 p-2 dark:bg-red-950/60">
-                <AlertCircle className="h-6 w-6" />
-              </div>
-              <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white">
-                Confirmar Exclusão
-              </h3>
-            </div>
+      {/* Modal de Exclusão Reutilizável & Acessível */}
+      <ConfirmModal
+        isOpen={isDeleteModalOpen && !!selectedUsuario}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+          setSelectedUsuario(null);
+        }}
+        onConfirm={handleDeleteSubmit}
+        title="Confirmar Exclusão de Colaborador"
+        description={`Tem certeza que deseja remover o usuário ${selectedUsuario?.nome} (${selectedUsuario?.email})? Todas as permissões de acesso deste colaborador serão revogadas.`}
+        confirmLabel="Sim, Excluir Colaborador"
+        cancelLabel="Cancelar"
+        variant="danger"
+        isLoading={submitting}
+      />
 
-            <p className="mt-3 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Tem certeza que deseja excluir o usuário <strong>{selectedUsuario.nome}</strong> ({selectedUsuario.email})? Esta ação não pode ser desfeita.
-            </p>
-
-            <div className="mt-6 flex items-center justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setIsDeleteModalOpen(false)}
-                className="rounded-xl border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                onClick={handleDeleteSubmit}
-                disabled={submitting}
-                className="rounded-xl bg-red-600 px-4 py-2 text-xs font-semibold text-white hover:bg-red-700 transition disabled:opacity-50"
-              >
-                {submitting ? 'Excluindo...' : 'Sim, Excluir'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Rodapé Institucional */}
+      <InstitutionalFooter />
     </div>
   );
 }

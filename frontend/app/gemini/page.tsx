@@ -4,6 +4,10 @@ import React, { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Navbar from '@/components/Navbar';
 import AuthGuard from '@/components/AuthGuard';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { SecurityBadge } from '@/components/SecurityBadge';
+import { InstitutionalFooter } from '@/components/InstitutionalFooter';
+import { toast } from 'sonner';
 import Link from 'next/link';
 import {
   Sparkles,
@@ -305,7 +309,9 @@ function GeminiContent() {
   const handleSalvarPrazoModal = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!processoSelecionadoId) {
-      alert('Selecione um processo do escritório para vincular o prazo.');
+      toast.warning('Selecione um processo', {
+        description: 'É necessário selecionar um processo ativo do escritório para vincular o prazo.',
+      });
       return;
     }
 
@@ -320,19 +326,30 @@ function GeminiContent() {
 
       setSucessoPrazo('Prazo agendado e registrado com sucesso no Módulo de Prazos!');
       setModalPrazoAberto(false);
+      toast.success('Prazo agendado com sucesso!', {
+        description: `O prazo "${descricaoPrazoModal}" foi registrado no calendário com vencimento em ${new Date(dataVencimentoModal + 'T00:00:00').toLocaleDateString('pt-BR')}.`,
+      });
     } catch (err: unknown) {
-      const mensagem = err instanceof Error ? err.message : 'Falha na requisição';
-      alert(`Erro ao cadastrar prazo: ${mensagem}`);
+      const mensagem = err instanceof Error ? err.message : 'Falha na requisição ao servidor.';
+      toast.error('Erro ao cadastrar prazo', {
+        description: mensagem,
+      });
     } finally {
       setSalvandoPrazo(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col antialiased">
       <Navbar />
 
-      <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in-up space-y-6">
+        {/* Breadcrumb e Indicador de Segurança */}
+        <div className="flex items-center justify-between">
+          <Breadcrumbs items={[{ label: 'Assistente IA Gemini', icon: Sparkles }]} />
+          <SecurityBadge variant="compact" className="hidden sm:inline-flex" />
+        </div>
+
         {/* Banner Superior da IA */}
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200 pb-6 dark:border-slate-800">
           <div>
@@ -1134,6 +1151,9 @@ function GeminiContent() {
           </div>
         </div>
       )}
+
+      {/* Rodapé Institucional */}
+      <InstitutionalFooter />
     </div>
   );
 }

@@ -4,6 +4,13 @@ import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import Navbar from '@/components/Navbar';
 import AuthGuard from '@/components/AuthGuard';
+import { Breadcrumbs } from '@/components/Breadcrumbs';
+import { EmptyState } from '@/components/EmptyState';
+import { TableSkeleton, MetricCardSkeleton, CardGridSkeleton } from '@/components/Skeleton';
+import { SecurityBadge } from '@/components/SecurityBadge';
+import { InstitutionalFooter } from '@/components/InstitutionalFooter';
+import { ConfirmModal } from '@/components/ConfirmModal';
+import { toast } from 'sonner';
 import { prazoService, Prazo, CreatePrazoInput } from '@/services/prazoService';
 import { processoService, Processo } from '@/services/processoService';
 import {
@@ -365,13 +372,19 @@ function PrazosContent() {
   }).length;
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col">
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col antialiased">
       <Navbar />
 
-      <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+      <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in-up space-y-6">
+        {/* Breadcrumb de Navegação */}
+        <div className="flex items-center justify-between">
+          <Breadcrumbs items={[{ label: 'Prazos & Agenda', icon: CalendarClock }]} />
+          <SecurityBadge variant="compact" className="hidden sm:inline-flex" />
+        </div>
+
         {/* Banner de Feedback / Alertas */}
         {successMsg && (
-          <div className="mb-6 flex items-center justify-between rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/50 dark:text-emerald-300 text-xs">
+          <div className="flex items-center justify-between rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/50 dark:text-emerald-300 text-xs shadow-2xs">
             <div className="flex items-center gap-3">
               <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
               <span className="font-medium">{successMsg}</span>
@@ -383,7 +396,7 @@ function PrazosContent() {
         )}
 
         {errorMsg && (
-          <div className="mb-6 flex items-center justify-between rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/50 dark:text-rose-300 text-xs">
+          <div className="flex items-center justify-between rounded-xl border border-rose-200 bg-rose-50 p-4 text-rose-800 dark:border-rose-900/60 dark:bg-rose-950/50 dark:text-rose-300 text-xs shadow-2xs">
             <div className="flex items-center gap-3">
               <AlertTriangle className="h-4 w-4 text-rose-600 dark:text-rose-400 shrink-0" />
               <span className="font-medium">{errorMsg}</span>
@@ -435,46 +448,57 @@ function PrazosContent() {
         </div>
 
         {/* Métricas e Painéis de Urgência */}
-        <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
-          <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total de Prazos</span>
-              <CalendarClock className="h-4 w-4 text-slate-400" />
-            </div>
-            <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
-              {totalPrazos}
-            </p>
-          </div>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+          {loading ? (
+            <>
+              <MetricCardSkeleton />
+              <MetricCardSkeleton />
+              <MetricCardSkeleton />
+              <MetricCardSkeleton />
+            </>
+          ) : (
+            <>
+              <div className="rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total de Prazos</span>
+                  <CalendarClock className="h-4 w-4 text-slate-400" />
+                </div>
+                <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
+                  {totalPrazos}
+                </p>
+              </div>
 
-          <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-4 dark:border-amber-900/60 dark:bg-amber-950/20 shadow-2xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-amber-900 dark:text-amber-300">Urgentes / Hoje</span>
-              <Flame className="h-4 w-4 text-amber-600 dark:text-amber-400" />
-            </div>
-            <p className="mt-2 text-2xl font-bold font-serif text-amber-900 dark:text-amber-200">
-              {totalUrgentes}
-            </p>
-          </div>
+              <div className="rounded-xl border border-amber-200 bg-amber-50/50 p-4 dark:border-amber-900/60 dark:bg-amber-950/20 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-amber-900 dark:text-amber-300">Urgentes / Hoje</span>
+                  <Flame className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                </div>
+                <p className="mt-2 text-2xl font-bold font-serif text-amber-900 dark:text-amber-200">
+                  {totalUrgentes}
+                </p>
+              </div>
 
-          <div className="rounded-xl border border-rose-200 bg-rose-50/50 p-4 dark:border-rose-900/60 dark:bg-rose-950/20 shadow-2xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-rose-900 dark:text-rose-300">Prazos Vencidos</span>
-              <XCircle className="h-4 w-4 text-rose-600 dark:text-rose-400" />
-            </div>
-            <p className="mt-2 text-2xl font-bold font-serif text-rose-900 dark:text-rose-200">
-              {totalVencidos}
-            </p>
-          </div>
+              <div className="rounded-xl border border-rose-200 bg-rose-50/50 p-4 dark:border-rose-900/60 dark:bg-rose-950/20 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-rose-900 dark:text-rose-300">Prazos Vencidos</span>
+                  <XCircle className="h-4 w-4 text-rose-600 dark:text-rose-400" />
+                </div>
+                <p className="mt-2 text-2xl font-bold font-serif text-rose-900 dark:text-rose-200">
+                  {totalVencidos}
+                </p>
+              </div>
 
-          <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-4 dark:border-emerald-900/60 dark:bg-emerald-950/20 shadow-2xs">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-medium text-emerald-900 dark:text-emerald-300">Cumpridos</span>
-              <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-            </div>
-            <p className="mt-2 text-2xl font-bold font-serif text-emerald-900 dark:text-emerald-200">
-              {totalCumpridos}
-            </p>
-          </div>
+              <div className="rounded-xl border border-emerald-200 bg-emerald-50/50 p-4 dark:border-emerald-900/60 dark:bg-emerald-950/20 shadow-2xs">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-medium text-emerald-900 dark:text-emerald-300">Cumpridos</span>
+                  <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                </div>
+                <p className="mt-2 text-2xl font-bold font-serif text-emerald-900 dark:text-emerald-200">
+                  {totalCumpridos}
+                </p>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Barra de Filtros e Alternância de Visualização */}
@@ -547,31 +571,34 @@ function PrazosContent() {
 
         {/* Conteúdo: Tabela ou Cards */}
         {loading ? (
-          <div className="mt-6 rounded-2xl border border-slate-200 bg-white py-16 text-center dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
-            <RefreshCw className="mx-auto h-8 w-8 animate-spin text-amber-700 dark:text-amber-500" />
-            <p className="mt-3 text-xs font-medium text-slate-500 dark:text-slate-400">
-              Carregando prazos do banco de dados...
-            </p>
-          </div>
+          viewMode === 'table' ? (
+            <TableSkeleton rows={6} columns={6} />
+          ) : (
+            <CardGridSkeleton count={6} />
+          )
         ) : filteredPrazos.length === 0 ? (
-          <div className="mt-6 rounded-2xl border border-slate-200 bg-white py-16 text-center px-4 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
-            <CalendarClock className="mx-auto h-10 w-10 text-slate-300 dark:text-slate-600" />
-            <h3 className="mt-3 font-serif text-lg font-bold text-slate-800 dark:text-slate-200">
-              Nenhum prazo judicial encontrado
-            </h3>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              {searchTerm || selectedFilter !== 'todos' || selectedProcessoFilter !== 'todos'
-                ? 'Nenhum resultado corresponde aos filtros aplicados.'
-                : 'Cadastre o primeiro prazo para gerenciar a agenda do escritório.'}
-            </p>
-            <button
-              onClick={openCreateModal}
-              className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-amber-700 px-4 py-2 text-xs font-semibold text-white hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-500"
-            >
-              <PlusCircle className="h-4 w-4" />
-              Cadastrar Prazo
-            </button>
-          </div>
+          <EmptyState
+            icon={CalendarClock}
+            title={
+              searchTerm || selectedFilter !== 'todos' || selectedProcessoFilter !== 'todos'
+                ? "Nenhum prazo localizado"
+                : "Nenhum prazo judicial pendente"
+            }
+            description={
+              searchTerm || selectedFilter !== 'todos' || selectedProcessoFilter !== 'todos'
+                ? "Tente ajustar os filtros selecionados ou o termo pesquisado."
+                : "Cadastre prazos e intimações para manter a agenda do escritório sob controle rigoroso."
+            }
+            action={
+              !searchTerm && selectedFilter === 'todos' && selectedProcessoFilter === 'todos'
+                ? {
+                    label: "Cadastrar Prazo",
+                    onClick: openCreateModal,
+                    icon: PlusCircle,
+                  }
+                : undefined
+            }
+          />
         ) : viewMode === 'table' ? (
           <div className="mt-6 rounded-2xl border border-slate-200 bg-white shadow-2xs overflow-hidden dark:border-slate-800 dark:bg-slate-900">
             <div className="overflow-x-auto">
@@ -884,44 +911,24 @@ function PrazosContent() {
         </div>
       )}
 
-      {/* Modal de Exclusão */}
-      {deleteModalOpen && prazoToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-md rounded-2xl border border-red-200 bg-white p-6 shadow-2xl dark:border-red-900/40 dark:bg-slate-900">
-            <div className="flex items-center gap-3 text-red-600 dark:text-red-400">
-              <div className="rounded-xl bg-red-100 p-2 dark:bg-red-950/60">
-                <AlertTriangle className="h-6 w-6" />
-              </div>
-              <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white">
-                Confirmar Exclusão de Prazo
-              </h3>
-            </div>
+      {/* Modal de Exclusão Reutilizável & Acessível */}
+      <ConfirmModal
+        isOpen={deleteModalOpen && !!prazoToDelete}
+        onClose={() => {
+          setDeleteModalOpen(false);
+          setPrazoToDelete(null);
+        }}
+        onConfirm={handleDeletePrazo}
+        title="Confirmar Exclusão de Prazo"
+        description={`Tem certeza que deseja excluir o prazo judicial "${prazoToDelete?.descricao}"? Esta ação removerá o alerta do calendário e não poderá ser desfeita.`}
+        confirmLabel="Sim, Excluir Prazo"
+        cancelLabel="Cancelar"
+        variant="danger"
+        isLoading={deleting}
+      />
 
-            <p className="mt-3 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Tem certeza que deseja excluir o prazo{' '}
-              <strong>"{prazoToDelete.descricao}"</strong>? Esta ação não poderá ser desfeita.
-            </p>
-
-            <div className="mt-6 flex items-center justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setDeleteModalOpen(false)}
-                className="rounded-xl border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                onClick={handleDeletePrazo}
-                disabled={deleting}
-                className="rounded-xl bg-red-600 px-4 py-2 text-xs font-semibold text-white hover:bg-red-700 transition disabled:opacity-50"
-              >
-                {deleting ? 'Excluindo...' : 'Sim, Excluir'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Rodapé Institucional */}
+      <InstitutionalFooter />
     </div>
   );
 }

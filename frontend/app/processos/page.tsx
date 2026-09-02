@@ -11,6 +11,8 @@ import { TableSkeleton, MetricCardSkeleton } from '@/components/Skeleton';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { SecurityBadge } from '@/components/SecurityBadge';
+import { ConfirmModal } from '@/components/ConfirmModal';
+import { AuditTrail } from '@/components/AuditTrail';
 import { toast } from 'sonner';
 import {
   Briefcase,
@@ -614,47 +616,21 @@ function ProcessosContent() {
         </div>
       )}
 
-      {/* Modal de Confirmação de Exclusão */}
-      {deleteModalOpen && processoToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-md rounded-2xl border border-rose-200 bg-white p-6 shadow-2xl dark:border-rose-900/40 dark:bg-slate-900 animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center gap-3 text-rose-600 dark:text-rose-400">
-              <div className="rounded-xl bg-rose-100 p-2.5 dark:bg-rose-950/60">
-                <AlertCircle className="h-5 w-5" />
-              </div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                Confirmar Exclusão
-              </h3>
-            </div>
-
-            <p className="mt-3 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Deseja realmente excluir o processo{' '}
-              <strong className="font-mono text-slate-900 dark:text-slate-200">
-                {formatarNumeroCNJ(processoToDelete.numero_processo)}
-              </strong>
-              ? Essa ação é permanente.
-            </p>
-
-            <div className="mt-5 flex items-center justify-end gap-2.5">
-              <button
-                type="button"
-                onClick={() => setDeleteModalOpen(false)}
-                className="rounded-xl border border-slate-200 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                onClick={handleDeleteProcesso}
-                disabled={deleting}
-                className="rounded-xl bg-rose-600 px-4 py-2 text-xs font-semibold text-white hover:bg-rose-700 transition-colors disabled:opacity-50"
-              >
-                {deleting ? 'Excluindo...' : 'Excluir Definitivamente'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Modal de Confirmação de Exclusão Reutilizável & Acessível */}
+      <ConfirmModal
+        isOpen={deleteModalOpen && !!processoToDelete}
+        onClose={() => {
+          setDeleteModalOpen(false);
+          setProcessoToDelete(null);
+        }}
+        onConfirm={handleDeleteProcesso}
+        title="Confirmar Exclusão de Processo"
+        description={`Tem certeza que deseja excluir o processo "${processoToDelete?.titulo}" (CNJ: ${processoToDelete ? formatarNumeroCNJ(processoToDelete.numero_processo) : ''})? Esta ação é irreversível e excluirá todos os prazos vinculados a ele.`}
+        confirmLabel="Sim, Excluir Processo"
+        cancelLabel="Cancelar"
+        variant="danger"
+        isLoading={deleting}
+      />
 
       {/* Modal / Drawer de Detalhes */}
       {detailsModalOpen && selectedProcesso && (
@@ -724,6 +700,35 @@ function ProcessosContent() {
                   {selectedProcesso.descricao}
                 </p>
               </div>
+
+              {/* Trilha de Auditoria dos Autos */}
+              <div className="pt-2">
+                <AuditTrail
+                  title="Auditoria & Histórico dos Autos"
+                  logs={[
+                    {
+                      id: 'proc-log-1',
+                      timestamp: 'Hoje, às 11:20',
+                      usuario: 'Dr. Roberto Davino',
+                      cargo: 'Administrador',
+                      acao: 'CONSULTA',
+                      descricao: 'Acesso à íntegra dos autos digitais e prazos pendentes.',
+                      detalhes: 'Consulta processual realizada via módulo de controladoria.',
+                    },
+                    {
+                      id: 'proc-log-2',
+                      timestamp: selectedProcesso.data_abertura
+                        ? new Date(selectedProcesso.data_abertura + 'T00:00:00').toLocaleDateString('pt-BR')
+                        : 'Distribuição Inicial',
+                      usuario: 'Sistema de Protocolo',
+                      cargo: 'Advogado',
+                      acao: 'CRIACAO',
+                      descricao: `Distribuição da ação "${selectedProcesso.titulo}".`,
+                      detalhes: `Número CNJ: ${selectedProcesso.numero_processo}`,
+                    },
+                  ]}
+                />
+              </div>
             </div>
 
             <div className="mt-5 flex items-center justify-end border-t border-slate-100 pt-4 dark:border-slate-800">
@@ -732,7 +737,7 @@ function ProcessosContent() {
                 onClick={() => setDetailsModalOpen(false)}
                 className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-amber-600 dark:hover:bg-amber-500 transition-colors"
               >
-                Fechar
+                Fechar Autos
               </button>
             </div>
           </div>

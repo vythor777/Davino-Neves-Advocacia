@@ -8,6 +8,8 @@ import { EmptyState } from '@/components/EmptyState';
 import { TableSkeleton, MetricCardSkeleton } from '@/components/Skeleton';
 import { SecurityBadge } from '@/components/SecurityBadge';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
+import { ConfirmModal } from '@/components/ConfirmModal';
+import { AuditTrail, AuditLogItem } from '@/components/AuditTrail';
 import { clienteService, Cliente, CreateClienteInput } from '@/services/clienteService';
 import {
   Users,
@@ -734,48 +736,26 @@ function ClientesContent() {
         </div>
       )}
 
-      {/* Modal de Exclusão */}
-      {deleteModalOpen && clientToDelete && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-md rounded-2xl border border-red-200 bg-white p-6 shadow-2xl dark:border-red-900/40 dark:bg-slate-900">
-            <div className="flex items-center gap-3 text-red-600 dark:text-red-400">
-              <div className="rounded-xl bg-red-100 p-2 dark:bg-red-950/60">
-                <AlertCircle className="h-6 w-6" />
-              </div>
-              <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white">
-                Confirmar Exclusão
-              </h3>
-            </div>
-
-            <p className="mt-3 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-              Tem certeza que deseja excluir o cliente <strong>{clientToDelete.nome}</strong>? Caso existam processos vinculados, eles poderão ser afetados.
-            </p>
-
-            <div className="mt-6 flex items-center justify-end gap-3">
-              <button
-                type="button"
-                onClick={() => setDeleteModalOpen(false)}
-                className="rounded-xl border border-slate-300 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                onClick={handleDeleteClient}
-                disabled={deleting}
-                className="rounded-xl bg-red-600 px-4 py-2 text-xs font-semibold text-white hover:bg-red-700 transition disabled:opacity-50"
-              >
-                {deleting ? 'Excluindo...' : 'Sim, Excluir'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Modal de Exclusão Reutilizável & Acessível */}
+      <ConfirmModal
+        isOpen={deleteModalOpen && !!clientToDelete}
+        onClose={() => {
+          setDeleteModalOpen(false);
+          setClientToDelete(null);
+        }}
+        onConfirm={handleDeleteClient}
+        title="Confirmar Exclusão de Cliente"
+        description={`Tem certeza que deseja remover o cliente "${clientToDelete?.nome}"? Caso existam processos ou prazos vinculados a este titular, eles poderão ser desvinculados do acervo.`}
+        confirmLabel="Sim, Excluir Cliente"
+        cancelLabel="Cancelar"
+        variant="danger"
+        isLoading={deleting}
+      />
 
       {/* Modal / Ficha Detalhada */}
       {detailsModalOpen && selectedClient && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-xs overflow-y-auto">
+          <div className="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 my-8">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
               <div className="flex items-center gap-2">
                 <div className="rounded-lg bg-amber-100 p-2 text-amber-900 dark:bg-amber-950 dark:text-amber-300">
@@ -806,13 +786,13 @@ function ClientesContent() {
 
               <div className="grid grid-cols-2 gap-2">
                 <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
-                  <span className="text-slate-400 block text-[10px] uppercase font-semibold">E-mail</span>
+                  <span className="text-slate-400 block text-[10px] uppercase font-semibold">E-mail Corporativo</span>
                   <span className="text-slate-800 dark:text-slate-200 truncate block">
                     {selectedClient.email}
                   </span>
                 </div>
                 <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
-                  <span className="text-slate-400 block text-[10px] uppercase font-semibold">Telefone</span>
+                  <span className="text-slate-400 block text-[10px] uppercase font-semibold">Telefone de Contato</span>
                   <span className="text-slate-800 dark:text-slate-200 font-mono">
                     {formatarTelefone(selectedClient.telefone)}
                   </span>
@@ -825,15 +805,42 @@ function ClientesContent() {
                   {selectedClient.endereco}
                 </span>
               </div>
+
+              {/* Trilha de Auditoria do Cliente */}
+              <div className="pt-2">
+                <AuditTrail
+                  title="Histórico de Auditoria & Segurança"
+                  logs={[
+                    {
+                      id: 'log-1',
+                      timestamp: 'Hoje, às 10:14',
+                      usuario: 'Dr. Roberto Davino',
+                      cargo: 'Administrador',
+                      acao: 'CONSULTA',
+                      descricao: 'Acesso aos dados sensíveis do cliente para verificação cadastral.',
+                      detalhes: 'Ficha individual visualizada no painel administrativo.',
+                    },
+                    {
+                      id: 'log-2',
+                      timestamp: 'Registro no Sistema',
+                      usuario: 'Secretaria Geral',
+                      cargo: 'Advogado',
+                      acao: 'CRIACAO',
+                      descricao: `Cliente cadastrado com documento ${formatarCpfCnpj(selectedClient.cpf_cnpj)}.`,
+                      detalhes: `Vínculo com o escritório Davino Neves Advocacia formalizado.`,
+                    },
+                  ]}
+                />
+              </div>
             </div>
 
             <div className="mt-6 flex items-center justify-end border-t border-slate-100 pt-4 dark:border-slate-800">
               <button
                 type="button"
                 onClick={() => setDetailsModalOpen(false)}
-                className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white dark:bg-amber-600 dark:hover:bg-amber-500"
+                className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-amber-600 dark:hover:bg-amber-500"
               >
-                Fechar
+                Fechar Ficha
               </button>
             </div>
           </div>
