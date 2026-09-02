@@ -30,28 +30,34 @@ export function Navbar() {
   const router = useRouter();
   const { user, isAuthenticated, isAdmin, logout } = useAuth();
   const [quickMenuOpen, setQuickMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [mobileSearchQuery, setMobileSearchQuery] = useState('');
   const quickMenuRef = useRef<HTMLDivElement>(null);
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
-  // Fecha o dropdown de criação rápida ao clicar fora
+  // Fecha dropdowns ao clicar fora
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (quickMenuRef.current && !quickMenuRef.current.contains(event.target as Node)) {
         setQuickMenuOpen(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
+        setUserMenuOpen(false);
       }
     }
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Fechar drawer móvel com tecla Escape e travar rolagem da página quando aberto
+  // Fechar drawer e menus móveis com tecla Escape e travar rolagem quando drawer aberto
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') {
         setMobileDrawerOpen(false);
         setQuickMenuOpen(false);
+        setUserMenuOpen(false);
       }
     }
     if (mobileDrawerOpen) {
@@ -66,10 +72,15 @@ export function Navbar() {
     };
   }, [mobileDrawerOpen]);
 
-  // Fechar drawer ao mudar de rota
+  // Fechar gavetas e menus ao mudar de rota
+  const lastPathnameRef = useRef(pathname);
   useEffect(() => {
-    setMobileDrawerOpen(false);
-    setQuickMenuOpen(false);
+    if (lastPathnameRef.current !== pathname) {
+      lastPathnameRef.current = pathname;
+      setMobileDrawerOpen(false);
+      setQuickMenuOpen(false);
+      setUserMenuOpen(false);
+    }
   }, [pathname]);
 
   const baseNavItems = [
@@ -130,15 +141,15 @@ export function Navbar() {
       </div>
 
       {/* Main Navbar */}
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-3 px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2 sm:gap-3">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 sm:gap-4 px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
           {/* Botão Hambúrguer Mobile (Touch Target mínimo 44x44px) */}
           <button
             type="button"
             onClick={() => setMobileDrawerOpen(true)}
             aria-label="Abrir menu de navegação"
             aria-expanded={mobileDrawerOpen}
-            className="flex lg:hidden h-11 w-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:bg-slate-700 transition focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-hidden"
+            className="flex lg:hidden h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:bg-slate-700 transition focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-hidden shrink-0"
           >
             <Menu className="h-5 w-5" />
           </button>
@@ -146,25 +157,25 @@ export function Navbar() {
           {/* Brand - Modern Style Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2.5 transition-all hover:opacity-95 shrink-0 group"
+            className="flex items-center gap-2 sm:gap-2.5 transition-all hover:opacity-95 shrink-0 group min-w-0"
           >
-            <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-sky-600 via-sky-500 to-cyan-400 text-white shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform">
-              <Scale className="h-5 w-5 text-white" />
-              <div className="absolute -top-1 -right-1 flex h-3 w-3">
+            <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-sky-600 via-sky-500 to-cyan-400 text-white shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform shrink-0">
+              <Scale className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
+              <div className="absolute -top-1 -right-1 flex h-2.5 w-2.5 sm:h-3 sm:w-3">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-400" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 bg-cyan-400" />
               </div>
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="font-sans text-base font-extrabold tracking-tight text-slate-900 dark:text-white">
+                <span className="font-sans text-sm sm:text-base font-extrabold tracking-tight text-slate-900 dark:text-white truncate">
                   Davino Neves
                 </span>
-                <span className="text-xs font-semibold px-1.5 py-0.5 rounded-md bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-200 dark:border-sky-800">
+                <span className="hidden sm:inline-block text-xs font-semibold px-1.5 py-0.5 rounded-md bg-sky-50 text-sky-700 dark:bg-sky-950/60 dark:text-sky-300 border border-sky-200 dark:border-sky-800 shrink-0">
                   Advocacia
                 </span>
               </div>
-              <div className="text-[10px] font-medium text-slate-500 dark:text-slate-400 leading-tight">
+              <div className="hidden md:block text-[10px] font-medium text-slate-500 dark:text-slate-400 leading-tight truncate">
                 Controladoria Jurídica & Processos
               </div>
             </div>
@@ -229,14 +240,14 @@ export function Navbar() {
         </nav>
 
         {/* Right Section / Quick Actions & User Profile */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {/* Action "+ Novo" Dropdown */}
           <div className="relative" ref={quickMenuRef}>
             <button
               onClick={() => setQuickMenuOpen(!quickMenuOpen)}
               aria-label="Criar novo registro"
               aria-expanded={quickMenuOpen}
-              className="flex min-h-[44px] items-center gap-1.5 rounded-xl bg-gradient-to-r from-sky-600 to-sky-500 px-3.5 py-2 text-xs font-bold text-white shadow-sm shadow-sky-600/20 hover:from-sky-500 hover:to-sky-400 transition active:scale-95 focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-hidden"
+              className="flex min-h-[40px] sm:min-h-[44px] items-center gap-1.5 rounded-xl bg-gradient-to-r from-sky-600 to-sky-500 px-3 sm:px-3.5 py-2 text-xs font-bold text-white shadow-sm shadow-sky-600/20 hover:from-sky-500 hover:to-sky-400 transition active:scale-95 focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-hidden"
             >
               <Plus className="h-4 w-4 stroke-[2.5]" />
               <span className="hidden sm:inline">Novo</span>
@@ -295,38 +306,98 @@ export function Navbar() {
             )}
           </div>
 
-          {/* User Profile */}
+          {/* User Profile Popover / Dropdown (Consolidado & Responsivo) */}
           {isAuthenticated && user ? (
-            <div className="flex items-center gap-2 sm:gap-2.5 pl-2 border-l border-slate-200 dark:border-slate-800">
-              <div className="hidden xl:flex flex-col text-right">
-                <span className="text-xs font-bold text-slate-900 dark:text-slate-100 leading-tight">
-                  {user.nome}
-                </span>
-                <span className="text-[10px] font-medium text-sky-600 dark:text-sky-400">
-                  {user.role}
-                </span>
-              </div>
-
-              <div
-                title={`${user.nome} (${user.role})`}
-                className="flex h-11 w-11 sm:h-9 sm:w-9 items-center justify-center rounded-xl bg-gradient-to-br from-sky-600 to-indigo-700 font-sans font-bold text-xs text-white shadow-xs ring-2 ring-sky-500/20"
-              >
-                {user.nome ? user.nome.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
-              </div>
-
+            <div className="relative" ref={userMenuRef}>
               <button
-                onClick={logout}
-                title="Sair com segurança"
-                aria-label="Sair com segurança"
-                className="flex h-11 w-11 sm:h-9 sm:w-9 items-center justify-center rounded-xl border border-slate-200 text-slate-500 hover:bg-rose-50 hover:text-rose-600 hover:border-rose-200 dark:border-slate-800 dark:text-slate-400 dark:hover:bg-rose-950/50 dark:hover:text-rose-400 transition focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:outline-hidden"
+                type="button"
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                aria-label={`Menu do usuário: ${user.nome}`}
+                aria-expanded={userMenuOpen}
+                className="flex min-h-[40px] sm:min-h-[44px] items-center gap-2 rounded-xl p-1 sm:px-2 sm:py-1.5 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800/80 transition focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-hidden"
               >
-                <LogOut className="h-4 w-4" />
+                <div
+                  className="flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-gradient-to-br from-sky-600 to-indigo-700 font-sans font-bold text-xs text-white shadow-xs ring-2 ring-sky-500/20 shrink-0"
+                >
+                  {user.nome ? user.nome.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
+                </div>
+
+                <div className="hidden xl:flex flex-col text-left max-w-[130px]">
+                  <span className="text-xs font-bold text-slate-900 dark:text-slate-100 leading-tight truncate">
+                    {user.nome}
+                  </span>
+                  <span className="text-[10px] font-medium text-sky-600 dark:text-sky-400 capitalize">
+                    {user.role.toLowerCase()}
+                  </span>
+                </div>
+
+                <ChevronDown className={`hidden sm:block h-3.5 w-3.5 text-slate-400 transition-transform ${userMenuOpen ? 'rotate-180' : ''}`} />
               </button>
+
+              {userMenuOpen && (
+                <div className="absolute right-0 mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-slate-800 dark:bg-slate-900 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                  {/* Resumo do Usuário */}
+                  <div className="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 mb-1.5 border border-slate-100 dark:border-slate-800">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-600 font-bold text-sm text-white">
+                      {user.nome ? user.nome.charAt(0).toUpperCase() : <User className="h-5 w-5" />}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                        {user.nome}
+                      </p>
+                      <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
+                        {user.email}
+                      </p>
+                      <div className="mt-1">
+                        <span className="inline-block rounded-md bg-sky-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-sky-800 dark:bg-sky-950 dark:text-sky-300">
+                          {user.role}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <Link
+                      href="/"
+                      onClick={() => setUserMenuOpen(false)}
+                      className="flex min-h-[40px] items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition"
+                    >
+                      <LayoutDashboard className="h-4 w-4 text-slate-500" />
+                      <span>Painel Geral</span>
+                    </Link>
+
+                    {isAdmin && (
+                      <Link
+                        href="/usuarios"
+                        onClick={() => setUserMenuOpen(false)}
+                        className="flex min-h-[40px] items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition"
+                      >
+                        <Shield className="h-4 w-4 text-sky-600" />
+                        <span>Equipe & Permissões</span>
+                      </Link>
+                    )}
+
+                    <div className="border-t border-slate-100 my-1 dark:border-slate-800" />
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setUserMenuOpen(false);
+                        logout();
+                      }}
+                      className="flex min-h-[40px] w-full items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 hover:text-rose-700 dark:text-rose-400 dark:hover:bg-rose-950/50 dark:hover:text-rose-300 transition"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span>Sair com Segurança</span>
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ) : (
             <Link
               href="/login"
-              className="inline-flex min-h-[44px] items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2 text-xs font-bold text-white shadow-xs hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 transition focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-hidden"
+              className="inline-flex min-h-[40px] sm:min-h-[44px] items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2 text-xs font-bold text-white shadow-xs hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 transition focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-hidden"
             >
               <LogIn className="h-4 w-4" />
               <span>Acessar</span>
