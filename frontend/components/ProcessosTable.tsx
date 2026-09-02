@@ -128,8 +128,8 @@ export function ProcessosTable({
 
   return (
     <div className="flex flex-col rounded-2xl border border-slate-200/90 bg-white shadow-2xs dark:border-slate-800/90 dark:bg-slate-900 overflow-hidden">
-      {/* Wrapper com Scroll Vertical e Horizontal */}
-      <div className="relative max-h-[620px] overflow-auto">
+      {/* Visualização em Tabela para Desktop e Tablets Médios */}
+      <div className="hidden md:block relative max-h-[620px] overflow-auto">
         <table className="w-full text-left text-xs border-collapse">
           {/* Sticky Header com backdrop blur */}
           <thead className="sticky top-0 z-10 border-b border-slate-200/90 bg-slate-50/95 backdrop-blur-xs font-semibold text-slate-600 dark:border-slate-800 dark:bg-slate-900/95 dark:text-slate-300">
@@ -167,20 +167,21 @@ export function ProcessosTable({
                           onClick={() =>
                             handleCopy(proc.numero_processo, `cnj-${proc.id_processo}`)
                           }
-                          className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-0.5 rounded"
+                          className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:ring-2 focus-visible:ring-sky-500"
                           title="Copiar número CNJ"
+                          aria-label="Copiar número CNJ"
                         >
                           {copiedId === `cnj-${proc.id_processo}` ? (
-                            <Check className="h-3 w-3 text-emerald-600" />
+                            <Check className="h-3.5 w-3.5 text-emerald-600" />
                           ) : (
-                            <Copy className="h-3 w-3" />
+                            <Copy className="h-3.5 w-3.5" />
                           )}
                         </button>
                       </div>
                       <button
                         type="button"
                         onClick={() => onViewDetails(proc)}
-                        className="text-left font-medium text-slate-800 hover:text-amber-800 dark:text-slate-200 dark:hover:text-amber-400 truncate transition-colors"
+                        className="text-left font-medium text-slate-800 hover:text-sky-600 dark:text-slate-200 dark:hover:text-sky-400 truncate transition-colors focus-visible:outline-hidden"
                         title={proc.titulo}
                       >
                         {proc.titulo}
@@ -226,8 +227,8 @@ export function ProcessosTable({
                       href={`/prazos?processo=${proc.id_processo}`}
                       className={`inline-flex items-center gap-1 rounded-md px-2 py-0.5 text-[10px] font-medium transition-colors ${
                         countPrazos > 0
-                          ? 'bg-amber-50 text-amber-800 border border-amber-200/60 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-900/50'
-                          : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                          ? 'bg-amber-50 text-amber-800 border border-amber-200/60 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-900/50 hover:bg-amber-100'
+                          : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 hover:bg-slate-200'
                       }`}
                     >
                       <Clock className="h-2.5 w-2.5" />
@@ -241,26 +242,29 @@ export function ProcessosTable({
                       <button
                         type="button"
                         onClick={() => onViewDetails(proc)}
-                        className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-800 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors"
+                        className="rounded-lg p-2 text-slate-400 hover:bg-slate-100 hover:text-slate-800 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition-colors"
                         title="Ver detalhes"
+                        aria-label="Ver detalhes do processo"
                       >
-                        <Eye className="h-3.5 w-3.5" />
+                        <Eye className="h-4 w-4" />
                       </button>
                       <button
                         type="button"
                         onClick={() => onEdit(proc)}
-                        className="rounded-lg p-1.5 text-slate-400 hover:bg-amber-50 hover:text-amber-700 dark:hover:bg-amber-950/40 dark:hover:text-amber-400 transition-colors"
+                        className="rounded-lg p-2 text-slate-400 hover:bg-amber-50 hover:text-amber-700 dark:hover:bg-amber-950/40 dark:hover:text-amber-400 transition-colors"
                         title="Editar"
+                        aria-label="Editar processo"
                       >
-                        <Edit2 className="h-3.5 w-3.5" />
+                        <Edit2 className="h-4 w-4" />
                       </button>
                       <button
                         type="button"
                         onClick={() => onDelete(proc)}
-                        className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 transition-colors"
+                        className="rounded-lg p-2 text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 transition-colors"
                         title="Excluir"
+                        aria-label="Excluir processo"
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </td>
@@ -271,9 +275,116 @@ export function ProcessosTable({
         </table>
       </div>
 
-      {/* Rodapé Elegante com Paginação Assíncrona */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-200/90 bg-slate-50/70 px-6 py-3 text-xs text-slate-600 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-400">
-        <div className="flex items-center gap-3">
+      {/* Visualização em Cards Empilhados para Mobile (Sem cortes de conteúdo) */}
+      <div className="block md:hidden divide-y divide-slate-100 dark:divide-slate-800/80">
+        {displayedItems.map((proc) => {
+          const countPrazos = proc._count?.prazos ?? proc.prazos?.length ?? 0;
+          const formattedDate = proc.data_abertura
+            ? new Date(proc.data_abertura).toLocaleDateString('pt-BR')
+            : '—';
+
+          return (
+            <div key={proc.id_processo} className="p-4 space-y-3 hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition">
+              {/* Cabeçalho do Card */}
+              <div className="flex items-start justify-between gap-2">
+                <div className="space-y-1 min-w-0">
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="font-mono text-xs font-bold text-slate-900 dark:text-slate-100">
+                      {formatarNumeroCNJ(proc.numero_processo)}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => handleCopy(proc.numero_processo, `cnj-mobile-${proc.id_processo}`)}
+                      className="inline-flex min-h-[36px] min-w-[36px] items-center justify-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800"
+                      aria-label="Copiar número CNJ"
+                    >
+                      {copiedId === `cnj-mobile-${proc.id_processo}` ? (
+                        <Check className="h-3.5 w-3.5 text-emerald-600" />
+                      ) : (
+                        <Copy className="h-3.5 w-3.5" />
+                      )}
+                    </button>
+                  </div>
+                  <h3
+                    onClick={() => onViewDetails(proc)}
+                    className="font-semibold text-slate-900 dark:text-slate-100 text-sm cursor-pointer hover:text-sky-600 dark:hover:text-sky-400"
+                  >
+                    {proc.titulo}
+                  </h3>
+                </div>
+
+                <span
+                  className={`inline-flex shrink-0 items-center rounded-md border px-2 py-0.5 text-[10px] font-semibold tracking-wide ${getStatusBadgeStyle(
+                    proc.status,
+                  )}`}
+                >
+                  {proc.status}
+                </span>
+              </div>
+
+              {/* Informações Centrais: Cliente, Data e Prazos */}
+              <div className="grid grid-cols-2 gap-2 text-xs text-slate-600 dark:text-slate-300 pt-1">
+                <div className="space-y-0.5">
+                  <span className="text-[10px] uppercase font-bold text-slate-400">Cliente</span>
+                  <p className="font-medium truncate text-slate-900 dark:text-slate-200">
+                    {proc.cliente ? proc.cliente.nome : `ID #${proc.id_cliente}`}
+                  </p>
+                </div>
+                <div className="space-y-0.5">
+                  <span className="text-[10px] uppercase font-bold text-slate-400">Distribuição</span>
+                  <p className="font-mono text-slate-700 dark:text-slate-300">{formattedDate}</p>
+                </div>
+              </div>
+
+              {/* Barra de Ações e Prazos do Card Mobile */}
+              <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800/60">
+                <Link
+                  href={`/prazos?processo=${proc.id_processo}`}
+                  className={`inline-flex min-h-[38px] items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold ${
+                    countPrazos > 0
+                      ? 'bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-900/50'
+                      : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                  }`}
+                >
+                  <Clock className="h-3.5 w-3.5 text-amber-600" />
+                  <span>{countPrazos} {countPrazos === 1 ? 'prazo vinculado' : 'prazos vinculados'}</span>
+                </Link>
+
+                <div className="flex items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => onViewDetails(proc)}
+                    className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-slate-100 text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200"
+                    aria-label="Ver detalhes"
+                  >
+                    <Eye className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onEdit(proc)}
+                    className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-amber-50 text-amber-700 hover:bg-amber-100 dark:bg-amber-950/50 dark:text-amber-300"
+                    aria-label="Editar processo"
+                  >
+                    <Edit2 className="h-4 w-4" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => onDelete(proc)}
+                    className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-rose-50 text-rose-700 hover:bg-rose-100 dark:bg-rose-950/50 dark:text-rose-300"
+                    aria-label="Excluir processo"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Rodapé Elegante com Paginação Assíncrona e Controles Touch-Friendly */}
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-200/90 bg-slate-50/70 px-4 sm:px-6 py-3.5 text-xs text-slate-600 dark:border-slate-800 dark:bg-slate-900/60 dark:text-slate-400">
+        <div className="flex items-center justify-between w-full sm:w-auto gap-3">
           <span>
             Exibindo <strong className="font-semibold text-slate-900 dark:text-slate-200">{startItem}</strong> a{' '}
             <strong className="font-semibold text-slate-900 dark:text-slate-200">{endItem}</strong> de{' '}
@@ -282,11 +393,11 @@ export function ProcessosTable({
 
           {onPageSizeChange && (
             <div className="flex items-center gap-1.5 pl-3 border-l border-slate-200 dark:border-slate-800">
-              <span className="text-[11px] text-slate-500">Por página:</span>
+              <span className="text-[11px] text-slate-500">Por pág:</span>
               <select
                 value={pageSize}
                 onChange={(e) => onPageSizeChange(Number(e.target.value))}
-                className="rounded-md border border-slate-200 bg-white px-2 py-1 text-[11px] font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 focus:outline-hidden"
+                className="rounded-lg border border-slate-200 bg-white px-2 py-1 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 focus:outline-hidden min-h-[36px]"
               >
                 <option value={10}>10</option>
                 <option value={25}>25</option>
@@ -296,29 +407,31 @@ export function ProcessosTable({
           )}
         </div>
 
-        {/* Controles de Navegação */}
-        <div className="flex items-center gap-1">
+        {/* Controles de Navegação Touch-Friendly */}
+        <div className="flex items-center gap-1.5">
           <button
             type="button"
             onClick={() => onPageChange?.(1)}
             disabled={currentPage <= 1}
-            className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-200/70 disabled:opacity-30 disabled:pointer-events-none dark:hover:bg-slate-800 transition-colors"
+            className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:pointer-events-none dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
             title="Primeira página"
+            aria-label="Primeira página"
           >
-            <ChevronsLeft className="h-3.5 w-3.5" />
+            <ChevronsLeft className="h-4 w-4" />
           </button>
           <button
             type="button"
             onClick={() => onPageChange?.(currentPage - 1)}
             disabled={currentPage <= 1}
-            className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-200/70 disabled:opacity-30 disabled:pointer-events-none dark:hover:bg-slate-800 transition-colors"
+            className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:pointer-events-none dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
             title="Página anterior"
+            aria-label="Página anterior"
           >
-            <ChevronLeft className="h-3.5 w-3.5" />
+            <ChevronLeft className="h-4 w-4" />
           </button>
 
-          <span className="px-2 text-xs font-medium">
-            Página <strong className="text-slate-900 dark:text-slate-100">{currentPage}</strong> de{' '}
+          <span className="px-2 text-xs font-medium text-slate-700 dark:text-slate-300">
+            <strong className="text-slate-900 dark:text-slate-100">{currentPage}</strong> /{' '}
             <strong className="text-slate-900 dark:text-slate-100">{totalPages}</strong>
           </span>
 
@@ -326,19 +439,21 @@ export function ProcessosTable({
             type="button"
             onClick={() => onPageChange?.(currentPage + 1)}
             disabled={currentPage >= totalPages}
-            className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-200/70 disabled:opacity-30 disabled:pointer-events-none dark:hover:bg-slate-800 transition-colors"
+            className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:pointer-events-none dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
             title="Próxima página"
+            aria-label="Próxima página"
           >
-            <ChevronRight className="h-3.5 w-3.5" />
+            <ChevronRight className="h-4 w-4" />
           </button>
           <button
             type="button"
             onClick={() => onPageChange?.(totalPages)}
             disabled={currentPage >= totalPages}
-            className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-200/70 disabled:opacity-30 disabled:pointer-events-none dark:hover:bg-slate-800 transition-colors"
+            className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 disabled:opacity-30 disabled:pointer-events-none dark:border-slate-800 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
             title="Última página"
+            aria-label="Última página"
           >
-            <ChevronsRight className="h-3.5 w-3.5" />
+            <ChevronsRight className="h-4 w-4" />
           </button>
         </div>
       </div>

@@ -633,12 +633,13 @@ function PrazosContent() {
                         <td className="py-4 pl-6 pr-3 text-center">
                           <button
                             onClick={() => handleToggleStatus(prazo)}
-                            className={`flex h-6 w-6 mx-auto items-center justify-center rounded-lg border transition ${
+                            className={`flex min-h-[36px] min-w-[36px] mx-auto items-center justify-center rounded-xl border transition ${
                               isCumprido
-                                ? 'border-emerald-500 bg-emerald-500 text-white'
+                                ? 'border-emerald-500 bg-emerald-500 text-white shadow-xs'
                                 : 'border-slate-300 bg-white text-transparent hover:border-amber-600 dark:border-slate-600 dark:bg-slate-800'
                             }`}
                             title={isCumprido ? 'Reabrir prazo' : 'Marcar como cumprido'}
+                            aria-label={isCumprido ? 'Reabrir prazo' : 'Marcar como cumprido'}
                           >
                             <Check className="h-4 w-4" />
                           </button>
@@ -686,8 +687,9 @@ function PrazosContent() {
                           <div className="flex items-center justify-end gap-1.5">
                             <button
                               onClick={() => openEditModal(prazo)}
-                              className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-amber-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-amber-400"
+                              className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-amber-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-amber-400"
                               title="Editar prazo"
+                              aria-label="Editar prazo"
                             >
                               <Edit2 className="h-4 w-4" />
                             </button>
@@ -697,8 +699,9 @@ function PrazosContent() {
                                 setPrazoToDelete(prazo);
                                 setDeleteModalOpen(true);
                               }}
-                              className="rounded-lg p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600 dark:text-slate-400 dark:hover:bg-red-950/40 dark:hover:text-red-400"
+                              className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl text-slate-500 hover:bg-red-50 hover:text-red-600 dark:text-slate-400 dark:hover:bg-red-950/40 dark:hover:text-red-400"
                               title="Excluir prazo"
+                              aria-label="Excluir prazo"
                             >
                               <Trash2 className="h-4 w-4" />
                             </button>
@@ -741,12 +744,13 @@ function PrazosContent() {
 
                       <button
                         onClick={() => handleToggleStatus(prazo)}
-                        className={`flex h-6 w-6 items-center justify-center rounded-lg border transition ${
+                        className={`flex min-h-[36px] min-w-[36px] items-center justify-center rounded-xl border transition ${
                           isCumprido
                             ? 'border-emerald-500 bg-emerald-500 text-white'
                             : 'border-slate-300 bg-white text-transparent hover:border-amber-600 dark:border-slate-600 dark:bg-slate-800'
                         }`}
                         title={isCumprido ? 'Reabrir prazo' : 'Marcar como cumprido'}
+                        aria-label={isCumprido ? 'Reabrir prazo' : 'Marcar como cumprido'}
                       >
                         <Check className="h-3.5 w-3.5" />
                       </button>
@@ -776,20 +780,22 @@ function PrazosContent() {
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => openEditModal(prazo)}
-                        className="rounded-lg p-1 text-slate-400 hover:text-amber-700 dark:hover:text-amber-400"
+                        className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-amber-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-amber-400"
                         title="Editar"
+                        aria-label="Editar prazo"
                       >
-                        <Edit2 className="h-3.5 w-3.5" />
+                        <Edit2 className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => {
                           setPrazoToDelete(prazo);
                           setDeleteModalOpen(true);
                         }}
-                        className="rounded-lg p-1 text-slate-400 hover:text-red-600 dark:hover:text-red-400"
+                        className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl text-slate-500 hover:bg-rose-50 hover:text-rose-600 dark:text-slate-400 dark:hover:bg-rose-950/50 dark:hover:text-rose-400"
                         title="Excluir"
+                        aria-label="Excluir prazo"
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
                   </div>

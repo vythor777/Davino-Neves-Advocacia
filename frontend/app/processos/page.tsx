@@ -19,7 +19,6 @@ import {
   PlusCircle,
   Clock,
   Edit2,
-  AlertCircle,
   X,
   RefreshCw,
   Scale,
