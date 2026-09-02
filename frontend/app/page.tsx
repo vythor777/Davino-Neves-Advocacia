@@ -133,25 +133,25 @@ function AstreaDashboard() {
   const modules = [
     {
       title: 'Controle de Processos',
-      subtitle: `${processosAtivos} processos em andamento`,
+      subtitle: `${processosAtivos} processos ativos`,
       description: 'Acompanhamento unificado de autos, varas, foros e histórico de andamentos com o cliente.',
       href: '/processos',
       icon: Briefcase,
-      badge: 'Essencial',
-      iconBg: 'from-sky-500 to-blue-600',
+      badge: 'Operacional',
+      iconBox: 'bg-sky-50 text-sky-700 dark:bg-sky-950/70 dark:text-sky-300',
       badgeColor: 'bg-sky-50 text-sky-700 dark:bg-sky-950/80 dark:text-sky-300 border border-sky-200 dark:border-sky-800',
     },
     {
-      title: 'Prazos & Atividades',
+      title: 'Prazos & Agenda',
       subtitle: `${prazosUrgentes.length} termos para esta semana`,
-      description: 'Gestão de termos fatais, contagem de prazos CPC/CLT e alertas visuais de vencimento.',
+      description: 'Gestão de termos fatais, contagem de prazos CPC/CLT e alertas de vencimento.',
       href: '/prazos',
       icon: CalendarClock,
-      badge: prazosHoje.length > 0 ? `${prazosHoje.length} Hoje!` : 'Agenda',
-      iconBg: 'from-amber-500 to-orange-600',
+      badge: prazosHoje.length > 0 ? `${prazosHoje.length} Hoje` : 'Agenda',
+      iconBox: 'bg-amber-50 text-amber-700 dark:bg-amber-950/70 dark:text-amber-300',
       badgeColor:
         prazosHoje.length > 0
-          ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/80 dark:text-rose-300 border border-rose-200 dark:border-rose-800 animate-pulse'
+          ? 'bg-rose-50 text-rose-700 dark:bg-rose-950/80 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
           : 'bg-amber-50 text-amber-700 dark:bg-amber-950/80 dark:text-amber-300 border border-amber-200 dark:border-amber-800',
     },
     {
@@ -160,38 +160,38 @@ function AstreaDashboard() {
       description: 'Gestão completa de pessoas físicas e jurídicas, documentos de identificação e vínculos aos autos.',
       href: '/clientes',
       icon: Users,
-      badge: 'CRM Jurídico',
-      iconBg: 'from-emerald-500 to-teal-600',
-      badgeColor: 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800',
+      badge: 'Contatos',
+      iconBox: 'bg-sky-50 text-sky-700 dark:bg-sky-950/70 dark:text-sky-300',
+      badgeColor: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700',
     },
     {
-      title: 'DataJud CNJ (Tribunais)',
-      subtitle: '91 tribunais integrados',
-      description: 'Sincronização direta com a API pública do CNJ para busca e extração de andamentos e movimentos.',
+      title: 'DataJud Tribunais',
+      subtitle: 'Consulta unificada de autos',
+      description: 'Sincronização com a API pública dos tribunais para consulta de movimentações e andamentos.',
       href: '/datajud',
       icon: Search,
-      badge: 'Live CNJ',
-      iconBg: 'from-indigo-500 to-purple-600',
-      badgeColor: 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/80 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800',
+      badge: 'Consulta',
+      iconBox: 'bg-sky-50 text-sky-700 dark:bg-sky-950/70 dark:text-sky-300',
+      badgeColor: 'bg-sky-50 text-sky-700 dark:bg-sky-950/80 dark:text-sky-300 border border-sky-200 dark:border-sky-800',
     },
     {
-      title: 'IA Jurídica (Gemini)',
-      subtitle: 'Gemini 3.7 Flash & Fallbacks',
-      description: 'Análise estruturada de petições, contratos, resumos executivos para clientes e extração automática de prazos.',
+      title: 'IA Jurídica',
+      subtitle: 'Análise de peças e minutas',
+      description: 'Análise estruturada de petições, contratos, resumos executivos para clientes e triagem de prazos.',
       href: '/gemini',
       icon: Sparkles,
-      badge: 'Gemini 3.7 Ativo',
-      iconBg: 'from-purple-500 to-pink-600',
-      badgeColor: 'bg-purple-50 text-purple-700 dark:bg-purple-950/80 dark:text-purple-300 border border-purple-200 dark:border-purple-800',
+      badge: 'Inteligência',
+      iconBox: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
+      badgeColor: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700',
     },
     {
       title: 'Equipe & Permissões',
-      subtitle: 'Controle RBAC',
+      subtitle: 'Controle de acesso RBAC',
       description: 'Gerenciamento de membros do escritório por perfil (Administrador, Advogado, Estagiário).',
       href: '/usuarios',
       icon: Shield,
-      badge: isAdmin ? 'Admin' : 'Restrito',
-      iconBg: 'from-slate-600 to-slate-800',
+      badge: isAdmin ? 'Admin' : 'Membro',
+      iconBox: 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300',
       badgeColor: isAdmin
         ? 'bg-sky-50 text-sky-700 dark:bg-sky-950/80 dark:text-sky-300 border border-sky-200 dark:border-sky-800'
         : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400 border border-slate-200 dark:border-slate-700',
@@ -205,19 +205,17 @@ function AstreaDashboard() {
       <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-8">
         {/* Astrea Hero Control Header */}
         <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-xs dark:border-slate-800 dark:bg-slate-900 transition-all">
-          <div className="absolute top-0 right-0 -mt-8 -mr-8 h-64 w-64 rounded-full bg-gradient-to-bl from-sky-400/10 via-cyan-400/5 to-transparent blur-2xl pointer-events-none" />
-
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 relative z-10">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 rounded-full bg-sky-50 px-3 py-1 text-xs font-bold text-sky-700 border border-sky-200 dark:bg-sky-950/70 dark:text-sky-300 dark:border-sky-800">
-                <span className="h-2 w-2 rounded-full bg-sky-500 animate-pulse" />
-                <span>Davino Neves • Painel de Gestão Jurídica</span>
+              <div className="inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">
+                <span className="h-2 w-2 rounded-full bg-sky-500" />
+                <span>Painel de Gestão Jurídica</span>
               </div>
               <h1 className="mt-3 text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
                 Olá, {user?.nome ? user.nome : 'Doutor(a)'} 👋
               </h1>
               <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
-                Gestão inteligente de processos, prazos fatais e controladoria jurídica conectada à base nacional do CNJ.
+                Gestão centralizada de processos, prazos processuais e clientes em tempo real.
               </p>
             </div>
 
@@ -242,12 +240,12 @@ function AstreaDashboard() {
                 className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700/80 transition active:scale-95"
               >
                 <Search className="h-4 w-4 text-sky-500" />
-                <span>Consultar CNJ</span>
+                <span>Consultar Autos</span>
               </Link>
             </div>
           </div>
 
-          {/* Barra de Busca Expressa CNJ */}
+          {/* Barra de Busca Expressa de Processos */}
           <form
             onSubmit={handleQuickCnjSearch}
             className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-center gap-3"
@@ -258,7 +256,7 @@ function AstreaDashboard() {
                 type="text"
                 value={quickCnj}
                 onChange={(e) => setQuickCnj(e.target.value)}
-                placeholder="Consulta Expressa CNJ: Digite o número único (ex: 0000000-00.0000.0.00.0000)..."
+                placeholder="Consultar processo: Digite o número único (ex: 0000000-00.0000.0.00.0000)..."
                 className="w-full rounded-xl border border-slate-700 bg-slate-900 pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder:text-slate-400 font-mono focus:border-sky-500 focus:outline-hidden focus:ring-2 focus:ring-sky-500/20"
               />
             </div>
@@ -266,7 +264,7 @@ function AstreaDashboard() {
               type="submit"
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-xs font-bold text-white hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 transition shrink-0"
             >
-              <span>Buscar Andamentos</span>
+              <span>Consultar Autos</span>
               <ArrowRight className="h-3.5 w-3.5" />
             </button>
           </form>
@@ -314,12 +312,12 @@ function AstreaDashboard() {
                       {processosAtivos}
                     </div>
                   </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-50 text-sky-600 dark:bg-sky-950/70 dark:text-sky-400 group-hover:scale-110 transition-transform">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-50 text-sky-600 dark:bg-sky-950/70 dark:text-sky-400 group-hover:scale-105 transition-transform">
                     <Briefcase className="h-5 w-5" />
                   </div>
                 </div>
                 <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800/80 pt-2.5">
-                  <span>Total: {totalProcessos}</span>
+                  <span>Total cadastrado: {totalProcessos}</span>
                   <span className="text-sky-600 dark:text-sky-400 font-semibold group-hover:underline flex items-center gap-0.5">
                     Ver autos <ChevronRight className="h-3 w-3" />
                   </span>
@@ -339,13 +337,13 @@ function AstreaDashboard() {
                     <div className="mt-1 text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
                       <span>{prazosUrgentes.length}</span>
                       {prazosHoje.length > 0 && (
-                        <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-500 text-white animate-pulse">
+                        <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-rose-500 text-white">
                           <Flame className="h-3 w-3" /> {prazosHoje.length} hoje
                         </span>
                       )}
                     </div>
                   </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-950/70 dark:text-amber-400 group-hover:scale-110 transition-transform">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-950/70 dark:text-amber-400 group-hover:scale-105 transition-transform">
                     <CalendarClock className="h-5 w-5" />
                   </div>
                 </div>
@@ -371,19 +369,19 @@ function AstreaDashboard() {
                       {totalClientes}
                     </div>
                   </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/70 dark:text-emerald-400 group-hover:scale-110 transition-transform">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 group-hover:scale-105 transition-transform">
                     <Users className="h-5 w-5" />
                   </div>
                 </div>
                 <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800/80 pt-2.5">
                   <span>{clientesPf} PF / {clientesPj} PJ</span>
-                  <span className="text-emerald-600 dark:text-emerald-400 font-semibold group-hover:underline flex items-center gap-0.5">
+                  <span className="text-slate-700 dark:text-slate-300 font-semibold group-hover:underline flex items-center gap-0.5">
                     Ver contatos <ChevronRight className="h-3 w-3" />
                   </span>
                 </div>
               </Link>
 
-              {/* Card 4: DataJud & Gemini IA */}
+              {/* Card 4: Assistente e Inteligência Jurídica */}
               <Link
                 href="/gemini"
                 className="group astrea-card p-5 relative overflow-hidden flex flex-col justify-between hover:-translate-y-0.5 transition-all"
@@ -391,21 +389,21 @@ function AstreaDashboard() {
                 <div className="flex items-start justify-between">
                   <div>
                     <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
-                      IA Jurídica (Google Gemini)
+                      Assistente Jurídico
                     </span>
-                    <div className="mt-1 text-base font-bold text-purple-600 dark:text-purple-400 flex items-center gap-1.5">
-                      <Sparkles className="h-4 w-4" />
-                      <span>Gemini 3.7 Ativo</span>
+                    <div className="mt-1 text-base font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <Sparkles className="h-4 w-4 text-sky-600 dark:text-sky-400" />
+                      <span>Análise de Peças</span>
                     </div>
                   </div>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-50 text-purple-600 dark:bg-purple-950/70 dark:text-purple-400 group-hover:scale-110 transition-transform">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 group-hover:scale-105 transition-transform">
                     <Sparkles className="h-5 w-5" />
                   </div>
                 </div>
                 <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-slate-100 dark:border-slate-800/80 pt-2.5">
-                  <span>Análise de Peças</span>
-                  <span className="text-purple-600 dark:text-purple-400 font-semibold group-hover:underline flex items-center gap-0.5">
-                    Abrir IA <ChevronRight className="h-3 w-3" />
+                  <span>Minutas e Intimações</span>
+                  <span className="text-sky-600 dark:text-sky-400 font-semibold group-hover:underline flex items-center gap-0.5">
+                    Acessar <ChevronRight className="h-3 w-3" />
                   </span>
                 </div>
               </Link>
@@ -413,7 +411,7 @@ function AstreaDashboard() {
           )}
         </div>
 
-        {/* Seção Central: Prazos Críticos do Dia (Astrea Priority Hub) */}
+        {/* Seção Central: Prazos Críticos do Dia */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Coluna 1 & 2: Prazos Imediatos e Agenda */}
           <div className="lg:col-span-2 astrea-card p-6 flex flex-col justify-between">
@@ -528,52 +526,55 @@ function AstreaDashboard() {
             </div>
 
             <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500">
-              <span>Alertas de contagem de dias úteis CPC/CLT</span>
+              <span>Contagem de prazos em dias úteis CPC/CLT</span>
               <Link href="/prazos" className="font-semibold text-sky-600 hover:underline">
                 Abrir Central de Prazos →
               </Link>
             </div>
           </div>
 
-          {/* Coluna 3: Card de Produtividade & IA Gemini */}
-          <div className="astrea-card p-6 bg-gradient-to-br from-sky-900 via-indigo-950 to-slate-900 text-white flex flex-col justify-between relative overflow-hidden border-sky-800/40">
-            <div className="absolute top-0 right-0 -mt-6 -mr-6 h-36 w-36 rounded-full bg-cyan-400/20 blur-xl pointer-events-none" />
-
+          {/* Coluna 3: Assistente Jurídico (Design Sóbrio e Integrado) */}
+          <div className="astrea-card p-6 flex flex-col justify-between">
             <div>
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-cyan-400/20 px-2.5 py-0.5 text-[10px] font-bold text-cyan-300 border border-cyan-400/30">
-                <Sparkles className="h-3 w-3" />
-                <span>Google Gemini 3.7</span>
+              <div className="flex items-center justify-between">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                  <Sparkles className="h-4 w-4 text-sky-600 dark:text-sky-400" />
+                </div>
+                <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[10px] font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                  Produtividade
+                </span>
               </div>
-              <h3 className="mt-3 text-lg font-bold text-white leading-snug">
-                IA Jurídica Gemini Integrada
+
+              <h3 className="mt-4 text-base font-bold text-slate-900 dark:text-white leading-snug">
+                Assistente & Análise de Peças
               </h3>
-              <p className="mt-1.5 text-xs text-sky-100/80 leading-relaxed">
-                Analise intimações, extraia prazos automaticamente e gere minutas de petições com inteligência artificial de última geração.
+              <p className="mt-1.5 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                Estruture minutas de petições, resumos executivos para clientes e realize a triagem ágil de intimações.
               </p>
 
               <div className="mt-4 space-y-2">
-                <div className="flex items-center gap-2 text-xs text-sky-200/90">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
+                <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
                   <span>Extração de prazos a partir de intimações</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-sky-200/90">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
+                <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
                   <span>Resumos executivos de decisões para clientes</span>
                 </div>
-                <div className="flex items-center gap-2 text-xs text-sky-200/90">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
-                  <span>Análise de validade e riscos contratuais</span>
+                <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <span>Análise de cláusulas e riscos contratuais</span>
                 </div>
               </div>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-sky-800/50">
+            <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800">
               <Link
                 href="/gemini"
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-400 px-4 py-2.5 text-xs font-bold text-slate-950 shadow-md hover:bg-cyan-300 transition active:scale-95"
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 transition active:scale-95"
               >
                 <Sparkles className="h-4 w-4" />
-                <span>Iniciar Análise com IA</span>
+                <span>Abrir Assistente Jurídico</span>
               </Link>
             </div>
           </div>
@@ -597,16 +598,16 @@ function AstreaDashboard() {
                 <Link
                   key={idx}
                   href={mod.href}
-                  className="group astrea-card p-6 flex flex-col justify-between transition-all hover:-translate-y-1 hover:border-sky-500/50"
+                  className="group astrea-card p-6 flex flex-col justify-between transition-all hover:-translate-y-1 hover:border-sky-500/40"
                 >
                   <div>
                     <div className="flex items-center justify-between">
                       <div
-                        className={`flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-tr ${mod.iconBg} text-white shadow-md shadow-sky-500/10 group-hover:scale-105 transition-transform`}
+                        className={`flex h-11 w-11 items-center justify-center rounded-2xl ${mod.iconBox} shadow-xs group-hover:scale-105 transition-transform`}
                       >
                         <Icon className="h-5 w-5" />
                       </div>
-                      <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${mod.badgeColor}`}>
+                      <span className={`rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${mod.badgeColor}`}>
                         {mod.badge}
                       </span>
                     </div>
@@ -614,7 +615,7 @@ function AstreaDashboard() {
                     <h3 className="mt-4 text-base font-bold text-slate-900 group-hover:text-sky-600 dark:text-white dark:group-hover:text-sky-400 transition-colors">
                       {mod.title}
                     </h3>
-                    <p className="text-[11px] font-semibold text-sky-700 dark:text-sky-400 mt-0.5">
+                    <p className="text-[11px] font-medium text-slate-500 dark:text-slate-400 mt-0.5">
                       {mod.subtitle}
                     </p>
                     <p className="mt-2 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -622,7 +623,7 @@ function AstreaDashboard() {
                     </p>
                   </div>
 
-                  <div className="mt-6 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80 pt-3 text-xs font-bold text-sky-600 dark:text-sky-400">
+                  <div className="mt-6 flex items-center justify-between border-t border-slate-100 dark:border-slate-800/80 pt-3 text-xs font-semibold text-slate-700 group-hover:text-sky-600 dark:text-slate-300 dark:group-hover:text-sky-400">
                     <span>Acessar módulo</span>
                     <ArrowUpRight className="h-4 w-4 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </div>

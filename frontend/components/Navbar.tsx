@@ -86,14 +86,14 @@ export function Navbar() {
   const baseNavItems = [
     { label: 'Painel', href: '/', icon: LayoutDashboard, exact: true },
     { label: 'Processos', href: '/processos', icon: Briefcase },
-    { label: 'Prazos & Tarefas', href: '/prazos', icon: CalendarClock },
+    { label: 'Prazos', href: '/prazos', icon: CalendarClock },
     { label: 'Clientes', href: '/clientes', icon: Users },
-    { label: 'DataJud CNJ', href: '/datajud', icon: Search, badge: 'Live' },
-    { label: 'IA Jurídica', href: '/gemini', icon: Sparkles, badge: 'Gemini' },
+    { label: 'DataJud', href: '/datajud', icon: Search },
+    { label: 'IA Jurídica', href: '/gemini', icon: Sparkles },
   ];
 
   const navItems = isAdmin
-    ? [...baseNavItems, { label: 'Equipe & Permissões', href: '/usuarios', icon: Shield }]
+    ? [...baseNavItems, { label: 'Equipe', href: '/usuarios', icon: Shield }]
     : baseNavItems;
 
   const handleGlobalSearch = (e: React.FormEvent) => {
@@ -111,38 +111,9 @@ export function Navbar() {
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/95 backdrop-blur-md dark:border-slate-800/90 dark:bg-slate-900/95 transition-colors">
-      {/* Top Banner Ribbon */}
-      <div className="border-b border-slate-100 bg-slate-50/80 px-4 py-1 text-[11px] text-slate-500 dark:border-slate-800/60 dark:bg-slate-950/60 dark:text-slate-400 hidden sm:block">
-        <div className="mx-auto flex max-w-7xl items-center justify-between">
-          <div className="flex items-center gap-4">
-            <span className="flex items-center gap-1.5 font-medium text-slate-700 dark:text-slate-300">
-              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-              Sincronização DataJud CNJ: <strong className="text-emerald-700 dark:text-emerald-400 font-semibold">Online (91 Tribunais)</strong>
-            </span>
-            <span className="text-slate-300 dark:text-slate-700">|</span>
-            <span className="hidden md:inline text-slate-500">
-              Davino Neves Advocacia
-            </span>
-          </div>
-
-          <div className="flex items-center gap-3">
-            <span className="hidden md:inline font-mono text-[10px] text-sky-700 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/60 px-2 py-0.5 rounded-full border border-sky-200 dark:border-sky-800">
-              OAB/SP • Sociedade de Advogados
-            </span>
-            <Link
-              href="/gemini"
-              className="flex items-center gap-1 font-semibold text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300"
-            >
-              <Sparkles className="h-3 w-3 text-sky-600 dark:text-sky-400" />
-              <span>Google Gemini Ativo</span>
-            </Link>
-          </div>
-        </div>
-      </div>
-
       {/* Main Navbar */}
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-2 sm:gap-4 px-3 sm:px-6 lg:px-8">
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0">
           {/* Botão Hambúrguer Mobile (Touch Target mínimo 44x44px) */}
           <button
             type="button"
@@ -157,14 +128,10 @@ export function Navbar() {
           {/* Brand - Modern Style Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2 sm:gap-2.5 transition-all hover:opacity-95 shrink-0 group min-w-0"
+            className="flex items-center gap-2 sm:gap-2.5 transition-all hover:opacity-95 shrink-0 group"
           >
             <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-sky-600 via-sky-500 to-cyan-400 text-white shadow-md shadow-sky-500/20 group-hover:scale-105 transition-transform shrink-0">
               <Scale className="h-4 w-4 sm:h-5 sm:w-5 text-white" />
-              <div className="absolute -top-1 -right-1 flex h-2.5 w-2.5 sm:h-3 sm:w-3">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 sm:h-3 sm:w-3 bg-cyan-400" />
-              </div>
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
@@ -175,39 +142,12 @@ export function Navbar() {
                   Advocacia
                 </span>
               </div>
-              <div className="hidden md:block text-[10px] font-medium text-slate-500 dark:text-slate-400 leading-tight truncate">
-                Controladoria Jurídica & Processos
-              </div>
             </div>
           </Link>
         </div>
 
-        {/* Global Quick Search (Desktop) */}
-        <form
-          onSubmit={handleGlobalSearch}
-          className="hidden md:flex flex-1 max-w-xs xl:max-w-sm items-center relative"
-        >
-          <Search className="absolute left-3 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Buscar processo, cliente ou prazo..."
-            className="w-full rounded-xl border border-slate-700 bg-slate-900 pl-9 pr-8 py-2 text-xs text-slate-100 placeholder:text-slate-400 focus:border-sky-500 focus:outline-hidden focus:ring-2 focus:ring-sky-500/20 transition-all"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery('')}
-              className="absolute right-2.5 text-slate-400 hover:text-slate-200"
-            >
-              <X className="h-3.5 w-3.5" />
-            </button>
-          )}
-        </form>
-
         {/* Navigation Items (Desktop) */}
-        <nav className="hidden lg:flex items-center gap-1">
+        <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = item.exact
@@ -217,7 +157,7 @@ export function Navbar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`relative flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold transition-all ${
+                className={`relative flex items-center gap-1.5 rounded-xl px-2.5 xl:px-3 py-2 text-xs font-semibold transition-all ${
                   isActive
                     ? 'bg-sky-50 text-sky-700 shadow-xs dark:bg-sky-950/70 dark:text-sky-300 ring-1 ring-sky-200 dark:ring-sky-800/80'
                     : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800/80 dark:hover:text-white'
@@ -225,22 +165,37 @@ export function Navbar() {
               >
                 <Icon className={`h-4 w-4 ${isActive ? 'text-sky-600 dark:text-sky-400' : 'text-slate-400'}`} />
                 <span>{item.label}</span>
-                {item.badge && (
-                  <span className={`ml-0.5 rounded-full px-1.5 py-0.2 text-[9px] font-bold tracking-wide uppercase ${
-                    isActive
-                      ? 'bg-sky-600 text-white dark:bg-sky-400 dark:text-slate-950'
-                      : 'bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
-                  }`}>
-                    {item.badge}
-                  </span>
-                )}
               </Link>
             );
           })}
         </nav>
 
-        {/* Right Section / Quick Actions & User Profile */}
+        {/* Right Section / Search, Quick Actions & User Profile */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          {/* Global Quick Search (Desktop XL) */}
+          <form
+            onSubmit={handleGlobalSearch}
+            className="hidden xl:flex items-center relative w-48 2xl:w-56"
+          >
+            <Search className="absolute left-3 h-3.5 w-3.5 text-slate-400 pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Buscar processo..."
+              className="w-full rounded-xl border border-slate-700 bg-slate-900 pl-8 pr-7 py-1.5 text-xs text-slate-100 placeholder:text-slate-400 focus:border-sky-500 focus:outline-hidden focus:ring-2 focus:ring-sky-500/20 transition-all"
+            />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2 text-slate-400 hover:text-slate-200"
+              >
+                <X className="h-3 w-3" />
+              </button>
+            )}
+          </form>
+
           {/* Action "+ Novo" Dropdown */}
           <div className="relative" ref={quickMenuRef}>
             <button
@@ -509,19 +464,7 @@ export function Navbar() {
                         <Icon className={`h-4 w-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                         <span>{item.label}</span>
                       </div>
-                      {item.badge ? (
-                        <span
-                          className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase ${
-                            isActive
-                              ? 'bg-white/20 text-white'
-                              : 'bg-slate-200 text-slate-700 dark:bg-slate-800 dark:text-slate-300'
-                          }`}
-                        >
-                          {item.badge}
-                        </span>
-                      ) : (
-                        <ChevronRight className={`h-4 w-4 opacity-50 ${isActive ? 'text-white' : 'text-slate-400'}`} />
-                      )}
+                      <ChevronRight className={`h-4 w-4 opacity-50 ${isActive ? 'text-white' : 'text-slate-400'}`} />
                     </Link>
                   );
                 })}
