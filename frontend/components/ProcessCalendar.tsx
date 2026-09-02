@@ -123,11 +123,14 @@ export function ProcessCalendar({
         ? prazo.data_vencimento.split('T')[0]
         : prazo.data_vencimento;
 
+      const horaStr = prazo.hora ? (prazo.hora.length === 5 ? `${prazo.hora}:00` : prazo.hora) : null;
+      const startDateTime = horaStr ? `${dateOnly}T${horaStr}` : dateOnly;
+
       return {
         id: String(prazo.id_prazo),
         title: prazo.descricao,
-        start: dateOnly,
-        allDay: true,
+        start: startDateTime,
+        allDay: !horaStr,
         extendedProps: {
           prazo,
           urgencia: calc.urgencia,
@@ -164,9 +167,14 @@ export function ProcessCalendar({
     return (
       <div
         className={`w-full flex items-center gap-1.5 px-2 py-1 rounded-md border text-[11px] font-medium transition-all hover:scale-[1.02] cursor-pointer shadow-2xs overflow-hidden ${pillStyle}`}
-        title={`${prazo.descricao} - ${prazo.processo?.numero_processo || ''}`}
+        title={`${prazo.descricao} - ${prazo.processo?.numero_processo || ''}${prazo.hora ? ` (${prazo.hora})` : ''}`}
       >
         <span className={`h-1.5 w-1.5 rounded-full shrink-0 ${dotStyle}`} />
+        {prazo.hora && (
+          <span className="font-mono text-[10px] opacity-80 shrink-0 font-semibold">
+            {prazo.hora}
+          </span>
+        )}
         <span className={`truncate flex-1 font-semibold ${isCumprido ? 'line-through opacity-75' : ''}`}>
           {eventInfo.event.title}
         </span>

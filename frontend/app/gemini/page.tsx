@@ -321,6 +321,8 @@ function GeminiContent() {
       await prazoService.create({
         descricao: descricaoPrazoModal.trim(),
         data_vencimento: dataVencimentoModal,
+        hora: '09:00',
+        tipoCompromisso: 'Prazo Fatal',
         status: 'Pendente',
         id_processo: Number(processoSelecionadoId),
       });

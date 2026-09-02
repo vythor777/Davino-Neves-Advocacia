@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Prazo" ADD COLUMN "hora" VARCHAR(10) NOT NULL DEFAULT '09:00',
+ADD COLUMN "tipoCompromisso" VARCHAR(50) NOT NULL DEFAULT 'Prazo Fatal',
+ADD COLUMN "responsavel" VARCHAR(100);

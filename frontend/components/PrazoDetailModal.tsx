@@ -16,6 +16,7 @@ import {
   Trash2,
   ExternalLink,
   Copy,
+  Tag,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -127,12 +128,41 @@ export function PrazoDetailModal({
             </p>
           </div>
 
-          {/* Data de Vencimento */}
-          <div className="space-y-1.5">
-            <span className="text-slate-500 dark:text-slate-400 font-medium">Data Fatal de Vencimento:</span>
-            <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-950/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
-              <Clock className="h-4 w-4 text-slate-400 shrink-0" />
-              <span className="capitalize font-medium">{dataFormatada}</span>
+          {/* Data de Vencimento e Hora */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <span className="text-slate-500 dark:text-slate-400 font-medium">Data Fatal:</span>
+              <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-950/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                <Calendar className="h-4 w-4 text-slate-400 shrink-0" />
+                <span className="capitalize font-medium">{dataFormatada}</span>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <span className="text-slate-500 dark:text-slate-400 font-medium">Horário Marcado:</span>
+              <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-950/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                <Clock className="h-4 w-4 text-slate-400 shrink-0" />
+                <span className="font-mono font-medium">{prazo.hora || '09:00'}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Tipo de Compromisso e Responsável */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1.5">
+              <span className="text-slate-500 dark:text-slate-400 font-medium">Tipo de Compromisso:</span>
+              <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-950/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                <Tag className="h-4 w-4 text-orange-500 shrink-0" />
+                <span className="font-semibold">{prazo.tipoCompromisso || 'Prazo Fatal'}</span>
+              </div>
+            </div>
+
+            <div className="space-y-1.5">
+              <span className="text-slate-500 dark:text-slate-400 font-medium">Responsável:</span>
+              <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-950/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+                <User className="h-4 w-4 text-slate-400 shrink-0" />
+                <span className="font-medium truncate">{prazo.responsavel || 'Não atribuído'}</span>
+              </div>
             </div>
           </div>
 

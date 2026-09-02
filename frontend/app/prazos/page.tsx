@@ -141,6 +141,9 @@ function PrazosContent() {
   // Form Fields
   const [descricao, setDescricao] = useState<string>('');
   const [dataVencimento, setDataVencimento] = useState<string>('');
+  const [hora, setHora] = useState<string>('09:00');
+  const [tipoCompromisso, setTipoCompromisso] = useState<string>('Prazo Fatal');
+  const [responsavel, setResponsavel] = useState<string>('');
   const [status, setStatus] = useState<string>('Pendente');
   const [idProcesso, setIdProcesso] = useState<string>('');
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
@@ -203,6 +206,9 @@ function PrazosContent() {
     target.setDate(target.getDate() + 5);
     const suggestedDate = target.toISOString().split('T')[0];
     setDataVencimento(suggestedDate);
+    setHora('09:00');
+    setTipoCompromisso('Prazo Fatal');
+    setResponsavel('');
     setStatus('Pendente');
     setIdProcesso(processos.length > 0 ? String(processos[0].id_processo) : '');
     setFormErrors({});
@@ -221,6 +227,9 @@ function PrazosContent() {
     setEditingPrazo(null);
     setDescricao('');
     setDataVencimento(dateStr);
+    setHora('09:00');
+    setTipoCompromisso('Prazo Fatal');
+    setResponsavel('');
     setStatus('Pendente');
     setIdProcesso(processos.length > 0 ? String(processos[0].id_processo) : '');
     setFormErrors({});
@@ -237,6 +246,9 @@ function PrazosContent() {
       ? new Date(prazo.data_vencimento).toISOString().split('T')[0]
       : new Date().toISOString().split('T')[0];
     setDataVencimento(dateFormatted);
+    setHora(prazo.hora || '09:00');
+    setTipoCompromisso(prazo.tipoCompromisso || 'Prazo Fatal');
+    setResponsavel(prazo.responsavel || '');
     setStatus(prazo.status);
     setIdProcesso(String(prazo.id_processo));
     setFormErrors({});
@@ -252,6 +264,12 @@ function PrazosContent() {
     }
     if (!dataVencimento) {
       errors.dataVencimento = 'A data de vencimento é obrigatória.';
+    }
+    if (!hora.trim()) {
+      errors.hora = 'O horário é obrigatório.';
+    }
+    if (!tipoCompromisso.trim()) {
+      errors.tipoCompromisso = 'O tipo de compromisso é obrigatório.';
     }
     if (!status.trim()) {
       errors.status = 'O status do prazo é obrigatório.';
@@ -274,6 +292,9 @@ function PrazosContent() {
     const payload: CreatePrazoInput = {
       descricao: descricao.trim(),
       data_vencimento: dataVencimento,
+      hora: hora.trim() || '09:00',
+      tipoCompromisso: tipoCompromisso.trim() || 'Prazo Fatal',
+      responsavel: responsavel.trim() ? responsavel.trim() : undefined,
       status: status.trim(),
       id_processo: Number(idProcesso),
     };
@@ -710,6 +731,16 @@ function PrazosContent() {
                           >
                             {prazo.descricao}
                           </span>
+                          <div className="flex items-center gap-2 mt-0.5 text-[11px] text-slate-500">
+                            {prazo.tipoCompromisso && (
+                              <span className="font-medium text-orange-600 dark:text-orange-400">
+                                {prazo.tipoCompromisso}
+                              </span>
+                            )}
+                            {prazo.responsavel && (
+                              <span>• {prazo.responsavel}</span>
+                            )}
+                          </div>
                         </td>
 
                         <td className="px-3 py-4">
@@ -728,7 +759,14 @@ function PrazosContent() {
                         </td>
 
                         <td className="px-3 py-4 font-mono font-medium text-slate-800 dark:text-slate-200">
-                          {new Date(prazo.data_vencimento).toLocaleDateString('pt-BR')}
+                          <div>
+                            {new Date(prazo.data_vencimento).toLocaleDateString('pt-BR')}
+                            {prazo.hora && (
+                              <span className="text-[11px] text-slate-500 block font-mono">
+                                às {prazo.hora}
+                              </span>
+                            )}
+                          </div>
                         </td>
 
                         <td className="px-3 py-4">
@@ -817,6 +855,17 @@ function PrazosContent() {
                       {prazo.descricao}
                     </h4>
 
+                    <div className="flex flex-wrap items-center gap-2 mt-2">
+                      <span className="text-[10px] font-semibold text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40 px-2 py-0.5 rounded border border-orange-200 dark:border-orange-800/60">
+                        {prazo.tipoCompromisso || 'Prazo Fatal'}
+                      </span>
+                      {prazo.responsavel && (
+                        <span className="text-[11px] text-slate-500 truncate">
+                          {prazo.responsavel}
+                        </span>
+                      )}
+                    </div>
+
                     {prazo.processo && (
                       <div className="mt-3 rounded-xl bg-slate-50 p-2.5 text-[11px] dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800">
                         <span className="font-mono font-bold text-slate-800 dark:text-slate-200 block truncate">
@@ -831,7 +880,7 @@ function PrazosContent() {
 
                   <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-slate-800/80 text-xs">
                     <span className="font-mono font-medium text-slate-600 dark:text-slate-400">
-                      Vence: {new Date(prazo.data_vencimento).toLocaleDateString('pt-BR')}
+                      Vence: {new Date(prazo.data_vencimento).toLocaleDateString('pt-BR')} {prazo.hora ? `às ${prazo.hora}` : ''}
                     </span>
 
                     <div className="flex items-center gap-1">
@@ -866,19 +915,20 @@ function PrazosContent() {
       {/* Modal de Criação / Edição */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-800 bg-[#0F172A] p-6 shadow-2xl text-slate-100">
+            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
               <div className="flex items-center gap-2">
-                <div className="rounded-lg bg-amber-100 p-2 text-amber-900 dark:bg-amber-950 dark:text-amber-300">
+                <div className="rounded-lg bg-orange-950/80 p-2 text-orange-400 border border-orange-800/60">
                   {editingPrazo ? <Edit2 className="h-5 w-5" /> : <PlusCircle className="h-5 w-5" />}
                 </div>
-                <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white">
+                <h3 className="font-serif text-lg font-bold text-white">
                   {editingPrazo ? 'Editar Prazo Processual' : 'Cadastrar Novo Prazo'}
                 </h3>
               </div>
               <button
                 onClick={() => setModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                className="text-slate-400 hover:text-white transition"
+                aria-label="Fechar modal"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -886,28 +936,28 @@ function PrazosContent() {
 
             <form onSubmit={handleSavePrazo} className="mt-4 space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block font-semibold text-slate-200 mb-1">
                   Processo Judicial Vinculado *
                 </label>
                 <select
                   value={idProcesso}
                   onChange={(e) => setIdProcesso(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-amber-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-orange-500 focus:outline-hidden"
                 >
-                  <option value="" className="bg-slate-900 text-slate-100">Selecione o Processo</option>
+                  <option value="" className="bg-[#0F172A] text-slate-100">Selecione o Processo</option>
                   {processos.map((p) => (
-                    <option key={p.id_processo} value={String(p.id_processo)} className="bg-slate-900 text-slate-100">
+                    <option key={p.id_processo} value={String(p.id_processo)} className="bg-[#0F172A] text-slate-100">
                       {p.numero_processo} — {p.titulo}
                     </option>
                   ))}
                 </select>
                 {formErrors.idProcesso && (
-                  <p className="text-red-500 mt-1">{formErrors.idProcesso}</p>
+                  <p className="text-red-400 mt-1">{formErrors.idProcesso}</p>
                 )}
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block font-semibold text-slate-200 mb-1">
                   Descrição do Ato Processual / Intimação *
                 </label>
                 <input
@@ -915,56 +965,113 @@ function PrazosContent() {
                   value={descricao}
                   onChange={(e) => setDescricao(e.target.value)}
                   placeholder="Ex: Apresentar Réplica à Contestação com documentos"
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-orange-500 focus:outline-hidden"
                 />
                 {formErrors.descricao && (
-                  <p className="text-red-500 mt-1">{formErrors.descricao}</p>
+                  <p className="text-red-400 mt-1">{formErrors.descricao}</p>
                 )}
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* Campo de Tipo de Compromisso */}
+              <div>
+                <label className="block font-semibold text-slate-200 mb-1">
+                  Tipo de Compromisso *
+                </label>
+                <select
+                  value={tipoCompromisso}
+                  onChange={(e) => setTipoCompromisso(e.target.value)}
+                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-orange-500 focus:outline-hidden"
+                >
+                  <option value="Prazo Fatal" className="bg-[#0F172A] text-slate-100">Prazo Fatal</option>
+                  <option value="Audiência" className="bg-[#0F172A] text-slate-100">Audiência</option>
+                  <option value="Reunião Externa" className="bg-[#0F172A] text-slate-100">Reunião Externa</option>
+                  <option value="Diligência" className="bg-[#0F172A] text-slate-100">Diligência</option>
+                </select>
+                {formErrors.tipoCompromisso && (
+                  <p className="text-red-400 mt-1">{formErrors.tipoCompromisso}</p>
+                )}
+              </div>
+
+              {/* Divisão da data em duas colunas (grid grid-cols-2 gap-4) */}
+              <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Data Fatal de Vencimento *
+                  <label className="block font-semibold text-slate-200 mb-1">
+                    Data *
                   </label>
                   <input
                     type="date"
                     value={dataVencimento}
                     onChange={(e) => setDataVencimento(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-amber-500 focus:outline-hidden"
+                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-orange-500 focus:outline-hidden"
                   />
                   {formErrors.dataVencimento && (
-                    <p className="text-red-500 mt-1">{formErrors.dataVencimento}</p>
+                    <p className="text-red-400 mt-1">{formErrors.dataVencimento}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                    Status do Prazo *
+                  <label className="block font-semibold text-slate-200 mb-1">
+                    Hora *
                   </label>
-                  <select
-                    value={status}
-                    onChange={(e) => setStatus(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-amber-500 focus:outline-hidden"
-                  >
-                    <option value="Pendente" className="bg-slate-900 text-slate-100">Pendente</option>
-                    <option value="Cumprido" className="bg-slate-900 text-slate-100">Cumprido</option>
-                  </select>
+                  <input
+                    type="time"
+                    value={hora}
+                    onChange={(e) => setHora(e.target.value)}
+                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-orange-500 focus:outline-hidden"
+                  />
+                  {formErrors.hora && (
+                    <p className="text-red-400 mt-1">{formErrors.hora}</p>
+                  )}
                 </div>
               </div>
 
-              <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
+              {/* Campo opcional de Responsável (Select com opções fictícias) */}
+              <div>
+                <label className="block font-semibold text-slate-200 mb-1">
+                  Responsável pelo Cumprimento <span className="text-slate-400 font-normal">(Opcional)</span>
+                </label>
+                <select
+                  value={responsavel}
+                  onChange={(e) => setResponsavel(e.target.value)}
+                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-orange-500 focus:outline-hidden"
+                >
+                  <option value="" className="bg-[#0F172A] text-slate-300">Selecione um Responsável (Opcional)</option>
+                  <option value="Dr. Roberto Davino" className="bg-[#0F172A] text-slate-100">Dr. Roberto Davino (Sócio Titular)</option>
+                  <option value="Dra. Juliana Neves" className="bg-[#0F172A] text-slate-100">Dra. Juliana Neves (Sócia Coordenadora)</option>
+                  <option value="Dr. Marcelo Queiroz" className="bg-[#0F172A] text-slate-100">Dr. Marcelo Queiroz (Advogado Sênior)</option>
+                  <option value="Dra. Beatriz Fontana" className="bg-[#0F172A] text-slate-100">Dra. Beatriz Fontana (Advogada Associada)</option>
+                  <option value="Lucas Silveira" className="bg-[#0F172A] text-slate-100">Lucas Silveira (Assistente Jurídico)</option>
+                </select>
+              </div>
+
+              {/* Status do Prazo */}
+              <div>
+                <label className="block font-semibold text-slate-200 mb-1">
+                  Status do Prazo *
+                </label>
+                <select
+                  value={status}
+                  onChange={(e) => setStatus(e.target.value)}
+                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-orange-500 focus:outline-hidden"
+                >
+                  <option value="Pendente" className="bg-[#0F172A] text-slate-100">Pendente</option>
+                  <option value="Cumprido" className="bg-[#0F172A] text-slate-100">Cumprido</option>
+                </select>
+              </div>
+
+              {/* Botões do Rodapé */}
+              <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-800 pt-4">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="rounded-xl border border-slate-300 px-4 py-2 font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                  className="rounded-xl border border-slate-700 px-4 py-2 font-semibold text-slate-300 hover:bg-slate-800 transition"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-amber-700 px-4 py-2 font-semibold text-white hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-500 disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-orange-600 px-4 py-2 font-semibold text-white hover:bg-orange-500 active:bg-orange-700 disabled:opacity-50 transition shadow-md shadow-orange-900/30"
                 >
                   {saving ? 'Salvando...' : editingPrazo ? 'Atualizar Prazo' : 'Salvar no Banco'}
                 </button>

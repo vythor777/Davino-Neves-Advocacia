@@ -18,6 +18,9 @@ export class PrazosService {
         data: {
           descricao: createPrazoDto.descricao,
           data_vencimento: new Date(createPrazoDto.data_vencimento),
+          hora: createPrazoDto.hora || '09:00',
+          tipoCompromisso: createPrazoDto.tipoCompromisso || 'Prazo Fatal',
+          responsavel: createPrazoDto.responsavel || null,
           status: createPrazoDto.status,
           id_processo: createPrazoDto.id_processo,
         },
@@ -93,6 +96,15 @@ export class PrazosService {
       }
       if (updatePrazoDto.status !== undefined) {
         dataToUpdate.status = updatePrazoDto.status;
+      }
+      if (updatePrazoDto.hora !== undefined) {
+        dataToUpdate.hora = updatePrazoDto.hora;
+      }
+      if (updatePrazoDto.tipoCompromisso !== undefined) {
+        dataToUpdate.tipoCompromisso = updatePrazoDto.tipoCompromisso;
+      }
+      if (updatePrazoDto.responsavel !== undefined) {
+        dataToUpdate.responsavel = updatePrazoDto.responsavel;
       }
       if (updatePrazoDto.id_processo !== undefined) {
         dataToUpdate.processo = {

@@ -70,6 +70,9 @@ model Prazo {
   id_prazo         Int         @id @default(autoincrement())
   descricao        String      @db.VarChar(255)
   data_vencimento  DateTime    @db.Date
+  hora             String      @default("09:00") @db.VarChar(10)
+  tipoCompromisso  String      @default("Prazo Fatal") @db.VarChar(50)
+  responsavel      String?     @db.VarChar(100)
   status           String      @db.VarChar(50)
   data_criacao     DateTime    @default(now())
   data_atualizacao DateTime    @updatedAt
