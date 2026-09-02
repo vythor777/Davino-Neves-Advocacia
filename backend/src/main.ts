@@ -30,4 +30,5 @@ async function bootstrap() {
   await app.listen(port, '0.0.0.0');
   console.log(`🚀 NestJS rodando na porta ${port}`);
 }
-await bootstrap();
+bootstrap();
+

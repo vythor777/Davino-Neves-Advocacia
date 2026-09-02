@@ -1,11 +1,32 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
   --primary: #0047ab;
   --primary-hover: #003380;
   --primary-light: #e6f0fa;
+}
+
+.dark,
+[data-theme="dark"] {
+  --background: #020617; /* slate-950 */
+  --foreground: #f8fafc;
+  --primary: #3b82f6; /* Lighter corporate blue for dark mode */
+  --primary-hover: #60a5fa;
+  --primary-light: rgba(59, 130, 246, 0.15);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    --background: #020617; /* slate-950 */
+    --foreground: #f8fafc;
+    --primary: #3b82f6;
+    --primary-hover: #60a5fa;
+    --primary-light: rgba(59, 130, 246, 0.15);
+  }
 }
 
 @theme inline {
@@ -16,16 +37,6 @@
   --color-primary-light: var(--primary-light);
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #020617; /* slate-950 */
-    --foreground: #f8fafc;
-    --primary: #3b82f6; /* Lighter corporate blue for dark mode */
-    --primary-hover: #60a5fa;
-    --primary-light: rgba(59, 130, 246, 0.15);
-  }
 }
 
 body {
@@ -49,9 +60,18 @@ body {
   transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.dark .legal-card,
+.dark .astrea-card,
+[data-theme="dark"] .legal-card,
+[data-theme="dark"] .astrea-card {
+  background-color: #0f172a;
+  border-color: #1e293b;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
+}
+
 @media (prefers-color-scheme: dark) {
-  .legal-card,
-  .astrea-card {
+  :root:not(.light) .legal-card,
+  :root:not(.light) .astrea-card {
     background-color: #0f172a;
     border-color: #1e293b;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -2px rgba(0, 0, 0, 0.2);
@@ -64,9 +84,17 @@ body {
   box-shadow: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
 }
 
+.dark .legal-card:hover,
+.dark .astrea-card:hover,
+[data-theme="dark"] .legal-card:hover,
+[data-theme="dark"] .astrea-card:hover {
+  border-color: #334155;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
 @media (prefers-color-scheme: dark) {
-  .legal-card:hover,
-  .astrea-card:hover {
+  :root:not(.light) .legal-card:hover,
+  :root:not(.light) .astrea-card:hover {
     border-color: #334155;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
   }

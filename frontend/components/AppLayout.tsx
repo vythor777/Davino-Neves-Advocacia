@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import {
   LayoutDashboard,
   Briefcase,
@@ -126,9 +127,9 @@ export function AppLayout({ children }: AppLayoutProps) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0B0F17] text-slate-100 font-sans antialiased">
-      {/* Sidebar Esquerda (Fixa, w-64 border-r border-slate-800/60 bg-[#0F172A]/70 backdrop-blur-xl flex flex-col justify-between p-4) */}
-      <aside className="hidden lg:flex w-64 shrink-0 flex-col justify-between border-r border-slate-800/60 bg-[#0F172A]/70 backdrop-blur-xl p-4 select-none z-30">
+    <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-[#0B0F17] text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors duration-200">
+      {/* Sidebar Esquerda (Fixa, w-64 border-r border-slate-200 dark:border-slate-800/60 bg-white/90 dark:bg-[#0F172A]/70 backdrop-blur-xl flex flex-col justify-between p-4) */}
+      <aside className="hidden lg:flex w-64 shrink-0 flex-col justify-between border-r border-slate-200 dark:border-slate-800/60 bg-white/95 dark:bg-[#0F172A]/70 backdrop-blur-xl p-4 select-none z-30 transition-colors">
         {/* Topo da Sidebar */}
         <div className="flex flex-col">
           {/* Logotipo estilizado do escritório 'Davino Neves Advocacia' */}
@@ -138,31 +139,31 @@ export function AppLayout({ children }: AppLayoutProps) {
             </div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-1.5">
-                <span className="font-serif text-sm font-bold tracking-tight text-white truncate">
+                <span className="font-serif text-sm font-bold tracking-tight text-slate-900 dark:text-white truncate">
                   Davino Neves
                 </span>
               </div>
-              <span className="text-[10px] font-semibold tracking-wider uppercase text-blue-400/90 block">
+              <span className="text-[10px] font-semibold tracking-wider uppercase text-blue-600 dark:text-blue-400 block">
                 Advocacia
               </span>
             </div>
           </Link>
 
           {/* Badge discreto de segurança (TLS 256-bit) */}
-          <div className="mt-4 flex items-center justify-between px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800/80 text-[10px]">
-            <div className="flex items-center gap-1.5 text-slate-400">
-              <Shield className="h-3 w-3 text-emerald-400" />
+          <div className="mt-4 flex items-center justify-between px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 text-[10px] transition-colors">
+            <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-400">
+              <Shield className="h-3 w-3 text-emerald-600 dark:text-emerald-400" />
               <span>Ambiente Seguro</span>
             </div>
-            <span className="inline-flex items-center gap-1 font-mono font-medium text-emerald-400 bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-500/30 text-[9px]">
-              <span className="h-1 w-1 rounded-full bg-emerald-400 animate-pulse" />
+            <span className="inline-flex items-center gap-1 font-mono font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded border border-emerald-300 dark:border-emerald-500/30 text-[9px]">
+              <span className="h-1 w-1 rounded-full bg-emerald-500 animate-pulse" />
               TLS 256-bit
             </span>
           </div>
 
           {/* Centro (Navegação): Links verticais em lista com ícones elegantes */}
           <nav className="mt-6 space-y-1" aria-label="Navegação Lateral Principal">
-            <div className="px-2.5 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+            <div className="px-2.5 pb-2 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
               Menu Principal
             </div>
             {navLinks.map((item) => {
@@ -177,13 +178,13 @@ export function AppLayout({ children }: AppLayoutProps) {
                   href={item.href}
                   className={`group flex items-center gap-3 px-3 py-2.5 text-xs transition-all duration-150 rounded-r-xl ${
                     isActive
-                      ? 'bg-blue-600/10 text-blue-400 border-l-2 border-blue-500 font-medium shadow-2xs'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 border-l-2 border-transparent font-normal'
+                      ? 'bg-blue-50 dark:bg-blue-600/10 text-blue-600 dark:text-blue-400 border-l-2 border-blue-600 dark:border-blue-500 font-medium shadow-2xs'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/40 border-l-2 border-transparent font-normal'
                   }`}
                 >
                   <Icon
                     className={`h-4 w-4 shrink-0 transition-colors ${
-                      isActive ? 'text-blue-400' : 'text-slate-400 group-hover:text-slate-200'
+                      isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200'
                     }`}
                   />
                   <span className="truncate">{item.label}</span>
@@ -194,32 +195,32 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
 
         {/* Rodapé da Sidebar */}
-        <div className="flex flex-col gap-3 pt-4 border-t border-slate-800/60">
+        <div className="flex flex-col gap-3 pt-4 border-t border-slate-200 dark:border-slate-800/60 transition-colors">
           {/* Card compacto de status da integração ('DataJud CNJ 100% Operacional' com ponto verde pulsante) */}
-          <div className="rounded-xl border border-slate-800/80 bg-slate-900/60 p-3 shadow-2xs">
+          <div className="rounded-xl border border-slate-200 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-900/60 p-3 shadow-2xs transition-colors">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
                 </span>
-                <span className="text-xs font-semibold text-slate-200">DataJud CNJ</span>
+                <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">DataJud CNJ</span>
               </div>
-              <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-950/70 px-1.5 py-0.5 rounded border border-emerald-500/30">
+              <span className="text-[10px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/70 px-1.5 py-0.5 rounded border border-emerald-300 dark:border-emerald-500/30">
                 100% Operacional
               </span>
             </div>
-            <p className="mt-1 text-[10px] text-slate-400 leading-tight">
+            <p className="mt-1 text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
               Sincronização ativa com tribunais
             </p>
           </div>
 
-          {/* Card do usuário logado ('Vythor - Administrador') com dropdown de configurações */}
+          {/* Card do usuário logado com dropdown de configurações */}
           <div className="relative" ref={userDropdownRef}>
             <button
               type="button"
               onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-              className="flex w-full items-center justify-between gap-2.5 rounded-xl border border-slate-800/80 bg-slate-900/60 p-2.5 text-left hover:bg-slate-800/60 hover:border-slate-700/80 transition-colors cursor-pointer group"
+              className="flex w-full items-center justify-between gap-2.5 rounded-xl border border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 p-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:border-slate-300 dark:hover:border-slate-700/80 transition-colors cursor-pointer group shadow-2xs"
               aria-expanded={userDropdownOpen}
               aria-haspopup="true"
             >
@@ -228,45 +229,45 @@ export function AppLayout({ children }: AppLayoutProps) {
                   {displayName.charAt(0).toUpperCase()}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-semibold text-slate-200 truncate group-hover:text-white">
+                  <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate group-hover:text-slate-950 dark:group-hover:text-white">
                     {displayName}
                   </p>
-                  <p className="text-[10px] text-slate-400 truncate">
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
                     {displayRole}
                   </p>
                 </div>
               </div>
               <ChevronDown
                 className={`h-4 w-4 text-slate-400 transition-transform duration-150 shrink-0 ${
-                  userDropdownOpen ? 'rotate-180 text-blue-400' : ''
+                  userDropdownOpen ? 'rotate-180 text-blue-500' : ''
                 }`}
               />
             </button>
 
             {/* Dropdown de Configurações do Usuário */}
             {userDropdownOpen && (
-              <div className="absolute bottom-full left-0 mb-2 w-full rounded-xl border border-slate-800 bg-slate-900/95 backdrop-blur-xl p-1.5 shadow-xl z-50 animate-in fade-in slide-in-from-bottom-2 duration-150">
-                <div className="px-2.5 py-1.5 border-b border-slate-800/80 text-[10px] text-slate-400">
-                  Conectado como <strong className="text-slate-200">{displayName}</strong>
+              <div className="absolute bottom-full left-0 mb-2 w-full rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-1.5 shadow-xl z-50 animate-in fade-in slide-in-from-bottom-2 duration-150">
+                <div className="px-2.5 py-1.5 border-b border-slate-100 dark:border-slate-800/80 text-[10px] text-slate-500 dark:text-slate-400">
+                  Conectado como <strong className="text-slate-900 dark:text-slate-200">{displayName}</strong>
                 </div>
                 <div className="mt-1 space-y-0.5">
                   <Link
                     href="/usuarios"
                     onClick={() => setUserDropdownOpen(false)}
-                    className="flex items-center gap-2 rounded-lg px-2.5 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                    className="flex items-center gap-2 rounded-lg px-2.5 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition"
                   >
-                    <Settings className="h-3.5 w-3.5 text-slate-400" />
+                    <Settings className="h-3.5 w-3.5 text-slate-500 dark:text-slate-400" />
                     <span>Configurações & Equipe</span>
                   </Link>
                   <Link
                     href="/datajud"
                     onClick={() => setUserDropdownOpen(false)}
-                    className="flex items-center gap-2 rounded-lg px-2.5 py-2 text-xs text-slate-300 hover:bg-slate-800 hover:text-white transition"
+                    className="flex items-center gap-2 rounded-lg px-2.5 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white transition"
                   >
-                    <Scale className="h-3.5 w-3.5 text-blue-400" />
+                    <Scale className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
                     <span>Status de Conexão CNJ</span>
                   </Link>
-                  <div className="border-t border-slate-800/80 my-1" />
+                  <div className="border-t border-slate-100 dark:border-slate-800/80 my-1" />
                   <button
                     type="button"
                     onClick={() => {
@@ -277,7 +278,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                         router.push('/login');
                       }
                     }}
-                    className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-medium text-rose-400 hover:bg-rose-950/40 hover:text-rose-300 transition"
+                    className="flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-700 dark:hover:text-rose-300 transition cursor-pointer"
                   >
                     <LogOut className="h-3.5 w-3.5" />
                     <span>Sair com Segurança</span>
@@ -293,26 +294,26 @@ export function AppLayout({ children }: AppLayoutProps) {
       {mobileDrawerOpen && (
         <div className="fixed inset-0 z-50 lg:hidden">
           <div
-            className="fixed inset-0 bg-black/70 backdrop-blur-xs transition-opacity"
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
             onClick={() => setMobileDrawerOpen(false)}
             aria-hidden="true"
           />
-          <div className="fixed inset-y-0 left-0 w-72 bg-[#0F172A] border-r border-slate-800 p-4 flex flex-col justify-between z-50 shadow-2xl animate-in slide-in-from-left duration-200">
+          <div className="fixed inset-y-0 left-0 w-72 bg-white dark:bg-[#0F172A] border-r border-slate-200 dark:border-slate-800 p-4 flex flex-col justify-between z-50 shadow-2xl animate-in slide-in-from-left duration-200">
             <div>
-              <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-slate-800">
                 <div className="flex items-center gap-2.5">
                   <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white shadow-xs">
                     <Scale className="h-4 w-4" />
                   </div>
                   <div>
-                    <span className="font-serif text-sm font-bold text-white block">Davino Neves</span>
-                    <span className="text-[10px] font-semibold text-blue-400 uppercase">Advocacia</span>
+                    <span className="font-serif text-sm font-bold text-slate-900 dark:text-white block">Davino Neves</span>
+                    <span className="text-[10px] font-semibold text-blue-600 dark:text-blue-400 uppercase">Advocacia</span>
                   </div>
                 </div>
                 <button
                   type="button"
                   onClick={() => setMobileDrawerOpen(false)}
-                  className="rounded-lg p-1.5 text-slate-400 hover:text-white hover:bg-slate-800"
+                  className="rounded-lg p-1.5 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition"
                   aria-label="Fechar menu"
                 >
                   <X className="h-5 w-5" />
@@ -331,11 +332,11 @@ export function AppLayout({ children }: AppLayoutProps) {
                       href={item.href}
                       className={`flex items-center gap-3 px-3 py-2.5 text-xs rounded-xl transition ${
                         isActive
-                          ? 'bg-blue-600/20 text-blue-400 border-l-2 border-blue-500 font-medium'
-                          : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/40'
+                          ? 'bg-blue-50 dark:bg-blue-600/20 text-blue-600 dark:text-blue-400 border-l-2 border-blue-600 dark:border-blue-500 font-medium'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/40'
                       }`}
                     >
-                      <Icon className={`h-4 w-4 ${isActive ? 'text-blue-400' : 'text-slate-400'}`} />
+                      <Icon className={`h-4 w-4 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-slate-500 dark:text-slate-400'}`} />
                       <span>{item.label}</span>
                     </Link>
                   );
@@ -343,14 +344,19 @@ export function AppLayout({ children }: AppLayoutProps) {
               </nav>
             </div>
 
-            <div className="pt-4 border-t border-slate-800">
-              <div className="flex items-center gap-3 p-2 rounded-xl bg-slate-900/80 mb-3">
+            <div className="pt-4 border-t border-slate-200 dark:border-slate-800 space-y-3">
+              <div className="flex items-center justify-between px-2 py-1">
+                <span className="text-xs font-semibold text-slate-600 dark:text-slate-400">Tema do App</span>
+                <ThemeToggle variant="segmented" />
+              </div>
+
+              <div className="flex items-center gap-3 p-2 rounded-xl bg-slate-100 dark:bg-slate-900/80">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 font-bold text-xs text-white">
                   {displayName.charAt(0).toUpperCase()}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-semibold text-slate-200 truncate">{displayName}</p>
-                  <p className="text-[10px] text-slate-400 truncate">{displayRole}</p>
+                  <p className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate">{displayName}</p>
+                  <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">{displayRole}</p>
                 </div>
               </div>
               <button
@@ -359,7 +365,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                   setMobileDrawerOpen(false);
                   logout();
                 }}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-rose-900/60 bg-rose-950/30 py-2.5 text-xs font-medium text-rose-400 hover:bg-rose-900/40 transition"
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 py-2.5 text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-100 dark:hover:bg-rose-900/40 transition cursor-pointer"
               >
                 <LogOut className="h-4 w-4" />
                 <span>Sair com Segurança</span>
@@ -369,17 +375,17 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
       )}
 
-      {/* Área Principal de Conteúdo (flex-1 overflow-y-auto) */}
+      {/* Área Principal de Conteúdo */}
       <div className="flex flex-1 flex-col min-w-0 h-full overflow-hidden">
-        {/* Header Superior Limpo: Barra superior mínima contendo apenas a busca global expansível com atalho visual Ctrl + K, botão rápido de notificações e o botão de ação rápida + Novo */}
-        <header className="h-14 sm:h-16 shrink-0 border-b border-slate-800/60 bg-[#0F172A]/40 backdrop-blur-xl px-4 sm:px-6 flex items-center justify-between gap-4 z-20">
+        {/* Header Superior Responsivo */}
+        <header className="h-14 sm:h-16 shrink-0 border-b border-slate-200/80 dark:border-slate-800/60 bg-white/80 dark:bg-[#0F172A]/40 backdrop-blur-xl px-4 sm:px-6 flex items-center justify-between gap-4 z-20 transition-colors">
           {/* Lado Esquerdo: Botão Mobile + Busca Global Expansível com Atalho Ctrl + K */}
           <div className="flex items-center gap-3 flex-1 max-w-xl">
             {/* Hambúrguer Mobile */}
             <button
               type="button"
               onClick={() => setMobileDrawerOpen(true)}
-              className="lg:hidden flex h-9 w-9 items-center justify-center rounded-xl border border-slate-800 bg-slate-900/80 text-slate-400 hover:text-slate-100 hover:bg-slate-800 transition shrink-0"
+              className="lg:hidden flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition shrink-0 cursor-pointer shadow-2xs"
               aria-label="Abrir menu de navegação lateral"
             >
               <Menu className="h-4 w-4" />
@@ -387,17 +393,17 @@ export function AppLayout({ children }: AppLayoutProps) {
 
             {/* Busca Global Expansível */}
             <form onSubmit={handleGlobalSearch} className="relative flex-1">
-              <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+              <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400 dark:text-slate-500" />
               <input
                 ref={searchInputRef}
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar processos, clientes, prazos..."
-                className="w-full rounded-xl border border-slate-800/80 bg-slate-900/80 pl-9 pr-14 sm:pr-18 py-1.5 sm:py-2 text-xs text-slate-100 placeholder-slate-500 focus:border-blue-500 focus:bg-slate-900 focus:outline-hidden focus:ring-1 focus:ring-blue-500/40 transition"
+                className="w-full rounded-xl border border-slate-200 dark:border-slate-800/80 bg-slate-100/80 dark:bg-slate-900/80 pl-9 pr-14 sm:pr-18 py-1.5 sm:py-2 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-blue-500 focus:bg-white dark:focus:bg-slate-900 focus:outline-hidden focus:ring-1 focus:ring-blue-500/40 transition shadow-2xs"
               />
               <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center pointer-events-none">
-                <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded border border-slate-700/70 bg-slate-800/70 px-1.5 py-0.5 text-[10px] font-mono text-slate-400 shadow-2xs">
+                <kbd className="hidden sm:inline-flex items-center gap-0.5 rounded border border-slate-200 dark:border-slate-700/70 bg-white dark:bg-slate-800/70 px-1.5 py-0.5 text-[10px] font-mono text-slate-500 dark:text-slate-400 shadow-2xs">
                   <span>Ctrl</span>
                   <span>+</span>
                   <span>K</span>
@@ -406,48 +412,51 @@ export function AppLayout({ children }: AppLayoutProps) {
             </form>
           </div>
 
-          {/* Lado Direito: Botão Rápido de Notificações e Botão de Ação Rápida + Novo */}
-          <div className="flex items-center gap-2.5 shrink-0">
+          {/* Lado Direito: Alternador de Tema, Notificações e Botão de Ação Rápida */}
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
+            {/* Alternador de Tema Inteligente (Light/Dark/Auto) */}
+            <ThemeToggle variant="dropdown" />
+
             {/* Botão Rápido de Notificações */}
             <div className="relative" ref={notificationsRef}>
               <button
                 type="button"
                 onClick={() => setNotificationsOpen(!notificationsOpen)}
-                className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-slate-800/80 bg-slate-900/80 text-slate-400 hover:text-slate-200 hover:bg-slate-800/80 transition cursor-pointer"
+                className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-800/80 bg-white/80 dark:bg-slate-900/80 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/80 transition cursor-pointer shadow-2xs"
                 title="Notificações corporativas"
                 aria-label="Notificações corporativas"
                 aria-expanded={notificationsOpen}
               >
                 <Bell className="h-4 w-4" />
-                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[9px] font-bold text-white ring-2 ring-[#0B0F17]">
+                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[9px] font-bold text-white ring-2 ring-white dark:ring-[#0B0F17]">
                   2
                 </span>
               </button>
 
               {/* Popover de Notificações */}
               {notificationsOpen && (
-                <div className="absolute right-0 mt-2 w-80 rounded-2xl border border-slate-800 bg-slate-900/95 backdrop-blur-xl p-3 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-                  <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-                    <span className="text-xs font-bold text-white">Alertas do Escritório</span>
-                    <span className="text-[10px] font-medium text-blue-400">2 pendentes</span>
+                <div className="absolute right-0 mt-2 w-80 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-3 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                  <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+                    <span className="text-xs font-bold text-slate-900 dark:text-white">Alertas do Escritório</span>
+                    <span className="text-[10px] font-medium text-blue-600 dark:text-blue-400">2 pendentes</span>
                   </div>
                   <div className="mt-2 space-y-2">
-                    <div className="rounded-xl border border-amber-500/20 bg-amber-950/20 p-2.5 text-xs">
-                      <div className="flex items-center gap-1.5 text-amber-400 font-medium">
+                    <div className="rounded-xl border border-amber-500/30 bg-amber-50 dark:bg-amber-950/20 p-2.5 text-xs">
+                      <div className="flex items-center gap-1.5 text-amber-700 dark:text-amber-400 font-medium">
                         <Clock className="h-3.5 w-3.5 shrink-0" />
                         <span>Prazo Fatal TJSP</span>
                       </div>
-                      <p className="mt-1 text-[11px] text-slate-300">
+                      <p className="mt-1 text-[11px] text-slate-600 dark:text-slate-300">
                         Contestação do Processo 0001234-56.2024 vence hoje às 18h.
                       </p>
                     </div>
 
-                    <div className="rounded-xl border border-blue-500/20 bg-blue-950/20 p-2.5 text-xs">
-                      <div className="flex items-center gap-1.5 text-blue-400 font-medium">
+                    <div className="rounded-xl border border-blue-500/30 bg-blue-50 dark:bg-blue-950/20 p-2.5 text-xs">
+                      <div className="flex items-center gap-1.5 text-blue-700 dark:text-blue-400 font-medium">
                         <CheckCircle2 className="h-3.5 w-3.5 shrink-0" />
                         <span>DataJud Sincronizado</span>
                       </div>
-                      <p className="mt-1 text-[11px] text-slate-300">
+                      <p className="mt-1 text-[11px] text-slate-600 dark:text-slate-300">
                         92 tribunais monitorados e atualizados com sucesso.
                       </p>
                     </div>
@@ -455,7 +464,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                   <Link
                     href="/prazos"
                     onClick={() => setNotificationsOpen(false)}
-                    className="mt-3 block text-center text-[11px] font-semibold text-blue-400 hover:text-blue-300 transition"
+                    className="mt-3 block text-center text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition"
                   >
                     Ver todos os prazos e compromissos &rarr;
                   </Link>
@@ -478,50 +487,50 @@ export function AppLayout({ children }: AppLayoutProps) {
 
               {/* Dropdown de Ação Rápida */}
               {quickMenuOpen && (
-                <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-800 bg-slate-900/95 backdrop-blur-xl p-2 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
-                  <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl p-2 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                  <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-slate-100 dark:border-slate-800/80">
                     Cadastros Rápidos
                   </div>
-                  <div className="space-y-0.5">
+                  <div className="space-y-0.5 mt-1">
                     <Link
                       href="/processos"
                       onClick={() => setQuickMenuOpen(false)}
-                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-200 hover:bg-blue-600/10 hover:text-blue-400 transition"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-600/10 hover:text-blue-600 dark:hover:text-blue-400 transition"
                     >
-                      <Briefcase className="h-4 w-4 text-blue-400" />
+                      <Briefcase className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                       <span>Novo Processo</span>
                     </Link>
                     <Link
                       href="/prazos"
                       onClick={() => setQuickMenuOpen(false)}
-                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-200 hover:bg-amber-600/10 hover:text-amber-400 transition"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-amber-50 dark:hover:bg-amber-600/10 hover:text-amber-600 dark:hover:text-amber-400 transition"
                     >
-                      <CalendarClock className="h-4 w-4 text-amber-400" />
+                      <CalendarClock className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                       <span>Novo Prazo / Audiência</span>
                     </Link>
                     <Link
                       href="/clientes"
                       onClick={() => setQuickMenuOpen(false)}
-                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-200 hover:bg-emerald-600/10 hover:text-emerald-400 transition"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-emerald-600/10 hover:text-emerald-600 dark:hover:text-emerald-400 transition"
                     >
-                      <UserPlus className="h-4 w-4 text-emerald-400" />
+                      <UserPlus className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                       <span>Novo Cliente</span>
                     </Link>
-                    <div className="border-t border-slate-800 my-1" />
+                    <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
                     <Link
                       href="/datajud"
                       onClick={() => setQuickMenuOpen(false)}
-                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-200 hover:bg-indigo-600/10 hover:text-indigo-400 transition"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-indigo-50 dark:hover:bg-indigo-600/10 hover:text-indigo-600 dark:hover:text-indigo-400 transition"
                     >
-                      <Scale className="h-4 w-4 text-indigo-400" />
+                      <Scale className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
                       <span>Consultar Tribunal (CNJ)</span>
                     </Link>
                     <Link
                       href="/gemini"
                       onClick={() => setQuickMenuOpen(false)}
-                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-200 hover:bg-purple-600/10 hover:text-purple-400 transition"
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-purple-50 dark:hover:bg-purple-600/10 hover:text-purple-600 dark:hover:text-purple-400 transition"
                     >
-                      <Sparkles className="h-4 w-4 text-purple-400" />
+                      <Sparkles className="h-4 w-4 text-purple-600 dark:text-purple-400" />
                       <span>IA Jurídica</span>
                     </Link>
                   </div>
@@ -532,7 +541,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         </header>
 
         {/* Conteúdo Rolável da Página */}
-        <main className="flex-1 overflow-y-auto min-w-0 bg-[#0B0F17]">
+        <main className="flex-1 overflow-y-auto min-w-0 bg-slate-50 dark:bg-[#0B0F17] transition-colors duration-200">
           {children}
         </main>
       </div>
@@ -541,3 +550,4 @@ export function AppLayout({ children }: AppLayoutProps) {
 }
 
 export default AppLayout;
+

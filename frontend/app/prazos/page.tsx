@@ -988,20 +988,20 @@ function PrazosContent() {
 
       {/* Modal de Criação / Edição */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-800 bg-[#0F172A] p-6 shadow-2xl text-slate-100">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] p-6 shadow-2xl text-slate-900 dark:text-slate-100 transition-colors">
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
               <div className="flex items-center gap-2">
-                <div className="rounded-lg bg-orange-950/80 p-2 text-orange-400 border border-orange-800/60">
+                <div className="rounded-lg bg-orange-100 dark:bg-orange-950/80 p-2 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800/60">
                   {editingPrazo ? <Edit2 className="h-5 w-5" /> : <PlusCircle className="h-5 w-5" />}
                 </div>
-                <h3 className="font-serif text-lg font-bold text-white">
+                <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white">
                   {editingPrazo ? 'Editar Prazo Processual' : 'Cadastrar Novo Prazo'}
                 </h3>
               </div>
               <button
                 onClick={() => setModalOpen(false)}
-                className="text-slate-400 hover:text-white transition"
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-white transition cursor-pointer"
                 aria-label="Fechar modal"
               >
                 <X className="h-5 w-5" />
@@ -1010,28 +1010,28 @@ function PrazosContent() {
 
             <form onSubmit={handleSavePrazo} className="mt-4 space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-slate-200 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1">
                   Processo Judicial Vinculado *
                 </label>
                 <select
                   value={idProcesso}
                   onChange={(e) => setIdProcesso(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-orange-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-orange-500 focus:outline-hidden"
                 >
-                  <option value="" className="bg-[#0F172A] text-slate-100">Selecione o Processo</option>
+                  <option value="" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Selecione o Processo</option>
                   {processos.map((p) => (
-                    <option key={p.id_processo} value={String(p.id_processo)} className="bg-[#0F172A] text-slate-100">
+                    <option key={p.id_processo} value={String(p.id_processo)} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
                       {p.numero_processo} — {p.titulo}
                     </option>
                   ))}
                 </select>
                 {formErrors.idProcesso && (
-                  <p className="text-red-400 mt-1">{formErrors.idProcesso}</p>
+                  <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.idProcesso}</p>
                 )}
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-200 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1">
                   Descrição do Ato Processual / Intimação *
                 </label>
                 <input
@@ -1039,89 +1039,89 @@ function PrazosContent() {
                   value={descricao}
                   onChange={(e) => setDescricao(e.target.value)}
                   placeholder="Ex: Apresentar Réplica à Contestação com documentos"
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-orange-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-orange-500 focus:outline-hidden"
                 />
                 {formErrors.descricao && (
-                  <p className="text-red-400 mt-1">{formErrors.descricao}</p>
+                  <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.descricao}</p>
                 )}
               </div>
 
               {/* Campo de Tipo de Compromisso */}
               <div>
-                <label className="block font-semibold text-slate-200 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1">
                   Tipo de Compromisso *
                 </label>
                 <select
                   value={tipoCompromisso}
                   onChange={(e) => setTipoCompromisso(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-orange-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-orange-500 focus:outline-hidden"
                 >
-                  <option value="Prazo Fatal" className="bg-[#0F172A] text-slate-100">Prazo Fatal</option>
-                  <option value="Audiência" className="bg-[#0F172A] text-slate-100">Audiência</option>
-                  <option value="Reunião Externa" className="bg-[#0F172A] text-slate-100">Reunião Externa</option>
-                  <option value="Diligência" className="bg-[#0F172A] text-slate-100">Diligência</option>
+                  <option value="Prazo Fatal" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Prazo Fatal</option>
+                  <option value="Audiência" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Audiência</option>
+                  <option value="Reunião Externa" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Reunião Externa</option>
+                  <option value="Diligência" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Diligência</option>
                 </select>
                 {formErrors.tipoCompromisso && (
-                  <p className="text-red-400 mt-1">{formErrors.tipoCompromisso}</p>
+                  <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.tipoCompromisso}</p>
                 )}
               </div>
 
               {/* Divisão da data em duas colunas (grid grid-cols-2 gap-4) */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-200 mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1">
                     Data *
                   </label>
                   <input
                     type="date"
                     value={dataVencimento}
                     onChange={(e) => setDataVencimento(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-orange-500 focus:outline-hidden"
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-orange-500 focus:outline-hidden"
                   />
                   {formErrors.dataVencimento && (
-                    <p className="text-red-400 mt-1">{formErrors.dataVencimento}</p>
+                    <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.dataVencimento}</p>
                   )}
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-200 mb-1">
+                  <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1">
                     Hora *
                   </label>
                   <input
                     type="time"
                     value={hora}
                     onChange={(e) => setHora(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-orange-500 focus:outline-hidden"
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-orange-500 focus:outline-hidden"
                   />
                   {formErrors.hora && (
-                    <p className="text-red-400 mt-1">{formErrors.hora}</p>
+                    <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.hora}</p>
                   )}
                 </div>
               </div>
 
               {/* Campo opcional de Responsável pelo Cumprimento com Usuários Reais */}
               <div>
-                <label className="block font-semibold text-slate-200 mb-1">
-                  Responsável pelo Cumprimento <span className="text-slate-400 font-normal">(Opcional)</span>
+                <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1">
+                  Responsável pelo Cumprimento <span className="text-slate-500 dark:text-slate-400 font-normal">(Opcional)</span>
                 </label>
                 <select
                   value={responsavel}
                   onChange={(e) => setResponsavel(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-orange-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-orange-500 focus:outline-hidden"
                 >
-                  <option value="" className="bg-[#0F172A] text-slate-300">
+                  <option value="" className="bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-300">
                     {loadingResponsaveis ? 'Carregando equipe...' : 'Selecione um Responsável (Opcional)'}
                   </option>
                   {responsaveis.map((u) => {
                     const cargoFormatado = u.cargo || (u.role === 'ADVOGADO' ? 'Advogado' : 'Estagiário');
                     return (
-                      <option key={u.id || u.id_usuario} value={u.nome} className="bg-[#0F172A] text-slate-100">
+                      <option key={u.id || u.id_usuario} value={u.nome} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
                         {u.nome} ({cargoFormatado})
                       </option>
                     );
                   })}
                   {responsavel && !responsaveis.some((u) => u.nome === responsavel) && (
-                    <option value={responsavel} className="bg-[#0F172A] text-slate-100">
+                    <option value={responsavel} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
                       {responsavel}
                     </option>
                   )}
@@ -1130,21 +1130,21 @@ function PrazosContent() {
 
               {/* Status do Prazo */}
               <div>
-                <label className="block font-semibold text-slate-200 mb-1">
+                <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1">
                   Status do Prazo *
                 </label>
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-orange-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-orange-500 focus:outline-hidden"
                 >
-                  <option value="Pendente" className="bg-[#0F172A] text-slate-100">Pendente</option>
-                  <option value="Cumprido" className="bg-[#0F172A] text-slate-100">Cumprido</option>
+                  <option value="Pendente" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Pendente</option>
+                  <option value="Cumprido" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Cumprido</option>
                 </select>
               </div>
 
               {/* Botões do Rodapé */}
-              <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-800 pt-4">
+              <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 dark:border-slate-800 pt-4">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
