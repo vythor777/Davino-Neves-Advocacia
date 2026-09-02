@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
 import AuthGuard from '@/components/AuthGuard';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { SecurityBadge } from '@/components/SecurityBadge';
@@ -165,11 +164,8 @@ function AstreaDashboard() {
   });
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col transition-colors">
-      <Navbar />
-
-      <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-8">
-        {/* Astrea Hero Control Header */}
+    <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-8 animate-fade-in-up">
+      {/* Astrea Hero Control Header */}
         <div className="relative overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-6 sm:p-8 shadow-xs dark:border-slate-800 dark:bg-slate-900 transition-all">
           <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 relative z-10">
             <div className="max-w-2xl">
@@ -891,10 +887,9 @@ function AstreaDashboard() {
             </div>
           </div>
         </div>
-      </main>
 
-      {/* Rodapé Institucional Completo */}
-      <InstitutionalFooter />
-    </div>
-  );
-}
+        {/* Rodapé Institucional Completo */}
+        <InstitutionalFooter />
+      </div>
+    );
+  }

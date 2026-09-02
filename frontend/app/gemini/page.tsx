@@ -2,7 +2,6 @@
 
 import React, { useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
-import Navbar from '@/components/Navbar';
 import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { SecurityBadge } from '@/components/SecurityBadge';
@@ -343,11 +342,8 @@ function GeminiContent() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col antialiased">
-      <Navbar />
-
-      <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in-up space-y-6">
-        {/* Breadcrumb e Indicador de Segurança */}
+    <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 animate-fade-in-up space-y-6">
+      {/* Breadcrumb e Indicador de Segurança */}
         <div className="flex items-center justify-between">
           <Breadcrumbs items={[{ label: 'Assistente IA Gemini', icon: Sparkles }]} />
           <SecurityBadge variant="compact" className="hidden sm:inline-flex" />
@@ -1056,7 +1052,6 @@ function GeminiContent() {
             </div>
           </div>
         )}
-      </main>
 
       {/* Modal para Salvar Prazo Extraído */}
       {modalPrazoAberto && (

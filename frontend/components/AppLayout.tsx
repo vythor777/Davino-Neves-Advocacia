@@ -120,6 +120,11 @@ export function AppLayout({ children }: AppLayoutProps) {
       ? 'Estagiário'
       : 'Administrador';
 
+  // Ocultar Sidebar e Header na tela de autenticação
+  if (pathname === '/login') {
+    return <>{children}</>;
+  }
+
   return (
     <div className="flex h-screen overflow-hidden bg-[#0B0F17] text-slate-100 font-sans antialiased">
       {/* Sidebar Esquerda (Fixa, w-64 border-r border-slate-800/60 bg-[#0F172A]/70 backdrop-blur-xl flex flex-col justify-between p-4) */}

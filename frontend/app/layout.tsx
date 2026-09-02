@@ -3,6 +3,7 @@ import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { Toaster } from "sonner";
+import AppLayout from "@/components/AppLayout";
 
 const inter = Inter({
   variable: "--font-sans",
@@ -60,11 +61,11 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${jetbrainsMono.variable} h-full antialiased dark`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+      <body className="h-full font-sans bg-[#0B0F17] text-slate-100 overflow-hidden">
         <AuthProvider>
-          {children}
+          <AppLayout>{children}</AppLayout>
           <Toaster
             position="top-right"
             richColors

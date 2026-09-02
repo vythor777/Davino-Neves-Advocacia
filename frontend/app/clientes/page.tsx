@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import AppLayout from '@/components/AppLayout';
 import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { EmptyState } from '@/components/EmptyState';
@@ -290,8 +289,7 @@ function ClientesContent() {
   const totalComProcessos = clientes.filter((c) => (c._count?.processos || (c.processos?.length ?? 0)) > 0).length;
 
   return (
-    <AppLayout>
-      <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6 animate-fade-in-up">
+    <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6 animate-fade-in-up">
         {/* Breadcrumb e Título: Hierarquia 'Início > Clientes' com tipografia refinada */}
         <div className="flex items-center justify-between pb-1">
           <Breadcrumbs items={[{ label: 'Clientes', icon: Users }]} />
@@ -766,7 +764,6 @@ function ClientesContent() {
             </div>
           )}
         </div>
-      </div>
 
       {/* Modal de Criação / Edição */}
       {modalOpen && (
@@ -1076,6 +1073,6 @@ function ClientesContent() {
           </div>
         </div>
       )}
-    </AppLayout>
+    </div>
   );
 }

@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Navbar from '@/components/Navbar';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import {
   FileQuestion,
@@ -16,11 +15,8 @@ import {
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col antialiased">
-      <Navbar />
-
-      <main className="flex-1 mx-auto w-full max-w-4xl px-4 py-16 sm:py-24 flex flex-col items-center justify-center text-center animate-fade-in-up">
-        {/* Ícone de Destaque */}
+    <div className="mx-auto w-full max-w-4xl px-4 py-16 sm:py-24 flex flex-col items-center justify-center text-center animate-fade-in-up">
+      {/* Ícone de Destaque */}
         <div className="relative mb-6">
           <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-sky-50 text-sky-600 border border-sky-200 dark:bg-sky-950/60 dark:text-sky-400 dark:border-sky-900 shadow-sm mx-auto">
             <FileQuestion className="h-10 w-10" />
@@ -98,9 +94,8 @@ export default function NotFound() {
             </Link>
           </div>
         </div>
-      </main>
 
-      <InstitutionalFooter />
-    </div>
-  );
-}
+        <InstitutionalFooter />
+      </div>
+    );
+  }

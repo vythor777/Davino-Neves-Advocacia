@@ -2,7 +2,6 @@
 
 import React, { useEffect } from 'react';
 import Link from 'next/link';
-import Navbar from '@/components/Navbar';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import {
   AlertOctagon,
@@ -25,11 +24,8 @@ export default function ErrorPage({
   }, [error]);
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col antialiased">
-      <Navbar />
-
-      <main className="flex-1 mx-auto w-full max-w-2xl px-4 py-16 sm:py-24 flex flex-col items-center justify-center text-center animate-fade-in-up">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-400 dark:border-rose-900 shadow-sm mx-auto mb-6">
+    <div className="mx-auto w-full max-w-2xl px-4 py-16 sm:py-24 flex flex-col items-center justify-center text-center animate-fade-in-up">
+      <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 dark:bg-rose-950/60 dark:text-rose-400 dark:border-rose-900 shadow-sm mx-auto mb-6">
           <AlertOctagon className="h-8 w-8" />
         </div>
 
@@ -85,9 +81,8 @@ export default function ErrorPage({
             Contatar Suporte
           </a>
         </div>
-      </main>
 
-      <InstitutionalFooter />
-    </div>
-  );
-}
+        <InstitutionalFooter />
+      </div>
+    );
+  }

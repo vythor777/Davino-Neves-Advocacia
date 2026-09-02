@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import Navbar from '@/components/Navbar';
 import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { EmptyState } from '@/components/EmptyState';
@@ -267,11 +266,8 @@ function UsuariosContent() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col antialiased">
-      <Navbar />
-
-      <main className="flex-1 mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 animate-fade-in-up space-y-6">
-        {/* Breadcrumb e Indicador de Segurança */}
+    <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 animate-fade-in-up space-y-6">
+      {/* Breadcrumb e Indicador de Segurança */}
         <div className="flex items-center justify-between">
           <Breadcrumbs items={[{ label: 'Equipe & Usuários', icon: Shield }]} />
           <SecurityBadge variant="compact" className="hidden sm:inline-flex" />
@@ -531,7 +527,6 @@ function UsuariosContent() {
             </div>
           )}
         </div>
-      </main>
 
       {/* Modal de Criação */}
       {isCreateModalOpen && (
