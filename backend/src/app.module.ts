@@ -12,6 +12,7 @@ import { DataJudModule } from './datajud/datajud.module.js';
 import { GeminiModule } from './gemini/gemini.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { UsuariosModule } from './usuarios/usuarios.module.js';
+import { AniversariantesModule } from './aniversariantes/aniversariantes.module.js';
 
 export const { ObserveModule, ObserveInstrument } = createObserveModule();
 
@@ -34,6 +35,7 @@ export const { ObserveModule, ObserveInstrument } = createObserveModule();
     AgendaModule,
     DataJudModule,
     GeminiModule,
+    AniversariantesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
