@@ -417,7 +417,11 @@ export function ProcessTimeline<T extends MovimentacaoDataJud = MovimentacaoData
               `${mov.codigo || 'mov'}-${mov.dataHora || mov.data || index}`;
 
             return (
-              <li key={itemKey} className="relative group pb-6 last:pb-0">
+              <li
+                key={itemKey}
+                style={{ animationDelay: `${Math.min(index * 20, 200)}ms` }}
+                className="animate-row-fade-in relative group pb-6 last:pb-0"
+              >
                 {/* Visual: Ponto Azul conectado pela Linha Cinza */}
                 <div
                   className={`absolute -left-[23px] top-1.5 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white dark:border-slate-900 transition-transform duration-150 group-hover:scale-110 ${

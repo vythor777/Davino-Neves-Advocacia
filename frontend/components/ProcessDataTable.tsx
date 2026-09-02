@@ -381,7 +381,8 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                 <tr
                   key={String(rowKey)}
                   onClick={() => onViewDetails?.(proc)}
-                  className="group transition-colors duration-150 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer"
+                  style={{ animationDelay: `${Math.min(index * 25, 200)}ms` }}
+                  className="animate-row-fade-in group transition-colors duration-150 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer"
                   tabIndex={0}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {

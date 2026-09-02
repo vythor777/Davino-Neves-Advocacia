@@ -144,7 +144,7 @@ export function ProcessosTable({
           </thead>
 
           <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-sans">
-            {displayedItems.map((proc) => {
+            {displayedItems.map((proc, index) => {
               const countPrazos = proc._count?.prazos ?? proc.prazos?.length ?? 0;
               const formattedDate = proc.data_abertura
                 ? new Date(proc.data_abertura).toLocaleDateString('pt-BR')
@@ -153,7 +153,8 @@ export function ProcessosTable({
               return (
                 <tr
                   key={proc.id_processo}
-                  className="group transition-colors hover:bg-slate-50/80 dark:hover:bg-slate-800/40"
+                  style={{ animationDelay: `${Math.min(index * 25, 200)}ms` }}
+                  className="animate-row-fade-in group transition-colors hover:bg-slate-50/80 dark:hover:bg-slate-800/40"
                 >
                   {/* Número CNJ e Ação */}
                   <td className="py-3.5 pl-6 pr-4">
@@ -277,14 +278,18 @@ export function ProcessosTable({
 
       {/* Visualização em Cards Empilhados para Mobile (Sem cortes de conteúdo) */}
       <div className="block md:hidden divide-y divide-slate-100 dark:divide-slate-800/80">
-        {displayedItems.map((proc) => {
+        {displayedItems.map((proc, index) => {
           const countPrazos = proc._count?.prazos ?? proc.prazos?.length ?? 0;
           const formattedDate = proc.data_abertura
             ? new Date(proc.data_abertura).toLocaleDateString('pt-BR')
             : '—';
 
           return (
-            <div key={proc.id_processo} className="p-4 space-y-3 hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition">
+            <div
+              key={proc.id_processo}
+              style={{ animationDelay: `${Math.min(index * 25, 200)}ms` }}
+              className="animate-row-fade-in p-4 space-y-3 hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition"
+            >
               {/* Cabeçalho do Card */}
               <div className="flex items-start justify-between gap-2">
                 <div className="space-y-1 min-w-0">
