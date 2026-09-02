@@ -1,6 +1,6 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
-import { AniversariantesService } from './aniversariantes.service.js';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
+import { AniversariantesService } from './aniversariantes.service';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 
 @Controller('aniversariantes')
 @UseGuards(JwtAuthGuard)
