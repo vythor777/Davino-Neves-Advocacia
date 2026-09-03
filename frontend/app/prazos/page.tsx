@@ -46,8 +46,7 @@ import {
   type PrazoStatusCategory,
 } from '@/utils/dateUtils';
 
-export type FilterType = 'todos' | 'urgentes' | 'vencidos' | 'cumpridos' | 'pendentes' | 'aberto';
-export type { PrazoStatusCategory };
+type FilterType = 'todos' | 'urgentes' | 'vencidos' | 'cumpridos' | 'pendentes' | 'aberto';
 
 export default function PrazosPage() {
   return (

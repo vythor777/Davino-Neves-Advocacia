@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
@@ -49,7 +49,15 @@ type TabType = 'EXTRATO' | 'RECEBER' | 'PAGAR' | 'DRE';
 export default function FinanceiroPage() {
   return (
     <AuthGuard>
-      <FinanceiroContent />
+      <Suspense
+        fallback={
+          <div className="flex h-96 items-center justify-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-3 border-blue-600 border-t-transparent" />
+          </div>
+        }
+      >
+        <FinanceiroContent />
+      </Suspense>
     </AuthGuard>
   );
 }
