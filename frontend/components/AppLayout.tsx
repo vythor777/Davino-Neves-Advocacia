@@ -24,6 +24,7 @@ import {
   Clock,
   UserPlus,
   Settings,
+  CircleDollarSign,
 } from 'lucide-react';
 
 interface AppLayoutProps {
@@ -100,6 +101,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     { label: 'Processos', href: '/processos', icon: Briefcase },
     { label: 'Prazos & Agenda', href: '/prazos', icon: CalendarClock },
     { label: 'Clientes', href: '/clientes', icon: Users },
+    { label: 'Financeiro', href: '/financeiro', icon: CircleDollarSign },
     { label: 'DataJud CNJ', href: '/datajud', icon: Scale },
     { label: 'IA Jurídica', href: '/gemini', icon: Sparkles },
     { label: 'Equipe', href: '/usuarios', icon: Shield },
@@ -515,6 +517,14 @@ export function AppLayout({ children }: AppLayoutProps) {
                     >
                       <UserPlus className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
                       <span>Novo Cliente</span>
+                    </Link>
+                    <Link
+                      href="/financeiro?novo=true"
+                      onClick={() => setQuickMenuOpen(false)}
+                      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 dark:text-slate-200 hover:bg-sky-50 dark:hover:bg-sky-600/10 hover:text-sky-600 dark:hover:text-sky-400 transition"
+                    >
+                      <CircleDollarSign className="h-4 w-4 text-sky-600 dark:text-sky-400" />
+                      <span>Novo Lançamento</span>
                     </Link>
                     <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
                     <Link

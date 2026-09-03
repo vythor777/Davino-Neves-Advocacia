@@ -44,7 +44,8 @@ model Cliente {
   data_atualizacao DateTime    @updatedAt
 
   // Relacionamentos
-  processos        Processo[]
+  processos             Processo[]
+  lancamentosFinanceiros LancamentoFinanceiro[]
 }
 
 model Processo {
@@ -62,8 +63,9 @@ model Processo {
   cliente          Cliente     @relation(fields: [id_cliente], references: [id_cliente])
 
   // Relacionamentos
-  prazos           Prazo[]
-  documentos       Documento[]
+  prazos                 Prazo[]
+  documentos             Documento[]
+  lancamentosFinanceiros LancamentoFinanceiro[]
 }
 
 model Prazo {
@@ -107,4 +109,48 @@ model Agenda {
   // Chave Estrangeira
   id_usuario       Int
   usuario          Usuario     @relation(fields: [id_usuario], references: [id_usuario])
+}
+
+enum TipoLancamento {
+  RECEITA
+  DESPESA
+}
+
+enum CategoriaLancamento {
+  HONORARIO_CONTRATUAL
+  HONORARIO_EXITO
+  CONSULTIVO
+  CUSTAS_PROCESSUAIS
+  OPERACIONAL
+  IMPOSTOS
+  OUTROS
+}
+
+enum StatusLancamento {
+  PENDENTE
+  PAGO
+  ATRASADO
+  CANCELADO
+}
+
+model LancamentoFinanceiro {
+  id               String              @id @default(uuid()) @db.VarChar(50)
+  descricao        String              @db.VarChar(255)
+  tipo             TipoLancamento
+  categoria        CategoriaLancamento @default(HONORARIO_CONTRATUAL)
+  valor            Decimal             @db.Decimal(12, 2)
+  dataVencimento   DateTime            @db.Date
+  dataPagamento    DateTime?           @db.Date
+  status           StatusLancamento    @default(PENDENTE)
+  formaPagamento   String?             @db.VarChar(50)
+  observacoes      String?             @db.Text
+  dataCriacao      DateTime            @default(now())
+  dataAtualizacao  DateTime            @updatedAt
+
+  // Vínculos Opcionais para Auditoria e Rastreabilidade
+  processoId       Int?
+  processo         Processo?           @relation(fields: [processoId], references: [id_processo], onDelete: SetNull)
+
+  clienteId        Int?
+  cliente          Cliente?            @relation(fields: [clienteId], references: [id_cliente], onDelete: SetNull)
 }

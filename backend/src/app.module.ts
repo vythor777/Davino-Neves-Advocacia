@@ -12,6 +12,7 @@ import { GeminiModule } from './gemini/gemini.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { UsuariosModule } from './usuarios/usuarios.module.js';
 import { AniversariantesModule } from './aniversariantes/aniversariantes.module.js';
+import { FinanceiroModule } from './financeiro/financeiro.module.js';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { AniversariantesModule } from './aniversariantes/aniversariantes.module.
     DataJudModule,
     GeminiModule,
     AniversariantesModule,
+    FinanceiroModule,
   ],
   controllers: [AppController],
   providers: [AppService],

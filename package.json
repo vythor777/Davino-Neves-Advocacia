@@ -24,6 +24,7 @@
     "@fullcalendar/react": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
     "@headlessui/react": "^2.2.10",
+    "recharts": "^3.10.1",
     "sonner": "^2.0.8"
   }
 }

@@ -18,6 +18,10 @@ import {
   AniversarianteItem,
 } from '@/services/aniversarianteService';
 import {
+  financeiroService,
+  ResumoFinanceiroResponse,
+} from '@/services/financeiroService';
+import {
   LayoutDashboard,
   Users,
   Briefcase,
@@ -74,21 +78,24 @@ function AstreaDashboard() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [aniversariantesData, setAniversariantesData] = useState<AniversariantesResponse | null>(null);
   const [aniversariantesFilter, setAniversariantesFilter] = useState<'TODOS' | 'USUARIO' | 'CLIENTE'>('TODOS');
+  const [financeiroData, setFinanceiroData] = useState<ResumoFinanceiroResponse | null>(null);
 
   const loadData = async () => {
     try {
       setLoading(true);
-      const [procRes, prazRes, cliRes, anivRes] = await Promise.allSettled([
+      const [procRes, prazRes, cliRes, anivRes, finRes] = await Promise.allSettled([
         processoService.getAll(),
         prazoService.getAll(),
         clienteService.getAll(),
         aniversarianteService.getAniversariantesDoMes(),
+        financeiroService.getResumo('2026-09'),
       ]);
 
       if (procRes.status === 'fulfilled') setProcessos(procRes.value || []);
       if (prazRes.status === 'fulfilled') setPrazos(prazRes.value || []);
       if (cliRes.status === 'fulfilled') setClientes(cliRes.value || []);
       if (anivRes.status === 'fulfilled') setAniversariantesData(anivRes.value);
+      if (finRes.status === 'fulfilled') setFinanceiroData(finRes.value);
     } catch (err) {
       console.error('Erro ao carregar dados do dashboard:', err);
     } finally {
@@ -712,21 +719,21 @@ function AstreaDashboard() {
             </div>
           </div>
 
-          {/* Lado Direito: Indícios Financeiros (lg:col-span-7) */}
+          {/* Lado Direito: Gestão Financeira & Indicadores (lg:col-span-7) */}
           <div className="lg:col-span-7 astrea-card p-6 flex flex-col justify-between">
             <div>
               {/* Header do Card */}
               <div className="flex items-start justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                    <TrendingUp className="h-5 w-5 text-sky-600 dark:text-sky-400" />
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600 dark:bg-emerald-950/70 dark:text-emerald-400">
+                    <TrendingUp className="h-5 w-5" />
                   </div>
                   <div>
                     <h2 className="text-base font-bold text-slate-900 dark:text-white">
-                      Indícios Financeiros
+                      Gestão Financeira
                     </h2>
                     <p className="text-xs text-slate-500 dark:text-slate-400">
-                      Fluxo de caixa, honorários previstos e performance
+                      Fluxo de caixa, honorários previstos e performance operacional
                     </p>
                   </div>
                 </div>
@@ -750,11 +757,13 @@ function AstreaDashboard() {
                     </span>
                   </div>
                   <div className="mt-2 text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                    R$ 148.500<span className="text-sm font-semibold text-slate-400">,00</span>
+                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                      financeiroData?.metricas.entradasPrevistas || 91900,
+                    )}
                   </div>
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                      Meta: R$ 160.000,00
+                      Realizados: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(financeiroData?.metricas.entradasRealizadas || 60500)}
                     </span>
                     {/* Mini Sparkline SVG */}
                     <svg className="h-5 w-16 text-emerald-500 overflow-visible" viewBox="0 0 64 20" fill="none">
@@ -773,18 +782,23 @@ function AstreaDashboard() {
                 <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4 dark:border-slate-800/80 dark:bg-slate-950/40">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                      Honorários Realizados
+                      Entradas Realizadas
                     </span>
-                    <span className="rounded-full bg-slate-200/80 px-1.5 py-0.5 text-[10px] font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                      62.1%
+                    <span className="rounded-full bg-emerald-100 dark:bg-emerald-950/70 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-800 dark:text-emerald-300">
+                      {financeiroData?.metricas.taxaRecebimento || 66}%
                     </span>
                   </div>
-                  <div className="mt-2 text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                    R$ 92.300<span className="text-sm font-semibold text-slate-400">,00</span>
+                  <div className="mt-2 text-xl font-extrabold text-slate-900 dark:text-white tracking-tight text-emerald-600 dark:text-emerald-400">
+                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                      financeiroData?.metricas.entradasRealizadas || 60500,
+                    )}
                   </div>
                   <div className="mt-2.5">
                     <div className="h-1.5 w-full rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
-                      <div className="h-full rounded-full bg-sky-500" style={{ width: '62.1%' }} />
+                      <div
+                        className="h-full rounded-full bg-emerald-500"
+                        style={{ width: `${financeiroData?.metricas.taxaRecebimento || 66}%` }}
+                      />
                     </div>
                   </div>
                 </div>
@@ -795,38 +809,42 @@ function AstreaDashboard() {
                     <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                       Pendências & Atrasos
                     </span>
-                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
-                      <TrendingDown className="h-3 w-3" /> -3.5%
+                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-rose-600 dark:text-rose-400">
+                      <TrendingDown className="h-3 w-3" /> Cobrança
                     </span>
                   </div>
-                  <div className="mt-2 text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                    R$ 8.200<span className="text-sm font-semibold text-slate-400">,00</span>
+                  <div className="mt-2 text-xl font-extrabold text-slate-900 dark:text-white tracking-tight text-rose-600 dark:text-rose-400">
+                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                      financeiroData?.metricas.pendenciasAtrasadas || 8200,
+                    )}
                   </div>
                   <p className="mt-2 text-[11px] text-slate-500 dark:text-slate-400">
-                    2 faturas em cobrança preventiva
+                    {financeiroData?.metricas.qtdAtrasadas || 2} lançamentos pendentes
                   </p>
                 </div>
 
-                {/* KPI 4: Ticket Médio por Causa */}
+                {/* KPI 4: Saldo Operacional Líquido */}
                 <div className="rounded-2xl border border-slate-100 bg-slate-50/70 p-4 dark:border-slate-800/80 dark:bg-slate-950/40">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                      Ticket Médio / Causa
+                      Saldo Líquido em Caixa
                     </span>
-                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-600 dark:text-slate-300">
-                      +5.8%
+                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-sky-600 dark:text-sky-400">
+                      Consolidado
                     </span>
                   </div>
-                  <div className="mt-2 text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                    R$ 14.850<span className="text-sm font-semibold text-slate-400">,00</span>
+                  <div className="mt-2 text-xl font-extrabold text-slate-900 dark:text-white tracking-tight text-sky-600 dark:text-sky-400">
+                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                      financeiroData?.metricas.saldoLiquido || 49850,
+                    )}
                   </div>
                   <p className="mt-2 text-[11px] text-slate-500 dark:text-slate-400">
-                    Base: 12 novos contratos ativos
+                    Entradas pagas menos despesas pagas
                   </p>
                 </div>
               </div>
 
-              {/* Bloco de Composição de Receita Minimalista */}
+              {/* Bloco de Composição de Receita */}
               <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50/50 p-3.5 dark:border-slate-800/60 dark:bg-slate-950/30">
                 <div className="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
                   <span>Composição de Honorários</span>
@@ -834,22 +852,22 @@ function AstreaDashboard() {
                 </div>
                 {/* Barra Segmentada */}
                 <div className="flex h-2 w-full rounded-full overflow-hidden bg-slate-200 dark:bg-slate-800">
-                  <div className="h-full bg-sky-500" style={{ width: '58%' }} title="Contratual Fixo: 58%" />
-                  <div className="h-full bg-indigo-500" style={{ width: '28%' }} title="Êxito & Sucumbência: 28%" />
-                  <div className="h-full bg-slate-400 dark:bg-slate-600" style={{ width: '14%' }} title="Consultivo: 14%" />
+                  <div className="h-full bg-sky-500" style={{ width: '45%' }} title="Contratual Fixo: 45%" />
+                  <div className="h-full bg-emerald-500" style={{ width: '40%' }} title="Êxito & Sucumbência: 40%" />
+                  <div className="h-full bg-indigo-500" style={{ width: '15%' }} title="Consultivo: 15%" />
                 </div>
                 <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500 dark:text-slate-400">
                   <div className="flex items-center gap-1.5">
                     <span className="h-2 w-2 rounded-full bg-sky-500" />
-                    <span>Contratual (58%)</span>
+                    <span>Contratual</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                    <span>Êxito</span>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <span className="h-2 w-2 rounded-full bg-indigo-500" />
-                    <span>Êxito (28%)</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-slate-400 dark:bg-slate-600" />
-                    <span>Consultivo (14%)</span>
+                    <span>Consultivo</span>
                   </div>
                 </div>
               </div>
@@ -859,11 +877,15 @@ function AstreaDashboard() {
             <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
               <span className="flex items-center gap-1.5">
                 <BarChart3 className="h-3.5 w-3.5 text-sky-600 dark:text-sky-400" />
-                <span>Conciliação bancária atualizada</span>
+                <span>Conciliação bancária sincronizada</span>
               </span>
-              <span className="font-semibold text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-sky-400 cursor-pointer flex items-center gap-1 transition-colors">
-                Demonstrativo completo <ArrowUpRight className="h-3 w-3" />
-              </span>
+              <Link
+                href="/financeiro"
+                id="link-financeiro-demonstrativo"
+                className="font-bold text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300 flex items-center gap-1 hover:underline transition-colors"
+              >
+                Demonstrativo completo <ArrowUpRight className="h-3.5 w-3.5" />
+              </Link>
             </div>
           </div>
         </div>

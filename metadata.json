@@ -1,6 +1,6 @@
 {
   "name": "Davino Neves Advocacia",
-  "description": "Sistema Web de Gestão Jurídica com gestão de clientes, processos, prazos, documentos e agenda.",
+  "description": "Sistema Web de Gestão Jurídica com gestão de clientes, processos, prazos, gestão financeira, conciliação de honorários e IA jurídica.",
   "requestFramePermissions": [],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
