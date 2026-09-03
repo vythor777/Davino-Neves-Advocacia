@@ -364,7 +364,7 @@ function GeminiContent() {
                       id="docTipoSelect"
                       value={docTipo}
                       onChange={(e) => setDocTipo(e.target.value)}
-                      className="mt-1 block w-full rounded-xl border border-slate-300 bg-slate-50/50 px-3.5 py-2.5 text-xs text-slate-900 focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                      className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
                     >
                       <option value="Petição Inicial">Petição Inicial</option>
                       <option value="Contestação">Contestação</option>
@@ -390,7 +390,7 @@ function GeminiContent() {
                       value={docTexto}
                       onChange={(e) => setDocTexto(e.target.value)}
                       placeholder="Cole aqui o texto da sentença, contestação, contrato ou petição inicial..."
-                      className="mt-1 block w-full rounded-xl border border-slate-300 bg-slate-50/50 p-3.5 font-mono text-xs leading-relaxed text-slate-900 focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                      className="mt-1 block w-full rounded-xl border border-slate-200 bg-white p-3.5 font-mono text-xs leading-relaxed text-slate-900 placeholder:text-slate-400 focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
                     />
                   </div>
 
@@ -407,7 +407,7 @@ function GeminiContent() {
                       value={docInstrucoes}
                       onChange={(e) => setDocInstrucoes(e.target.value)}
                       placeholder="Ex: Focar em teses de nulidade de citação, prescrição quinquenal..."
-                      className="mt-1 block w-full rounded-xl border border-slate-300 bg-slate-50/50 px-3.5 py-2.5 text-xs text-slate-900 focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                      className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
                     />
                   </div>
 
@@ -546,7 +546,7 @@ function GeminiContent() {
                         id="resumoPublicoSelect"
                         value={resumoPublico}
                         onChange={(e) => setResumoPublico(e.target.value as 'cliente' | 'advogado')}
-                        className="mt-1 block w-full rounded-xl border border-slate-300 bg-slate-50/50 px-3.5 py-2 text-xs font-medium text-slate-900 focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                        className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-medium text-slate-900 focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
                       >
                         <option value="cliente">Cliente (Linguagem Acessível / WhatsApp)</option>
                         <option value="advogado">Advogado (Técnico e Estratégico)</option>
@@ -567,7 +567,7 @@ function GeminiContent() {
                       value={resumoTitulo}
                       onChange={(e) => setResumoTitulo(e.target.value)}
                       placeholder="Ex: Ação Indenizatória por Vício em Imóvel"
-                      className="mt-1 block w-full rounded-xl border border-slate-300 bg-slate-50/50 px-3.5 py-2 text-xs text-slate-900 focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                      className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
                     />
                   </div>
 
@@ -585,7 +585,7 @@ function GeminiContent() {
                       value={resumoMovsTexto}
                       onChange={(e) => setResumoMovsTexto(e.target.value)}
                       placeholder="Cole aqui a lista de andamentos do tribunal, linha por linha ou em formato JSON..."
-                      className="mt-1 block w-full rounded-xl border border-slate-300 bg-slate-50/50 p-3 font-mono text-xs leading-relaxed text-slate-900 focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                      className="mt-1 block w-full rounded-xl border border-slate-200 bg-white p-3 font-mono text-xs leading-relaxed text-slate-900 placeholder:text-slate-400 focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
                     />
                   </div>
 
@@ -699,7 +699,7 @@ function GeminiContent() {
                       type="date"
                       value={prazoDataPub}
                       onChange={(e) => setPrazoDataPub(e.target.value)}
-                      className="mt-1 block w-full rounded-xl border border-slate-300 bg-slate-50/50 px-3.5 py-2 text-xs text-slate-900 focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                      className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
                     />
                   </div>
 
@@ -717,7 +717,7 @@ function GeminiContent() {
                       value={prazoTexto}
                       onChange={(e) => setPrazoTexto(e.target.value)}
                       placeholder="Cole aqui o texto da publicação do Diário da Justiça Eletrônico..."
-                      className="mt-1 block w-full rounded-xl border border-slate-300 bg-slate-50/50 p-3 font-mono text-xs leading-relaxed text-slate-900 focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                      className="mt-1 block w-full rounded-xl border border-slate-200 bg-white p-3 font-mono text-xs leading-relaxed text-slate-900 placeholder:text-slate-400 focus:border-amber-700 focus:bg-white focus:outline-none focus:ring-1 focus:ring-amber-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
                     />
                   </div>
 

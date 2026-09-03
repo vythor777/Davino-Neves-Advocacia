@@ -169,54 +169,71 @@ body {
 }
 
 /* =========================================================
-   Regras Globais de Alto Contraste para Inputs e Selects
+   Regras Globais de Contraste e Tema para Inputs e Selects
    ========================================================= */
 
-input,
-select,
-textarea {
-  color-scheme: dark;
+/* Light Mode Defaults (quando não em dark mode) */
+:root:not(.dark):not([data-theme="dark"]) input,
+:root:not(.dark):not([data-theme="dark"]) select,
+:root:not(.dark):not([data-theme="dark"]) textarea {
+  color-scheme: light;
 }
 
-/* Texto digitado em branco/cinza claro de alto contraste e fundo escuro */
-input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]):not([type="button"]),
-select,
-textarea {
-  color: #f8fafc !important;
-  background-color: #0f172a !important;
-}
-
-/* Garante alto contraste em estados focados */
-input:not([type="checkbox"]):not([type="radio"]):focus,
-select:focus,
-textarea:focus {
-  color: #ffffff !important;
-  background-color: #020617 !important;
-}
-
-/* Opções de todos os selects com fundo escuro e texto claro */
-select option {
-  background-color: #0f172a !important;
-  color: #f8fafc !important;
+:root:not(.dark):not([data-theme="dark"]) select option {
+  background-color: #ffffff;
+  color: #0f172a;
   padding: 8px 12px;
 }
 
-select option:checked,
-select option:hover {
-  background-color: #1e293b !important;
-  color: #ffffff !important;
+:root:not(.dark):not([data-theme="dark"]) select option:checked,
+:root:not(.dark):not([data-theme="dark"]) select option:hover {
+  background-color: #f1f5f9;
+  color: #0f172a;
 }
 
-/* Placeholders em cinza legível e distinguível do texto digitado */
-input::placeholder,
-textarea::placeholder {
-  color: #94a3b8 !important; /* slate-400 */
-  opacity: 1 !important;
+/* Dark Mode Overrides */
+.dark input,
+.dark select,
+.dark textarea,
+[data-theme="dark"] input,
+[data-theme="dark"] select,
+[data-theme="dark"] textarea {
+  color-scheme: dark;
 }
 
-input:focus::placeholder,
-textarea:focus::placeholder {
-  color: #64748b !important; /* slate-500 */
+.dark select option,
+[data-theme="dark"] select option {
+  background-color: #0f172a;
+  color: #f8fafc;
+  padding: 8px 12px;
+}
+
+.dark select option:checked,
+.dark select option:hover,
+[data-theme="dark"] select option:checked,
+[data-theme="dark"] select option:hover {
+  background-color: #1e293b;
+  color: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) input,
+  :root:not(.light) select,
+  :root:not(.light) textarea {
+    color-scheme: dark;
+  }
+
+  :root:not(.light) select option {
+    background-color: #0f172a;
+    color: #f8fafc;
+    padding: 8px 12px;
+  }
+
+  :root:not(.light) select option:checked,
+  :root:not(.light) select option:hover {
+    background-color: #1e293b;
+    color: #ffffff;
+  }
 }
 
 /* =========================================================
