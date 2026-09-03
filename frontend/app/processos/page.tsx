@@ -413,11 +413,11 @@ function ProcessosContent() {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs font-medium text-slate-100 focus:border-amber-500 focus:outline-hidden"
+              className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-900 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
             >
-              <option value="todos" className="bg-slate-900 text-slate-100">Todos os Status</option>
+              <option value="todos" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Todos os Status</option>
               {STATUS_OPCOES.map((st) => (
-                <option key={st} value={st} className="bg-slate-900 text-slate-100">
+                <option key={st} value={st} className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">
                   {st}
                 </option>
               ))}
@@ -427,11 +427,11 @@ function ProcessosContent() {
               <select
                 value={selectedClienteFilter}
                 onChange={(e) => setSelectedClienteFilter(e.target.value)}
-                className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-xs font-medium text-slate-100 focus:border-amber-500 focus:outline-hidden"
+                className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-900 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
               >
-                <option value="todos" className="bg-slate-900 text-slate-100">Todos os Clientes</option>
+                <option value="todos" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Todos os Clientes</option>
                 {clientes.map((c) => (
-                  <option key={c.id_cliente} value={String(c.id_cliente)} className="bg-slate-900 text-slate-100">
+                  <option key={c.id_cliente} value={String(c.id_cliente)} className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">
                     {c.nome}
                   </option>
                 ))}
@@ -506,7 +506,7 @@ function ProcessosContent() {
                   value={titulo}
                   onChange={(e) => setTitulo(e.target.value)}
                   placeholder="Ex: Ação de Cobrança e Perdas e Danos"
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
                 {formErrors.titulo && <p className="text-rose-500 mt-1">{formErrors.titulo}</p>}
               </div>
@@ -519,11 +519,11 @@ function ProcessosContent() {
                   <select
                     value={idCliente}
                     onChange={(e) => setIdCliente(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-amber-500 focus:outline-hidden"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                   >
-                    <option value="" className="bg-slate-900 text-slate-100">Selecione o Cliente</option>
+                    <option value="" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Selecione o Cliente</option>
                     {clientes.map((c) => (
-                      <option key={c.id_cliente} value={String(c.id_cliente)} className="bg-slate-900 text-slate-100">
+                      <option key={c.id_cliente} value={String(c.id_cliente)} className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">
                         {c.nome} ({c.cpf_cnpj})
                       </option>
                     ))}
@@ -541,7 +541,7 @@ function ProcessosContent() {
                     type="date"
                     value={dataAbertura}
                     onChange={(e) => setDataAbertura(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-amber-500 focus:outline-hidden"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                   />
                   {formErrors.dataAbertura && (
                     <p className="text-rose-500 mt-1">{formErrors.dataAbertura}</p>
@@ -556,10 +556,10 @@ function ProcessosContent() {
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 focus:border-amber-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                 >
                   {STATUS_OPCOES.map((st) => (
-                    <option key={st} value={st} className="bg-slate-900 text-slate-100">
+                    <option key={st} value={st} className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">
                       {st}
                     </option>
                   ))}
@@ -575,7 +575,7 @@ function ProcessosContent() {
                   value={descricao}
                   onChange={(e) => setDescricao(e.target.value)}
                   placeholder="Síntese da demanda, vara, foro e anotações essenciais..."
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden resize-none"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden resize-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
                 {formErrors.descricao && (
                   <p className="text-rose-500 mt-1">{formErrors.descricao}</p>

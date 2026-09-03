@@ -295,17 +295,17 @@ function ClientesContent() {
       </div>
 
         {/* Cabeçalho da Página */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-800/80 pb-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 dark:border-slate-800/80 pb-6">
           <div>
             <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-400">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400">
                 <Users className="h-5 w-5" />
               </div>
-              <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-white">
+              <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
                 Gestão de Clientes
               </h1>
             </div>
-            <p className="mt-1 text-xs sm:text-sm text-slate-400">
+            <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
               Cadastro unificado de pessoas físicas e jurídicas, processos e contatos corporativos.
             </p>
           </div>
@@ -314,7 +314,7 @@ function ClientesContent() {
             <button
               onClick={fetchClientes}
               disabled={loading}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-800 bg-slate-900/80 px-3.5 py-2.5 text-xs font-semibold text-slate-300 hover:bg-slate-800 hover:text-white transition cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white transition cursor-pointer"
               title="Atualizar lista"
             >
               <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
@@ -370,50 +370,50 @@ function ClientesContent() {
             </>
           ) : (
             <>
-              <div className="rounded-xl border border-slate-800/70 bg-gradient-to-b from-slate-900/80 to-slate-950/80 p-4 shadow-xs">
+              <div className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs dark:border-slate-800/70 dark:bg-gradient-to-b dark:from-slate-900/80 dark:to-slate-950/80">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-400">Total de Clientes</span>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-400">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total de Clientes</span>
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400">
                     <Users className="h-4 w-4" />
                   </div>
                 </div>
-                <p className="mt-2 text-2xl font-bold font-serif text-white">
+                <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
                   {totalClientes}
                 </p>
               </div>
 
-              <div className="rounded-xl border border-slate-800/70 bg-gradient-to-b from-slate-900/80 to-slate-950/80 p-4 shadow-xs">
+              <div className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs dark:border-slate-800/70 dark:bg-gradient-to-b dark:from-slate-900/80 dark:to-slate-950/80">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-400">Pessoas Físicas</span>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Pessoas Físicas</span>
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400">
                     <User className="h-4 w-4" />
                   </div>
                 </div>
-                <p className="mt-2 text-2xl font-bold font-serif text-white">
+                <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
                   {totalPF}
                 </p>
               </div>
 
-              <div className="rounded-xl border border-slate-800/70 bg-gradient-to-b from-slate-900/80 to-slate-950/80 p-4 shadow-xs">
+              <div className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs dark:border-slate-800/70 dark:bg-gradient-to-b dark:from-slate-900/80 dark:to-slate-950/80">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-400">Pessoas Jurídicas</span>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Pessoas Jurídicas</span>
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400">
                     <Building2 className="h-4 w-4" />
                   </div>
                 </div>
-                <p className="mt-2 text-2xl font-bold font-serif text-white">
+                <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
                   {totalPJ}
                 </p>
               </div>
 
-              <div className="rounded-xl border border-slate-800/70 bg-gradient-to-b from-slate-900/80 to-slate-950/80 p-4 shadow-xs">
+              <div className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs dark:border-slate-800/70 dark:bg-gradient-to-b dark:from-slate-900/80 dark:to-slate-950/80">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-400">Com Processos Ativos</span>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Com Processos Ativos</span>
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
                     <Briefcase className="h-4 w-4" />
                   </div>
                 </div>
-                <p className="mt-2 text-2xl font-bold font-serif text-white">
+                <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
                   {totalComProcessos}
                 </p>
               </div>
@@ -422,7 +422,7 @@ function ClientesContent() {
         </div>
 
         {/* Filtros e Tabela: Barra de ferramentas integrada (Busca + Segmented Control) */}
-        <div className="rounded-xl border border-slate-800/80 bg-gradient-to-b from-slate-900/80 to-slate-950/80 p-2 sm:p-2.5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shadow-xs">
+        <div className="rounded-xl border border-slate-200/90 bg-white p-2 sm:p-2.5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shadow-2xs dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-slate-900/80 dark:to-slate-950/80">
           <div className="relative flex-1 min-w-[240px]">
             <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input
@@ -430,13 +430,13 @@ function ClientesContent() {
               placeholder="Buscar por nome, CPF/CNPJ, e-mail ou cidade..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-lg border border-slate-800 bg-slate-950/80 pl-10 pr-8 py-2 text-xs text-slate-100 placeholder-slate-500 focus:border-blue-500 focus:bg-slate-950 focus:outline-hidden focus:ring-1 focus:ring-blue-500/30 transition"
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-8 py-2 text-xs text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-blue-500/30 dark:border-slate-800 dark:bg-slate-950/80 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-950 transition"
             />
             {searchTerm && (
               <button
                 type="button"
                 onClick={() => setSearchTerm('')}
-                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200"
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                 aria-label="Limpar busca"
               >
                 <X className="h-3.5 w-3.5" />
@@ -445,7 +445,7 @@ function ClientesContent() {
           </div>
 
           <div
-            className="flex items-center gap-1 rounded-lg border border-slate-800 bg-slate-950/80 p-1 shrink-0"
+            className="flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 p-1 shrink-0 dark:border-slate-800 dark:bg-slate-950/80"
             role="tablist"
             aria-label="Filtro por tipo de pessoa"
           >
@@ -461,7 +461,7 @@ function ClientesContent() {
                   className={`rounded-md px-3 py-1.5 text-xs font-medium transition cursor-pointer ${
                     isActive
                       ? 'bg-blue-600 text-white shadow-xs font-semibold'
-                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/60'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800/60'
                   }`}
                 >
                   {tipo === 'todos' ? 'Todos' : tipo === 'pf' ? 'Pessoas Físicas' : 'Pessoas Jurídicas'}
@@ -472,7 +472,7 @@ function ClientesContent() {
         </div>
 
         {/* Tabela de Clientes */}
-        <div className="rounded-2xl border border-slate-800/80 bg-slate-900/60 shadow-xs overflow-hidden backdrop-blur-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-2xs overflow-hidden dark:border-slate-800/80 dark:bg-slate-900/60 backdrop-blur-sm">
           {loading ? (
             <TableSkeleton rows={6} columns={6} />
           ) : filteredClientes.length === 0 ? (
@@ -499,7 +499,7 @@ function ClientesContent() {
               {/* Desktop Table View */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="border-b border-slate-800 bg-slate-900/90 font-semibold text-slate-300">
+                  <thead className="border-b border-slate-200 bg-slate-50 font-semibold text-slate-600 dark:border-slate-800 dark:bg-slate-900/90 dark:text-slate-300">
                     <tr>
                       <th className="py-3.5 pl-6 pr-3">Cliente / Razão Social</th>
                       <th className="px-3 py-3.5">Documento (CPF/CNPJ)</th>
@@ -509,7 +509,7 @@ function ClientesContent() {
                       <th className="py-3.5 pl-3 pr-6 text-right">Ações</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-800/60">
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
                     {filteredClientes.map((client) => {
                       const digits = client.cpf_cnpj.replace(/\D/g, '');
                       const isPJ = digits.length > 11;
@@ -518,15 +518,15 @@ function ClientesContent() {
                       return (
                         <tr
                           key={client.id_cliente}
-                          className="hover:bg-slate-800/40 transition-colors"
+                          className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
                         >
                           <td className="py-4 pl-6 pr-3">
                             <div className="flex items-center gap-3">
                               <div
                                 className={`flex h-9 w-9 items-center justify-center rounded-xl font-bold shrink-0 ${
                                   isPJ
-                                    ? 'bg-amber-500/15 text-amber-400 border border-amber-500/20'
-                                    : 'bg-blue-500/15 text-blue-400 border border-blue-500/20'
+                                    ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                                    : 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/20'
                                 }`}
                               >
                                 {isPJ ? <Building2 className="h-4 w-4" /> : <User className="h-4 w-4" />}
@@ -538,21 +538,21 @@ function ClientesContent() {
                                       setSelectedClient(client);
                                       setDetailsModalOpen(true);
                                     }}
-                                    className="font-semibold text-slate-100 hover:text-blue-400 text-left transition cursor-pointer"
+                                    className="font-semibold text-slate-900 hover:text-blue-600 dark:text-slate-100 dark:hover:text-blue-400 text-left transition cursor-pointer"
                                   >
                                     {client.nome}
                                   </button>
                                   {isPJ ? (
-                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-950/70 text-amber-300 border border-amber-800/60">
+                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-950/70 dark:text-amber-300 dark:border-amber-800/60">
                                       Pessoa Jurídica
                                     </span>
                                   ) : (
-                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-950/70 text-blue-300 border border-blue-800/60">
+                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-800 border border-blue-200 dark:bg-blue-950/70 dark:text-blue-300 dark:border-blue-800/60">
                                       Pessoa Física
                                     </span>
                                   )}
                                 </div>
-                                <p className="text-[11px] text-slate-400">
+                                <p className="text-[11px] text-slate-500 dark:text-slate-400">
                                   Cadastro: {new Date(client.data_criacao).toLocaleDateString('pt-BR')}
                                 </p>
                               </div>
@@ -653,21 +653,21 @@ function ClientesContent() {
               </div>
 
               {/* Mobile Cards View */}
-              <div className="block md:hidden divide-y divide-slate-800/60">
+              <div className="block md:hidden divide-y divide-slate-100 dark:divide-slate-800/60">
                 {filteredClientes.map((client) => {
                   const digits = client.cpf_cnpj.replace(/\D/g, '');
                   const isPJ = digits.length > 11;
                   const countProc = client._count?.processos ?? client.processos?.length ?? 0;
 
                   return (
-                    <div key={client.id_cliente} className="p-4 space-y-3 hover:bg-slate-800/40 transition-colors">
+                    <div key={client.id_cliente} className="p-4 space-y-3 hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-center gap-2.5 min-w-0">
                           <div
                             className={`flex h-10 w-10 items-center justify-center rounded-xl font-bold shrink-0 ${
                               isPJ
-                                ? 'bg-amber-500/15 text-amber-400 border border-amber-500/20'
-                                : 'bg-blue-500/15 text-blue-400 border border-blue-500/20'
+                                ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20'
+                                : 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/20'
                             }`}
                           >
                             {isPJ ? <Building2 className="h-5 w-5" /> : <User className="h-5 w-5" />}
@@ -678,21 +678,21 @@ function ClientesContent() {
                                 setSelectedClient(client);
                                 setDetailsModalOpen(true);
                               }}
-                              className="font-bold text-sm text-slate-100 hover:text-blue-400 truncate block text-left"
+                              className="font-bold text-sm text-slate-900 hover:text-blue-600 dark:text-slate-100 dark:hover:text-blue-400 truncate block text-left"
                             >
                               {client.nome}
                             </button>
                             <div className="flex items-center gap-1.5 mt-0.5">
                               {isPJ ? (
-                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-amber-950/70 text-amber-300 border border-amber-800/60">
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-950/70 dark:text-amber-300 dark:border-amber-800/60">
                                   Pessoa Jurídica
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-blue-950/70 text-blue-300 border border-blue-800/60">
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-blue-50 text-blue-800 border border-blue-200 dark:bg-blue-950/70 dark:text-blue-300 dark:border-blue-800/60">
                                   Pessoa Física
                                 </span>
                               )}
-                              <span className="font-mono text-xs text-slate-300">
+                              <span className="font-mono text-xs text-slate-600 dark:text-slate-300">
                                 {formatarCpfCnpj(client.cpf_cnpj)}
                               </span>
                             </div>
@@ -702,15 +702,15 @@ function ClientesContent() {
                         <span
                           className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${
                             countProc > 0
-                              ? 'bg-blue-950/60 text-blue-300 border border-blue-800/50'
-                              : 'bg-slate-800 text-slate-400'
+                              ? 'bg-blue-50 text-blue-800 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800/50'
+                              : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
                           }`}
                         >
                           {countProc} {countProc === 1 ? 'processo' : 'processos'}
                         </span>
                       </div>
 
-                      <div className="grid grid-cols-1 gap-1 text-xs text-slate-300 pt-1">
+                      <div className="grid grid-cols-1 gap-1 text-xs text-slate-600 dark:text-slate-300 pt-1">
                         <div className="flex items-center gap-1.5">
                           <Mail className="h-3.5 w-3.5 text-slate-400" />
                           <span className="truncate">{client.email}</span>
@@ -721,13 +721,13 @@ function ClientesContent() {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800/60">
+                      <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800/60">
                         <button
                           onClick={() => {
                             setSelectedClient(client);
                             setDetailsModalOpen(true);
                           }}
-                          className="flex min-h-[38px] items-center gap-1.5 rounded-xl border border-slate-800 bg-slate-900/80 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-blue-400 hover:bg-slate-800"
+                          className="flex min-h-[38px] items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-blue-600 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:text-blue-400 dark:hover:bg-slate-800"
                           title="Visualizar ficha completa do cliente"
                         >
                           <Eye className="h-3.5 w-3.5" />
@@ -736,7 +736,7 @@ function ClientesContent() {
 
                         <button
                           onClick={() => openEditModal(client)}
-                          className="flex min-h-[38px] items-center gap-1.5 rounded-xl border border-amber-900/50 bg-amber-950/30 px-3 py-1.5 text-xs font-semibold text-amber-300 hover:bg-amber-950/50"
+                          className="flex min-h-[38px] items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-800 hover:bg-amber-100 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-300 dark:hover:bg-amber-950/50"
                           title="Editar dados do cliente"
                         >
                           <Edit2 className="h-3.5 w-3.5" />
@@ -748,7 +748,7 @@ function ClientesContent() {
                             setClientToDelete(client);
                             setDeleteModalOpen(true);
                           }}
-                          className="flex min-h-[38px] items-center justify-center rounded-xl border border-rose-900/50 bg-rose-950/30 px-3 py-1.5 text-rose-400 hover:bg-rose-950/50"
+                          className="flex min-h-[38px] items-center justify-center rounded-xl border border-rose-200 bg-rose-50 px-3 py-1.5 text-rose-700 hover:bg-rose-100 dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-400 dark:hover:bg-rose-950/50"
                           title="Excluir cliente do sistema"
                           aria-label="Excluir cadastro"
                         >
@@ -827,7 +827,7 @@ function ClientesContent() {
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
                   placeholder={formTipo === 'pf' ? 'Ex: Carlos Eduardo Silveira' : 'Ex: Horizonte Verde Engenharia S/A'}
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
                 {formErrors.nome && <p className="text-red-500 mt-1">{formErrors.nome}</p>}
               </div>
@@ -857,7 +857,7 @@ function ClientesContent() {
                       }
                     }}
                     placeholder={formTipo === 'pf' ? '000.000.000-00' : '00.000.000/0001-00'}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden font-mono"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden font-mono dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                   />
                   {formErrors.cpfCnpj && <p className="text-red-500 mt-1">{formErrors.cpfCnpj}</p>}
                 </div>
@@ -874,7 +874,7 @@ function ClientesContent() {
                     value={telefone}
                     onChange={(e) => setTelefone(formatarTelefone(e.target.value))}
                     placeholder="(11) 98765-4321"
-                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden font-mono"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden font-mono dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                   />
                   {formErrors.telefone && <p className="text-red-500 mt-1">{formErrors.telefone}</p>}
                 </div>
@@ -890,7 +890,7 @@ function ClientesContent() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="cliente@dominio.com.br"
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
                 {formErrors.email && <p className="text-red-500 mt-1">{formErrors.email}</p>}
               </div>
@@ -907,7 +907,7 @@ function ClientesContent() {
                     type="date"
                     value={dataNascimento}
                     onChange={(e) => setDataNascimento(e.target.value)}
-                    className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                   />
                 </div>
               </div>
@@ -921,7 +921,7 @@ function ClientesContent() {
                   value={endereco}
                   onChange={(e) => setEndereco(e.target.value)}
                   placeholder="Av. Paulista, 1000, Apto 42 - Bela Vista, São Paulo/SP"
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2 text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden resize-none"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden resize-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
                 {formErrors.endereco && <p className="text-red-500 mt-1">{formErrors.endereco}</p>}
               </div>

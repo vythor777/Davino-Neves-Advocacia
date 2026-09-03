@@ -211,7 +211,7 @@ export const TribunalSelector = forwardRef<HTMLButtonElement, TribunalSelectorPr
     // Classes dinâmicas de borda baseadas em erro ou estado normal
     const borderClasses = hasError
       ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 dark:border-red-500'
-      : 'border-slate-700 hover:border-slate-600 focus:border-[#0047ab] focus:ring-2 focus:ring-[#0047ab]/25 dark:border-slate-800 dark:hover:border-slate-700 dark:focus:border-blue-500 dark:focus:ring-blue-500/20';
+      : 'border-slate-300 hover:border-slate-400 focus:border-[#0047ab] focus:ring-2 focus:ring-[#0047ab]/25 dark:border-slate-800 dark:hover:border-slate-700 dark:focus:border-blue-500 dark:focus:ring-blue-500/20';
 
     const isCustomSelected = Boolean(selectedOption && selectedOption.value !== '');
 
@@ -256,7 +256,7 @@ export const TribunalSelector = forwardRef<HTMLButtonElement, TribunalSelectorPr
                 aria-invalid={hasError ? 'true' : 'false'}
                 className={`
                   group relative flex w-full items-center justify-between
-                  rounded-xl border bg-slate-900 dark:bg-slate-950
+                  rounded-xl border bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100
                   py-2.5 text-xs sm:text-sm font-sans
                   outline-hidden transition-all duration-150 shadow-2xs
                   disabled:cursor-not-allowed disabled:opacity-50
@@ -283,28 +283,28 @@ export const TribunalSelector = forwardRef<HTMLButtonElement, TribunalSelectorPr
                   </div>
                 )}
 
-                {/* Conteúdo selecionado formatado com destaque Primary contra o fundo escuro */}
+                {/* Conteúdo selecionado formatado com destaque Primary */}
                 <div className="flex items-center gap-2 truncate text-left">
                   {selectedOption ? (
                     isCustomSelected ? (
                       <div className="flex items-center gap-2 truncate">
                         {/* Tag/Badge de destaque com a cor primary */}
                         {selectedOption.sigla && (
-                          <span className="shrink-0 rounded-md bg-[#0047ab]/20 px-1.5 py-0.5 text-[11px] font-mono font-bold text-[#0047ab] dark:bg-blue-500/20 dark:text-blue-400 border border-[#0047ab]/30 dark:border-blue-500/30">
+                          <span className="shrink-0 rounded-md bg-[#0047ab]/10 px-1.5 py-0.5 text-[11px] font-mono font-bold text-[#0047ab] dark:bg-blue-500/20 dark:text-blue-400 border border-[#0047ab]/25 dark:border-blue-500/30">
                             {selectedOption.sigla}
                           </span>
                         )}
-                        <span className="truncate font-medium text-blue-100 dark:text-blue-200">
+                        <span className="truncate font-medium text-slate-900 dark:text-blue-200">
                           {selectedOption.nomeCompleto || selectedOption.label}
                         </span>
                       </div>
                     ) : (
-                      <span className="truncate text-slate-300 dark:text-slate-300">
+                      <span className="truncate text-slate-600 dark:text-slate-300">
                         {selectedOption.label}
                       </span>
                     )
                   ) : (
-                    <span className="truncate text-slate-500">{placeholder}</span>
+                    <span className="truncate text-slate-400 dark:text-slate-500">{placeholder}</span>
                   )}
                 </div>
 
@@ -314,7 +314,7 @@ export const TribunalSelector = forwardRef<HTMLButtonElement, TribunalSelectorPr
                     <button
                       type="button"
                       onClick={handleClear}
-                      className="rounded-lg p-1 text-slate-400 hover:bg-slate-800 hover:text-slate-200 focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500 transition-colors"
+                      className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200 focus-visible:outline-hidden focus-visible:ring-1 focus-visible:ring-blue-500 transition-colors"
                       title="Limpar seleção de tribunal"
                       aria-label="Limpar seleção de tribunal"
                     >
@@ -325,7 +325,7 @@ export const TribunalSelector = forwardRef<HTMLButtonElement, TribunalSelectorPr
                   {/* Ícone de dropdown elegante com transição suave */}
                   <ChevronDown
                     className={`h-4 w-4 text-slate-400 transition-transform duration-200 ease-out ${
-                      open ? 'rotate-180 text-[#0047ab] dark:text-blue-400' : 'group-hover:text-slate-200'
+                      open ? 'rotate-180 text-[#0047ab] dark:text-blue-400' : 'group-hover:text-slate-600 dark:group-hover:text-slate-200'
                     }`}
                     aria-hidden="true"
                   />
@@ -344,11 +344,11 @@ export const TribunalSelector = forwardRef<HTMLButtonElement, TribunalSelectorPr
               >
                 <ListboxOptions
                   static
-                  className="absolute z-50 mt-1.5 max-h-72 w-full overflow-hidden rounded-xl border border-slate-700 bg-slate-900 shadow-2xl shadow-black/80 dark:border-slate-800 dark:bg-slate-950 focus:outline-hidden"
+                  className="absolute z-50 mt-1.5 max-h-72 w-full overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-800 dark:bg-slate-950 focus:outline-hidden"
                 >
                   {/* Campo de pesquisa interna quando searchable=true */}
                   {searchable && normalizedOptions.length > 5 && (
-                    <div className="border-b border-slate-800 p-2 bg-slate-900/90 dark:bg-slate-950/90 backdrop-blur-xs">
+                    <div className="border-b border-slate-100 p-2 bg-slate-50/90 dark:border-slate-800 dark:bg-slate-950/90 backdrop-blur-xs">
                       <div className="relative flex items-center">
                         <Search className="pointer-events-none absolute left-2.5 h-3.5 w-3.5 text-slate-400" />
                         <input
@@ -356,7 +356,7 @@ export const TribunalSelector = forwardRef<HTMLButtonElement, TribunalSelectorPr
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value)}
                           placeholder="Filtrar por sigla, nome ou estado..."
-                          className="w-full rounded-lg border border-slate-800 bg-slate-950 py-1.5 pl-8 pr-7 text-xs text-slate-100 placeholder:text-slate-500 focus:border-[#0047ab] focus:outline-hidden dark:bg-slate-900 dark:focus:border-blue-500"
+                          className="w-full rounded-lg border border-slate-200 bg-white py-1.5 pl-8 pr-7 text-xs text-slate-900 placeholder:text-slate-400 focus:border-[#0047ab] focus:outline-hidden dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-blue-500"
                           onClick={(e) => e.stopPropagation()}
                           onKeyDown={(e) => e.stopPropagation()}
                         />
@@ -364,7 +364,7 @@ export const TribunalSelector = forwardRef<HTMLButtonElement, TribunalSelectorPr
                           <button
                             type="button"
                             onClick={() => setSearchQuery('')}
-                            className="absolute right-2 text-slate-400 hover:text-slate-200"
+                            className="absolute right-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                           >
                             <X className="h-3 w-3" />
                           </button>
@@ -389,10 +389,10 @@ export const TribunalSelector = forwardRef<HTMLButtonElement, TribunalSelectorPr
                             rounded-lg px-3 py-2 text-xs transition-colors duration-100 outline-hidden
                             ${
                               selected
-                                ? 'bg-[#0047ab]/20 text-blue-300 font-semibold border-l-2 border-[#0047ab] dark:bg-blue-500/20 dark:text-blue-200 dark:border-blue-500'
+                                ? 'bg-sky-50 text-sky-900 font-semibold border-l-2 border-[#0047ab] dark:bg-blue-500/20 dark:text-blue-200 dark:border-blue-500'
                                 : focus
-                                ? 'bg-slate-800 text-slate-100'
-                                : 'text-slate-300 hover:bg-slate-800/60 hover:text-slate-100'
+                                ? 'bg-slate-100 text-slate-900 dark:bg-slate-800 dark:text-slate-100'
+                                : 'text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800/60 dark:hover:text-slate-100'
                             }
                           `}
                         >
@@ -405,7 +405,7 @@ export const TribunalSelector = forwardRef<HTMLButtonElement, TribunalSelectorPr
                                     className={`shrink-0 rounded px-1.5 py-0.5 text-[10px] font-mono font-bold transition-colors ${
                                       selected
                                         ? 'bg-[#0047ab] text-white dark:bg-blue-500 dark:text-white'
-                                        : 'bg-slate-800 text-slate-300 border border-slate-700'
+                                        : 'bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700'
                                     }`}
                                   >
                                     {opt.sigla}

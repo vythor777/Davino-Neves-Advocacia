@@ -558,7 +558,7 @@ function DataJudContent() {
                   type="text"
                   disabled
                   value={formatarCNJ(resultado.numeroProcesso)}
-                  className="mt-1 block w-full rounded-xl border border-slate-700 bg-slate-800 px-3.5 py-2 font-mono text-xs text-slate-200"
+                  className="mt-1 block w-full rounded-xl border border-slate-200 bg-slate-100 px-3.5 py-2 font-mono text-xs text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200"
                 />
               </div>
 
@@ -571,16 +571,16 @@ function DataJudContent() {
                     required
                     value={clienteSelecionadoId}
                     onChange={(e) => setClienteSelecionadoId(Number(e.target.value))}
-                    className="mt-1 block w-full rounded-xl border border-slate-700 bg-slate-900 px-3.5 py-2 text-xs text-slate-100 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                    className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                   >
                     {clientes.map((c) => (
-                      <option key={c.id_cliente} value={c.id_cliente} className="bg-slate-900 text-slate-100">
+                      <option key={c.id_cliente} value={c.id_cliente} className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">
                         {c.nome} ({c.cpf_cnpj || 'Sem documento'})
                       </option>
                     ))}
                   </select>
                 ) : (
-                  <div className="mt-1 rounded-lg bg-amber-950/40 p-2.5 text-xs text-amber-300 border border-amber-800">
+                  <div className="mt-1 rounded-lg bg-amber-50 p-2.5 text-xs text-amber-800 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800">
                     Nenhum cliente cadastrado. Cadastre um cliente primeiro no módulo de Clientes.
                   </div>
                 )}
@@ -596,7 +596,7 @@ function DataJudContent() {
                   value={tituloProcesso}
                   onChange={(e) => setTituloProcesso(e.target.value)}
                   placeholder="Título do processo"
-                  className="mt-1 block w-full rounded-xl border border-slate-700 bg-slate-900 px-3.5 py-2 text-xs text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                  className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
               </div>
 
@@ -607,13 +607,13 @@ function DataJudContent() {
                 <select
                   value={statusProcesso}
                   onChange={(e) => setStatusProcesso(e.target.value)}
-                  className="mt-1 block w-full rounded-xl border border-slate-700 bg-slate-900 px-3.5 py-2 text-xs text-slate-100 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                  className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                 >
-                  <option value="Em Andamento" className="bg-slate-900 text-slate-100">Em Andamento</option>
-                  <option value="Aguardando Sentença" className="bg-slate-900 text-slate-100">Aguardando Sentença</option>
-                  <option value="Fase Recursal" className="bg-slate-900 text-slate-100">Fase Recursal</option>
-                  <option value="Cumprimento de Sentença" className="bg-slate-900 text-slate-100">Cumprimento de Sentença</option>
-                  <option value="Arquivado" className="bg-slate-900 text-slate-100">Arquivado</option>
+                  <option value="Em Andamento" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Em Andamento</option>
+                  <option value="Aguardando Sentença" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Aguardando Sentença</option>
+                  <option value="Fase Recursal" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Fase Recursal</option>
+                  <option value="Cumprimento de Sentença" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Cumprimento de Sentença</option>
+                  <option value="Arquivado" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Arquivado</option>
                 </select>
               </div>
 
@@ -626,7 +626,7 @@ function DataJudContent() {
                   value={descricaoProcesso}
                   onChange={(e) => setDescricaoProcesso(e.target.value)}
                   placeholder="Descrição..."
-                  className="mt-1 block w-full rounded-xl border border-slate-700 bg-slate-900 p-3 text-xs text-slate-100 placeholder:text-slate-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                  className="mt-1 block w-full rounded-xl border border-slate-200 bg-white p-3 text-xs text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
               </div>
 

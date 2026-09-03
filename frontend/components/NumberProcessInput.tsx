@@ -163,7 +163,7 @@ export const NumberProcessInput = forwardRef<HTMLInputElement, NumberProcessInpu
     // Classes dinâmicas de borda e anel de foco conforme especificações de design
     const borderClasses = hasError
       ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 dark:border-red-500 dark:focus:border-red-500 dark:focus:ring-red-500/20'
-      : 'border-slate-700 hover:border-slate-600 focus:border-[#0047ab] focus:ring-2 focus:ring-[#0047ab]/25 dark:border-slate-800 dark:hover:border-slate-700 dark:focus:border-blue-500 dark:focus:ring-blue-500/20';
+      : 'border-slate-300 hover:border-slate-400 focus:border-[#0047ab] focus:ring-2 focus:ring-[#0047ab]/25 dark:border-slate-800 dark:hover:border-slate-700 dark:focus:border-blue-500 dark:focus:ring-blue-500/20';
 
     return (
       <div className={`w-full text-left font-sans ${containerClassName}`}>
@@ -204,7 +204,7 @@ export const NumberProcessInput = forwardRef<HTMLInputElement, NumberProcessInpu
             </div>
           )}
 
-          {/* Campo de entrada com alta visibilidade garantida sobre fundos escuros (#F1F5F9) */}
+          {/* Campo de entrada com visual adaptativo para Modo Claro e Escuro */}
           <input
             ref={ref}
             id={inputId}
@@ -226,11 +226,10 @@ export const NumberProcessInput = forwardRef<HTMLInputElement, NumberProcessInpu
             }
             aria-invalid={hasError ? 'true' : 'false'}
             aria-required={required ? 'true' : 'false'}
-            style={{ color: '#F1F5F9' }}
             className={`
-              w-full rounded-xl border bg-slate-900 dark:bg-slate-950
+              w-full rounded-xl border bg-white dark:bg-slate-950
               py-2.5 text-xs sm:text-sm font-mono tracking-wide
-              text-[#F1F5F9] placeholder:text-slate-500 placeholder:font-sans
+              text-slate-900 dark:text-slate-100 placeholder:text-slate-400 dark:placeholder:text-slate-500 placeholder:font-sans
               outline-hidden transition-all duration-150 shadow-2xs
               disabled:cursor-not-allowed disabled:opacity-50
               ${showIcon ? 'pl-10' : 'pl-3.5'}
@@ -246,7 +245,7 @@ export const NumberProcessInput = forwardRef<HTMLInputElement, NumberProcessInpu
             <button
               type="button"
               onClick={handleClear}
-              className="absolute right-2.5 rounded-lg p-1 text-slate-400 hover:bg-slate-800 hover:text-slate-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 active:scale-95 transition-all"
+              className="absolute right-2.5 rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 active:scale-95 transition-all"
               title="Limpar número do processo"
               aria-label="Limpar campo de número do processo"
             >

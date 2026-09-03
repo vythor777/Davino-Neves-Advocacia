@@ -183,13 +183,13 @@ export function Navbar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar processo..."
-              className="w-full rounded-xl border border-slate-700 bg-slate-900 pl-8 pr-7 py-1.5 text-xs text-slate-100 placeholder:text-slate-400 focus:border-sky-500 focus:outline-hidden focus:ring-2 focus:ring-sky-500/20 transition-all"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-8 pr-7 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-sky-500 focus:outline-hidden focus:ring-2 focus:ring-sky-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-900 transition-all"
             />
             {searchQuery && (
               <button
                 type="button"
                 onClick={() => setSearchQuery('')}
-                className="absolute right-2 text-slate-400 hover:text-slate-200"
+                className="absolute right-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
               >
                 <X className="h-3 w-3" />
               </button>
@@ -436,7 +436,7 @@ export function Navbar() {
                   value={mobileSearchQuery}
                   onChange={(e) => setMobileSearchQuery(e.target.value)}
                   placeholder="Buscar autos ou clientes..."
-                  className="w-full rounded-xl border border-slate-700 bg-slate-900 pl-10 pr-3 py-2.5 text-xs text-slate-100 placeholder:text-slate-400 focus:border-sky-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-3 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-sky-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
               </form>
 

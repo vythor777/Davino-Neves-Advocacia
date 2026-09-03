@@ -84,9 +84,9 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center bg-slate-950 text-slate-100 relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex flex-col justify-center bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 relative overflow-hidden py-12 px-4 sm:px-6 lg:px-8 transition-colors duration-200">
       {/* Background glow com a paleta do Astrea */}
-      <div className="absolute inset-0 opacity-20 bg-[radial-gradient(#0284c7_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
+      <div className="absolute inset-0 opacity-20 dark:opacity-20 bg-[radial-gradient(#0284c7_1px,transparent_1px)] [background-size:24px_24px] pointer-events-none" />
       <div className="absolute -top-32 -left-32 w-96 h-96 bg-sky-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -100,25 +100,25 @@ function LoginForm() {
               <span className="relative inline-flex rounded-full h-4 w-4 bg-cyan-400" />
             </div>
           </div>
-          <h1 className="mt-5 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
-            Davino Neves <span className="text-sky-400">Advocacia</span>
+          <h1 className="mt-5 text-2xl font-extrabold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+            Davino Neves <span className="text-sky-600 dark:text-sky-400">Advocacia</span>
           </h1>
-          <p className="text-xs font-semibold tracking-wider uppercase text-slate-400 mt-1">
+          <p className="text-xs font-semibold tracking-wider uppercase text-slate-500 dark:text-slate-400 mt-1">
             Sociedade de Advogados • Gestão Integrada
           </p>
-          <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-slate-900 px-3 py-1 text-xs text-sky-300 border border-sky-500/20">
-            <ShieldCheck className="h-3.5 w-3.5 text-sky-400" />
+          <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-sky-50 px-3 py-1 text-xs text-sky-700 border border-sky-200 dark:bg-slate-900 dark:text-sky-300 dark:border-sky-500/20">
+            <ShieldCheck className="h-3.5 w-3.5 text-sky-600 dark:text-sky-400" />
             <span>Controladoria Jurídica & Prazos</span>
           </div>
         </div>
 
         {/* Card do Formulário */}
-        <div className="mt-8 rounded-3xl border border-slate-800 bg-slate-900/90 p-8 shadow-2xl backdrop-blur-xl">
+        <div className="mt-8 rounded-3xl border border-slate-200/90 bg-white/95 p-8 shadow-xl backdrop-blur-xl dark:border-slate-800 dark:bg-slate-900/90">
           {errorMsg && (
-            <div className="mb-6 rounded-2xl border border-red-500/30 bg-red-950/40 p-4 text-xs text-red-200 flex items-start gap-3">
-              <AlertCircle className="h-5 w-5 text-red-400 shrink-0 mt-0.5" />
+            <div className="mb-6 rounded-2xl border border-red-500/30 bg-red-50 dark:bg-red-950/40 p-4 text-xs text-red-700 dark:text-red-200 flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-red-500 dark:text-red-400 shrink-0 mt-0.5" />
               <div>
-                <p className="font-semibold text-red-300">Falha de Autenticação</p>
+                <p className="font-semibold text-red-800 dark:text-red-300">Falha de Autenticação</p>
                 <p className="mt-0.5 leading-relaxed">{errorMsg}</p>
               </div>
             </div>
@@ -126,7 +126,7 @@ function LoginForm() {
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5" htmlFor="email">
+              <label className="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5" htmlFor="email">
                 E-mail Corporativo
               </label>
               <div className="relative rounded-xl shadow-xs">
@@ -140,14 +140,14 @@ function LoginForm() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="advogado@davinoneves.com.br"
-                  className="block w-full rounded-xl border border-slate-700 bg-slate-900 pl-10 pr-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:border-sky-500 focus:outline-hidden focus:ring-2 focus:ring-sky-500/20 transition"
+                  className="block w-full rounded-xl border border-slate-200 bg-white pl-10 pr-3.5 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:outline-hidden focus:ring-2 focus:ring-sky-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500 transition"
                 />
               </div>
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-xs font-bold text-slate-300" htmlFor="senha">
+                <label className="block text-xs font-bold text-slate-700 dark:text-slate-300" htmlFor="senha">
                   Senha de Acesso
                 </label>
               </div>
@@ -162,12 +162,12 @@ function LoginForm() {
                   value={senha}
                   onChange={(e) => setSenha(e.target.value)}
                   placeholder="••••••••"
-                  className="block w-full rounded-xl border border-slate-700 bg-slate-900 pl-10 pr-10 py-2.5 text-sm text-slate-100 placeholder-slate-500 focus:border-sky-500 focus:outline-hidden focus:ring-2 focus:ring-sky-500/20 transition"
+                  className="block w-full rounded-xl border border-slate-200 bg-white pl-10 pr-10 py-2.5 text-sm text-slate-900 placeholder-slate-400 focus:border-sky-500 focus:outline-hidden focus:ring-2 focus:ring-sky-500/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500 transition"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-slate-200 transition"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition"
                 >
                   {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                 </button>
@@ -194,13 +194,13 @@ function LoginForm() {
           </form>
 
           {/* Destaque de Recursos do Sistema */}
-          <div className="mt-6 pt-6 border-t border-slate-800 space-y-2">
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <CheckCircle2 className="h-3.5 w-3.5 text-sky-400 shrink-0" />
+          <div className="mt-6 pt-6 border-t border-slate-100 dark:border-slate-800 space-y-2">
+            <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
+              <CheckCircle2 className="h-3.5 w-3.5 text-sky-600 dark:text-sky-400 shrink-0" />
               <span>Sincronização ao vivo com 91 Tribunais (DataJud)</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-400">
-              <CheckCircle2 className="h-3.5 w-3.5 text-sky-400 shrink-0" />
+            <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
+              <CheckCircle2 className="h-3.5 w-3.5 text-sky-600 dark:text-sky-400 shrink-0" />
               <span>Inteligência Artificial Google Gemini para análise processual</span>
             </div>
           </div>
