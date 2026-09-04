@@ -3,7 +3,7 @@ import axios from 'axios';
 // URL base da API configurável via variável de ambiente NEXT_PUBLIC_API_URL
 const baseURL =
   process.env.NEXT_PUBLIC_API_URL ||
-  (typeof window !== 'undefined' ? '/api' : 'http://127.0.0.1:3001/api');
+  (typeof window !== 'undefined' ? '/api' : (process.env.BACKEND_URL || 'http://127.0.0.1:10000/api'));
 
 export const api = axios.create({
   baseURL,

@@ -26,7 +26,7 @@ async function bootstrap() {
     }),
   );
 
-  const port = process.env.PORT || 10000;
+  const port = process.env.BACKEND_PORT || 10000;
   await app.listen(port, '0.0.0.0');
   console.log(`🚀 NestJS rodando na porta ${port}`);
 }

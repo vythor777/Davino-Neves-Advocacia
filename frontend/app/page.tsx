@@ -88,7 +88,7 @@ function AstreaDashboard() {
         prazoService.getAll(),
         clienteService.getAll(),
         aniversarianteService.getAniversariantesDoMes(),
-        financeiroService.getResumo('2026-09'),
+        financeiroService.getResumo(),
       ]);
 
       if (procRes.status === 'fulfilled') setProcessos(procRes.value || []);
@@ -753,28 +753,18 @@ function AstreaDashboard() {
                       Honorários Previstos
                     </span>
                     <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
-                      <TrendingUp className="h-3 w-3" /> +12.4%
+                      <TrendingUp className="h-3 w-3" /> Faturamento
                     </span>
                   </div>
                   <div className="mt-2 text-xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                      financeiroData?.metricas.entradasPrevistas || 91900,
+                      financeiroData?.metricas.entradasPrevistas ?? 0,
                     )}
                   </div>
                   <div className="mt-2 flex items-center justify-between">
                     <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                      Realizados: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(financeiroData?.metricas.entradasRealizadas || 60500)}
+                      Realizados: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(financeiroData?.metricas.entradasRealizadas ?? 0)}
                     </span>
-                    {/* Mini Sparkline SVG */}
-                    <svg className="h-5 w-16 text-emerald-500 overflow-visible" viewBox="0 0 64 20" fill="none">
-                      <path
-                        d="M0 16 L14 13 L28 15 L42 7 L56 9 L64 2"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </svg>
                   </div>
                 </div>
 
@@ -785,19 +775,19 @@ function AstreaDashboard() {
                       Entradas Realizadas
                     </span>
                     <span className="rounded-full bg-emerald-100 dark:bg-emerald-950/70 px-1.5 py-0.5 text-[10px] font-semibold text-emerald-800 dark:text-emerald-300">
-                      {financeiroData?.metricas.taxaRecebimento || 66}%
+                      {financeiroData?.metricas.taxaRecebimento ?? 0}%
                     </span>
                   </div>
                   <div className="mt-2 text-xl font-extrabold text-slate-900 dark:text-white tracking-tight text-emerald-600 dark:text-emerald-400">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                      financeiroData?.metricas.entradasRealizadas || 60500,
+                      financeiroData?.metricas.entradasRealizadas ?? 0,
                     )}
                   </div>
                   <div className="mt-2.5">
                     <div className="h-1.5 w-full rounded-full bg-slate-200 dark:bg-slate-800 overflow-hidden">
                       <div
-                        className="h-full rounded-full bg-emerald-500"
-                        style={{ width: `${financeiroData?.metricas.taxaRecebimento || 66}%` }}
+                        className="h-full rounded-full bg-emerald-500 transition-all duration-500"
+                        style={{ width: `${financeiroData?.metricas.taxaRecebimento ?? 0}%` }}
                       />
                     </div>
                   </div>
@@ -815,11 +805,11 @@ function AstreaDashboard() {
                   </div>
                   <div className="mt-2 text-xl font-extrabold text-slate-900 dark:text-white tracking-tight text-rose-600 dark:text-rose-400">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                      financeiroData?.metricas.pendenciasAtrasadas || 8200,
+                      financeiroData?.metricas.pendenciasAtrasadas ?? 0,
                     )}
                   </div>
                   <p className="mt-2 text-[11px] text-slate-500 dark:text-slate-400">
-                    {financeiroData?.metricas.qtdAtrasadas || 2} lançamentos pendentes
+                    {financeiroData?.metricas.qtdAtrasadas ?? 0} lançamentos pendentes
                   </p>
                 </div>
 
@@ -835,7 +825,7 @@ function AstreaDashboard() {
                   </div>
                   <div className="mt-2 text-xl font-extrabold text-slate-900 dark:text-white tracking-tight text-sky-600 dark:text-sky-400">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                      financeiroData?.metricas.saldoLiquido || 49850,
+                      financeiroData?.metricas.saldoLiquido ?? 0,
                     )}
                   </div>
                   <p className="mt-2 text-[11px] text-slate-500 dark:text-slate-400">
@@ -850,26 +840,50 @@ function AstreaDashboard() {
                   <span>Composição de Honorários</span>
                   <span className="text-[11px] font-normal text-slate-500">Distribuição mensal</span>
                 </div>
-                {/* Barra Segmentada */}
-                <div className="flex h-2 w-full rounded-full overflow-hidden bg-slate-200 dark:bg-slate-800">
-                  <div className="h-full bg-sky-500" style={{ width: '45%' }} title="Contratual Fixo: 45%" />
-                  <div className="h-full bg-emerald-500" style={{ width: '40%' }} title="Êxito & Sucumbência: 40%" />
-                  <div className="h-full bg-indigo-500" style={{ width: '15%' }} title="Consultivo: 15%" />
-                </div>
-                <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500 dark:text-slate-400">
-                  <div className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-sky-500" />
-                    <span>Contratual</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                    <span>Êxito</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-indigo-500" />
-                    <span>Consultivo</span>
-                  </div>
-                </div>
+                {/* Barra Segmentada Calculada Dinamicamente */}
+                {(() => {
+                  const totalRec = financeiroData?.metricas.entradasPrevistas || 0;
+                  const catRec = financeiroData?.categorias.receitas || {};
+                  const pctContratual = totalRec > 0 ? Math.round(((catRec['HONORARIO_CONTRATUAL'] || 0) / totalRec) * 100) : 0;
+                  const pctExito = totalRec > 0 ? Math.round(((catRec['HONORARIO_EXITO'] || 0) / totalRec) * 100) : 0;
+                  const pctConsultivo = totalRec > 0 ? Math.round(((catRec['CONSULTIVO'] || 0) / totalRec) * 100) : 0;
+
+                  return (
+                    <>
+                      <div className="flex h-2 w-full rounded-full overflow-hidden bg-slate-200 dark:bg-slate-800">
+                        {totalRec > 0 ? (
+                          <>
+                            {pctContratual > 0 && (
+                              <div className="h-full bg-sky-500" style={{ width: `${pctContratual}%` }} title={`Contratual: ${pctContratual}%`} />
+                            )}
+                            {pctExito > 0 && (
+                              <div className="h-full bg-emerald-500" style={{ width: `${pctExito}%` }} title={`Êxito: ${pctExito}%`} />
+                            )}
+                            {pctConsultivo > 0 && (
+                              <div className="h-full bg-indigo-500" style={{ width: `${pctConsultivo}%` }} title={`Consultivo: ${pctConsultivo}%`} />
+                            )}
+                          </>
+                        ) : (
+                          <div className="h-full w-full bg-slate-200 dark:bg-slate-800" />
+                        )}
+                      </div>
+                      <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+                        <div className="flex items-center gap-1.5">
+                          <span className="h-2 w-2 rounded-full bg-sky-500" />
+                          <span>Contratual ({pctContratual}%)</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="h-2 w-2 rounded-full bg-emerald-500" />
+                          <span>Êxito ({pctExito}%)</span>
+                        </div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="h-2 w-2 rounded-full bg-indigo-500" />
+                          <span>Consultivo ({pctConsultivo}%)</span>
+                        </div>
+                      </div>
+                    </>
+                  );
+                })()}
               </div>
             </div>
 

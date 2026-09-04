@@ -293,6 +293,56 @@ export class FinanceiroService {
     const saldoPrevisto = (entradasRealizadas + honorariosAReceber) - (despesasPagas + contasAPagarPendentes);
     const taxaRecebimento = entradasPrevistas > 0 ? Math.round((entradasRealizadas / entradasPrevistas) * 100) : 100;
 
+    // Histórico real dos últimos 6 meses a partir do banco de dados
+    const now = new Date();
+    const mesesNomes = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const historicoMensal: Array<{ rotulo: string; receitas: number; despesas: number }> = [];
+    const seisMesesAtras = new Date(now.getFullYear(), now.getMonth() - 5, 1);
+
+    const lancamentosHistorico = await this.prisma.lancamentoFinanceiro.findMany({
+      where: {
+        dataVencimento: {
+          gte: seisMesesAtras,
+        },
+      },
+      select: {
+        tipo: true,
+        valor: true,
+        dataVencimento: true,
+      },
+    });
+
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      const mIdx = d.getMonth();
+      const yr = d.getFullYear().toString().slice(-2);
+      const rotulo = `${mesesNomes[mIdx]}/${yr}`;
+
+      const rec = lancamentosHistorico
+        .filter((l) => {
+          const lDate = new Date(l.dataVencimento);
+          return (
+            lDate.getFullYear() === d.getFullYear() &&
+            lDate.getMonth() === mIdx &&
+            l.tipo === TipoLancamentoDto.RECEITA
+          );
+        })
+        .reduce((sum, l) => sum + Number(l.valor), 0);
+
+      const desp = lancamentosHistorico
+        .filter((l) => {
+          const lDate = new Date(l.dataVencimento);
+          return (
+            lDate.getFullYear() === d.getFullYear() &&
+            lDate.getMonth() === mIdx &&
+            l.tipo === TipoLancamentoDto.DESPESA
+          );
+        })
+        .reduce((sum, l) => sum + Number(l.valor), 0);
+
+      historicoMensal.push({ rotulo, receitas: rec, despesas: desp });
+    }
+
     return {
       periodo: {
         mes: mes || 'Mês Atual',
@@ -317,6 +367,7 @@ export class FinanceiroService {
         receitas: categoriasReceita,
         despesas: categoriasDespesa,
       },
+      historicoMensal,
     };
   }
 }

@@ -24,28 +24,21 @@ const COLORS_RECEITAS = ['#0284c7', '#10b981', '#6366f1', '#94a3b8'];
 const COLORS_DESPESAS = ['#f59e0b', '#64748b', '#ef4444', '#a855f7'];
 
 export function FinancialChartsView({ data }: FinancialChartsViewProps) {
-  const historico = data?.historicoMensal || [
-    { rotulo: 'Abr/26', receitas: 48000, despesas: 14000 },
-    { rotulo: 'Mai/26', receitas: 52000, despesas: 16500 },
-    { rotulo: 'Jun/26', receitas: 61000, despesas: 15200 },
-    { rotulo: 'Jul/26', receitas: 58000, despesas: 18000 },
-    { rotulo: 'Ago/26', receitas: 73000, despesas: 19500 },
-    { rotulo: 'Set/26', receitas: data?.metricas.entradasRealizadas || 60500, despesas: data?.metricas.despesasPagas || 10650 },
-  ];
+  const historico = data?.historicoMensal || [];
 
-  const categoriasReceita = data?.categorias.receitas || {};
+  const categoriasReceita = data?.categorias?.receitas || {};
   const dataPieReceitas = [
-    { name: 'Honorário Contratual', value: categoriasReceita['HONORARIO_CONTRATUAL'] || 25000 },
-    { name: 'Honorário de Êxito', value: categoriasReceita['HONORARIO_EXITO'] || 42000 },
-    { name: 'Consultivo & Pareceres', value: categoriasReceita['CONSULTIVO'] || 14000 },
+    { name: 'Honorário Contratual', value: categoriasReceita['HONORARIO_CONTRATUAL'] || 0 },
+    { name: 'Honorário de Êxito', value: categoriasReceita['HONORARIO_EXITO'] || 0 },
+    { name: 'Consultivo & Pareceres', value: categoriasReceita['CONSULTIVO'] || 0 },
     { name: 'Outras Entradas', value: categoriasReceita['OUTROS'] || 0 },
   ].filter((i) => i.value > 0);
 
-  const categoriasDespesa = data?.categorias.despesas || {};
+  const categoriasDespesa = data?.categorias?.despesas || {};
   const dataPieDespesas = [
-    { name: 'Custas & Diligências', value: categoriasDespesa['CUSTAS_PROCESSUAIS'] || 6450 },
-    { name: 'Operacional & Softwares', value: categoriasDespesa['OPERACIONAL'] || 9650 },
-    { name: 'Impostos & Tributos', value: categoriasDespesa['IMPOSTOS'] || 5800 },
+    { name: 'Custas & Diligências', value: categoriasDespesa['CUSTAS_PROCESSUAIS'] || 0 },
+    { name: 'Operacional & Softwares', value: categoriasDespesa['OPERACIONAL'] || 0 },
+    { name: 'Impostos & Tributos', value: categoriasDespesa['IMPOSTOS'] || 0 },
     { name: 'Outras Saídas', value: categoriasDespesa['OUTROS'] || 0 },
   ].filter((i) => i.value > 0);
 
@@ -144,52 +137,66 @@ export function FinancialChartsView({ data }: FinancialChartsViewProps) {
             </div>
 
             <div className="mt-4 h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={dataPieReceitas}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={55}
-                    outerRadius={85}
-                    paddingAngle={4}
-                    dataKey="value"
-                  >
-                    {dataPieReceitas.map((_, index) => (
-                      <Cell
-                        key={`cell-rec-${index}`}
-                        fill={COLORS_RECEITAS[index % COLORS_RECEITAS.length]}
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(val: unknown) => [formatBRL(Number(val) || 0), '']}
-                    contentStyle={{
-                      backgroundColor: '#0F172A',
-                      borderColor: '#1e293b',
-                      borderRadius: '12px',
-                      color: '#fff',
-                      fontSize: '12px',
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+              {dataPieReceitas.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={dataPieReceitas}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={55}
+                      outerRadius={85}
+                      paddingAngle={4}
+                      dataKey="value"
+                    >
+                      {dataPieReceitas.map((_, index) => (
+                        <Cell
+                          key={`cell-rec-${index}`}
+                          fill={COLORS_RECEITAS[index % COLORS_RECEITAS.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      formatter={(val: unknown) => [formatBRL(Number(val) || 0), '']}
+                      contentStyle={{
+                        backgroundColor: '#0F172A',
+                        borderColor: '#1e293b',
+                        borderRadius: '12px',
+                        color: '#fff',
+                        fontSize: '12px',
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex h-full flex-col items-center justify-center text-center p-4">
+                  <PieIcon className="h-8 w-8 text-slate-300 dark:text-slate-600 mb-2" />
+                  <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+                    Nenhuma receita categorizada no período
+                  </p>
+                  <p className="text-[11px] text-slate-400 mt-0.5">
+                    Os gráficos serão desenhados conforme honorários forem cadastrados.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-2 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px]">
-            {dataPieReceitas.map((item, idx) => (
-              <div key={item.name} className="flex items-center gap-2">
-                <span
-                  className="h-2.5 w-2.5 rounded-full shrink-0"
-                  style={{ backgroundColor: COLORS_RECEITAS[idx % COLORS_RECEITAS.length] }}
-                />
-                <span className="truncate text-slate-600 dark:text-slate-400">
-                  {item.name}: <strong>{formatBRL(item.value)}</strong>
-                </span>
-              </div>
-            ))}
-          </div>
+          {dataPieReceitas.length > 0 && (
+            <div className="mt-4 grid grid-cols-2 gap-2 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px]">
+              {dataPieReceitas.map((item, idx) => (
+                <div key={item.name} className="flex items-center gap-2">
+                  <span
+                    className="h-2.5 w-2.5 rounded-full shrink-0"
+                    style={{ backgroundColor: COLORS_RECEITAS[idx % COLORS_RECEITAS.length] }}
+                  />
+                  <span className="truncate text-slate-600 dark:text-slate-400">
+                    {item.name}: <strong>{formatBRL(item.value)}</strong>
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Composição de Despesas */}
@@ -203,52 +210,66 @@ export function FinancialChartsView({ data }: FinancialChartsViewProps) {
             </div>
 
             <div className="mt-4 h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={dataPieDespesas}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={55}
-                    outerRadius={85}
-                    paddingAngle={4}
-                    dataKey="value"
-                  >
-                    {dataPieDespesas.map((_, index) => (
-                      <Cell
-                        key={`cell-desp-${index}`}
-                        fill={COLORS_DESPESAS[index % COLORS_DESPESAS.length]}
-                      />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    formatter={(val: unknown) => [formatBRL(Number(val) || 0), '']}
-                    contentStyle={{
-                      backgroundColor: '#0F172A',
-                      borderColor: '#1e293b',
-                      borderRadius: '12px',
-                      color: '#fff',
-                      fontSize: '12px',
-                    }}
-                  />
-                </PieChart>
-              </ResponsiveContainer>
+              {dataPieDespesas.length > 0 ? (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={dataPieDespesas}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={55}
+                      outerRadius={85}
+                      paddingAngle={4}
+                      dataKey="value"
+                    >
+                      {dataPieDespesas.map((_, index) => (
+                        <Cell
+                          key={`cell-desp-${index}`}
+                          fill={COLORS_DESPESAS[index % COLORS_DESPESAS.length]}
+                        />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      formatter={(val: unknown) => [formatBRL(Number(val) || 0), '']}
+                      contentStyle={{
+                        backgroundColor: '#0F172A',
+                        borderColor: '#1e293b',
+                        borderRadius: '12px',
+                        color: '#fff',
+                        fontSize: '12px',
+                      }}
+                    />
+                  </PieChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="flex h-full flex-col items-center justify-center text-center p-4">
+                  <PieIcon className="h-8 w-8 text-slate-300 dark:text-slate-600 mb-2" />
+                  <p className="text-xs font-semibold text-slate-600 dark:text-slate-400">
+                    Nenhuma despesa categorizada no período
+                  </p>
+                  <p className="text-[11px] text-slate-400 mt-0.5">
+                    Os custos e custas aparecerão aqui após os lançamentos.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="mt-4 grid grid-cols-2 gap-2 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px]">
-            {dataPieDespesas.map((item, idx) => (
-              <div key={item.name} className="flex items-center gap-2">
-                <span
-                  className="h-2.5 w-2.5 rounded-full shrink-0"
-                  style={{ backgroundColor: COLORS_DESPESAS[idx % COLORS_DESPESAS.length] }}
-                />
-                <span className="truncate text-slate-600 dark:text-slate-400">
-                  {item.name}: <strong>{formatBRL(item.value)}</strong>
-                </span>
-              </div>
-            ))}
-          </div>
+          {dataPieDespesas.length > 0 && (
+            <div className="mt-4 grid grid-cols-2 gap-2 pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px]">
+              {dataPieDespesas.map((item, idx) => (
+                <div key={item.name} className="flex items-center gap-2">
+                  <span
+                    className="h-2.5 w-2.5 rounded-full shrink-0"
+                    style={{ backgroundColor: COLORS_DESPESAS[idx % COLORS_DESPESAS.length] }}
+                  />
+                  <span className="truncate text-slate-600 dark:text-slate-400">
+                    {item.name}: <strong>{formatBRL(item.value)}</strong>
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
