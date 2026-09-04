@@ -304,7 +304,7 @@ function ProcessosContent() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200/80 dark:border-slate-800">
           <div>
             <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-amber-100/80 text-amber-900 dark:bg-amber-950/60 dark:text-amber-300">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300">
                 <Scale className="h-4 w-4" />
               </span>
               <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
@@ -329,7 +329,7 @@ function ProcessosContent() {
 
             <button
               onClick={openCreateModal}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-amber-700 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-500 transition-colors active:scale-98"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500 transition-colors active:scale-98"
             >
               <PlusCircle className="h-4 w-4" />
               Novo Processo
@@ -413,7 +413,7 @@ function ProcessosContent() {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-900 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+              className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-900 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
             >
               <option value="todos" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Todos os Status</option>
               {STATUS_OPCOES.map((st) => (
@@ -427,7 +427,7 @@ function ProcessosContent() {
               <select
                 value={selectedClienteFilter}
                 onChange={(e) => setSelectedClienteFilter(e.target.value)}
-                className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-900 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-900 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
               >
                 <option value="todos" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Todos os Clientes</option>
                 {clientes.map((c) => (
@@ -470,7 +470,7 @@ function ProcessosContent() {
           <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
               <div className="flex items-center gap-2">
-                <div className="rounded-xl bg-amber-100/80 p-2 text-amber-900 dark:bg-amber-950 dark:text-amber-300">
+                <div className="rounded-xl bg-blue-50 p-2 text-blue-600 dark:bg-blue-950/80 dark:text-blue-400">
                   {editingProcesso ? <Edit2 className="h-4 w-4" /> : <PlusCircle className="h-4 w-4" />}
                 </div>
                 <h3 className="text-base font-bold text-slate-900 dark:text-white">
@@ -506,7 +506,7 @@ function ProcessosContent() {
                   value={titulo}
                   onChange={(e) => setTitulo(e.target.value)}
                   placeholder="Ex: Ação de Cobrança e Perdas e Danos"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
                 {formErrors.titulo && <p className="text-rose-500 mt-1">{formErrors.titulo}</p>}
               </div>
@@ -519,7 +519,7 @@ function ProcessosContent() {
                   <select
                     value={idCliente}
                     onChange={(e) => setIdCliente(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                   >
                     <option value="" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Selecione o Cliente</option>
                     {clientes.map((c) => (
@@ -541,7 +541,7 @@ function ProcessosContent() {
                     type="date"
                     value={dataAbertura}
                     onChange={(e) => setDataAbertura(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                   />
                   {formErrors.dataAbertura && (
                     <p className="text-rose-500 mt-1">{formErrors.dataAbertura}</p>
@@ -556,7 +556,7 @@ function ProcessosContent() {
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                 >
                   {STATUS_OPCOES.map((st) => (
                     <option key={st} value={st} className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">
@@ -575,7 +575,7 @@ function ProcessosContent() {
                   value={descricao}
                   onChange={(e) => setDescricao(e.target.value)}
                   placeholder="Síntese da demanda, vara, foro e anotações essenciais..."
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden resize-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden resize-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
                 {formErrors.descricao && (
                   <p className="text-rose-500 mt-1">{formErrors.descricao}</p>
@@ -593,7 +593,7 @@ function ProcessosContent() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-amber-700 px-4 py-2 font-semibold text-white hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-500 disabled:opacity-50 transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-50 transition-colors"
                 >
                   {saving ? 'Salvando...' : editingProcesso ? 'Salvar Alterações' : 'Cadastrar Processo'}
                 </button>
@@ -625,7 +625,7 @@ function ProcessosContent() {
           <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
               <div className="flex items-center gap-2.5">
-                <div className="rounded-xl bg-amber-100/80 p-2 text-amber-900 dark:bg-amber-950 dark:text-amber-300">
+                <div className="rounded-xl bg-blue-50 p-2 text-blue-600 dark:bg-blue-950/80 dark:text-blue-400">
                   <Scale className="h-5 w-5" />
                 </div>
                 <div>
@@ -692,28 +692,8 @@ function ProcessosContent() {
               <div className="pt-2">
                 <AuditTrail
                   title="Auditoria & Histórico dos Autos"
-                  logs={[
-                    {
-                      id: 'proc-log-1',
-                      timestamp: 'Hoje, às 11:20',
-                      usuario: 'Dr. Roberto Davino',
-                      cargo: 'Administrador',
-                      acao: 'CONSULTA',
-                      descricao: 'Acesso à íntegra dos autos digitais e prazos pendentes.',
-                      detalhes: 'Consulta processual realizada via módulo de controladoria.',
-                    },
-                    {
-                      id: 'proc-log-2',
-                      timestamp: selectedProcesso.data_abertura
-                        ? new Date(selectedProcesso.data_abertura + 'T00:00:00').toLocaleDateString('pt-BR')
-                        : 'Distribuição Inicial',
-                      usuario: 'Sistema de Protocolo',
-                      cargo: 'Advogado',
-                      acao: 'CRIACAO',
-                      descricao: `Distribuição da ação "${selectedProcesso.titulo}".`,
-                      detalhes: `Número CNJ: ${selectedProcesso.numero_processo}`,
-                    },
-                  ]}
+                  logs={[]}
+                  emptyMessage="Nenhum registro de auditoria disponível para este processo."
                 />
               </div>
             </div>
@@ -722,7 +702,7 @@ function ProcessosContent() {
               <button
                 type="button"
                 onClick={() => setDetailsModalOpen(false)}
-                className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-amber-600 dark:hover:bg-amber-500 transition-colors"
+                className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
               >
                 Fechar Autos
               </button>

@@ -668,7 +668,7 @@ function ClientesContent() {
 
                               <button
                                 onClick={() => openEditModal(client)}
-                                className="rounded-lg p-2 text-slate-400 hover:text-amber-400 hover:bg-amber-950/40 transition-colors cursor-pointer"
+                                className="rounded-lg p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:text-blue-400 dark:hover:bg-blue-950/40 transition-colors cursor-pointer"
                                 title="Editar dados do cliente"
                                 aria-label="Editar cliente"
                               >
@@ -779,7 +779,7 @@ function ClientesContent() {
 
                         <button
                           onClick={() => openEditModal(client)}
-                          className="flex min-h-[38px] items-center gap-1.5 rounded-xl border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-800 hover:bg-amber-100 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-300 dark:hover:bg-amber-950/50"
+                          className="flex min-h-[38px] items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 dark:border-blue-900/50 dark:bg-blue-950/30 dark:text-blue-300 dark:hover:bg-blue-950/50"
                           title="Editar dados do cliente"
                         >
                           <Edit2 className="h-3.5 w-3.5" />
@@ -812,10 +812,10 @@ function ClientesContent() {
           <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
               <div className="flex items-center gap-2">
-                <div className="rounded-lg bg-amber-100 p-2 text-amber-900 dark:bg-amber-950 dark:text-amber-300">
+                <div className="rounded-lg bg-blue-50 p-2 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
                   {editingClient ? <Edit2 className="h-5 w-5" /> : <UserPlus className="h-5 w-5" />}
                 </div>
-                <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                   {editingClient ? 'Editar Cadastro de Cliente' : 'Novo Cadastro de Cliente'}
                 </h3>
               </div>
@@ -838,7 +838,7 @@ function ClientesContent() {
                   onClick={() => handleTrocarTipoPessoa('pf')}
                   className={`rounded-xl border p-2.5 text-center font-semibold transition cursor-pointer ${
                     formTipo === 'pf'
-                      ? 'border-amber-600 bg-amber-50 text-amber-900 dark:border-amber-500 dark:bg-amber-950/50 dark:text-amber-300 shadow-2xs'
+                      ? 'border-blue-600 bg-blue-50 text-blue-900 dark:border-blue-500 dark:bg-blue-950/50 dark:text-blue-300 shadow-2xs'
                       : 'border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900'
                   }`}
                 >
@@ -852,7 +852,7 @@ function ClientesContent() {
                   onClick={() => handleTrocarTipoPessoa('pj')}
                   className={`rounded-xl border p-2.5 text-center font-semibold transition cursor-pointer ${
                     formTipo === 'pj'
-                      ? 'border-amber-600 bg-amber-50 text-amber-900 dark:border-amber-500 dark:bg-amber-950/50 dark:text-amber-300 shadow-2xs'
+                      ? 'border-blue-600 bg-blue-50 text-blue-900 dark:border-blue-500 dark:bg-blue-950/50 dark:text-blue-300 shadow-2xs'
                       : 'border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900'
                   }`}
                 >
@@ -870,7 +870,7 @@ function ClientesContent() {
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
                   placeholder={formTipo === 'pf' ? 'Ex: Carlos Eduardo Silveira' : 'Ex: Horizonte Verde Engenharia S/A'}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
                 {formErrors.nome && <p className="text-red-500 mt-1">{formErrors.nome}</p>}
               </div>
@@ -900,7 +900,7 @@ function ClientesContent() {
                       }
                     }}
                     placeholder={formTipo === 'pf' ? '000.000.000-00' : '00.000.000/0001-00'}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden font-mono dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden font-mono dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                   />
                   {formErrors.cpfCnpj && <p className="text-red-500 mt-1">{formErrors.cpfCnpj}</p>}
                 </div>
@@ -917,7 +917,7 @@ function ClientesContent() {
                     value={telefone}
                     onChange={(e) => setTelefone(formatarTelefone(e.target.value))}
                     placeholder="(11) 98765-4321"
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden font-mono dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden font-mono dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                   />
                   {formErrors.telefone && <p className="text-red-500 mt-1">{formErrors.telefone}</p>}
                 </div>
@@ -933,7 +933,7 @@ function ClientesContent() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="cliente@dominio.com.br"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
                 {formErrors.email && <p className="text-red-500 mt-1">{formErrors.email}</p>}
               </div>
@@ -951,7 +951,7 @@ function ClientesContent() {
                     max={new Date().toISOString().split('T')[0]}
                     value={dataNascimento}
                     onChange={(e) => setDataNascimento(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                   />
                   {formErrors.dataNascimento && (
                     <p className="text-red-500 text-xs mt-1">{formErrors.dataNascimento}</p>
@@ -968,7 +968,7 @@ function ClientesContent() {
                   value={endereco}
                   onChange={(e) => setEndereco(e.target.value)}
                   placeholder="Av. Paulista, 1000, Apto 42 - Bela Vista, São Paulo/SP"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden resize-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden resize-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
                 {formErrors.endereco && <p className="text-red-500 mt-1">{formErrors.endereco}</p>}
               </div>
@@ -984,7 +984,7 @@ function ClientesContent() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-amber-700 px-4 py-2 font-semibold text-white hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-500 disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-50 transition-colors"
                 >
                   {saving ? 'Salvando...' : editingClient ? 'Atualizar Cliente' : 'Salvar no Banco'}
                 </button>
@@ -1016,11 +1016,11 @@ function ClientesContent() {
           <div className="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 my-8">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
               <div className="flex items-center gap-2">
-                <div className="rounded-lg bg-amber-100 p-2 text-amber-900 dark:bg-amber-950 dark:text-amber-300">
+                <div className="rounded-lg bg-blue-50 p-2 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
                   <User className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white">
+                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                     Ficha do Cliente #{selectedClient.id_cliente}
                   </h3>
                   <p className="text-[11px] text-slate-500">{selectedClient.nome}</p>
@@ -1106,7 +1106,7 @@ function ClientesContent() {
               <button
                 type="button"
                 onClick={() => setDetailsModalOpen(false)}
-                className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-amber-600 dark:hover:bg-amber-500"
+                className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
               >
                 Fechar Ficha
               </button>

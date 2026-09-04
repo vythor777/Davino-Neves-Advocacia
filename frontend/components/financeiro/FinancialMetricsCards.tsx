@@ -62,11 +62,21 @@ export function FinancialMetricsCards({ data, loading }: FinancialMetricsCardsPr
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
               Entradas Realizadas
             </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800/60">
-              <ArrowUpRight className="h-3 w-3" /> {metricas.taxaRecebimento}% recebido
-            </span>
+            {metricas.entradasPrevistas > 0 ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 dark:bg-emerald-950/80 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 border border-emerald-300 dark:border-emerald-800/60">
+                <ArrowUpRight className="h-3 w-3" /> {metricas.taxaRecebimento}% recebido
+              </span>
+            ) : (
+              <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] font-medium text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                Sem previsões
+              </span>
+            )}
           </div>
-          <div className="mt-2 text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 tracking-tight">
+          <div className={`mt-2 text-2xl font-bold font-mono tracking-tight ${
+            metricas.entradasRealizadas > 0
+              ? 'text-emerald-600 dark:text-emerald-400'
+              : 'text-slate-900 dark:text-white'
+          }`}>
             {formatBRL(metricas.entradasRealizadas)}
           </div>
         </div>
@@ -87,19 +97,23 @@ export function FinancialMetricsCards({ data, loading }: FinancialMetricsCardsPr
               <span className="inline-flex items-center gap-1 rounded-full bg-rose-100 dark:bg-rose-950/80 px-2 py-0.5 text-[10px] font-bold text-rose-700 dark:text-rose-400 border border-rose-300 dark:border-rose-800/60">
                 <AlertCircle className="h-3 w-3" /> {metricas.qtdAtrasadas} atrasado(s)
               </span>
-            ) : (
-              <span className="inline-flex items-center gap-1 rounded-full bg-sky-100 dark:bg-sky-950/80 px-2 py-0.5 text-[10px] font-bold text-sky-700 dark:text-sky-400">
+            ) : metricas.honorariosAReceber > 0 ? (
+              <span className="inline-flex items-center gap-1 rounded-full bg-sky-100 dark:bg-sky-950/80 px-2 py-0.5 text-[10px] font-bold text-sky-700 dark:text-sky-400 border border-sky-200 dark:border-sky-800/60">
                 <Clock className="h-3 w-3" /> Em dia
+              </span>
+            ) : (
+              <span className="inline-flex items-center rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] font-medium text-slate-500 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+                Em dia
               </span>
             )}
           </div>
-          <div className="mt-2 text-2xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          <div className="mt-2 text-2xl font-bold font-mono text-slate-900 dark:text-white tracking-tight">
             {formatBRL(metricas.honorariosAReceber)}
           </div>
         </div>
         <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
           <span>Atrasados: {formatBRL(metricas.pendenciasAtrasadas)}</span>
-          <span className="font-medium text-amber-600 dark:text-amber-400">A vencer / cobrar</span>
+          <span className="font-medium text-amber-600 dark:text-amber-400">A vencer</span>
         </div>
       </div>
 
@@ -110,11 +124,15 @@ export function FinancialMetricsCards({ data, loading }: FinancialMetricsCardsPr
             <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
               Despesas & Custas Pagas
             </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] font-bold text-slate-600 dark:text-slate-400">
-              <ArrowDownRight className="h-3 w-3 text-rose-500" /> Operacional
+            <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 dark:bg-slate-800 px-2 py-0.5 text-[10px] font-medium text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700">
+              <ArrowDownRight className="h-3 w-3 text-slate-400" /> Operacional
             </span>
           </div>
-          <div className="mt-2 text-2xl font-extrabold text-rose-600 dark:text-rose-400 tracking-tight">
+          <div className={`mt-2 text-2xl font-bold font-mono tracking-tight ${
+            metricas.despesasPagas > 0
+              ? 'text-rose-600 dark:text-rose-400'
+              : 'text-slate-900 dark:text-white'
+          }`}>
             {formatBRL(metricas.despesasPagas)}
           </div>
         </div>
@@ -124,24 +142,38 @@ export function FinancialMetricsCards({ data, loading }: FinancialMetricsCardsPr
         </div>
       </div>
 
-      {/* CARD 4: Saldo Líquido Operacional */}
-      <div className="astrea-card p-5 flex flex-col justify-between bg-gradient-to-br from-blue-50/50 to-indigo-50/30 dark:from-slate-900 dark:to-blue-950/20 border-blue-200/60 dark:border-blue-900/40 hover:border-blue-300 dark:hover:border-blue-700 transition">
+      {/* CARD 4: Saldo Líquido em Caixa */}
+      <div className="astrea-card p-5 flex flex-col justify-between hover:border-slate-300 dark:hover:border-slate-700 transition">
         <div>
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-blue-900 dark:text-blue-300">
+            <span className="text-xs font-semibold text-slate-500 dark:text-slate-400">
               Saldo Líquido em Caixa
             </span>
-            <span className="inline-flex items-center gap-1 rounded-full bg-blue-100 dark:bg-blue-900/60 px-2 py-0.5 text-[10px] font-bold text-blue-800 dark:text-blue-300">
+            <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 dark:bg-blue-950/70 border border-blue-200 dark:border-blue-900/60 px-2 py-0.5 text-[10px] font-bold text-blue-700 dark:text-blue-300">
               <Wallet className="h-3 w-3" /> Realizado
             </span>
           </div>
-          <div className="mt-2 text-2xl font-extrabold text-blue-600 dark:text-blue-400 tracking-tight">
+          <div className={`mt-2 text-2xl font-bold font-mono tracking-tight ${
+            metricas.saldoLiquido > 0
+              ? 'text-blue-600 dark:text-blue-400'
+              : metricas.saldoLiquido < 0
+              ? 'text-rose-600 dark:text-rose-400'
+              : 'text-slate-900 dark:text-white'
+          }`}>
             {formatBRL(metricas.saldoLiquido)}
           </div>
         </div>
-        <div className="mt-3 pt-3 border-t border-blue-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+        <div className="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
           <span>Projetado: {formatBRL(metricas.saldoPrevisto)}</span>
-          <span className="font-semibold text-emerald-600 dark:text-emerald-400">Superávit</span>
+          <span className={`font-semibold ${
+            metricas.saldoLiquido > 0
+              ? 'text-emerald-600 dark:text-emerald-400'
+              : metricas.saldoLiquido < 0
+              ? 'text-rose-600 dark:text-rose-400'
+              : 'text-slate-500 dark:text-slate-400'
+          }`}>
+            {metricas.saldoLiquido > 0 ? 'Superávit' : metricas.saldoLiquido < 0 ? 'Déficit' : 'Equilibrado'}
+          </span>
         </div>
       </div>
     </div>

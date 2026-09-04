@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
@@ -97,7 +97,7 @@ function FinanceiroContent() {
   }, [searchParams]);
 
   // Carregar dados
-  const loadData = async (showLoading = true) => {
+  const loadData = useCallback(async (showLoading = true) => {
     try {
       if (showLoading) setLoading(true);
       else setRefreshing(true);
@@ -132,11 +132,11 @@ function FinanceiroContent() {
       setLoading(false);
       setRefreshing(false);
     }
-  };
+  }, [mesFiltro]);
 
   useEffect(() => {
     loadData();
-  }, [mesFiltro]);
+  }, [loadData]);
 
   // Handlers de Ações
   const handleCreateOrUpdate = async (data: CreateLancamentoInput) => {
@@ -278,7 +278,7 @@ function FinanceiroContent() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6 animate-fade-in-up">
       {/* Breadcrumbs */}
       <Breadcrumbs
         items={[
@@ -288,28 +288,26 @@ function FinanceiroContent() {
       />
 
       {/* Header Principal da Página */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200/80 dark:border-slate-800">
         <div>
-          <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-600 to-teal-700 text-white shadow-md shadow-emerald-600/20">
-              <DollarSign className="h-6 w-6" />
-            </div>
-            <div>
-              <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-                Gestão Financeira & DRE
-              </h1>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
-                Controle de honorários, conciliação bancária, contas a pagar/receber e auditoria contábil
-              </p>
-            </div>
+          <div className="flex items-center gap-2.5">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-100/80 text-blue-900 dark:bg-blue-950/60 dark:text-blue-300">
+              <DollarSign className="h-4 w-4" />
+            </span>
+            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+              Gestão Financeira & DRE
+            </h1>
           </div>
+          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            Controle de honorários, conciliação bancária, contas a pagar/receber e auditoria contábil.
+          </p>
         </div>
 
         {/* Botões de Ação do Topo */}
-        <div className="flex flex-wrap items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2">
           {/* Seletor de Período / Mês */}
-          <div className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 px-3 py-2 text-xs shadow-2xs">
-            <Calendar className="h-4 w-4 text-slate-400" />
+          <div className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 shadow-2xs">
+            <Calendar className="h-3.5 w-3.5 text-slate-400" />
             <select
               value={mesFiltro}
               onChange={(e) => setMesFiltro(e.target.value)}
@@ -327,16 +325,16 @@ function FinanceiroContent() {
             type="button"
             onClick={() => loadData(false)}
             disabled={refreshing}
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition shadow-2xs cursor-pointer"
+            className="inline-flex items-center justify-center h-8.5 w-8.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition shadow-2xs cursor-pointer"
             title="Atualizar dados financeiros"
           >
-            <RefreshCw className={`h-4 w-4 ${refreshing ? 'animate-spin text-blue-600' : ''}`} />
+            <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? 'animate-spin text-blue-600' : ''}`} />
           </button>
 
           <button
             type="button"
             onClick={handleExportCSV}
-            className="flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition shadow-2xs cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition shadow-2xs cursor-pointer"
           >
             <Download className="h-3.5 w-3.5 text-slate-500" />
             <span className="hidden sm:inline">Exportar CSV</span>
@@ -349,9 +347,9 @@ function FinanceiroContent() {
               setModalDefaultTipo(activeTab === 'PAGAR' ? 'DESPESA' : 'RECEITA');
               setIsModalOpen(true);
             }}
-            className="flex items-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 px-4 py-2 text-xs font-bold text-white shadow-md shadow-blue-600/20 transition active:scale-95 cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 px-4 py-2 text-xs font-semibold text-white shadow-xs transition active:scale-98 cursor-pointer"
           >
-            <Plus className="h-4 w-4 stroke-[2.5]" />
+            <Plus className="h-4 w-4" />
             <span>Novo Lançamento</span>
           </button>
         </div>
@@ -361,8 +359,8 @@ function FinanceiroContent() {
       <FinancialMetricsCards data={resumoData} loading={loading} />
 
       {/* Navegação por Abas Segmentadas */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-2">
-        <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-900/80 border border-slate-200/80 dark:border-slate-800/80 w-fit">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-2">
+        <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 w-fit overflow-x-auto">
           <button
             type="button"
             onClick={() => setActiveTab('EXTRATO')}
@@ -441,22 +439,22 @@ function FinanceiroContent() {
       ) : (
         <div className="space-y-4">
           {/* Barra de Filtros e Busca */}
-          <div className="astrea-card p-4 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             {/* Campo de Busca */}
-            <div className="relative flex-1">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <div className="relative flex-1 max-w-md">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar por descrição, cliente, número de processo ou nota..."
-                className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/60 pl-10 pr-4 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-blue-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 transition"
+                placeholder="Buscar por descrição, cliente, processo ou nota..."
+                className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 pl-9 pr-8 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-blue-500 focus:outline-hidden focus:ring-1 focus:ring-blue-500 transition shadow-2xs"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                 >
                   Limpar
                 </button>
@@ -469,7 +467,7 @@ function FinanceiroContent() {
               <select
                 value={statusFiltro}
                 onChange={(e) => setStatusFiltro(e.target.value)}
-                className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 focus:border-blue-500 focus:outline-hidden transition cursor-pointer shadow-2xs"
+                className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 focus:border-blue-500 focus:outline-hidden transition cursor-pointer shadow-2xs"
               >
                 <option value="TODOS">Todos os Status</option>
                 <option value="PENDENTE">Apenas Pendentes</option>
@@ -481,7 +479,7 @@ function FinanceiroContent() {
               <select
                 value={categoriaFiltro}
                 onChange={(e) => setCategoriaFiltro(e.target.value)}
-                className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/80 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 focus:border-blue-500 focus:outline-hidden transition cursor-pointer shadow-2xs"
+                className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 focus:border-blue-500 focus:outline-hidden transition cursor-pointer shadow-2xs"
               >
                 <option value="TODAS">Todas as Categorias</option>
                 <option value="HONORARIO_CONTRATUAL">Honorário Contratual</option>
@@ -495,36 +493,36 @@ function FinanceiroContent() {
           </div>
 
           {/* Tabela de Lançamentos */}
-          <div className="astrea-card overflow-hidden">
+          <div className="rounded-2xl border border-slate-200 bg-white shadow-2xs overflow-hidden dark:border-slate-800/80 dark:bg-slate-900">
             {loading ? (
               <div className="p-8 space-y-3">
                 {[1, 2, 3, 4, 5].map((i) => (
                   <div
                     key={i}
-                    className="h-12 w-full rounded-xl bg-slate-100 dark:bg-slate-800/60 animate-pulse"
+                    className="h-10 w-full rounded-xl bg-slate-100 dark:bg-slate-800/60 animate-pulse"
                   />
                 ))}
               </div>
             ) : filteredLancamentos.length === 0 ? (
-              <div className="py-12 px-4">
-                <EmptyState
-                  icon={DollarSign}
-                  title="Nenhum lançamento financeiro encontrado"
-                  description={
-                    searchQuery || statusFiltro !== 'TODOS' || categoriaFiltro !== 'TODAS'
-                      ? 'Nenhum resultado corresponde aos filtros selecionados. Tente ajustar os termos de busca.'
-                      : 'Não há movimentações financeiras registradas neste período.'
-                  }
-                  action={{
-                    label: '+ Novo Lançamento',
-                    onClick: () => {
-                      setEditingLancamento(null);
-                      setModalDefaultTipo(activeTab === 'PAGAR' ? 'DESPESA' : 'RECEITA');
-                      setIsModalOpen(true);
-                    },
-                  }}
-                />
-              </div>
+              <EmptyState
+                icon={DollarSign}
+                title="Nenhum lançamento financeiro encontrado"
+                description={
+                  searchQuery || statusFiltro !== 'TODOS' || categoriaFiltro !== 'TODAS'
+                    ? 'Nenhum resultado corresponde aos filtros selecionados. Tente ajustar os termos de busca.'
+                    : 'Não há movimentações financeiras registradas neste período.'
+                }
+                className="border-0 shadow-none bg-transparent py-12 px-4"
+                action={{
+                  label: 'Novo Lançamento',
+                  onClick: () => {
+                    setEditingLancamento(null);
+                    setModalDefaultTipo(activeTab === 'PAGAR' ? 'DESPESA' : 'RECEITA');
+                    setIsModalOpen(true);
+                  },
+                  icon: Plus,
+                }}
+              />
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">

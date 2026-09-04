@@ -312,7 +312,7 @@ function DataJudContent() {
               <button
                 type="submit"
                 disabled={loading || !numeroProcesso.trim()}
-                className="inline-flex items-center gap-2 rounded-xl bg-amber-900 px-6 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-amber-800 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-amber-800 dark:hover:bg-amber-700"
+                className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-xs transition hover:bg-blue-500 active:scale-98 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-500"
               >
                 {loading ? (
                   <>
@@ -399,7 +399,7 @@ function DataJudContent() {
               <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 border-b border-slate-100 pb-6 dark:border-slate-800">
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-amber-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-900 dark:bg-amber-950/80 dark:text-amber-300">
+                    <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-blue-900 dark:bg-blue-950/80 dark:text-blue-300">
                       Tribunal {resultado.tribunal}
                     </span>
                     {resultado.grau && (
@@ -434,7 +434,7 @@ function DataJudContent() {
                 <div className="flex flex-wrap items-center gap-3">
                   <button
                     onClick={abrirModalVinculacao}
-                    className="inline-flex items-center gap-2 rounded-xl bg-amber-900 px-4 py-2.5 text-xs font-semibold text-white shadow-xs transition hover:bg-amber-800 active:scale-95 dark:bg-amber-800 dark:hover:bg-amber-700"
+                    className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white shadow-xs transition hover:bg-blue-500 active:scale-95 dark:bg-blue-600 dark:hover:bg-blue-500"
                   >
                     <BookmarkPlus className="h-4 w-4" />
                     <span>Vincular ao Sistema com 1 Clique</span>
@@ -442,9 +442,9 @@ function DataJudContent() {
 
                   <Link
                     href={`/gemini?processo=${encodeURIComponent(formatarCNJ(resultado.numeroProcesso))}&tribunal=${encodeURIComponent(resultado.tribunal)}`}
-                    className="inline-flex items-center gap-2 rounded-xl border border-purple-200 bg-purple-50 px-4 py-2.5 text-xs font-semibold text-purple-900 shadow-xs transition hover:bg-purple-100 dark:border-purple-800/60 dark:bg-purple-950/40 dark:text-purple-300 dark:hover:bg-purple-900/60"
+                    className="inline-flex items-center gap-2 rounded-xl border border-blue-200 bg-blue-50 px-4 py-2.5 text-xs font-semibold text-blue-900 shadow-xs transition hover:bg-blue-100 dark:border-blue-800/60 dark:bg-blue-950/40 dark:text-blue-300 dark:hover:bg-blue-900/60"
                   >
-                    <Sparkles className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                    <Sparkles className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                     <span>Analisar com IA Gemini</span>
                   </Link>
                 </div>
@@ -454,7 +454,7 @@ function DataJudContent() {
               <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4 dark:border-slate-800 dark:bg-slate-800/40">
                   <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-                    <Building2 className="h-4 w-4 text-amber-800 dark:text-amber-400" />
+                    <Building2 className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                     <span>Órgão Julgador / Vara</span>
                   </div>
                   <p className="mt-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
@@ -464,7 +464,7 @@ function DataJudContent() {
 
                 <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4 dark:border-slate-800 dark:bg-slate-800/40">
                   <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-                    <Calendar className="h-4 w-4 text-amber-800 dark:text-amber-400" />
+                    <Calendar className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                     <span>Data de Distribuição / Ajuizamento</span>
                   </div>
                   <p className="mt-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
@@ -482,7 +482,7 @@ function DataJudContent() {
 
                 <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4 dark:border-slate-800 dark:bg-slate-800/40">
                   <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-                    <Layers className="h-4 w-4 text-amber-800 dark:text-amber-400" />
+                    <Layers className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                     <span>Total de Andamentos</span>
                   </div>
                   <p className="mt-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
@@ -492,7 +492,7 @@ function DataJudContent() {
 
                 <div className="rounded-xl border border-slate-100 bg-slate-50/60 p-4 dark:border-slate-800 dark:bg-slate-800/40">
                   <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-                    <Scale className="h-4 w-4 text-amber-800 dark:text-amber-400" />
+                    <Scale className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                     <span>Nível de Sigilo</span>
                   </div>
                   <p className="mt-2 text-sm font-semibold text-slate-800 dark:text-slate-200">
@@ -536,8 +536,8 @@ function DataJudContent() {
           <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-slate-900">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
               <div className="flex items-center gap-2">
-                <BookmarkPlus className="h-5 w-5 text-amber-800 dark:text-amber-400" />
-                <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-slate-100">
+                <BookmarkPlus className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
                   Vincular Processo ao Escritório
                 </h3>
               </div>
@@ -571,7 +571,7 @@ function DataJudContent() {
                     required
                     value={clienteSelecionadoId}
                     onChange={(e) => setClienteSelecionadoId(Number(e.target.value))}
-                    className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                    className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                   >
                     {clientes.map((c) => (
                       <option key={c.id_cliente} value={c.id_cliente} className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">
@@ -596,7 +596,7 @@ function DataJudContent() {
                   value={tituloProcesso}
                   onChange={(e) => setTituloProcesso(e.target.value)}
                   placeholder="Título do processo"
-                  className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                  className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
               </div>
 
@@ -607,7 +607,7 @@ function DataJudContent() {
                 <select
                   value={statusProcesso}
                   onChange={(e) => setStatusProcesso(e.target.value)}
-                  className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                  className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                 >
                   <option value="Em Andamento" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Em Andamento</option>
                   <option value="Aguardando Sentença" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Aguardando Sentença</option>
@@ -626,7 +626,7 @@ function DataJudContent() {
                   value={descricaoProcesso}
                   onChange={(e) => setDescricaoProcesso(e.target.value)}
                   placeholder="Descrição..."
-                  className="mt-1 block w-full rounded-xl border border-slate-200 bg-white p-3 text-xs text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                  className="mt-1 block w-full rounded-xl border border-slate-200 bg-white p-3 text-xs text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
               </div>
 
@@ -641,7 +641,7 @@ function DataJudContent() {
                 <button
                   type="submit"
                   disabled={salvandoVinculo || clientes.length === 0}
-                  className="inline-flex items-center gap-2 rounded-xl bg-amber-900 px-5 py-2 text-xs font-semibold text-white shadow-xs hover:bg-amber-800 disabled:opacity-50 dark:bg-amber-800 dark:hover:bg-amber-700"
+                  className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2 text-xs font-semibold text-white shadow-xs transition hover:bg-blue-500 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-500"
                 >
                   {salvandoVinculo ? 'Salvando...' : 'Salvar no Escritório'}
                 </button>

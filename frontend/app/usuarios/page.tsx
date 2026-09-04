@@ -142,6 +142,24 @@ function UsuariosContent() {
       return;
     }
 
+    if (formData.data_nascimento) {
+      const match = formData.data_nascimento.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (match) {
+        const [, ano, mes, dia] = match;
+        const selectedDate = new Date(Number(ano), Number(mes) - 1, Number(dia));
+        const today = new Date();
+        today.setHours(23, 59, 59, 999);
+        if (selectedDate > today) {
+          setErrorMsg('A data de nascimento não pode ser uma data futura.');
+          return;
+        }
+        if (Number(ano) < 1900) {
+          setErrorMsg('Insira um ano de nascimento válido a partir de 1900.');
+          return;
+        }
+      }
+    }
+
     setSubmitting(true);
     setErrorMsg(null);
 
@@ -165,6 +183,24 @@ function UsuariosContent() {
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedUsuario) return;
+
+    if (editFormData.data_nascimento) {
+      const match = editFormData.data_nascimento.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (match) {
+        const [, ano, mes, dia] = match;
+        const selectedDate = new Date(Number(ano), Number(mes) - 1, Number(dia));
+        const today = new Date();
+        today.setHours(23, 59, 59, 999);
+        if (selectedDate > today) {
+          setErrorMsg('A data de nascimento não pode ser uma data futura.');
+          return;
+        }
+        if (Number(ano) < 1900) {
+          setErrorMsg('Insira um ano de nascimento válido a partir de 1900.');
+          return;
+        }
+      }
+    }
 
     setSubmitting(true);
     setErrorMsg(null);
@@ -278,7 +314,7 @@ function UsuariosContent() {
               <span className="rounded-md bg-purple-100 p-1.5 text-purple-900 dark:bg-purple-950 dark:text-purple-300">
                 <Shield className="h-5 w-5" />
               </span>
-              <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
                 Gestão da Equipe & Usuários
               </h1>
             </div>
@@ -300,7 +336,7 @@ function UsuariosContent() {
 
             <button
               onClick={handleOpenCreate}
-              className="inline-flex items-center gap-2 rounded-xl bg-amber-700 px-4 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-500 transition active:scale-95"
+              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500 transition active:scale-95"
             >
               <UserPlus className="h-4 w-4" />
               Novo Colaborador
@@ -396,7 +432,7 @@ function UsuariosContent() {
               placeholder="Buscar por nome ou e-mail corporativo..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:border-amber-600 focus:outline-hidden focus:ring-1 focus:ring-amber-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+              className="w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-hidden focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
             />
           </div>
 
@@ -407,7 +443,7 @@ function UsuariosContent() {
                 onClick={() => setSelectedRole(role)}
                 className={`rounded-lg px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition ${
                   selectedRole === role
-                    ? 'bg-amber-800 text-white dark:bg-amber-600'
+                    ? 'bg-blue-600 text-white dark:bg-blue-600'
                     : 'bg-slate-200 text-slate-700 hover:bg-slate-300 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700'
                 }`}
               >
@@ -467,7 +503,7 @@ function UsuariosContent() {
                     >
                       <td className="py-4 pl-6 pr-3">
                         <div className="flex items-center gap-3">
-                          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-100 font-serif font-bold text-amber-900 dark:bg-amber-950 dark:text-amber-300 shrink-0">
+                          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 font-bold text-blue-700 dark:bg-blue-950 dark:text-blue-300 shrink-0">
                             {u.nome.charAt(0).toUpperCase()}
                           </div>
                           <div>
@@ -504,7 +540,7 @@ function UsuariosContent() {
                         <div className="flex items-center justify-end gap-2">
                           <button
                             onClick={() => handleOpenEdit(u)}
-                            className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-amber-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-amber-400 transition"
+                            className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-blue-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-blue-400 transition"
                             title="Editar usuário"
                           >
                             <Edit2 className="h-4 w-4" />
@@ -532,10 +568,10 @@ function UsuariosContent() {
           <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
               <div className="flex items-center gap-2">
-                <div className="rounded-lg bg-amber-100 p-2 text-amber-900 dark:bg-amber-950 dark:text-amber-300">
+                <div className="rounded-lg bg-blue-50 p-2 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
                   <UserPlus className="h-5 w-5" />
                 </div>
-                <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                   Cadastrar Novo Colaborador
                 </h3>
               </div>
@@ -560,7 +596,7 @@ function UsuariosContent() {
                     value={formData.nome}
                     onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
                     placeholder="Ex: Dra. Juliana Neves"
-                    className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                    className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-3 py-2 text-slate-900 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                   />
                 </div>
               </div>
@@ -577,7 +613,7 @@ function UsuariosContent() {
                     value={formData.email}
                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     placeholder="juliana.neves@davinoeneves.adv.br"
-                    className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                    className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-3 py-2 text-slate-900 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                   />
                 </div>
               </div>
@@ -592,7 +628,7 @@ function UsuariosContent() {
                     type="date"
                     value={formData.data_nascimento || ''}
                     onChange={(e) => setFormData({ ...formData, data_nascimento: e.target.value })}
-                    className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                    className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-3 py-2 text-slate-900 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                   />
                 </div>
               </div>
@@ -610,7 +646,7 @@ function UsuariosContent() {
                     value={formData.senha}
                     onChange={(e) => setFormData({ ...formData, senha: e.target.value })}
                     placeholder="••••••••"
-                    className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-10 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                    className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-10 py-2 text-slate-900 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                   />
                   <button
                     type="button"
@@ -677,7 +713,7 @@ function UsuariosContent() {
                   id="ativoCreate"
                   checked={formData.ativo}
                   onChange={(e) => setFormData({ ...formData, ativo: e.target.checked })}
-                  className="rounded text-amber-600 focus:ring-amber-500"
+                  className="rounded text-blue-600 focus:ring-blue-500"
                 />
                 <label htmlFor="ativoCreate" className="font-medium text-slate-700 dark:text-slate-300">
                   Usuário ativo no sistema (liberar acesso imediatamente)
@@ -695,7 +731,7 @@ function UsuariosContent() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-amber-700 px-4 py-2 text-xs font-semibold text-white hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-500 disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-50 transition-colors"
                 >
                   {submitting ? 'Salvando...' : 'Cadastrar Colaborador'}
                 </button>
@@ -711,10 +747,10 @@ function UsuariosContent() {
           <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
             <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
               <div className="flex items-center gap-2">
-                <div className="rounded-lg bg-amber-100 p-2 text-amber-900 dark:bg-amber-950 dark:text-amber-300">
+                <div className="rounded-lg bg-blue-50 p-2 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
                   <Edit2 className="h-5 w-5" />
                 </div>
-                <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white">
+                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
                   Editar Colaborador #{selectedUsuario.id_usuario}
                 </h3>
               </div>
@@ -736,7 +772,7 @@ function UsuariosContent() {
                   required
                   value={editFormData.nome}
                   onChange={(e) => setEditFormData({ ...editFormData, nome: e.target.value })}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                 />
               </div>
 
@@ -749,7 +785,7 @@ function UsuariosContent() {
                   required
                   value={editFormData.email}
                   onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
-                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                  className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                 />
               </div>
 
@@ -763,7 +799,7 @@ function UsuariosContent() {
                     type="date"
                     value={editFormData.data_nascimento || ''}
                     onChange={(e) => setEditFormData({ ...editFormData, data_nascimento: e.target.value })}
-                    className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-3 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                    className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-3 py-2 text-slate-900 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                   />
                 </div>
               </div>
@@ -780,7 +816,7 @@ function UsuariosContent() {
                     value={editFormData.senha || ''}
                     onChange={(e) => setEditFormData({ ...editFormData, senha: e.target.value })}
                     placeholder="Nova senha (opcional)"
-                    className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-10 py-2 text-slate-900 focus:border-amber-600 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                    className="w-full rounded-xl border border-slate-300 bg-white pl-9 pr-10 py-2 text-slate-900 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                   />
                   <button
                     type="button"
@@ -844,7 +880,7 @@ function UsuariosContent() {
                   id="ativoEdit"
                   checked={editFormData.ativo}
                   onChange={(e) => setEditFormData({ ...editFormData, ativo: e.target.checked })}
-                  className="rounded text-amber-600 focus:ring-amber-500"
+                  className="rounded text-blue-600 focus:ring-blue-500"
                 />
                 <label htmlFor="ativoEdit" className="font-medium text-slate-700 dark:text-slate-300">
                   Status ativo (desmarque para bloquear o acesso deste usuário)
@@ -862,7 +898,7 @@ function UsuariosContent() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-amber-700 px-4 py-2 text-xs font-semibold text-white hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-500 disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-50 transition-colors"
                 >
                   {submitting ? 'Salvando...' : 'Salvar Alterações'}
                 </button>

@@ -431,10 +431,10 @@ function PrazosContent() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 dark:border-slate-800 pb-6">
           <div>
             <div className="flex items-center gap-2">
-              <span className="rounded-md bg-amber-100 p-1.5 text-amber-900 dark:bg-amber-950 dark:text-amber-300">
+              <span className="rounded-md bg-blue-50 p-1.5 text-blue-700 dark:bg-blue-950 dark:text-blue-300">
                 <CalendarClock className="h-5 w-5" />
               </span>
-              <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
                 Prazos & Agenda Processual
               </h1>
             </div>
@@ -456,7 +456,7 @@ function PrazosContent() {
 
             <button
               onClick={openCreateModal}
-              className="inline-flex items-center gap-2 rounded-xl bg-amber-700 px-4 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-amber-600 dark:bg-amber-600 dark:hover:bg-amber-500 transition active:scale-95"
+              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500 transition active:scale-95"
             >
               <PlusCircle className="h-4 w-4" />
               Novo Prazo
@@ -579,7 +579,7 @@ function PrazosContent() {
               placeholder="Buscar prazo, processo ou cliente..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:border-amber-600 focus:outline-hidden focus:ring-1 focus:ring-amber-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+              className="w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-hidden focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
             />
           </div>
 
@@ -788,7 +788,7 @@ function PrazosContent() {
                             className={`flex min-h-[36px] min-w-[36px] mx-auto items-center justify-center rounded-xl border transition ${
                               isCumprido
                                 ? 'border-emerald-500 bg-emerald-500 text-white shadow-xs'
-                                : 'border-slate-300 bg-white text-transparent hover:border-amber-600 dark:border-slate-600 dark:bg-slate-800'
+                                : 'border-slate-300 bg-white text-transparent hover:border-blue-600 dark:border-slate-600 dark:bg-slate-800'
                             }`}
                             title={isCumprido ? 'Reabrir prazo' : 'Marcar como cumprido'}
                             aria-label={isCumprido ? 'Reabrir prazo' : 'Marcar como cumprido'}
@@ -856,7 +856,7 @@ function PrazosContent() {
                           <div className="flex items-center justify-end gap-1.5">
                             <button
                               onClick={() => openEditModal(prazo)}
-                              className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-amber-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-amber-400"
+                              className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-blue-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-blue-400"
                               title="Editar prazo"
                               aria-label="Editar prazo"
                             >
@@ -916,7 +916,7 @@ function PrazosContent() {
                         className={`flex min-h-[36px] min-w-[36px] items-center justify-center rounded-xl border transition ${
                           isCumprido
                             ? 'border-emerald-500 bg-emerald-500 text-white'
-                            : 'border-slate-300 bg-white text-transparent hover:border-amber-600 dark:border-slate-600 dark:bg-slate-800'
+                            : 'border-slate-300 bg-white text-transparent hover:border-blue-600 dark:border-slate-600 dark:bg-slate-800'
                         }`}
                         title={isCumprido ? 'Reabrir prazo' : 'Marcar como cumprido'}
                         aria-label={isCumprido ? 'Reabrir prazo' : 'Marcar como cumprido'}
@@ -960,7 +960,7 @@ function PrazosContent() {
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => openEditModal(prazo)}
-                        className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-amber-700 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-amber-400"
+                        className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-blue-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-blue-400"
                         title="Editar"
                         aria-label="Editar prazo"
                       >
@@ -1015,7 +1015,7 @@ function PrazosContent() {
                 <select
                   value={idProcesso}
                   onChange={(e) => setIdProcesso(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-orange-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:outline-hidden"
                 >
                   <option value="" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Selecione o Processo</option>
                   {processos.map((p) => (
@@ -1038,7 +1038,7 @@ function PrazosContent() {
                   value={descricao}
                   onChange={(e) => setDescricao(e.target.value)}
                   placeholder="Ex: Apresentar Réplica à Contestação com documentos"
-                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-orange-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden"
                 />
                 {formErrors.descricao && (
                   <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.descricao}</p>
@@ -1053,7 +1053,7 @@ function PrazosContent() {
                 <select
                   value={tipoCompromisso}
                   onChange={(e) => setTipoCompromisso(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-orange-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:outline-hidden"
                 >
                   <option value="Prazo Fatal" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Prazo Fatal</option>
                   <option value="Audiência" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Audiência</option>
@@ -1075,7 +1075,7 @@ function PrazosContent() {
                     type="date"
                     value={dataVencimento}
                     onChange={(e) => setDataVencimento(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-orange-500 focus:outline-hidden"
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:outline-hidden"
                   />
                   {formErrors.dataVencimento && (
                     <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.dataVencimento}</p>
@@ -1090,7 +1090,7 @@ function PrazosContent() {
                     type="time"
                     value={hora}
                     onChange={(e) => setHora(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-orange-500 focus:outline-hidden"
+                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:outline-hidden"
                   />
                   {formErrors.hora && (
                     <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.hora}</p>
@@ -1106,7 +1106,7 @@ function PrazosContent() {
                 <select
                   value={responsavel}
                   onChange={(e) => setResponsavel(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-orange-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:outline-hidden"
                 >
                   <option value="" className="bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-300">
                     {loadingResponsaveis ? 'Carregando equipe...' : 'Selecione um Responsável (Opcional)'}
@@ -1135,7 +1135,7 @@ function PrazosContent() {
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-orange-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:outline-hidden"
                 >
                   <option value="Pendente" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Pendente</option>
                   <option value="Cumprido" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Cumprido</option>
@@ -1154,7 +1154,7 @@ function PrazosContent() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-orange-600 px-4 py-2 font-semibold text-white hover:bg-orange-500 active:bg-orange-700 disabled:opacity-50 transition shadow-md shadow-orange-900/30"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-500 active:bg-blue-700 disabled:opacity-50 transition shadow-xs"
                 >
                   {saving ? 'Salvando...' : editingPrazo ? 'Atualizar Prazo' : 'Salvar no Banco'}
                 </button>

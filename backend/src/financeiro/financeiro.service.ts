@@ -291,7 +291,7 @@ export class FinanceiroService {
 
     const saldoLiquido = entradasRealizadas - despesasPagas;
     const saldoPrevisto = (entradasRealizadas + honorariosAReceber) - (despesasPagas + contasAPagarPendentes);
-    const taxaRecebimento = entradasPrevistas > 0 ? Math.round((entradasRealizadas / entradasPrevistas) * 100) : 100;
+    const taxaRecebimento = entradasPrevistas > 0 ? Math.round((entradasRealizadas / entradasPrevistas) * 100) : 0;
 
     // Histórico real dos últimos 6 meses a partir do banco de dados
     const now = new Date();
