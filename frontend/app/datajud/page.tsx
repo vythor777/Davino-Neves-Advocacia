@@ -262,7 +262,7 @@ function DataJudContent() {
       </div>
 
       {/* Formulário de Busca */}
-      <div className="mt-8 rounded-2xl border border-slate-700 bg-slate-900 p-6 shadow-md dark:border-slate-800 dark:bg-slate-900">
+      <div className="mt-8 rounded-2xl border border-slate-200/80 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
         <form onSubmit={handleConsultar} className="space-y-4">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-12">
             <div className="md:col-span-8">
