@@ -1076,16 +1076,16 @@ function ClientesContent() {
                 </span>
               </div>
 
-              {/* Metadados Reais de Persistência no Prisma */}
+              {/* Metadados Reais de Persistência */}
               <div className="grid grid-cols-2 gap-2">
                 <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
-                  <span className="text-slate-400 block text-[10px] uppercase font-semibold">Data de Cadastro (Prisma)</span>
+                  <span className="text-slate-400 block text-[10px] uppercase font-semibold">Data de Cadastro</span>
                   <span className="text-slate-800 dark:text-slate-200 font-mono font-medium">
                     {formatarDataHora(selectedClient.data_criacao)}
                   </span>
                 </div>
                 <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
-                  <span className="text-slate-400 block text-[10px] uppercase font-semibold">Última Atualização (Prisma)</span>
+                  <span className="text-slate-400 block text-[10px] uppercase font-semibold">Última Atualização</span>
                   <span className="text-slate-800 dark:text-slate-200 font-mono font-medium">
                     {formatarDataHora(selectedClient.data_atualizacao)}
                   </span>
