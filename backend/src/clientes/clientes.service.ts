@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   ConflictException,
+  BadRequestException,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
@@ -14,6 +15,15 @@ export class ClientesService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createClienteDto: CreateClienteDto) {
+    if (createClienteDto.data_nascimento) {
+      const birthDate = new Date(createClienteDto.data_nascimento);
+      const hoje = new Date();
+      hoje.setHours(23, 59, 59, 999);
+      if (birthDate > hoje) {
+        throw new BadRequestException('A data de nascimento não pode ser uma data futura.');
+      }
+    }
+
     try {
       const data: any = {
         ...createClienteDto,
@@ -73,6 +83,15 @@ export class ClientesService {
   async update(id: number, updateClienteDto: UpdateClienteDto) {
     // Garante que o cliente existe antes de atualizar
     await this.findOne(id);
+
+    if (updateClienteDto.data_nascimento) {
+      const birthDate = new Date(updateClienteDto.data_nascimento);
+      const hoje = new Date();
+      hoje.setHours(23, 59, 59, 999);
+      if (birthDate > hoje) {
+        throw new BadRequestException('A data de nascimento não pode ser uma data futura.');
+      }
+    }
 
     try {
       const dataToUpdate: any = { ...updateClienteDto };

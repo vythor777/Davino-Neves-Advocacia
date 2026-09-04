@@ -7,7 +7,7 @@ import { EmptyState } from '@/components/EmptyState';
 import { TableSkeleton, MetricCardSkeleton } from '@/components/Skeleton';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { ConfirmModal } from '@/components/ConfirmModal';
-import { AuditTrail, AuditLogItem } from '@/components/AuditTrail';
+import { AuditTrail } from '@/components/AuditTrail';
 import { clienteService, Cliente, CreateClienteInput } from '@/services/clienteService';
 import {
   Users,
@@ -27,8 +27,6 @@ import {
   Copy,
   Check,
   RefreshCw,
-  Info,
-  Cake,
 } from 'lucide-react';
 
 // Funções utilitárias de formatação estrita
@@ -69,6 +67,33 @@ function formatarTelefone(valor: string): string {
     .replace(/^(\d{2})(\d)/, '($1) $2')
     .replace(/(\d{5})(\d)/, '$1-$2')
     .slice(0, 15);
+}
+
+function formatarDataNascimento(dataStr?: string | null): string {
+  if (!dataStr) return 'Não informada';
+  // Extrai ano, mês e dia da string ISO (ex: "1995-09-12T00:00:00.000Z" ou "1995-09-12")
+  // para DD/MM/YYYY sem sofrer conversão ou distorção de fuso horário UTC vs local
+  const clean = dataStr.split('T')[0];
+  const parts = clean.split('-');
+  if (parts.length === 3) {
+    const [ano, mes, dia] = parts;
+    return `${dia}/${mes}/${ano}`;
+  }
+  const d = new Date(dataStr);
+  return isNaN(d.getTime()) ? 'Não informada' : d.toLocaleDateString('pt-BR', { timeZone: 'UTC' });
+}
+
+function formatarDataHora(dataStr?: string | null): string {
+  if (!dataStr) return 'Não informada';
+  const d = new Date(dataStr);
+  if (isNaN(d.getTime())) return 'Não informada';
+  return d.toLocaleString('pt-BR', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }
 
 export default function ClientesPage() {
@@ -201,6 +226,24 @@ function ClientesContent() {
     }
     if (!telefone.trim()) errors.telefone = 'O telefone de contato é obrigatório.';
     if (!endereco.trim()) errors.endereco = 'O endereço completo é obrigatório.';
+
+    if (dataNascimento) {
+      const match = dataNascimento.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (match) {
+        const [, ano, mes, dia] = match;
+        const selectedDate = new Date(Number(ano), Number(mes) - 1, Number(dia));
+        const today = new Date();
+        today.setHours(23, 59, 59, 999);
+        if (selectedDate > today) {
+          errors.dataNascimento = formTipo === 'pf'
+            ? 'A data de nascimento não pode ser uma data futura.'
+            : 'A data de fundação/abertura não pode ser uma data futura.';
+        }
+        if (Number(ano) < 1900) {
+          errors.dataNascimento = 'Insira um ano válido a partir de 1900.';
+        }
+      }
+    }
 
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
@@ -905,10 +948,14 @@ function ClientesContent() {
                   <input
                     id="input-data-nascimento"
                     type="date"
+                    max={new Date().toISOString().split('T')[0]}
                     value={dataNascimento}
                     onChange={(e) => setDataNascimento(e.target.value)}
                     className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                   />
+                  {formErrors.dataNascimento && (
+                    <p className="text-red-500 text-xs mt-1">{formErrors.dataNascimento}</p>
+                  )}
                 </div>
               </div>
 
@@ -1002,9 +1049,7 @@ function ClientesContent() {
                       : 'Data de Nascimento'}
                   </span>
                   <span className="text-slate-800 dark:text-slate-200 font-medium">
-                    {selectedClient.data_nascimento
-                      ? new Date(selectedClient.data_nascimento).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
-                      : 'Não informada'}
+                    {formatarDataNascimento(selectedClient.data_nascimento)}
                   </span>
                 </div>
               </div>
@@ -1031,30 +1076,28 @@ function ClientesContent() {
                 </span>
               </div>
 
-              {/* Trilha de Auditoria do Cliente */}
+              {/* Metadados Reais de Persistência no Prisma */}
+              <div className="grid grid-cols-2 gap-2">
+                <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
+                  <span className="text-slate-400 block text-[10px] uppercase font-semibold">Data de Cadastro (Prisma)</span>
+                  <span className="text-slate-800 dark:text-slate-200 font-mono font-medium">
+                    {formatarDataHora(selectedClient.data_criacao)}
+                  </span>
+                </div>
+                <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
+                  <span className="text-slate-400 block text-[10px] uppercase font-semibold">Última Atualização (Prisma)</span>
+                  <span className="text-slate-800 dark:text-slate-200 font-mono font-medium">
+                    {formatarDataHora(selectedClient.data_atualizacao)}
+                  </span>
+                </div>
+              </div>
+
+              {/* Trilha de Auditoria do Cliente - Real / Empty State sem dados mockados */}
               <div className="pt-2">
                 <AuditTrail
                   title="Histórico de Auditoria & Segurança"
-                  logs={[
-                    {
-                      id: 'log-1',
-                      timestamp: 'Hoje, às 10:14',
-                      usuario: 'Dr. Roberto Davino',
-                      cargo: 'Administrador',
-                      acao: 'CONSULTA',
-                      descricao: 'Acesso aos dados sensíveis do cliente para verificação cadastral.',
-                      detalhes: 'Ficha individual visualizada no painel administrativo.',
-                    },
-                    {
-                      id: 'log-2',
-                      timestamp: 'Registro no Sistema',
-                      usuario: 'Secretaria Geral',
-                      cargo: 'Advogado',
-                      acao: 'CRIACAO',
-                      descricao: `Cliente cadastrado com documento ${formatarCpfCnpj(selectedClient.cpf_cnpj)}.`,
-                      detalhes: `Vínculo com o escritório Davino Neves Advocacia formalizado.`,
-                    },
-                  ]}
+                  logs={[]}
+                  emptyMessage="Nenhum registro de auditoria disponível para este cliente."
                 />
               </div>
             </div>

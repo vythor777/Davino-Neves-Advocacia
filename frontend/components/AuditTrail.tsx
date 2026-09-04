@@ -26,12 +26,14 @@ export interface AuditLogItem {
 interface AuditTrailProps {
   logs?: AuditLogItem[];
   title?: string;
+  emptyMessage?: string;
   className?: string;
 }
 
 export function AuditTrail({
   logs = [],
   title = 'Trilha de Auditoria & Atividades',
+  emptyMessage = 'Nenhum registro de auditoria disponível para este item.',
   className = '',
 }: AuditTrailProps) {
   const getActionConfig = (acao: AuditLogItem['acao']) => {
@@ -90,8 +92,14 @@ export function AuditTrail({
       </div>
 
       {logs.length === 0 ? (
-        <div className="py-6 text-center text-xs text-slate-500 dark:text-slate-400">
-          Nenhuma movimentação registrada recentemente neste item.
+        <div className="py-7 text-center text-xs text-slate-500 dark:text-slate-400">
+          <ShieldCheck className="h-7 w-7 text-slate-300 dark:text-slate-600 mx-auto mb-2" />
+          <p className="font-semibold text-slate-700 dark:text-slate-300">
+            {emptyMessage}
+          </p>
+          <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 max-w-sm mx-auto">
+            A trilha de auditoria e segurança registrará novas ações e acessos automaticamente quando executados no sistema.
+          </p>
         </div>
       ) : (
         <div className="mt-4 relative pl-4 space-y-4 before:absolute before:left-1.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200 dark:before:bg-slate-800">
