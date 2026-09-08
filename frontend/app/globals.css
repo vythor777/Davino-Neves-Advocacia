@@ -42,9 +42,43 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-family: 'Inter', var(--font-sans), system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.font-cinzel {
+  font-family: var(--font-cinzel), 'Cinzel', Georgia, serif;
+}
+
+.font-serif {
+  font-family: var(--font-serif), 'Playfair Display', Georgia, serif;
+}
+
+.font-sans {
+  font-family: var(--font-sans), 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #FFFBEB 0%, #FDE68A 25%, #D4AF37 60%, #B45309 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.blue-gradient-text {
+  background: linear-gradient(135deg, #E0F2FE 0%, #93C5FD 40%, #3B82F6 80%, #1D4ED8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-border-glow {
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  box-shadow: 0 0 25px -5px rgba(212, 175, 55, 0.15);
+}
+
+.luxury-card {
+  background: radial-gradient(circle at top left, rgba(30, 41, 59, 0.7) 0%, rgba(11, 15, 23, 0.85) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* =========================================================

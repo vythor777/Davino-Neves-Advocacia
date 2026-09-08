@@ -25,6 +25,7 @@ import {
   UserPlus,
   Settings,
   CircleDollarSign,
+  ExternalLink,
 } from 'lucide-react';
 
 interface AppLayoutProps {
@@ -97,7 +98,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   }, [pathname]);
 
   const navLinks = [
-    { label: 'Painel', href: '/', icon: LayoutDashboard, exact: true },
+    { label: 'Painel', href: '/dashboard', icon: LayoutDashboard, exact: true },
     { label: 'Processos', href: '/processos', icon: Briefcase },
     { label: 'Prazos & Agenda', href: '/prazos', icon: CalendarClock },
     { label: 'Clientes', href: '/clientes', icon: Users },
@@ -123,8 +124,8 @@ export function AppLayout({ children }: AppLayoutProps) {
       ? 'Estagiário'
       : 'Administrador';
 
-  // Ocultar Sidebar e Header na tela de autenticação
-  if (pathname === '/login') {
+  // Ocultar Sidebar e Header na tela de autenticação e no site institucional
+  if (pathname === '/login' || pathname === '/') {
     return <>{children}</>;
   }
 
@@ -135,7 +136,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         {/* Topo da Sidebar */}
         <div className="flex flex-col">
           {/* Logotipo estilizado do escritório 'Davino Neves Advocacia' */}
-          <Link href="/" className="group flex items-center gap-3 transition-opacity hover:opacity-95">
+          <Link href="/dashboard" className="group flex items-center gap-3 transition-opacity hover:opacity-95">
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white shadow-md shadow-blue-600/25 ring-1 ring-blue-500/30 group-hover:scale-105 transition-transform">
               <Scale className="h-5 w-5 text-white" />
             </div>
@@ -268,6 +269,14 @@ export function AppLayout({ children }: AppLayoutProps) {
                   >
                     <Scale className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
                     <span>Status de Conexão CNJ</span>
+                  </Link>
+                  <Link
+                    href="/"
+                    onClick={() => setUserDropdownOpen(false)}
+                    className="flex items-center gap-2 rounded-lg px-2.5 py-2 text-xs text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 hover:text-amber-800 dark:hover:text-amber-300 transition"
+                  >
+                    <ExternalLink className="h-3.5 w-3.5" />
+                    <span>Ver Site Institucional</span>
                   </Link>
                   <div className="border-t border-slate-100 dark:border-slate-800/80 my-1" />
                   <button
