@@ -12,6 +12,61 @@ export interface AnaliseDocumentoResponse {
   analise: string;
 }
 
+export interface AnalisarProcessoParams {
+  numero_processo?: string;
+  titulo?: string;
+  conteudo_processual: string;
+  polo_cliente?: 'Autor' | 'Réu' | 'Terceiro Interessado' | string;
+  foco_estrategico?: string;
+}
+
+export interface AnaliseProcessoResponse {
+  sucesso: boolean;
+  numero_processo: string | null;
+  analise: string;
+}
+
+export interface ResumirDocumentoParams {
+  texto: string;
+  tipo_documento?: string;
+  formato_resumo?: 'executivo' | 'cliente_simples' | 'topicos_estrategicos' | string;
+}
+
+export interface ResumoDocumentoResponse {
+  sucesso: boolean;
+  tipo_documento: string;
+  formato_resumo: string;
+  resumo: string;
+}
+
+export interface EncontrarJurisprudenciaParams {
+  tema: string;
+  ramo_direito?: string;
+  tribunal_alvo?: string;
+  tese_pretendida?: string;
+}
+
+export interface JurisprudenciaResponse {
+  sucesso: boolean;
+  tema: string;
+  resultado: string;
+}
+
+export interface CriarPecaParams {
+  tipo_peca: string;
+  fatos_contexto: string;
+  polos_partes?: string;
+  pedidos_especificos?: string;
+  jurisprudencia_referencia?: string;
+  tribunal_foro?: string;
+}
+
+export interface CriarPecaResponse {
+  sucesso: boolean;
+  tipo_peca: string;
+  minuta: string;
+}
+
 export interface MovimentoProcessoInput {
   dataHora?: string;
   nome?: string;
@@ -54,6 +109,47 @@ export interface ExtrairPrazosResponse {
 }
 
 export const geminiService = {
+  // 1. Analisar Processo (Autos, riscos, probabilidade de êxito)
+  async analisarProcesso(params: AnalisarProcessoParams): Promise<AnaliseProcessoResponse> {
+    const response = await api.post<AnaliseProcessoResponse>('/gemini/analisar-processo', params, {
+      timeout: 60000,
+    });
+    return response.data;
+  },
+
+  // 2. Resumir Documento (Síntese executiva ou para cliente)
+  async resumirDocumento(params: ResumirDocumentoParams): Promise<ResumoDocumentoResponse> {
+    const response = await api.post<ResumoDocumentoResponse>('/gemini/resumir-documento', params, {
+      timeout: 60000,
+    });
+    return response.data;
+  },
+
+  // 3. Encontrar Jurisprudência (Teses, precedentes STJ/STF, súmulas)
+  async encontrarJurisprudencia(params: EncontrarJurisprudenciaParams): Promise<JurisprudenciaResponse> {
+    const response = await api.post<JurisprudenciaResponse>('/gemini/encontrar-jurisprudencia', params, {
+      timeout: 60000,
+    });
+    return response.data;
+  },
+
+  // 4. Criar Peça (Minuta de petições, contestações e recursos)
+  async criarPeca(params: CriarPecaParams): Promise<CriarPecaResponse> {
+    const response = await api.post<CriarPecaResponse>('/gemini/criar-peca', params, {
+      timeout: 60000,
+    });
+    return response.data;
+  },
+
+  // 5. Identificar Prazos (Extração de prazos de publicações e termos fatais)
+  async identificarPrazos(params: ExtrairPrazosParams): Promise<ExtrairPrazosResponse> {
+    const response = await api.post<ExtrairPrazosResponse>('/gemini/identificar-prazos', params, {
+      timeout: 60000,
+    });
+    return response.data;
+  },
+
+  // Compatibilidade com código existente
   async analisarDocumento(params: AnalisarDocumentoParams): Promise<AnaliseDocumentoResponse> {
     const response = await api.post<AnaliseDocumentoResponse>('/gemini/analisar-documento', params, {
       timeout: 60000,

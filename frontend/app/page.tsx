@@ -40,6 +40,10 @@ import {
   Scale,
   FileText,
   DollarSign,
+  FileSearch,
+  BookOpen,
+  Gavel,
+  PenTool,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -363,6 +367,62 @@ function AstreaDashboard() {
             </Link>
           </div>
         )}
+      </div>
+
+      {/* PROTAGONISTA: ASSISTENTE JURÍDICO IA */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-slate-800 to-[#161b22] text-white border border-[#c5a059]/30 p-5 sm:p-6 shadow-sm">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
+          <div className="space-y-1 max-w-xl">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/[0.08] border border-[#c5a059]/40 text-[#dfcaa0] text-[11px] font-semibold">
+              <Sparkles className="h-3 w-3 text-[#c5a059]" />
+              <span>Assistente Jurídico IA</span>
+            </div>
+            <h3 className="text-base sm:text-lg font-semibold text-white">
+              Analise processos, documentos e decisões em segundos
+            </h3>
+            <p className="text-xs text-slate-300 font-normal">
+              O que você quer fazer hoje? Escolha uma das especialidades jurídicas:
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <Link
+              href="/gemini?acao=analisar_processo"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] border border-white/[0.1] text-xs font-medium text-slate-100 hover:text-white transition"
+            >
+              <FileSearch className="h-3.5 w-3.5 text-[#dfcaa0]" />
+              <span>Analisar processo</span>
+            </Link>
+            <Link
+              href="/gemini?acao=resumir_documento"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] border border-white/[0.1] text-xs font-medium text-slate-100 hover:text-white transition"
+            >
+              <BookOpen className="h-3.5 w-3.5 text-emerald-400" />
+              <span>Resumir documento</span>
+            </Link>
+            <Link
+              href="/gemini?acao=encontrar_jurisprudencia"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] border border-white/[0.1] text-xs font-medium text-slate-100 hover:text-white transition"
+            >
+              <Gavel className="h-3.5 w-3.5 text-indigo-400" />
+              <span>Encontrar jurisprudência</span>
+            </Link>
+            <Link
+              href="/gemini?acao=criar_peca"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] border border-white/[0.1] text-xs font-medium text-slate-100 hover:text-white transition"
+            >
+              <PenTool className="h-3.5 w-3.5 text-amber-400" />
+              <span>Criar peça</span>
+            </Link>
+            <Link
+              href="/gemini?acao=identificar_prazos"
+              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold text-xs transition shadow-xs"
+            >
+              <CalendarClock className="h-3.5 w-3.5" />
+              <span>Identificar prazos</span>
+            </Link>
+          </div>
+        </div>
       </div>
 
       {/* 2. SEÇÃO: Agenda / Prazos Críticos */}

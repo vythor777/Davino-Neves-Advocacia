@@ -9,18 +9,20 @@ import { GoogleGenAI, Type } from '@google/genai';
 import { AnalisarDocumentoDto } from './dto/analisar-documento.dto.js';
 import { ResumirProcessoDto } from './dto/resumir-processo.dto.js';
 import { ExtrairPrazosDto } from './dto/extrair-prazos.dto.js';
+import { EncontrarJurisprudenciaDto } from './dto/encontrar-jurisprudencia.dto.js';
+import { CriarPecaDto } from './dto/criar-peca.dto.js';
+import { AnalisarProcessoIaDto } from './dto/analisar-processo-ia.dto.js';
+import { ResumirDocumentoDto } from './dto/resumir-documento.dto.js';
 
 @Injectable()
 export class GeminiService {
   private readonly logger = new Logger(GeminiService.name);
   private aiClient: GoogleGenAI | null = null;
 
-  // Lista de modelos ordenados do principal para fallbacks mais estáveis / leves
+  // Lista de modelos ordenados do principal para fallbacks suportados pelo @google/genai
   private readonly fallbackModels = [
-    'gemini-3.7-flash',
+    'gemini-3.8-flash',
     'gemini-3.1-flash-lite',
-    'gemini-2.5-flash',
-    'gemini-1.5-flash',
     'gemini-flash-latest',
   ];
 
@@ -442,6 +444,214 @@ Extraia as informações estruturadas sobre o prazo.`;
     return {
       sucesso: true,
       dados_prazo: parsedResult,
+    };
+  }
+
+  /**
+   * Realiza a análise profunda de processo, autos, riscos e probabilidade de êxito.
+   */
+  async analisarProcessoIa(dto: AnalisarProcessoIaDto) {
+    const ai = this.getClient();
+    const { numero_processo, titulo, conteudo_processual, polo_cliente, foco_estrategico } = dto;
+
+    if (!conteudo_processual || conteudo_processual.trim().length === 0) {
+      throw new BadRequestException('O conteúdo ou síntese dos autos processuais é obrigatório.');
+    }
+
+    const systemInstruction = `Você é o Estrategista Jurídico de Inteligência Artificial do escritório Davino Neves Advocacia.
+Sua missão é realizar uma análise analítica e profunda de autos processuais, peças adversas, decisões interlocutórias e sentenças.
+Você deve identificar:
+1. Objeto da lide e fatos controvertidos;
+2. Teses da parte autora vs. teses da parte ré;
+3. Pontos fortes e vulnerabilidades do cliente (Polo: ${polo_cliente || 'Definido no processo'});
+4. Probabilidade estimada de êxito fundamentada (Favorável, Incerta/Média ou Desfavorável);
+5. Riscos processuais imediatos (preclusão, sucumbência, revelia, penhora);
+6. Próximos atos processuais recomendados e teses de defesa/ataque a serem exploradas.`;
+
+    const prompt = `Processo: ${numero_processo || 'Não informado'} - ${titulo || 'Processo'}
+Polo do Cliente: ${polo_cliente || 'Não especificado'}
+${foco_estrategico ? `Foco Estratégico Solicitado: ${foco_estrategico}\n` : ''}
+Autos / Conteúdo Processual:
+---
+${conteudo_processual}
+---
+
+Por favor, forneça uma análise estruturada, técnica e com alto nível de acurácia jurídica.`;
+
+    const response = await this.executeWithResilience(
+      async (modelName) => {
+        return await ai.models.generateContent({
+          model: modelName,
+          contents: prompt,
+          config: {
+            systemInstruction,
+            temperature: 0.2,
+          },
+        });
+      },
+      'Análise de Processo IA',
+    );
+
+    return {
+      sucesso: true,
+      numero_processo: numero_processo || null,
+      analise: response?.text || 'Análise processual concluída com sucesso.',
+    };
+  }
+
+  /**
+   * Gera resumo conciso e estruturado de qualquer documento jurídico (petição, sentença, acórdão, contrato).
+   */
+  async resumirDocumento(dto: ResumirDocumentoDto) {
+    const ai = this.getClient();
+    const { texto, tipo_documento, formato_resumo } = dto;
+
+    if (!texto || texto.trim().length === 0) {
+      throw new BadRequestException('O texto do documento a ser resumido é obrigatório.');
+    }
+
+    const formato = formato_resumo || 'executivo';
+    const orientacaoFormato =
+      formato === 'cliente_simples'
+        ? 'Linguagem simples (Visual Law / plain language), sem termos em latim ou juridiquês, pronto para ser encaminhado diretamente via WhatsApp ou e-mail ao cliente.'
+        : formato === 'topicos_estrategicos'
+        ? 'Tópicos curtos em bullet points: Fatos Principais, Decisão/Dispositivo, Valores Envolvidos, Prazos e Providências Imediatas.'
+        : 'Resumo executivo completo para advogados, destacando ratio decidendi, fundamentos legais e implicações práticas.';
+
+    const systemInstruction = `Você é o Especialista em Síntese Jurídica de IA do escritório Davino Neves Advocacia.
+Objetivo: Transformar documentos jurídicos extensos em resumos claros, precisos e diretamente acionáveis.
+Diretriz de Formatação: ${orientacaoFormato}`;
+
+    const prompt = `Tipo do Documento: ${tipo_documento || 'Documento Jurídico'}
+Texto Original:
+---
+${texto}
+---
+
+Elabore o resumo estruturado conforme as instruções.`;
+
+    const response = await this.executeWithResilience(
+      async (modelName) => {
+        return await ai.models.generateContent({
+          model: modelName,
+          contents: prompt,
+          config: {
+            systemInstruction,
+            temperature: 0.2,
+          },
+        });
+      },
+      'Resumo de Documento IA',
+    );
+
+    return {
+      sucesso: true,
+      tipo_documento: tipo_documento || 'Geral',
+      formato_resumo: formato,
+      resumo: response?.text || 'Resumo do documento gerado com sucesso.',
+    };
+  }
+
+  /**
+   * Encontra teses jurisprudenciais, precedentes de tribunais superiores e súmulas aplicáveis.
+   */
+  async encontrarJurisprudencia(dto: EncontrarJurisprudenciaDto) {
+    const ai = this.getClient();
+    const { tema, ramo_direito, tribunal_alvo, tese_pretendida } = dto;
+
+    if (!tema || tema.trim().length === 0) {
+      throw new BadRequestException('O tema ou controvérsia para pesquisa de jurisprudência é obrigatório.');
+    }
+
+    const systemInstruction = `Você é o Especialista em Jurisprudência e Precedentes Qualificados de IA do escritório Davino Neves Advocacia.
+Sua missão é mapear e estruturar teses consolidadas do STF, STJ, TST, TRFs e Tribunais de Justiça Estaduais (especialmente TJSP, TJRJ, TJMG, TJBA).
+Para a consulta fornecida, estruture:
+1. Tese Jurídica Predominante e Tendência Atual dos Tribunais;
+2. Súmulas Aplicáveis (Vinculantes, STF, STJ, TST);
+3. Precedentes Qualificados / Temas Repetitivos / IRDR relevantes;
+4. Modelos de Ementas Exemplificativas com indicação de órgão julgador, relator e fundamentos legais;
+5. Argumentos e Distinguishing recomendados para fundamentar a peça processual.`;
+
+    const prompt = `Tema / Controvérsia: ${tema}
+${ramo_direito ? `Ramo do Direito: ${ramo_direito}\n` : ''}
+${tribunal_alvo ? `Tribunal Alvo Preferencial: ${tribunal_alvo}\n` : ''}
+${tese_pretendida ? `Tese / Linha Argumentativa Pretendida: ${tese_pretendida}\n` : ''}
+
+Apresente a pesquisa jurisprudencial completa, estruturada e com fundamentação legal aplicável.`;
+
+    const response = await this.executeWithResilience(
+      async (modelName) => {
+        return await ai.models.generateContent({
+          model: modelName,
+          contents: prompt,
+          config: {
+            systemInstruction,
+            temperature: 0.2,
+          },
+        });
+      },
+      'Pesquisa de Jurisprudência IA',
+    );
+
+    return {
+      sucesso: true,
+      tema,
+      resultado: response?.text || 'Pesquisa jurisprudencial gerada com sucesso.',
+    };
+  }
+
+  /**
+   * Cria minuta estruturada de peça processual (petição inicial, contestação, recurso, notificação).
+   */
+  async criarPeca(dto: CriarPecaDto) {
+    const ai = this.getClient();
+    const { tipo_peca, fatos_contexto, polos_partes, pedidos_especificos, jurisprudencia_referencia, tribunal_foro } = dto;
+
+    if (!tipo_peca || !fatos_contexto) {
+      throw new BadRequestException('O tipo da peça e os fatos/contexto são obrigatórios para a redação.');
+    }
+
+    const systemInstruction = `Você é o Redator Jurídico de IA de excelência do escritório Davino Neves Advocacia.
+Sua missão é elaborar minutas completas, elegantes e com fundamentação técnica impecável conforme o Código de Processo Civil (CPC), CLT ou CPP.
+Estruture a peça com:
+- Endereçamento ao Juízo/Tribunal Competente;
+- Qualificação das partes (indicando placeholders [NOME], [CPF/CNPJ] para dados faltantes);
+- Síntese fática clara e cronológica;
+- Fundamentação jurídica sólida (leis, princípios, doutrina e jurisprudência);
+- Tutela de urgência/evidência se aplicável;
+- Rol de Pedidos e Requerimentos finais claros, líquidos ou especificados;
+- Valor da causa e fechamento formal com data e OAB.`;
+
+    const prompt = `Tipo de Peça: ${tipo_peca}
+Endereçamento / Tribunal: ${tribunal_foro || 'Juízo Competente'}
+Partes: ${polos_partes || 'Cliente vs. Parte Adversa'}
+Fatos e Contexto do Caso:
+---
+${fatos_contexto}
+---
+${pedidos_especificos ? `Pedidos Específicos Solicitados: ${pedidos_especificos}\n` : ''}
+${jurisprudencia_referencia ? `Jurisprudência/Tese a incorporar: ${jurisprudencia_referencia}\n` : ''}
+
+Elabore a minuta jurídica completa pronta para revisão do advogado.`;
+
+    const response = await this.executeWithResilience(
+      async (modelName) => {
+        return await ai.models.generateContent({
+          model: modelName,
+          contents: prompt,
+          config: {
+            systemInstruction,
+            temperature: 0.2,
+          },
+        });
+      },
+      'Criação de Peça Jurídica IA',
+    );
+
+    return {
+      sucesso: true,
+      tipo_peca,
+      minuta: response?.text || 'Minuta jurídica gerada com sucesso.',
     };
   }
 }
