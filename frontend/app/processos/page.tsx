@@ -314,10 +314,10 @@ function ProcessosContent() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200/60 dark:border-white/[0.05]">
           <div>
             <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
-              Processos Judiciais
+              Processos
             </h1>
             <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-              Gestão de autos judiciais, comarcas, clientes vinculados e andamento de instâncias.
+              Acompanhe autos judiciais, comarcas, andamentos e clientes.
             </p>
           </div>
 
@@ -337,7 +337,7 @@ function ProcessosContent() {
               className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition cursor-pointer"
             >
               <PlusCircle className="h-4 w-4 stroke-[2]" />
-              Novo Processo
+              Novo processo
             </button>
           </div>
         </div>
@@ -470,7 +470,7 @@ function ProcessosContent() {
             setDeleteModalOpen(true);
           }}
           onEmptyAction={openCreateModal}
-          emptyActionLabel="Cadastrar Novo Processo"
+          emptyActionLabel="Novo processo"
           currentPage={currentPage}
           pageSize={pageSize}
           totalItems={filteredProcessos.length}
@@ -488,7 +488,7 @@ function ProcessosContent() {
                 </div>
                 <div>
                   <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-                    {editingProcesso ? 'Editar Processo Judicial' : 'Novo Processo Judicial'}
+                    {editingProcesso ? 'Editar processo' : 'Novo processo'}
                   </h3>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
                     Preencha os dados dos autos e vincule ao cliente

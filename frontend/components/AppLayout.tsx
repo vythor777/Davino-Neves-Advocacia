@@ -151,11 +151,11 @@ export function AppLayout({ children }: AppLayoutProps) {
   const navLinks = [
     { label: 'Painel', href: '/', icon: LayoutDashboard, exact: true },
     { label: 'Processos', href: '/processos', icon: Briefcase },
-    { label: 'Prazos & Agenda', href: '/prazos', icon: CalendarClock },
+    { label: 'Prazos', href: '/prazos', icon: CalendarClock },
     { label: 'Clientes', href: '/clientes', icon: Users },
     { label: 'Financeiro', href: '/financeiro', icon: CircleDollarSign },
-    { label: 'DataJud CNJ', href: '/datajud', icon: Scale },
-    { label: 'IA Jurídica', href: '/gemini', icon: Sparkles },
+    { label: 'Consultar CNJ', href: '/datajud', icon: Scale },
+    { label: 'Assistente IA', href: '/gemini', icon: Sparkles },
     { label: 'Equipe', href: '/usuarios', icon: Shield },
   ];
 

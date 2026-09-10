@@ -239,18 +239,18 @@ function DataJudContent() {
         <div>
           <div className="inline-flex items-center gap-2 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide uppercase bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-[#d4af37]/90 border border-slate-200 dark:border-white/[0.08]">
             <Scale className="h-3.5 w-3.5 text-[#c5a059]" />
-            Conselho Nacional de Justiça • Integração DataJud
+            Base Nacional CNJ
           </div>
           <div className="flex items-center gap-2.5 mt-2">
             <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
               <Scale className="h-4 w-4" />
             </span>
             <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-              Consulta Processual DataJud
+              Consultar CNJ
             </h1>
           </div>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Consulte dados oficiais, classes, órgãos julgadores e andamentos de processos em tribunais de todo o Brasil.
+            Consulte andamentos, decisões e movimentações oficiais em tribunais de todo o país.
           </p>
         </div>
 
@@ -260,7 +260,7 @@ function DataJudContent() {
             className="inline-flex items-center gap-2 rounded-xl border border-slate-200/80 bg-white/60 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100/80 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] backdrop-blur-sm transition-colors cursor-pointer"
           >
             <Briefcase className="h-4 w-4 text-[#c5a059]" />
-            Ver Processos do Escritório
+            Ver processos
           </Link>
         </div>
       </div>
@@ -326,7 +326,7 @@ function DataJudContent() {
                 ) : (
                   <>
                     <Search className="h-3.5 w-3.5" />
-                    <span>Consultar Processo</span>
+                    <span>Consultar</span>
                   </>
                 )}
               </button>

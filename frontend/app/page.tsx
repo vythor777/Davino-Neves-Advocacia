@@ -553,7 +553,7 @@ function AstreaDashboard() {
             id="link-ver-todos-processos"
             className="text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-[#dfcaa0] dark:hover:text-white flex items-center gap-1 transition"
           >
-            <span>Ver todos os processos ({processos.length})</span>
+            <span>Ver processos ({processos.length})</span>
             <ArrowRight className="h-3.5 w-3.5 stroke-[1.25]" />
           </Link>
         </div>
@@ -801,7 +801,7 @@ function AstreaDashboard() {
                 id="link-gerenciar-equipe"
                 className="text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-[#dfcaa0] dark:hover:text-white flex items-center gap-1 transition"
               >
-                <span>Gerenciar equipe ({usuarios.length})</span>
+                <span>Ver equipe ({usuarios.length})</span>
                 <ArrowRight className="h-3.5 w-3.5 stroke-[1.25]" />
               </Link>
             </div>

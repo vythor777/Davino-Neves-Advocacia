@@ -290,7 +290,7 @@ function FinanceiroContent() {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide uppercase bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-[#dfcaa0] border border-slate-200 dark:border-white/[0.08]">
-              Controladoria Jurídica • Módulo Financeiro
+              Controle Financeiro
             </span>
           </div>
           <div className="flex items-center gap-2.5">
@@ -298,11 +298,11 @@ function FinanceiroContent() {
               <DollarSign className="h-4 w-4" />
             </span>
             <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-              Gestão Financeira & DRE
+              Financeiro
             </h1>
           </div>
           <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Controle de honorários, conciliação bancária, contas a pagar/receber e auditoria contábil.
+            Acompanhe honorários, entradas, saídas e previsões de recebimento.
           </p>
         </div>
 
@@ -354,7 +354,7 @@ function FinanceiroContent() {
             className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition-all active:scale-98 cursor-pointer"
           >
             <PlusCircle className="h-4 w-4 text-slate-950" />
-            Novo Lançamento
+            Novo lançamento
           </button>
         </div>
       </div>

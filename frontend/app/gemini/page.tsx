@@ -247,7 +247,7 @@ function GeminiContent() {
     <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 animate-fade-in-up space-y-6">
       {/* Breadcrumb de Navegação */}
       <div>
-        <Breadcrumbs items={[{ label: 'Assistente IA Gemini', icon: Sparkles }]} />
+        <Breadcrumbs items={[{ label: 'Assistente IA', icon: Sparkles }]} />
       </div>
 
         {/* Banner Superior da IA */}
@@ -255,18 +255,18 @@ function GeminiContent() {
           <div>
             <div className="inline-flex items-center gap-2 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide uppercase bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-[#d4af37]/90 border border-slate-200 dark:border-white/[0.08]">
               <Sparkles className="h-3.5 w-3.5 text-[#c5a059]" />
-              Google Gemini 3.7 Flash • Inteligência Artificial Jurídica
+              Google Gemini • Inteligência Artificial
             </div>
             <div className="flex items-center gap-2.5 mt-2">
               <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
                 <Scale className="h-4 w-4" />
               </span>
               <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-                Assistente de IA & Controladoria Jurídica
+                Assistente IA
               </h1>
             </div>
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              Análise aprofundada de peças, simplificação de andamentos para clientes e detecção automatizada de termos fatais.
+              Analise peças, resuma andamentos para clientes e extraia prazos de publicações.
             </p>
           </div>
 
@@ -276,7 +276,7 @@ function GeminiContent() {
               className="inline-flex items-center gap-2 rounded-xl border border-slate-200/80 bg-white/60 px-3.5 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100/80 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] backdrop-blur-sm transition-colors cursor-pointer"
             >
               <CalendarClock className="h-4 w-4 text-[#c5a059]" />
-              Agenda de Prazos
+              Ver prazos
             </Link>
           </div>
         </div>
@@ -293,7 +293,7 @@ function GeminiContent() {
               }`}
             >
               <FileSearch className="h-4 w-4" />
-              <span>Análise de Peças & Contratos</span>
+              <span>Analisar peças</span>
             </button>
 
             <button
@@ -305,7 +305,7 @@ function GeminiContent() {
               }`}
             >
               <MessageSquareQuote className="h-4 w-4" />
-              <span>Resumo Executivo para Cliente</span>
+              <span>Resumo para cliente</span>
             </button>
 
             <button
@@ -317,7 +317,7 @@ function GeminiContent() {
               }`}
             >
               <Zap className="h-4 w-4 text-[#c5a059]" />
-              <span>Extração Automática de Prazos (DJE)</span>
+              <span>Extrair prazos</span>
             </button>
           </div>
         </div>

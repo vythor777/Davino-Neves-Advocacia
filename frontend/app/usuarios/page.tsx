@@ -304,7 +304,7 @@ function UsuariosContent() {
     <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 animate-fade-in-up space-y-6">
       {/* Breadcrumb de Navegação */}
       <div>
-        <Breadcrumbs items={[{ label: 'Equipe & Usuários', icon: Shield }]} />
+        <Breadcrumbs items={[{ label: 'Equipe', icon: Shield }]} />
       </div>
 
         {/* Cabeçalho da Página */}
@@ -312,18 +312,18 @@ function UsuariosContent() {
           <div>
             <div className="inline-flex items-center gap-2 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide uppercase bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-[#d4af37]/90 border border-slate-200 dark:border-white/[0.08]">
               <Shield className="h-3.5 w-3.5 text-[#c5a059]" />
-              Administração • Controle de Acessos
+              Controle de Acessos
             </div>
             <div className="flex items-center gap-2.5 mt-2">
               <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
                 <Users className="h-4 w-4" />
               </span>
               <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-                Gestão da Equipe & Usuários
+                Equipe
               </h1>
             </div>
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              Controle de acessos, papéis (Administrador, Advogado, Estagiário) e credenciais do escritório Davino Neves.
+              Acessos, advogados, colaboradores e permissões do escritório Davino Neves.
             </p>
           </div>
 
@@ -343,7 +343,7 @@ function UsuariosContent() {
               className="inline-flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition active:scale-95 cursor-pointer"
             >
               <UserPlus className="h-4 w-4" />
-              Novo Colaborador
+              Novo membro
             </button>
           </div>
         </div>
@@ -588,7 +588,7 @@ function UsuariosContent() {
                   <UserPlus className="h-4 w-4" />
                 </span>
                 <h3 className="text-base font-semibold text-slate-900 dark:text-[#f8fafc]">
-                  Cadastrar Novo Colaborador
+                  Adicionar membro da equipe
                 </h3>
               </div>
               <button
@@ -767,7 +767,7 @@ function UsuariosContent() {
                   <Edit2 className="h-4 w-4" />
                 </span>
                 <h3 className="text-base font-semibold text-slate-900 dark:text-[#f8fafc]">
-                  Editar Colaborador #{selectedUsuario.id_usuario}
+                  Editar membro da equipe
                 </h3>
               </div>
               <button

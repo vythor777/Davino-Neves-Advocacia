@@ -342,7 +342,7 @@ function ClientesContent() {
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide uppercase bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-[#dfcaa0] border border-slate-200 dark:border-white/[0.08]">
-                Controladoria Jurídica • Carteira de Clientes
+                Carteira de Clientes
               </span>
             </div>
             <div className="flex items-center gap-2.5">
@@ -350,11 +350,11 @@ function ClientesContent() {
                 <Users className="h-4 w-4" />
               </div>
               <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-                Gestão de Clientes
+                Clientes
               </h1>
             </div>
             <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              Cadastro unificado de pessoas físicas e jurídicas, processos e contatos corporativos.
+              Consulte contatos, documentos e processos de pessoas físicas e jurídicas.
             </p>
           </div>
 
@@ -374,7 +374,7 @@ function ClientesContent() {
               className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition-all active:scale-98 cursor-pointer"
             >
               <UserPlus className="h-4 w-4 text-slate-950" />
-              Novo Cliente
+              Novo cliente
             </button>
           </div>
         </div>
@@ -830,10 +830,10 @@ function ClientesContent() {
                 </div>
                 <div>
                   <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-                    {editingClient ? 'Editar Cadastro de Cliente' : 'Novo Cadastro de Cliente'}
+                    {editingClient ? 'Editar cliente' : 'Novo cliente'}
                   </h3>
                   <p className="text-[11px] text-slate-400">
-                    Preencha os dados cadastrais do titular
+                    Preencha os dados do cliente
                   </p>
                 </div>
               </div>
