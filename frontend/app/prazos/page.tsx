@@ -396,21 +396,11 @@ function PrazosContent() {
         {/* Cabeçalho da Página */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200/60 dark:border-white/[0.05] pb-4">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide uppercase bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-[#d4af37]/90 border border-slate-200 dark:border-white/[0.08]">
-                Controladoria Jurídica • Agenda Processual
-              </span>
-            </div>
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
-                <CalendarClock className="h-4 w-4" />
-              </span>
-              <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-                Prazos & Agenda Processual
-              </h1>
-            </div>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              Cronograma de audiências, manifestações e intimações ordenadas por urgência de vencimento.
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
+              Prazos & Agenda
+            </h1>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+              Cronograma de audiências, manifestações e intimações processuais.
             </p>
           </div>
 
@@ -418,7 +408,7 @@ function PrazosContent() {
             <button
               onClick={fetchPrazos}
               disabled={loading}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white/60 px-3.5 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100/80 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] backdrop-blur-sm transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.03] px-3.5 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/[0.06] transition cursor-pointer"
               title="Atualizar lista"
             >
               <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
@@ -427,9 +417,9 @@ function PrazosContent() {
 
             <button
               onClick={openCreateModal}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition-all active:scale-98 cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition cursor-pointer"
             >
-              <PlusCircle className="h-4 w-4 text-slate-950" />
+              <PlusCircle className="h-4 w-4 stroke-[2]" />
               Novo Prazo
             </button>
           </div>
@@ -451,22 +441,22 @@ function PrazosContent() {
                 type="button"
                 onClick={() => setSelectedFilter('todos')}
                 aria-pressed={selectedFilter === 'todos'}
-                className={`legal-glass-card fio-de-luz p-4 sm:p-5 text-left flex flex-col justify-between transition-all duration-200 cursor-pointer ${
+                className={`legal-card p-5 text-left flex flex-col justify-between transition-colors cursor-pointer ${
                   selectedFilter === 'todos'
-                    ? 'ring-1 ring-[#c5a059]'
+                    ? 'border-slate-400 dark:border-white/[0.25]'
                     : ''
                 }`}
                 title="Clique para exibir todos os prazos"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                     Total de Prazos
                   </span>
-                  <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-400">
-                    <CalendarClock className="h-3.5 w-3.5" />
+                  <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-500 dark:text-[#dfcaa0]">
+                    <CalendarClock className="h-4 w-4 stroke-[1.25]" />
                   </div>
                 </div>
-                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
+                <p className="mt-2 text-2xl sm:text-3xl font-semibold tabular-nums text-slate-900 dark:text-white">
                   {totalPrazos}
                 </p>
               </button>
@@ -476,22 +466,22 @@ function PrazosContent() {
                 type="button"
                 onClick={() => setSelectedFilter((prev) => (prev === 'urgentes' ? 'todos' : 'urgentes'))}
                 aria-pressed={selectedFilter === 'urgentes'}
-                className={`legal-glass-card fio-de-luz p-4 sm:p-5 text-left flex flex-col justify-between transition-all duration-200 cursor-pointer ${
+                className={`legal-card p-5 text-left flex flex-col justify-between transition-colors cursor-pointer ${
                   selectedFilter === 'urgentes'
-                    ? 'ring-1 ring-amber-400'
+                    ? 'border-amber-400 dark:border-amber-500/50'
                     : ''
                 }`}
                 title="Clique para filtrar apenas prazos Urgentes e de Hoje"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                     Urgentes / Hoje
                   </span>
-                  <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
-                    <Flame className="h-3.5 w-3.5" />
+                  <div className="p-1.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">
+                    <Flame className="h-4 w-4 stroke-[1.25]" />
                   </div>
                 </div>
-                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
+                <p className="mt-2 text-2xl sm:text-3xl font-semibold tabular-nums text-slate-900 dark:text-white">
                   {totalUrgentes}
                 </p>
               </button>
@@ -501,22 +491,22 @@ function PrazosContent() {
                 type="button"
                 onClick={() => setSelectedFilter((prev) => (prev === 'vencidos' ? 'todos' : 'vencidos'))}
                 aria-pressed={selectedFilter === 'vencidos'}
-                className={`legal-glass-card fio-de-luz p-4 sm:p-5 text-left flex flex-col justify-between transition-all duration-200 cursor-pointer ${
+                className={`legal-card p-5 text-left flex flex-col justify-between transition-colors cursor-pointer ${
                   selectedFilter === 'vencidos'
-                    ? 'ring-1 ring-rose-400'
+                    ? 'border-rose-400 dark:border-rose-500/50'
                     : ''
                 }`}
                 title="Clique para filtrar apenas prazos Vencidos"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                     Prazos Vencidos
                   </span>
-                  <div className="p-1.5 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400">
-                    <XCircle className="h-3.5 w-3.5" />
+                  <div className="p-1.5 rounded-lg bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400">
+                    <XCircle className="h-4 w-4 stroke-[1.25]" />
                   </div>
                 </div>
-                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
+                <p className="mt-2 text-2xl sm:text-3xl font-semibold tabular-nums text-slate-900 dark:text-white">
                   {totalVencidos}
                 </p>
               </button>
@@ -526,22 +516,22 @@ function PrazosContent() {
                 type="button"
                 onClick={() => setSelectedFilter((prev) => (prev === 'cumpridos' ? 'todos' : 'cumpridos'))}
                 aria-pressed={selectedFilter === 'cumpridos'}
-                className={`legal-glass-card fio-de-luz p-4 sm:p-5 text-left flex flex-col justify-between transition-all duration-200 cursor-pointer ${
+                className={`legal-card p-5 text-left flex flex-col justify-between transition-colors cursor-pointer ${
                   selectedFilter === 'cumpridos'
-                    ? 'ring-1 ring-emerald-400'
+                    ? 'border-emerald-400 dark:border-emerald-500/50'
                     : ''
                 }`}
                 title="Clique para filtrar apenas prazos Cumpridos"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                     Cumpridos
                   </span>
-                  <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
-                    <CheckCircle2 className="h-3.5 w-3.5" />
+                  <div className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
+                    <CheckCircle2 className="h-4 w-4 stroke-[1.25]" />
                   </div>
                 </div>
-                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
+                <p className="mt-2 text-2xl sm:text-3xl font-semibold tabular-nums text-slate-900 dark:text-white">
                   {totalCumpridos}
                 </p>
               </button>

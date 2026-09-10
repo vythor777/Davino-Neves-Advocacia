@@ -6,8 +6,6 @@ import { useRouter } from 'next/navigation';
 import AuthGuard from '@/components/AuthGuard';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { MetricCardSkeleton } from '@/components/Skeleton';
-import { EmptyState } from '@/components/EmptyState';
-import { useAuth } from '@/context/AuthContext';
 import { processoService, Processo } from '@/services/processoService';
 import { prazoService, Prazo } from '@/services/prazoService';
 import { clienteService, Cliente } from '@/services/clienteService';
@@ -15,48 +13,28 @@ import { calcularStatusPrazo } from '@/utils/dateUtils';
 import {
   aniversarianteService,
   AniversariantesResponse,
-  AniversarianteItem,
 } from '@/services/aniversarianteService';
 import {
   financeiroService,
   ResumoFinanceiroResponse,
 } from '@/services/financeiroService';
 import {
-  LayoutDashboard,
   Users,
   Briefcase,
   CalendarClock,
   Search,
   Sparkles,
   ArrowUpRight,
-  ShieldCheck,
-  Shield,
-  FileText,
   Clock,
   CheckCircle2,
-  AlertTriangle,
-  Flame,
-  Scale,
   Plus,
   ArrowRight,
   RefreshCw,
-  ExternalLink,
   ChevronRight,
   Calendar,
-  Building2,
-  Layers,
-  Sparkle,
   Cake,
-  Gift,
   TrendingUp,
-  TrendingDown,
-  DollarSign,
-  Wallet,
-  CreditCard,
-  BarChart3,
   Mail,
-  Copy,
-  Percent,
 } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -70,7 +48,6 @@ export default function HomePage() {
 
 function AstreaDashboard() {
   const router = useRouter();
-  const { user, isAdmin } = useAuth();
 
   const [loading, setLoading] = useState(true);
   const [processos, setProcessos] = useState<Processo[]>([]);
@@ -112,9 +89,6 @@ function AstreaDashboard() {
   const processosAtivos = processos.filter(
     (p) => p.status !== 'Arquivado' && p.status !== 'Encerrado',
   ).length;
-  const processosAguardando = processos.filter(
-    (p) => p.status === 'Aguardando Sentença' || p.status === 'Fase Recursal',
-  ).length;
 
   const totalPrazos = prazos.length;
   const prazosPendentes = prazos.filter((p) => p.status?.toLowerCase() !== 'cumprido');
@@ -142,7 +116,7 @@ function AstreaDashboard() {
       await prazoService.update(idPrazo, { status: 'Cumprido' });
       toast.success('Prazo marcado como cumprido com sucesso!');
       loadData();
-    } catch (error) {
+    } catch {
       toast.error('Não foi possível atualizar o prazo.');
     }
   };
@@ -162,68 +136,59 @@ function AstreaDashboard() {
   });
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-8 animate-fade-in-up">
-      {/* Astrea Hero Control Header */}
-      <div className="legal-glass-card relative overflow-hidden rounded-3xl p-6 sm:p-8 transition-all">
-        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 relative z-10">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 rounded-full bg-slate-100/80 dark:bg-white/[0.04] px-3 py-1 text-xs font-medium text-slate-700 dark:text-[#dfcaa0] border border-[0.5px] border-slate-200/60 dark:border-[#c5a059]/30">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#c5a059]" />
-              <span className="tracking-wide">Controladoria Jurídica</span>
-            </div>
-            <h1 className="mt-3 text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-              Davino Neves Advocacia • Painel Executivo
-            </h1>
-            <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl">
-              Gestão centralizada de processos, prazos processuais e clientes em tempo real.
-            </p>
-          </div>
+    <div className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-10 animate-fade-in-up">
+      {/* Header Limpo e Moderno */}
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 pb-2 border-b border-slate-200/60 dark:border-white/[0.05]">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
+            Painel Executivo
+          </h1>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            Visão centralizada de processos, prazos e finanças do escritório em tempo real.
+          </p>
+        </div>
 
-          {/* Ações Rápidas de Topo */}
-          <div className="flex flex-wrap items-center gap-2.5">
-            <Link
-              href="/processos"
-              id="btn-novo-processo-hero"
-              className="inline-flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] px-4 py-2.5 text-xs font-semibold text-slate-950 shadow-xs hover:shadow-md transition active:scale-95"
-            >
-              <Plus className="h-4 w-4 stroke-[2.25] text-slate-950" />
-              <span>Novo Processo</span>
-            </Link>
-            <Link
-              href="/prazos"
-              id="btn-novo-prazo-hero"
-              className="inline-flex items-center gap-2 rounded-xl bg-white/40 dark:bg-white/[0.03] hover:bg-white/80 dark:hover:bg-white/[0.06] px-4 py-2.5 text-xs font-medium text-slate-800 dark:text-slate-200 border border-[0.5px] border-slate-200/70 dark:border-white/[0.08] transition active:scale-95"
-            >
-              <Clock className="h-4 w-4 stroke-[1.5] text-slate-500 dark:text-slate-400" />
-              <span>Novo Prazo</span>
-            </Link>
-            <Link
-              href="/datajud"
-              id="btn-consultar-datajud-hero"
-              className="inline-flex items-center gap-2 rounded-xl bg-white/40 dark:bg-white/[0.03] hover:bg-white/80 dark:hover:bg-white/[0.06] px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-300 border border-[0.5px] border-slate-200/70 dark:border-white/[0.08] transition active:scale-95"
-            >
-              <Search className="h-4 w-4 stroke-[1.5] text-slate-400 dark:text-[#dfcaa0]" />
-              <span>Consultar DataJud</span>
-            </Link>
-          </div>
+        {/* Ações Rápidas de Topo */}
+        <div className="flex flex-wrap items-center gap-2.5">
+          <Link
+            href="/processos"
+            id="btn-novo-processo-hero"
+            className="inline-flex items-center gap-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 px-4 py-2 text-xs font-semibold transition cursor-pointer"
+          >
+            <Plus className="h-4 w-4 stroke-[2]" />
+            <span>Novo Processo</span>
+          </Link>
+          <Link
+            href="/prazos"
+            id="btn-novo-prazo-hero"
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.03] hover:bg-slate-50 dark:hover:bg-white/[0.06] px-3.5 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 transition cursor-pointer"
+          >
+            <Clock className="h-3.5 w-3.5 stroke-[1.5] text-slate-400" />
+            <span>Novo Prazo</span>
+          </Link>
+          <Link
+            href="/datajud"
+            id="btn-consultar-datajud-hero"
+            className="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.03] hover:bg-slate-50 dark:hover:bg-white/[0.06] px-3.5 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 transition cursor-pointer"
+          >
+            <Search className="h-3.5 w-3.5 stroke-[1.5] text-slate-400" />
+            <span>DataJud CNJ</span>
+          </Link>
         </div>
       </div>
 
       {/* Indicadores (KPI Cards) */}
       <div>
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center gap-2">
-            <Layers className="h-4 w-4 stroke-[1.25] text-slate-700 dark:text-[#dfcaa0]" />
-            <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-              Indicadores do Escritório
-            </h2>
-          </div>
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+            Visão Geral
+          </h2>
           <button
             onClick={loadData}
             title="Recarregar indicadores"
-            className="flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-[#dfcaa0] transition cursor-pointer"
+            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 transition cursor-pointer"
           >
-            <RefreshCw className={`h-3.5 w-3.5 stroke-[1.25] ${loading ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-3 w-3 ${loading ? 'animate-spin text-[#c5a059]' : ''}`} />
             <span>Atualizar</span>
           </button>
         </div>
@@ -241,25 +206,25 @@ function AstreaDashboard() {
             <Link
               href="/processos"
               id="kpi-card-processos"
-              className="group legal-glass-card fio-de-luz p-5 relative overflow-hidden flex flex-col justify-between hover:-translate-y-0.5 transition-all"
+              className="group legal-card p-5 relative flex flex-col justify-between hover:border-slate-300 dark:hover:border-white/[0.12] transition-colors"
             >
               <div className="flex items-start justify-between">
                 <div>
                   <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                     Processos Ativos
                   </span>
-                  <div className="mt-1.5 text-3xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc] tabular-nums">
+                  <div className="mt-2 text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900 dark:text-white tabular-nums">
                     {processosAtivos}
                   </div>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100/80 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0] group-hover:scale-105 transition-transform">
-                  <Briefcase className="h-5 w-5 stroke-[1.25]" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0]">
+                  <Briefcase className="h-4.5 w-4.5 stroke-[1.25]" />
                 </div>
               </div>
-              <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                <span>Total cadastrado: {totalProcessos}</span>
-                <span className="text-slate-700 dark:text-[#dfcaa0] font-semibold group-hover:underline flex items-center gap-0.5">
-                  Ver detalhes <ChevronRight className="h-3 w-3 stroke-[1.25]" />
+              <div className="mt-4 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                <span>Total: {totalProcessos}</span>
+                <span className="text-slate-700 dark:text-[#dfcaa0] font-medium group-hover:underline flex items-center gap-0.5">
+                  Ver <ChevronRight className="h-3 w-3 stroke-[1.5]" />
                 </span>
               </div>
             </Link>
@@ -268,30 +233,30 @@ function AstreaDashboard() {
             <Link
               href="/prazos"
               id="kpi-card-prazos"
-              className="group legal-glass-card fio-de-luz p-5 relative overflow-hidden flex flex-col justify-between hover:-translate-y-0.5 transition-all"
+              className="group legal-card p-5 relative flex flex-col justify-between hover:border-slate-300 dark:hover:border-white/[0.12] transition-colors"
             >
               <div className="flex items-start justify-between">
                 <div>
                   <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                    Prazos Esta Semana
+                    Prazos Próximos
                   </span>
-                  <div className="mt-1.5 text-3xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc] tabular-nums flex items-center gap-2">
+                  <div className="mt-2 text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900 dark:text-white tabular-nums flex items-center gap-2">
                     <span>{prazosUrgentes.length}</span>
                     {prazosHoje.length > 0 && (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-700 dark:text-rose-300 border border-[0.5px] border-rose-500/30">
-                        <Flame className="h-3 w-3 stroke-[1.25]" /> {prazosHoje.length} hoje
+                      <span className="inline-flex items-center gap-1 text-[10px] font-semibold px-2 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/50">
+                        {prazosHoje.length} hoje
                       </span>
                     )}
                   </div>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100/80 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0] group-hover:scale-105 transition-transform">
-                  <CalendarClock className="h-5 w-5 stroke-[1.25]" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0]">
+                  <CalendarClock className="h-4.5 w-4.5 stroke-[1.25]" />
                 </div>
               </div>
-              <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400">
+              <div className="mt-4 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                 <span>{prazosCumpridos} cumpridos</span>
-                <span className="text-slate-700 dark:text-[#dfcaa0] font-semibold group-hover:underline flex items-center gap-0.5">
-                  Ver detalhes <ChevronRight className="h-3 w-3 stroke-[1.25]" />
+                <span className="text-slate-700 dark:text-[#dfcaa0] font-medium group-hover:underline flex items-center gap-0.5">
+                  Ver <ChevronRight className="h-3 w-3 stroke-[1.5]" />
                 </span>
               </div>
             </Link>
@@ -300,25 +265,25 @@ function AstreaDashboard() {
             <Link
               href="/clientes"
               id="kpi-card-clientes"
-              className="group legal-glass-card fio-de-luz p-5 relative overflow-hidden flex flex-col justify-between hover:-translate-y-0.5 transition-all"
+              className="group legal-card p-5 relative flex flex-col justify-between hover:border-slate-300 dark:hover:border-white/[0.12] transition-colors"
             >
               <div className="flex items-start justify-between">
                 <div>
                   <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                    Carteira de Clientes
+                    Clientes
                   </span>
-                  <div className="mt-1.5 text-3xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc] tabular-nums">
+                  <div className="mt-2 text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900 dark:text-white tabular-nums">
                     {totalClientes}
                   </div>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100/80 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0] group-hover:scale-105 transition-transform">
-                  <Users className="h-5 w-5 stroke-[1.25]" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0]">
+                  <Users className="h-4.5 w-4.5 stroke-[1.25]" />
                 </div>
               </div>
-              <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                <span>{clientesPf} PF / {clientesPj} PJ</span>
-                <span className="text-slate-700 dark:text-[#dfcaa0] font-semibold group-hover:underline flex items-center gap-0.5">
-                  Ver detalhes <ChevronRight className="h-3 w-3 stroke-[1.25]" />
+              <div className="mt-4 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                <span>{clientesPf} PF • {clientesPj} PJ</span>
+                <span className="text-slate-700 dark:text-[#dfcaa0] font-medium group-hover:underline flex items-center gap-0.5">
+                  Ver <ChevronRight className="h-3 w-3 stroke-[1.5]" />
                 </span>
               </div>
             </Link>
@@ -327,25 +292,25 @@ function AstreaDashboard() {
             <Link
               href="/prazos"
               id="kpi-card-taxa"
-              className="group legal-glass-card fio-de-luz p-5 relative overflow-hidden flex flex-col justify-between hover:-translate-y-0.5 transition-all"
+              className="group legal-card p-5 relative flex flex-col justify-between hover:border-slate-300 dark:hover:border-white/[0.12] transition-colors"
             >
               <div className="flex items-start justify-between">
                 <div>
                   <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                    Taxa de Cumprimento
+                    Eficiência em Prazos
                   </span>
-                  <div className="mt-1.5 text-3xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc] tabular-nums flex items-center gap-1.5">
-                    <span>{taxaCumprimento}%</span>
+                  <div className="mt-2 text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900 dark:text-white tabular-nums">
+                    {taxaCumprimento}%
                   </div>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100/80 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0] group-hover:scale-105 transition-transform">
-                  <CheckCircle2 className="h-5 w-5 stroke-[1.25]" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0]">
+                  <CheckCircle2 className="h-4.5 w-4.5 stroke-[1.25]" />
                 </div>
               </div>
-              <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400">
+              <div className="mt-4 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
                 <span>{prazosCumpridos} de {totalPrazos} prazos</span>
-                <span className="text-slate-700 dark:text-[#dfcaa0] font-semibold group-hover:underline flex items-center gap-0.5">
-                  Ver detalhes <ChevronRight className="h-3 w-3 stroke-[1.25]" />
+                <span className="text-slate-700 dark:text-[#dfcaa0] font-medium group-hover:underline flex items-center gap-0.5">
+                  Ver <ChevronRight className="h-3 w-3 stroke-[1.5]" />
                 </span>
               </div>
             </Link>
@@ -356,46 +321,41 @@ function AstreaDashboard() {
       {/* Seção Central: Prazos Críticos do Dia & Assistente IA */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
         {/* Coluna 1 & 2: Prazos Imediatos e Agenda */}
-        <div className="lg:col-span-2 legal-glass-card p-6 flex flex-col justify-between h-full">
+        <div className="lg:col-span-2 legal-card p-6 flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between pb-4">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100/80 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0]">
-                  <CalendarClock className="h-4 w-4 stroke-[1.25]" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                    Prazos em Destaque & Próximos Termos
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Termos com vencimento imediato para a controladoria
-                  </p>
-                </div>
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.04]">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+                  Prazos Imediatos
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Termos processuais com vencimento próximo
+                </p>
               </div>
               <Link
                 href="/prazos"
                 id="link-ver-todos-prazos"
-                className="text-xs font-semibold text-slate-600 hover:text-slate-900 dark:text-[#dfcaa0] dark:hover:text-white flex items-center gap-1 transition"
+                className="text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-[#dfcaa0] dark:hover:text-white flex items-center gap-1 transition"
               >
-                <span>Ver Todos ({prazos.length})</span>
+                <span>Ver todos ({prazos.length})</span>
                 <ArrowRight className="h-3.5 w-3.5 stroke-[1.25]" />
               </Link>
             </div>
 
             {/* Lista de Prazos */}
-            <div className="mt-4 space-y-2.5">
+            <div className="mt-4 space-y-2">
               {loading ? (
                 <div className="py-8 text-center text-xs text-slate-400">
                   Carregando agenda de prazos...
                 </div>
               ) : prazosUrgentes.length === 0 ? (
                 <div className="py-8 text-center">
-                  <CheckCircle2 className="h-8 w-8 text-slate-400 dark:text-[#dfcaa0] mx-auto opacity-70 mb-2 stroke-[1.25]" />
-                  <p className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                    Nenhum prazo pendente para os próximos 7 dias!
+                  <CheckCircle2 className="h-7 w-7 text-emerald-500/80 mx-auto mb-2 stroke-[1.25]" />
+                  <p className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                    Nenhum prazo pendente para os próximos dias
                   </p>
                   <p className="text-[11px] text-slate-400 mt-0.5">
-                    Sua controladoria jurídica está 100% em dia.
+                    Todos os termos processuais estão em dia.
                   </p>
                 </div>
               ) : (
@@ -408,42 +368,42 @@ function AstreaDashboard() {
                     <div
                       key={prazo.id_prazo}
                       onClick={() => router.push('/prazos')}
-                      className="group flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-xl border border-[0.5px] border-slate-200/60 dark:border-white/[0.04] bg-slate-50/60 dark:bg-white/[0.02] hover:bg-white dark:hover:bg-white/[0.05] hover:border-slate-300/80 dark:hover:border-white/[0.08] transition cursor-pointer gap-3"
+                      className="group flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-lg border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] hover:bg-slate-100/60 dark:hover:bg-white/[0.05] transition cursor-pointer gap-3"
                     >
-                      <div className="flex items-start gap-3">
+                      <div className="flex items-start gap-3 min-w-0">
                         <div
-                          className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[0.5px] ${
+                          className={`mt-0.5 flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-lg text-xs font-semibold ${
                             isVencido
-                              ? 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/25'
+                              ? 'bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-400'
                               : isHoje
-                              ? 'bg-amber-500/10 text-amber-800 dark:text-amber-300 border-amber-500/25'
-                              : 'bg-slate-100 text-slate-700 dark:bg-white/[0.04] dark:text-slate-300 border-slate-200/80 dark:border-white/[0.06]'
+                              ? 'bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400'
+                              : 'bg-slate-100 text-slate-600 dark:bg-white/[0.06] dark:text-slate-300'
                           }`}
                         >
-                          <Calendar className="h-4 w-4 stroke-[1.25]" />
+                          <Calendar className="h-3.5 w-3.5 stroke-[1.25]" />
                         </div>
-                        <div>
+                        <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">
-                            <span className="text-xs font-semibold text-slate-900 dark:text-white">
+                            <span className="text-xs font-medium text-slate-900 dark:text-white truncate">
                               {prazo.descricao}
                             </span>
                             {isHoje && (
-                              <span className="rounded-full bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-[0.5px] border-amber-500/30 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider">
+                              <span className="rounded-md bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider shrink-0">
                                 Hoje
                               </span>
                             )}
                             {isVencido && (
-                              <span className="rounded-full bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-[0.5px] border-rose-500/30 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider">
+                              <span className="rounded-md bg-rose-50 dark:bg-rose-950/40 text-rose-700 dark:text-rose-300 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider shrink-0">
                                 Vencido
                               </span>
                             )}
                           </div>
-                          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-2">
-                            <span>Vencimento: <strong>{calc.dataExibicao}</strong>{prazo.hora ? ` às ${prazo.hora}` : ''}</span>
+                          <div className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 flex items-center gap-2 truncate">
+                            <span>Vencimento: {calc.dataExibicao}{prazo.hora ? ` às ${prazo.hora}` : ''}</span>
                             {prazo.processo && (
                               <>
                                 <span>•</span>
-                                <span className="font-mono text-[10px] text-slate-600 dark:text-slate-400">
+                                <span className="font-mono text-[10px] text-slate-500">
                                   {prazo.processo.numero_processo}
                                 </span>
                               </>
@@ -452,12 +412,13 @@ function AstreaDashboard() {
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 self-end sm:self-center">
+                      <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
                         <button
+                          type="button"
                           onClick={(e) => handleCumprirPrazoRapido(prazo.id_prazo, e)}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-[0.5px] border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] px-2.5 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.08] transition"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] px-2.5 py-1 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/[0.08] transition cursor-pointer"
                         >
-                          <CheckCircle2 className="h-3.5 w-3.5 stroke-[1.25] text-slate-500 dark:text-[#dfcaa0]" />
+                          <CheckCircle2 className="h-3 w-3 stroke-[1.5] text-slate-400" />
                           <span>Cumprir</span>
                         </button>
                       </div>
@@ -468,447 +429,358 @@ function AstreaDashboard() {
             </div>
           </div>
 
-          <div className="mt-6 pt-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
-            <span className="flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5 stroke-[1.25] text-slate-400" />
-              <span>Contagem de prazos em dias úteis CPC/CLT</span>
-            </span>
+          <div className="mt-6 pt-3 border-t border-slate-100 dark:border-white/[0.04] flex items-center justify-between text-xs text-slate-400">
+            <span>Contagem em dias úteis CPC/CLT</span>
             <Link
               href="/prazos"
-              className="font-medium text-slate-700 dark:text-[#dfcaa0] hover:underline flex items-center gap-1"
+              className="text-slate-700 dark:text-[#dfcaa0] hover:underline flex items-center gap-1 font-medium"
             >
-              <span>Central de Prazos</span>
-              <ArrowRight className="h-3.5 w-3.5 stroke-[1.25]" />
+              Central de Prazos <ArrowRight className="h-3 w-3 stroke-[1.5]" />
             </Link>
           </div>
         </div>
 
-        {/* Coluna 3: Assistente Jurídico (Conteúdo Simplificado, Sem Slop, Altura Equilibrada) */}
-        <div className="legal-glass-card p-6 flex flex-col justify-between h-full">
+        {/* Coluna 3: Assistente Jurídico */}
+        <div className="legal-card p-6 flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between pb-4">
-              <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100/80 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0]">
-                  <Sparkles className="h-4 w-4 stroke-[1.25]" />
-                </div>
-                <div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-white leading-tight">
-                    Assistente Jurídico
-                  </h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
-                    Análise e redação de peças
-                  </p>
-                </div>
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.04]">
+              <div>
+                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+                  Assistente Jurídico
+                </h3>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Análise e redação de peças processuais
+                </p>
               </div>
-              <span className="rounded-full bg-slate-100 dark:bg-white/[0.04] px-2.5 py-0.5 text-[10px] font-semibold text-slate-700 dark:text-[#dfcaa0] border border-[0.5px] border-slate-200/80 dark:border-white/[0.06]">
-                IA Segura
-              </span>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/[0.04] text-[#dfcaa0]">
+                <Sparkles className="h-4 w-4 stroke-[1.25]" />
+              </div>
             </div>
 
-            <p className="mt-3.5 text-xs text-slate-600 dark:text-slate-300 leading-snug">
-              Triagem ágil de intimações, minutas processuais e sínteses executivas com rigor técnico e sigilo.
+            <p className="mt-4 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              Triagem de intimações, minutas de petições e sínteses processuais com sigilo e precisão técnica.
             </p>
 
-            <div className="mt-3.5 space-y-2 text-xs text-slate-500 dark:text-slate-400">
+            <div className="mt-4 space-y-2 text-xs text-slate-500 dark:text-slate-400">
               <div className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#c5a059] shrink-0" />
-                <span className="truncate">Extração ágil de prazos e intimações</span>
+                <span>Identificação de prazos em publicações</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#c5a059] shrink-0" />
-                <span className="truncate">Minutas processuais e sínteses executivas</span>
+                <span>Estruturação de teses e jurisprudência</span>
               </div>
             </div>
           </div>
 
-          <div className="mt-6 pt-2">
+          <div className="mt-6 pt-3 border-t border-slate-100 dark:border-white/[0.04]">
             <Link
               href="/gemini"
               id="btn-abrir-assistente-ia"
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-[0.5px] border-slate-200/80 dark:border-white/[0.08] bg-slate-100 hover:bg-slate-200/80 dark:bg-white/[0.04] dark:hover:bg-white/[0.07] px-4 py-2.5 text-xs font-semibold text-slate-800 dark:text-[#dfcaa0] transition active:scale-95 shadow-2xs"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-100 dark:bg-white/[0.05] hover:bg-slate-200/70 dark:hover:bg-white/[0.08] px-4 py-2 text-xs font-semibold text-slate-800 dark:text-[#dfcaa0] transition cursor-pointer"
             >
-              <Sparkles className="h-4 w-4 stroke-[1.25]" />
-              <span>Abrir Assistente Jurídico</span>
+              <Sparkles className="h-3.5 w-3.5 stroke-[1.25]" />
+              <span>Abrir Assistente</span>
             </Link>
           </div>
         </div>
       </div>
 
-        {/* Seção Executiva de Duas Colunas: Aniversariantes do Mês & Indícios Financeiros */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          {/* Lado Esquerdo: Aniversariantes do Mês (lg:col-span-5) */}
-          <div className="lg:col-span-5 legal-glass-card p-6 flex flex-col justify-between">
-            <div>
-              {/* Header do Card */}
-              <div className="flex items-start justify-between pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100/80 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0]">
-                    <Cake className="h-5 w-5 stroke-[1.25]" />
-                  </div>
-                  <div>
-                    <h2 className="text-sm font-bold text-slate-900 dark:text-white">
-                      Aniversariantes do Mês
-                    </h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      {aniversariantesData?.nomeMes || 'Mês Atual'} •{' '}
-                      {aniversariantesData?.total || 0} celebrações registradas
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={loadData}
-                  title="Atualizar lista"
-                  className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-white/[0.05] dark:hover:text-[#dfcaa0] transition"
-                >
-                  <RefreshCw className={`h-4 w-4 stroke-[1.25] ${loading ? 'animate-spin text-slate-400' : ''}`} />
-                </button>
+      {/* Seção Executiva de Duas Colunas: Aniversariantes do Mês & Gestão Financeira */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        {/* Lado Esquerdo: Aniversariantes do Mês (lg:col-span-5) */}
+        <div className="lg:col-span-5 legal-card p-6 flex flex-col justify-between">
+          <div>
+            {/* Header do Card */}
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.04]">
+              <div>
+                <h2 className="text-sm font-semibold text-slate-900 dark:text-white">
+                  Aniversariantes do Mês
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  {aniversariantesData?.nomeMes || 'Mês Atual'} • {aniversariantesData?.total || 0} aniversários
+                </p>
               </div>
-
-              {/* Filtros rápidos: Todos, Equipe, Clientes */}
-              <div className="mt-4 flex items-center gap-1.5 p-1 bg-slate-100/70 dark:bg-white/[0.02] rounded-xl border border-[0.5px] border-slate-200/50 dark:border-white/[0.04] text-xs">
-                <button
-                  type="button"
-                  onClick={() => setAniversariantesFilter('TODOS')}
-                  className={`flex-1 py-1 px-2 text-center rounded-lg font-medium transition cursor-pointer ${
-                    aniversariantesFilter === 'TODOS'
-                      ? 'bg-white dark:bg-white/[0.06] text-slate-900 dark:text-[#dfcaa0] border border-[0.5px] border-slate-200/80 dark:border-white/[0.08] shadow-2xs font-semibold'
-                      : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
-                  }`}
-                >
-                  Todos ({aniversariantesData?.total || 0})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setAniversariantesFilter('USUARIO')}
-                  className={`flex-1 py-1 px-2 text-center rounded-lg font-medium transition cursor-pointer ${
-                    aniversariantesFilter === 'USUARIO'
-                      ? 'bg-white dark:bg-white/[0.06] text-slate-900 dark:text-[#dfcaa0] border border-[0.5px] border-slate-200/80 dark:border-white/[0.08] shadow-2xs font-semibold'
-                      : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
-                  }`}
-                >
-                  Equipe ({aniversariantesData?.totalUsuarios || 0})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setAniversariantesFilter('CLIENTE')}
-                  className={`flex-1 py-1 px-2 text-center rounded-lg font-medium transition cursor-pointer ${
-                    aniversariantesFilter === 'CLIENTE'
-                      ? 'bg-white dark:bg-white/[0.06] text-slate-900 dark:text-[#dfcaa0] border border-[0.5px] border-slate-200/80 dark:border-white/[0.08] shadow-2xs font-semibold'
-                      : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
-                  }`}
-                >
-                  Clientes ({aniversariantesData?.totalClientes || 0})
-                </button>
-              </div>
-
-              {/* Lista Elegante e Minimalista */}
-              <div className="mt-4 space-y-2.5">
-                {listaAniversariantes.length > 0 ? (
-                  listaAniversariantes.map((pessoa) => (
-                    <div
-                      key={pessoa.id}
-                      className="group relative flex items-center justify-between rounded-xl border border-[0.75px] border-slate-200/70 dark:border-white/[0.06] bg-slate-50/70 dark:bg-[#0d1117]/50 p-3 transition-all hover:border-slate-300 hover:bg-white dark:hover:border-white/[0.12] dark:hover:bg-[#161b22]"
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        {/* Avatar Circular com Iniciais */}
-                        <div className="relative shrink-0">
-                          <div
-                            className={`flex h-9 w-9 items-center justify-center rounded-full text-xs font-semibold border border-[0.75px] ${
-                              pessoa.tipo === 'USUARIO'
-                                ? 'bg-slate-900 text-[#dfcaa0] border-[#c5a059]/30 dark:bg-[#1f2631] dark:border-white/[0.12]'
-                                : 'bg-slate-100 text-slate-800 border-slate-300 dark:bg-[#161b22] dark:text-slate-300 dark:border-white/[0.08]'
-                            }`}
-                          >
-                            {pessoa.iniciais}
-                          </div>
-                          {pessoa.destaque && (
-                            <span
-                              title="Celebração iminente"
-                              className="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5 items-center justify-center rounded-full bg-[#c5a059] ring-2 ring-white dark:ring-[#161b22]"
-                            />
-                          )}
-                        </div>
-
-                        {/* Informações da Pessoa */}
-                        <div className="min-w-0">
-                          <div className="flex items-center gap-2">
-                            <h3 className="text-xs font-semibold text-slate-900 group-hover:text-slate-950 dark:text-white dark:group-hover:text-[#dfcaa0] transition-colors truncate">
-                              {pessoa.nome}
-                            </h3>
-                            <span
-                              className={`rounded-md px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider shrink-0 border border-[0.75px] ${
-                                pessoa.tipo === 'USUARIO'
-                                  ? 'bg-slate-100 text-slate-700 dark:bg-white/[0.05] dark:text-[#dfcaa0] border-slate-200/80 dark:border-white/[0.08]'
-                                  : 'bg-slate-100 text-slate-600 dark:bg-white/[0.04] dark:text-slate-300 border-slate-200/80 dark:border-white/[0.08]'
-                              }`}
-                            >
-                              {pessoa.tipo === 'USUARIO' ? 'Equipe' : 'Cliente'}
-                            </span>
-                          </div>
-                          <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
-                            {pessoa.subtitulo}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Data e Ação Rápida */}
-                      <div className="flex items-center gap-2 shrink-0 ml-3">
-                        <div className="text-right">
-                          <div className="text-xs font-semibold text-slate-800 dark:text-slate-200">
-                            {pessoa.diaFormatado} {aniversariantesData?.nomeMes?.slice(0, 3)}
-                          </div>
-                          <span className="inline-block text-[10px] font-medium text-slate-500 dark:text-slate-400">
-                            {pessoa.diasRestantesTexto}
-                          </span>
-                        </div>
-
-                        {/* Botão sutil de felicitação / copiar e-mail */}
-                        {pessoa.email && (
-                          <button
-                            type="button"
-                            onClick={() => handleCopyEmail(pessoa.email!, pessoa.nome)}
-                            title={`Copiar e-mail de ${pessoa.nome} (${pessoa.email})`}
-                            className="flex h-7 w-7 items-center justify-center rounded-lg border border-[0.75px] border-slate-200/80 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-800 dark:border-white/[0.08] dark:bg-[#161b22] dark:text-slate-400 dark:hover:border-white/[0.15] dark:hover:text-[#dfcaa0] transition cursor-pointer"
-                          >
-                            <Mail className="h-3.5 w-3.5 stroke-[1.25]" />
-                          </button>
-                        )}
-                      </div>
-                    </div>
-                  ))
-                ) : (
-                  <div className="rounded-xl border border-dashed border-[0.75px] border-slate-200 p-6 text-center dark:border-white/[0.08]">
-                    <Cake className="mx-auto h-7 w-7 text-slate-400 stroke-[1.25] mb-2" />
-                    <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
-                      Nenhum aniversariante neste filtro
-                    </p>
-                    <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
-                      Registre datas de nascimento nos módulos de{' '}
-                      <Link href="/usuarios" className="text-slate-700 dark:text-[#dfcaa0] underline font-medium">
-                        Equipe
-                      </Link>{' '}
-                      ou{' '}
-                      <Link href="/clientes" className="text-slate-700 dark:text-[#dfcaa0] underline font-medium">
-                        Clientes
-                      </Link>{' '}
-                      para exibição automática.
-                    </p>
-                  </div>
-                )}
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/[0.04] text-[#dfcaa0]">
+                <Cake className="h-4 w-4 stroke-[1.25]" />
               </div>
             </div>
 
-            {/* Rodapé do Card de Aniversariantes */}
-            <div className="mt-6 pt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-              <span className="flex items-center gap-1.5">
-                <Gift className="h-3.5 w-3.5 stroke-[1.25] text-[#c5a059]" />
-                <span>Integração com Colaboradores & Clientes</span>
-              </span>
-              <div className="flex items-center gap-2">
-                <Link
-                  href="/usuarios"
-                  className="text-[11px] font-medium text-slate-400 hover:text-slate-700 dark:hover:text-[#dfcaa0] transition"
-                >
-                  Equipe
-                </Link>
-                <span>•</span>
-                <Link
-                  href="/clientes"
-                  className="text-[11px] font-medium text-slate-400 hover:text-slate-700 dark:hover:text-[#dfcaa0] transition"
-                >
-                  Clientes
-                </Link>
-              </div>
+            {/* Filtros rápidos: Todos, Equipe, Clientes */}
+            <div className="mt-4 flex items-center gap-1 p-1 bg-slate-100/70 dark:bg-white/[0.03] rounded-lg text-xs">
+              <button
+                type="button"
+                onClick={() => setAniversariantesFilter('TODOS')}
+                className={`flex-1 py-1 px-2 text-center rounded-md font-medium transition cursor-pointer ${
+                  aniversariantesFilter === 'TODOS'
+                    ? 'bg-white dark:bg-white/[0.08] text-slate-900 dark:text-white shadow-2xs'
+                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-300'
+                }`}
+              >
+                Todos ({aniversariantesData?.total || 0})
+              </button>
+              <button
+                type="button"
+                onClick={() => setAniversariantesFilter('USUARIO')}
+                className={`flex-1 py-1 px-2 text-center rounded-md font-medium transition cursor-pointer ${
+                  aniversariantesFilter === 'USUARIO'
+                    ? 'bg-white dark:bg-white/[0.08] text-slate-900 dark:text-white shadow-2xs'
+                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-300'
+                }`}
+              >
+                Equipe ({aniversariantesData?.totalUsuarios || 0})
+              </button>
+              <button
+                type="button"
+                onClick={() => setAniversariantesFilter('CLIENTE')}
+                className={`flex-1 py-1 px-2 text-center rounded-md font-medium transition cursor-pointer ${
+                  aniversariantesFilter === 'CLIENTE'
+                    ? 'bg-white dark:bg-white/[0.08] text-slate-900 dark:text-white shadow-2xs'
+                    : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-300'
+                }`}
+              >
+                Clientes ({aniversariantesData?.totalClientes || 0})
+              </button>
+            </div>
+
+            {/* Lista Elegante e Minimalista */}
+            <div className="mt-4 space-y-2">
+              {listaAniversariantes.length > 0 ? (
+                listaAniversariantes.map((pessoa) => (
+                  <div
+                    key={pessoa.id}
+                    className="group flex items-center justify-between rounded-lg border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] p-2.5 transition hover:bg-slate-100/60 dark:hover:bg-white/[0.04]"
+                  >
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-slate-200/80 dark:bg-white/[0.08] text-xs font-semibold text-slate-700 dark:text-slate-300 shrink-0">
+                        {pessoa.iniciais}
+                      </div>
+
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-xs font-medium text-slate-900 dark:text-white truncate">
+                            {pessoa.nome}
+                          </span>
+                          <span className="text-[10px] text-slate-400">
+                            ({pessoa.tipo === 'USUARIO' ? 'Equipe' : 'Cliente'})
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                          {pessoa.subtitulo}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0 ml-2">
+                      <div className="text-right">
+                        <div className="text-xs font-medium text-slate-800 dark:text-slate-200">
+                          {pessoa.diaFormatado} {aniversariantesData?.nomeMes?.slice(0, 3)}
+                        </div>
+                        <span className="text-[10px] text-slate-400">
+                          {pessoa.diasRestantesTexto}
+                        </span>
+                      </div>
+
+                      {pessoa.email && (
+                        <button
+                          type="button"
+                          onClick={() => handleCopyEmail(pessoa.email!, pessoa.nome)}
+                          title={`Copiar e-mail de ${pessoa.nome}`}
+                          className="flex h-7 w-7 items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-white/[0.08] transition cursor-pointer"
+                        >
+                          <Mail className="h-3.5 w-3.5 stroke-[1.25]" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="rounded-lg border border-dashed border-slate-200 dark:border-white/[0.08] p-6 text-center">
+                  <Cake className="mx-auto h-6 w-6 text-slate-400 stroke-[1.25] mb-2" />
+                  <p className="text-xs font-medium text-slate-700 dark:text-slate-300">
+                    Nenhum aniversariante neste filtro
+                  </p>
+                  <p className="mt-0.5 text-[11px] text-slate-400">
+                    Cadastre datas nos módulos de Equipe ou Clientes.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Lado Direito: Gestão Financeira & Indicadores (lg:col-span-7) */}
-          <div className="lg:col-span-7 legal-glass-card p-6 flex flex-col justify-between">
-            <div>
-              {/* Header do Card */}
-              <div className="flex items-start justify-between pb-4">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100/80 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0]">
-                    <TrendingUp className="h-5 w-5 stroke-[1.25]" />
-                  </div>
-                  <div>
-                    <h2 className="text-sm font-bold text-slate-900 dark:text-white">
-                      Gestão Financeira
-                    </h2>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      Fluxo de caixa, honorários previstos e performance operacional
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-slate-100/80 dark:bg-white/[0.04] px-2.5 py-1 text-[10px] font-semibold text-slate-600 dark:text-[#dfcaa0] border border-[0.5px] border-slate-200/60 dark:border-white/[0.06]">
-                    Mês Corrente
-                  </span>
-                </div>
-              </div>
-
-              {/* Grid de 4 Cards de KPI Financeiro */}
-              <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                {/* KPI 1: Faturamento Previsto */}
-                <div className="rounded-xl border border-[0.5px] border-slate-200/60 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                      Honorários Previstos
-                    </span>
-                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-600 dark:text-[#dfcaa0]">
-                      <TrendingUp className="h-3 w-3 stroke-[1.25]" /> Previsão
-                    </span>
-                  </div>
-                  <div className="mt-2 text-xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                      financeiroData?.metricas.entradasPrevistas ?? 0,
-                    )}
-                  </div>
-                  <div className="mt-2 flex items-center justify-between">
-                    <span className="text-[11px] text-slate-500 dark:text-slate-400">
-                      Realizados: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(financeiroData?.metricas.entradasRealizadas ?? 0)}
-                    </span>
-                  </div>
-                </div>
-
-                {/* KPI 2: Honorários Liquidados */}
-                <div className="rounded-xl border border-[0.5px] border-slate-200/60 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                      Entradas Realizadas
-                    </span>
-                    <span className="rounded-full bg-slate-100 dark:bg-white/[0.05] px-1.5 py-0.5 text-[10px] font-semibold text-slate-700 dark:text-[#dfcaa0] border border-[0.5px] border-slate-200/80 dark:border-white/[0.06]">
-                      {financeiroData?.metricas.taxaRecebimento ?? 0}%
-                    </span>
-                  </div>
-                  <div className="mt-2 text-xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                      financeiroData?.metricas.entradasRealizadas ?? 0,
-                    )}
-                  </div>
-                  <div className="mt-2.5">
-                    <div className="h-1.5 w-full rounded-full bg-slate-200 dark:bg-white/[0.06] overflow-hidden">
-                      <div
-                        className="h-full rounded-full bg-[#c5a059] transition-all duration-500"
-                        style={{ width: `${financeiroData?.metricas.taxaRecebimento ?? 0}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* KPI 3: Inadimplência / Pendências */}
-                <div className="rounded-xl border border-[0.5px] border-slate-200/60 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                      Pendências & Atrasos
-                    </span>
-                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-rose-600 dark:text-rose-300">
-                      <TrendingDown className="h-3 w-3 stroke-[1.25]" /> Cobrança
-                    </span>
-                  </div>
-                  <div className="mt-2 text-xl font-semibold tracking-tight text-rose-600 dark:text-rose-300">
-                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                      financeiroData?.metricas.pendenciasAtrasadas ?? 0,
-                    )}
-                  </div>
-                  <p className="mt-2 text-[11px] text-slate-500 dark:text-slate-400">
-                    {financeiroData?.metricas.qtdAtrasadas ?? 0} lançamentos pendentes
-                  </p>
-                </div>
-
-                {/* KPI 4: Saldo Operacional Líquido */}
-                <div className="rounded-xl border border-[0.5px] border-slate-200/60 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] p-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                      Saldo Líquido em Caixa
-                    </span>
-                    <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-slate-600 dark:text-[#dfcaa0]">
-                      Consolidado
-                    </span>
-                  </div>
-                  <div className="mt-2 text-xl font-semibold tracking-tight text-slate-900 dark:text-[#dfcaa0]">
-                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-                      financeiroData?.metricas.saldoLiquido ?? 0,
-                    )}
-                  </div>
-                  <p className="mt-2 text-[11px] text-slate-500 dark:text-slate-400">
-                    Entradas pagas menos despesas pagas
-                  </p>
-                </div>
-              </div>
-
-              {/* Bloco de Composição de Receita */}
-              <div className="mt-4 rounded-xl border border-[0.75px] border-slate-200/70 dark:border-white/[0.06] bg-slate-50/50 dark:bg-[#0d1117]/40 p-3.5">
-                <div className="flex items-center justify-between text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">
-                  <span>Composição de Honorários</span>
-                  <span className="text-[11px] font-normal text-slate-500">Distribuição mensal</span>
-                </div>
-                {/* Barra Segmentada Calculada Dinamicamente */}
-                {(() => {
-                  const totalRec = financeiroData?.metricas.entradasPrevistas || 0;
-                  const catRec = financeiroData?.categorias.receitas || {};
-                  const pctContratual = totalRec > 0 ? Math.round(((catRec['HONORARIO_CONTRATUAL'] || 0) / totalRec) * 100) : 0;
-                  const pctExito = totalRec > 0 ? Math.round(((catRec['HONORARIO_EXITO'] || 0) / totalRec) * 100) : 0;
-                  const pctConsultivo = totalRec > 0 ? Math.round(((catRec['CONSULTIVO'] || 0) / totalRec) * 100) : 0;
-
-                  return (
-                    <>
-                      <div className="flex h-2 w-full rounded-full overflow-hidden bg-slate-200 dark:bg-white/[0.08]">
-                        {totalRec > 0 ? (
-                          <>
-                            {pctContratual > 0 && (
-                              <div className="h-full bg-[#c5a059]" style={{ width: `${pctContratual}%` }} title={`Contratual: ${pctContratual}%`} />
-                            )}
-                            {pctExito > 0 && (
-                              <div className="h-full bg-slate-500" style={{ width: `${pctExito}%` }} title={`Êxito: ${pctExito}%`} />
-                            )}
-                            {pctConsultivo > 0 && (
-                              <div className="h-full bg-slate-700 dark:bg-slate-400" style={{ width: `${pctConsultivo}%` }} title={`Consultivo: ${pctConsultivo}%`} />
-                            )}
-                          </>
-                        ) : (
-                          <div className="h-full w-full bg-slate-200 dark:bg-white/[0.08]" />
-                        )}
-                      </div>
-                      <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500 dark:text-slate-400">
-                        <div className="flex items-center gap-1.5">
-                          <span className="h-2 w-2 rounded-full bg-[#c5a059]" />
-                          <span>Contratual ({pctContratual}%)</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <span className="h-2 w-2 rounded-full bg-slate-500" />
-                          <span>Êxito ({pctExito}%)</span>
-                        </div>
-                        <div className="flex items-center gap-1.5">
-                          <span className="h-2 w-2 rounded-full bg-slate-700 dark:bg-slate-400" />
-                          <span>Consultivo ({pctConsultivo}%)</span>
-                        </div>
-                      </div>
-                    </>
-                  );
-                })()}
-              </div>
-            </div>
-
-            {/* Rodapé do Card Financeiro */}
-            <div className="mt-6 pt-2 flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-              <span className="flex items-center gap-1.5">
-                <BarChart3 className="h-3.5 w-3.5 stroke-[1.25] text-slate-400 dark:text-[#dfcaa0]" />
-                <span>Conciliação bancária sincronizada</span>
-              </span>
-              <Link
-                href="/financeiro"
-                id="link-financeiro-demonstrativo"
-                className="font-semibold text-slate-700 dark:text-[#dfcaa0] hover:underline flex items-center gap-1 transition-colors"
-              >
-                Demonstrativo completo <ArrowUpRight className="h-3.5 w-3.5 stroke-[1.25]" />
+          {/* Rodapé do Card de Aniversariantes */}
+          <div className="mt-6 pt-3 border-t border-slate-100 dark:border-white/[0.04] flex items-center justify-between text-xs text-slate-400">
+            <span>Integração de Contatos</span>
+            <div className="flex items-center gap-2">
+              <Link href="/usuarios" className="hover:text-slate-700 dark:hover:text-slate-200">
+                Equipe
+              </Link>
+              <span>•</span>
+              <Link href="/clientes" className="hover:text-slate-700 dark:hover:text-slate-200">
+                Clientes
               </Link>
             </div>
           </div>
         </div>
 
-        {/* Rodapé Institucional Completo */}
-        <InstitutionalFooter />
+        {/* Lado Direito: Gestão Financeira & Indicadores (lg:col-span-7) */}
+        <div className="lg:col-span-7 legal-card p-6 flex flex-col justify-between">
+          <div>
+            {/* Header do Card */}
+            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.04]">
+              <div>
+                <h2 className="text-sm font-semibold text-slate-900 dark:text-white">
+                  Gestão Financeira
+                </h2>
+                <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  Fluxo de caixa e honorários do mês
+                </p>
+              </div>
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/[0.04] text-[#dfcaa0]">
+                <TrendingUp className="h-4 w-4 stroke-[1.25]" />
+              </div>
+            </div>
+
+            {/* Grid de 4 Cards de KPI Financeiro */}
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {/* KPI 1: Faturamento Previsto */}
+              <div className="rounded-lg border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] p-3.5">
+                <span className="text-xs text-slate-500 dark:text-slate-400">
+                  Honorários Previstos
+                </span>
+                <div className="mt-1.5 text-lg font-semibold tracking-tight text-slate-900 dark:text-white">
+                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                    financeiroData?.metricas.entradasPrevistas ?? 0,
+                  )}
+                </div>
+                <p className="mt-1 text-[11px] text-slate-400">
+                  Realizados: {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(financeiroData?.metricas.entradasRealizadas ?? 0)}
+                </p>
+              </div>
+
+              {/* KPI 2: Honorários Liquidados */}
+              <div className="rounded-lg border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] p-3.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-slate-500 dark:text-slate-400">
+                    Entradas Realizadas
+                  </span>
+                  <span className="text-[10px] font-semibold text-slate-600 dark:text-[#dfcaa0]">
+                    {financeiroData?.metricas.taxaRecebimento ?? 0}%
+                  </span>
+                </div>
+                <div className="mt-1.5 text-lg font-semibold tracking-tight text-slate-900 dark:text-white">
+                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                    financeiroData?.metricas.entradasRealizadas ?? 0,
+                  )}
+                </div>
+                <div className="mt-2">
+                  <div className="h-1 w-full rounded-full bg-slate-200 dark:bg-white/[0.08] overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-[#c5a059]"
+                      style={{ width: `${financeiroData?.metricas.taxaRecebimento ?? 0}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* KPI 3: Inadimplência / Pendências */}
+              <div className="rounded-lg border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] p-3.5">
+                <span className="text-xs text-slate-500 dark:text-slate-400">
+                  Pendências & Atrasos
+                </span>
+                <div className="mt-1.5 text-lg font-semibold tracking-tight text-rose-600 dark:text-rose-400">
+                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                    financeiroData?.metricas.pendenciasAtrasadas ?? 0,
+                  )}
+                </div>
+                <p className="mt-1 text-[11px] text-slate-400">
+                  {financeiroData?.metricas.qtdAtrasadas ?? 0} lançamentos pendentes
+                </p>
+              </div>
+
+              {/* KPI 4: Saldo Operacional Líquido */}
+              <div className="rounded-lg border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] p-3.5">
+                <span className="text-xs text-slate-500 dark:text-slate-400">
+                  Saldo Líquido
+                </span>
+                <div className="mt-1.5 text-lg font-semibold tracking-tight text-slate-900 dark:text-[#dfcaa0]">
+                  {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
+                    financeiroData?.metricas.saldoLiquido ?? 0,
+                  )}
+                </div>
+                <p className="mt-1 text-[11px] text-slate-400">
+                  Entradas pagas menos despesas
+                </p>
+              </div>
+            </div>
+
+            {/* Bloco de Composição de Receita */}
+            <div className="mt-3 rounded-lg border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] p-3">
+              <div className="flex items-center justify-between text-xs font-medium text-slate-700 dark:text-slate-300 mb-2">
+                <span>Composição de Honorários</span>
+              </div>
+              {(() => {
+                const totalRec = financeiroData?.metricas.entradasPrevistas || 0;
+                const catRec = financeiroData?.categorias.receitas || {};
+                const pctContratual = totalRec > 0 ? Math.round(((catRec['HONORARIO_CONTRATUAL'] || 0) / totalRec) * 100) : 0;
+                const pctExito = totalRec > 0 ? Math.round(((catRec['HONORARIO_EXITO'] || 0) / totalRec) * 100) : 0;
+                const pctConsultivo = totalRec > 0 ? Math.round(((catRec['CONSULTIVO'] || 0) / totalRec) * 100) : 0;
+
+                return (
+                  <>
+                    <div className="flex h-1.5 w-full rounded-full overflow-hidden bg-slate-200 dark:bg-white/[0.08]">
+                      {totalRec > 0 ? (
+                        <>
+                          {pctContratual > 0 && (
+                            <div className="h-full bg-[#c5a059]" style={{ width: `${pctContratual}%` }} />
+                          )}
+                          {pctExito > 0 && (
+                            <div className="h-full bg-slate-500" style={{ width: `${pctExito}%` }} />
+                          )}
+                          {pctConsultivo > 0 && (
+                            <div className="h-full bg-slate-700 dark:bg-slate-400" style={{ width: `${pctConsultivo}%` }} />
+                          )}
+                        </>
+                      ) : (
+                        <div className="h-full w-full bg-slate-200 dark:bg-white/[0.08]" />
+                      )}
+                    </div>
+                    <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+                      <span className="flex items-center gap-1.5">
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#c5a059]" />
+                        Contratual ({pctContratual}%)
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <span className="h-1.5 w-1.5 rounded-full bg-slate-500" />
+                        Êxito ({pctExito}%)
+                      </span>
+                      <span className="flex items-center gap-1.5">
+                        <span className="h-1.5 w-1.5 rounded-full bg-slate-700 dark:bg-slate-400" />
+                        Consultivo ({pctConsultivo}%)
+                      </span>
+                    </div>
+                  </>
+                );
+              })()}
+            </div>
+          </div>
+
+          {/* Rodapé do Card Financeiro */}
+          <div className="mt-6 pt-3 border-t border-slate-100 dark:border-white/[0.04] flex items-center justify-between text-xs text-slate-400">
+            <span>Fluxo de Caixa</span>
+            <Link
+              href="/financeiro"
+              id="link-financeiro-demonstrativo"
+              className="text-slate-700 dark:text-[#dfcaa0] font-medium hover:underline flex items-center gap-1 transition"
+            >
+              Demonstrativo completo <ArrowUpRight className="h-3 w-3 stroke-[1.5]" />
+            </Link>
+          </div>
+        </div>
       </div>
-    );
-  }
+
+      {/* Rodapé Institucional Completo */}
+      <InstitutionalFooter />
+    </div>
+  );
+}

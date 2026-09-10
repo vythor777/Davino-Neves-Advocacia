@@ -313,20 +313,10 @@ function ProcessosContent() {
         {/* Cabeçalho Minimalista & Tipografia Sofisticada */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200/60 dark:border-white/[0.05]">
           <div>
-            <div className="flex items-center gap-2 mb-1">
-              <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide uppercase bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-[#d4af37]/90 border border-slate-200 dark:border-white/[0.08]">
-                Controladoria Jurídica • Módulo Processual
-              </span>
-            </div>
-            <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
-                <Scale className="h-4 w-4" />
-              </span>
-              <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-                Controle de Processos
-              </h1>
-            </div>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
+              Processos Judiciais
+            </h1>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
               Gestão de autos judiciais, comarcas, clientes vinculados e andamento de instâncias.
             </p>
           </div>
@@ -335,7 +325,7 @@ function ProcessosContent() {
             <button
               onClick={fetchProcessos}
               disabled={loading}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white/60 px-3.5 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100/80 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] backdrop-blur-sm transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.03] px-3.5 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/[0.06] transition cursor-pointer"
               title="Atualizar lista"
             >
               <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
@@ -344,9 +334,9 @@ function ProcessosContent() {
 
             <button
               onClick={openCreateModal}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition-all active:scale-98 cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 font-semibold px-4 py-2 text-xs transition cursor-pointer"
             >
-              <PlusCircle className="h-4 w-4 text-slate-950" />
+              <PlusCircle className="h-4 w-4 stroke-[2]" />
               Novo Processo
             </button>
           </div>
@@ -363,58 +353,58 @@ function ProcessosContent() {
             </>
           ) : (
             <>
-              <div className="legal-glass-card fio-de-luz p-4 sm:p-5 flex flex-col justify-between">
+              <div className="legal-card p-5 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                     Total Ativo
                   </span>
-                  <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-400">
-                    <Briefcase className="h-3.5 w-3.5" />
+                  <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-500 dark:text-[#dfcaa0]">
+                    <Briefcase className="h-4 w-4 stroke-[1.25]" />
                   </div>
                 </div>
-                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
+                <p className="mt-2 text-2xl sm:text-3xl font-semibold tabular-nums text-slate-900 dark:text-white">
                   {totalProcessos}
                 </p>
               </div>
 
-              <div className="legal-glass-card fio-de-luz p-4 sm:p-5 flex flex-col justify-between">
+              <div className="legal-card p-5 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                     Em Andamento
                   </span>
-                  <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400/90">
-                    <Scale className="h-3.5 w-3.5" />
+                  <div className="p-1.5 rounded-lg bg-amber-50 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">
+                    <Scale className="h-4 w-4 stroke-[1.25]" />
                   </div>
                 </div>
-                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
+                <p className="mt-2 text-2xl sm:text-3xl font-semibold tabular-nums text-slate-900 dark:text-white">
                   {totalEmAndamento}
                 </p>
               </div>
 
-              <div className="legal-glass-card fio-de-luz p-4 sm:p-5 flex flex-col justify-between">
+              <div className="legal-card p-5 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                     Conclusos / Pautas
                   </span>
-                  <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400/90">
-                    <Clock className="h-3.5 w-3.5" />
+                  <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-600 dark:text-slate-300">
+                    <Clock className="h-4 w-4 stroke-[1.25]" />
                   </div>
                 </div>
-                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
+                <p className="mt-2 text-2xl sm:text-3xl font-semibold tabular-nums text-slate-900 dark:text-white">
                   {totalConclusos}
                 </p>
               </div>
 
-              <div className="legal-glass-card fio-de-luz p-4 sm:p-5 flex flex-col justify-between">
+              <div className="legal-card p-5 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                     Encerrados
                   </span>
-                  <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400/90">
-                    <FileCheck2 className="h-3.5 w-3.5" />
+                  <div className="p-1.5 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
+                    <FileCheck2 className="h-4 w-4 stroke-[1.25]" />
                   </div>
                 </div>
-                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
+                <p className="mt-2 text-2xl sm:text-3xl font-semibold tabular-nums text-slate-900 dark:text-white">
                   {totalFinalizados}
                 </p>
               </div>

@@ -58,7 +58,7 @@ body {
 }
 
 /* =========================================================
-   Davino Neves UI Custom Utilities & LegalTech Glassmorphism
+   Davino Neves UI - Modern Legal Software Design System
    ========================================================= */
 
 .legal-card,
@@ -66,11 +66,10 @@ body {
 .legal-glass-card {
   position: relative;
   background: #ffffff;
-  background-image: linear-gradient(180deg, #ffffff 0%, #fbfcfd 100%);
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  border-radius: 1.25rem;
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.02);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease, border-color 0.25s ease;
+  border: 1px solid rgba(226, 232, 240, 0.8);
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
 .dark .legal-card,
@@ -80,11 +79,10 @@ body {
 [data-theme="dark"] .astrea-card,
 [data-theme="dark"] .legal-glass-card {
   position: relative;
-  background: #0d121c;
-  background-image: linear-gradient(180deg, #131926 0%, #0c1017 100%);
-  border: 1px solid rgba(255, 255, 255, 0.09);
-  border-radius: 1.25rem;
-  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(223, 202, 160, 0.16);
+  background: #111722;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 1rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -92,20 +90,18 @@ body {
   :root:not(.light) .astrea-card,
   :root:not(.light) .legal-glass-card {
     position: relative;
-    background: #0d121c;
-    background-image: linear-gradient(180deg, #131926 0%, #0c1017 100%);
-    border: 1px solid rgba(255, 255, 255, 0.09);
-    border-radius: 1.25rem;
-    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(223, 202, 160, 0.16);
+    background: #111722;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 1rem;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
   }
 }
 
 .legal-card:hover,
 .astrea-card:hover,
 .legal-glass-card:hover {
-  background-image: linear-gradient(180deg, #ffffff 0%, #f4f6f8 100%);
-  border-color: rgba(197, 160, 89, 0.35);
-  box-shadow: 0 8px 28px -4px rgba(15, 23, 42, 0.08);
+  border-color: rgba(197, 160, 89, 0.4);
+  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.06);
 }
 
 .dark .legal-card:hover,
@@ -114,88 +110,68 @@ body {
 [data-theme="dark"] .legal-card:hover,
 [data-theme="dark"] .astrea-card:hover,
 [data-theme="dark"] .legal-glass-card:hover {
-  background-image: linear-gradient(180deg, #161e2e 0%, #0e131b 100%);
   border-color: rgba(197, 160, 89, 0.3);
-  box-shadow: 0 20px 42px -6px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(223, 202, 160, 0.3);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) .legal-card:hover,
   :root:not(.light) .astrea-card:hover,
   :root:not(.light) .legal-glass-card:hover {
-    background-image: linear-gradient(180deg, #161e2e 0%, #0e131b 100%);
     border-color: rgba(197, 160, 89, 0.3);
-    box-shadow: 0 20px 42px -6px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(223, 202, 160, 0.3);
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5);
   }
 }
 
-/* Modais de Alta Densidade: Opacidade total de 100% para eliminar visualização do fundo */
+/* Modais de Alta Densidade */
 .legal-modal-card {
   position: relative;
   background: #ffffff !important;
-  border: 1px solid rgba(15, 23, 42, 0.12) !important;
-  border-radius: 1.25rem;
-  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.35) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  border-radius: 1rem;
+  box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.15) !important;
 }
 
 .dark .legal-modal-card,
 [data-theme="dark"] .legal-modal-card {
   position: relative;
-  background: #0b0f17 !important;
-  background-image: linear-gradient(180deg, #111722 0%, #090d14 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.95), inset 0 1px 0 0 rgba(223, 202, 160, 0.22) !important;
+  background: #111722 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.8) !important;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) .legal-modal-card {
     position: relative;
-    background: #0b0f17 !important;
-    background-image: linear-gradient(180deg, #111722 0%, #090d14 100%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.12) !important;
-    box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.95), inset 0 1px 0 0 rgba(223, 202, 160, 0.22) !important;
+    background: #111722 !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.8) !important;
   }
 }
 
 /* Caixa de Widget Interno Sólido de Alta Legibilidade */
 .legal-widget-box {
   background: #f8fafc;
-  border: 1px solid rgba(15, 23, 42, 0.08);
+  border: 1px solid rgba(226, 232, 240, 0.8);
   border-radius: 0.75rem;
 }
 
 .dark .legal-widget-box,
 [data-theme="dark"] .legal-widget-box {
-  background: #141a26;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #161d2a;
+  border: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) .legal-widget-box {
-    background: #141a26;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: #161d2a;
+    border: 1px solid rgba(255, 255, 255, 0.06);
   }
 }
 
-/* Fio de Luz para Indicadores e Delimitações Especiais */
+/* Delimitações e Suportes de Linha */
 .fio-de-luz {
   position: relative;
-}
-
-.fio-de-luz::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 8%;
-  right: 8%;
-  height: 0.5px;
-  background: linear-gradient(90deg, transparent 0%, rgba(223, 202, 160, 0.55) 50%, transparent 100%);
-  pointer-events: none;
-  z-index: 10;
-}
-
-:root:not(.dark):not([data-theme="dark"]) .fio-de-luz::before {
-  background: linear-gradient(90deg, transparent 0%, rgba(197, 160, 89, 0.45) 50%, transparent 100%);
 }
 
 .tabular-nums {
