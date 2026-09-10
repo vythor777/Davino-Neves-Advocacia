@@ -259,24 +259,6 @@ export function AppLayout({ children }: AppLayoutProps) {
 
         {/* Rodapé da Sidebar */}
         <div className="flex flex-col gap-3 pt-4 transition-colors">
-          {/* Card compacto de status da integração ('DataJud CNJ 100% Operacional') */}
-          <div className="rounded-xl border border-[0.75px] border-slate-200/70 dark:border-white/[0.08] bg-slate-100/70 dark:bg-[#161b22]/70 p-3 shadow-2xs transition-colors">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-[#c5a059]" />
-                </span>
-                <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">DataJud CNJ</span>
-              </div>
-              <span className="text-[10px] font-medium text-slate-700 dark:text-slate-300 bg-slate-200/70 dark:bg-white/[0.05] px-1.5 py-0.5 rounded border border-[0.75px] border-slate-300/60 dark:border-white/[0.08] tabular-nums">
-                Operacional
-              </span>
-            </div>
-            <p className="mt-1 text-[10px] text-slate-500 dark:text-slate-400 leading-tight">
-              Sincronização ativa com tribunais
-            </p>
-          </div>
-
           {/* Card do usuário logado com dropdown de configurações */}
           <div className="relative" ref={userDropdownRef}>
             <button
