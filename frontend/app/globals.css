@@ -64,13 +64,14 @@ body {
 .legal-card,
 .astrea-card,
 .legal-glass-card {
-  background-color: rgba(255, 255, 255, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 0.75px solid rgba(15, 23, 42, 0.08);
-  border-radius: 1rem;
-  box-shadow: 0 1px 3px 0 rgba(15, 23, 42, 0.03), 0 1px 2px -1px rgba(15, 23, 42, 0.02);
-  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  background: radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, 0.96) 0%, rgba(248, 250, 252, 0.88) 100%);
+  backdrop-filter: blur(20px) saturate(130%);
+  -webkit-backdrop-filter: blur(20px) saturate(130%);
+  border: 0.5px solid rgba(15, 23, 42, 0.05);
+  border-radius: 1.25rem;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.03), 0 1px 2px -1px rgba(15, 23, 42, 0.02);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease;
 }
 
 .dark .legal-card,
@@ -79,30 +80,33 @@ body {
 [data-theme="dark"] .legal-card,
 [data-theme="dark"] .astrea-card,
 [data-theme="dark"] .legal-glass-card {
-  background-color: rgba(22, 27, 34, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 0.75px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45);
+  position: relative;
+  background: radial-gradient(130% 90% at 50% 0%, rgba(255, 255, 255, 0.045) 0%, rgba(22, 27, 34, 0.42) 50%, rgba(13, 17, 23, 0.65) 100%);
+  backdrop-filter: blur(24px) saturate(140%);
+  -webkit-backdrop-filter: blur(24px) saturate(140%);
+  border: none;
+  border-radius: 1.25rem;
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(223, 202, 160, 0.16), inset 0 -1px 0 0 rgba(255, 255, 255, 0.015);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) .legal-card,
   :root:not(.light) .astrea-card,
   :root:not(.light) .legal-glass-card {
-    background-color: rgba(22, 27, 34, 0.75);
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-    border: 0.75px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.45);
+    position: relative;
+    background: radial-gradient(130% 90% at 50% 0%, rgba(255, 255, 255, 0.045) 0%, rgba(22, 27, 34, 0.42) 50%, rgba(13, 17, 23, 0.65) 100%);
+    backdrop-filter: blur(24px) saturate(140%);
+    -webkit-backdrop-filter: blur(24px) saturate(140%);
+    border: none;
+    border-radius: 1.25rem;
+    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(223, 202, 160, 0.16), inset 0 -1px 0 0 rgba(255, 255, 255, 0.015);
   }
 }
 
 .legal-card:hover,
 .astrea-card:hover,
 .legal-glass-card:hover {
-  border-color: rgba(15, 23, 42, 0.18);
-  box-shadow: 0 8px 24px -4px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 8px 28px -4px rgba(15, 23, 42, 0.06);
 }
 
 .dark .legal-card:hover,
@@ -111,17 +115,38 @@ body {
 [data-theme="dark"] .legal-card:hover,
 [data-theme="dark"] .astrea-card:hover,
 [data-theme="dark"] .legal-glass-card:hover {
-  border-color: rgba(255, 255, 255, 0.16);
-  box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.6);
+  background: radial-gradient(130% 90% at 50% 0%, rgba(255, 255, 255, 0.065) 0%, rgba(22, 27, 34, 0.48) 50%, rgba(13, 17, 23, 0.7) 100%);
+  box-shadow: 0 20px 42px -6px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(223, 202, 160, 0.3);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) .legal-card:hover,
   :root:not(.light) .astrea-card:hover,
   :root:not(.light) .legal-glass-card:hover {
-    border-color: rgba(255, 255, 255, 0.16);
-    box-shadow: 0 8px 30px -4px rgba(0, 0, 0, 0.6);
+    background: radial-gradient(130% 90% at 50% 0%, rgba(255, 255, 255, 0.065) 0%, rgba(22, 27, 34, 0.48) 50%, rgba(13, 17, 23, 0.7) 100%);
+    box-shadow: 0 20px 42px -6px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(223, 202, 160, 0.3);
   }
+}
+
+/* Fio de Luz para Indicadores e Delimitações Especiais */
+.fio-de-luz {
+  position: relative;
+}
+
+.fio-de-luz::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 8%;
+  right: 8%;
+  height: 0.5px;
+  background: linear-gradient(90deg, transparent 0%, rgba(223, 202, 160, 0.55) 50%, transparent 100%);
+  pointer-events: none;
+  z-index: 10;
+}
+
+:root:not(.dark):not([data-theme="dark"]) .fio-de-luz::before {
+  background: linear-gradient(90deg, transparent 0%, rgba(197, 160, 89, 0.45) 50%, transparent 100%);
 }
 
 .tabular-nums {

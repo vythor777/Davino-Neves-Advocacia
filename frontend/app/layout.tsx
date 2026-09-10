@@ -11,10 +11,10 @@ const plusJakartaSans = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Davino Neves Advocacia | Painel Executivo",
+  title: "Davino Neves Advocacia • Painel Executivo",
   description: "Plataforma corporativa de gestão jurídica com controle de processos, clientes, prazos e inteligência processual.",
   openGraph: {
-    title: "Davino Neves Advocacia | Painel Executivo",
+    title: "Davino Neves Advocacia • Painel Executivo",
     description: "Plataforma corporativa de gestão jurídica com controle de processos, clientes, prazos e inteligência processual.",
   },
 };

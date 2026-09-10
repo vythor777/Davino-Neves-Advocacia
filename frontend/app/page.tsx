@@ -167,12 +167,12 @@ function AstreaDashboard() {
       <div className="legal-glass-card relative overflow-hidden rounded-3xl p-6 sm:p-8 transition-all">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 relative z-10">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 rounded-full bg-slate-100/90 dark:bg-white/[0.04] px-3 py-1 text-xs font-semibold text-slate-700 dark:text-slate-300 border border-[0.75px] border-slate-200/80 dark:border-white/[0.08]">
+            <div className="inline-flex items-center gap-2 rounded-full bg-slate-100/80 dark:bg-white/[0.04] px-3 py-1 text-xs font-medium text-slate-700 dark:text-[#dfcaa0] border border-[0.5px] border-slate-200/60 dark:border-[#c5a059]/30">
               <span className="h-1.5 w-1.5 rounded-full bg-[#c5a059]" />
-              <span className="tracking-wide">Davino Neves Advocacia</span>
+              <span className="tracking-wide">Controladoria Jurídica</span>
             </div>
-            <h1 className="mt-3 text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900 dark:text-white">
-              Davino Neves Advocacia | Painel Executivo
+            <h1 className="mt-3 text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
+              Davino Neves Advocacia • Painel Executivo
             </h1>
             <p className="mt-1.5 text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl">
               Gestão centralizada de processos, prazos processuais e clientes em tempo real.
@@ -184,15 +184,15 @@ function AstreaDashboard() {
             <Link
               href="/processos"
               id="btn-novo-processo-hero"
-              className="inline-flex items-center gap-2 rounded-xl bg-slate-900 dark:bg-[#161b22] px-4 py-2.5 text-xs font-semibold text-white dark:text-[#dfcaa0] border border-[0.75px] border-slate-800 dark:border-white/[0.12] hover:bg-slate-800 dark:hover:bg-[#1f2631] shadow-2xs transition active:scale-95"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] px-4 py-2.5 text-xs font-semibold text-slate-950 shadow-xs hover:shadow-md transition active:scale-95"
             >
-              <Plus className="h-4 w-4 stroke-[1.5] text-[#c5a059]" />
+              <Plus className="h-4 w-4 stroke-[2.25] text-slate-950" />
               <span>Novo Processo</span>
             </Link>
             <Link
               href="/prazos"
               id="btn-novo-prazo-hero"
-              className="inline-flex items-center gap-2 rounded-xl bg-slate-100 dark:bg-white/[0.05] px-4 py-2.5 text-xs font-semibold text-slate-800 dark:text-slate-200 border border-[0.75px] border-slate-200/80 dark:border-white/[0.08] hover:bg-slate-200/80 dark:hover:bg-white/[0.08] shadow-2xs transition active:scale-95"
+              className="inline-flex items-center gap-2 rounded-xl bg-white/40 dark:bg-white/[0.03] hover:bg-white/80 dark:hover:bg-white/[0.06] px-4 py-2.5 text-xs font-medium text-slate-800 dark:text-slate-200 border border-[0.5px] border-slate-200/70 dark:border-white/[0.08] transition active:scale-95"
             >
               <Clock className="h-4 w-4 stroke-[1.5] text-slate-500 dark:text-slate-400" />
               <span>Novo Prazo</span>
@@ -200,7 +200,7 @@ function AstreaDashboard() {
             <Link
               href="/datajud"
               id="btn-consultar-datajud-hero"
-              className="inline-flex items-center gap-2 rounded-xl border border-[0.75px] border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-transparent px-4 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/[0.04] transition active:scale-95"
+              className="inline-flex items-center gap-2 rounded-xl bg-white/40 dark:bg-white/[0.03] hover:bg-white/80 dark:hover:bg-white/[0.06] px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-300 border border-[0.5px] border-slate-200/70 dark:border-white/[0.08] transition active:scale-95"
             >
               <Search className="h-4 w-4 stroke-[1.5] text-slate-400 dark:text-[#dfcaa0]" />
               <span>Consultar DataJud</span>
@@ -241,22 +241,22 @@ function AstreaDashboard() {
             <Link
               href="/processos"
               id="kpi-card-processos"
-              className="group legal-glass-card p-5 relative overflow-hidden flex flex-col justify-between hover:-translate-y-0.5 transition-all"
+              className="group legal-glass-card fio-de-luz p-5 relative overflow-hidden flex flex-col justify-between hover:-translate-y-0.5 transition-all"
             >
               <div className="flex items-start justify-between">
                 <div>
                   <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                     Processos Ativos
                   </span>
-                  <div className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">
+                  <div className="mt-1.5 text-3xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc] tabular-nums">
                     {processosAtivos}
                   </div>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-white/[0.05] border border-[0.75px] border-slate-200/80 dark:border-white/[0.08] text-slate-700 dark:text-[#dfcaa0] group-hover:scale-105 transition-transform">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100/80 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0] group-hover:scale-105 transition-transform">
                   <Briefcase className="h-5 w-5 stroke-[1.25]" />
                 </div>
               </div>
-              <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-[0.75px] border-slate-100 dark:border-white/[0.06] pt-2.5">
+              <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-[0.5px] border-slate-100 dark:border-white/[0.04] pt-2.5">
                 <span>Total cadastrado: {totalProcessos}</span>
                 <span className="text-slate-700 dark:text-[#dfcaa0] font-semibold group-hover:underline flex items-center gap-0.5">
                   Ver detalhes <ChevronRight className="h-3 w-3 stroke-[1.25]" />
@@ -268,27 +268,27 @@ function AstreaDashboard() {
             <Link
               href="/prazos"
               id="kpi-card-prazos"
-              className="group legal-glass-card p-5 relative overflow-hidden flex flex-col justify-between hover:-translate-y-0.5 transition-all"
+              className="group legal-glass-card fio-de-luz p-5 relative overflow-hidden flex flex-col justify-between hover:-translate-y-0.5 transition-all"
             >
               <div className="flex items-start justify-between">
                 <div>
                   <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                     Prazos Esta Semana
                   </span>
-                  <div className="mt-1 text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                  <div className="mt-1.5 text-3xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc] tabular-nums flex items-center gap-2">
                     <span>{prazosUrgentes.length}</span>
                     {prazosHoje.length > 0 && (
-                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-700 dark:text-rose-300 border border-[0.75px] border-rose-500/30">
+                      <span className="inline-flex items-center gap-1 text-[11px] font-semibold px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-700 dark:text-rose-300 border border-[0.5px] border-rose-500/30">
                         <Flame className="h-3 w-3 stroke-[1.25]" /> {prazosHoje.length} hoje
                       </span>
                     )}
                   </div>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-white/[0.05] border border-[0.75px] border-slate-200/80 dark:border-white/[0.08] text-slate-700 dark:text-[#dfcaa0] group-hover:scale-105 transition-transform">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100/80 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0] group-hover:scale-105 transition-transform">
                   <CalendarClock className="h-5 w-5 stroke-[1.25]" />
                 </div>
               </div>
-              <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-[0.75px] border-slate-100 dark:border-white/[0.06] pt-2.5">
+              <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-[0.5px] border-slate-100 dark:border-white/[0.04] pt-2.5">
                 <span>{prazosCumpridos} cumpridos</span>
                 <span className="text-slate-700 dark:text-[#dfcaa0] font-semibold group-hover:underline flex items-center gap-0.5">
                   Ver detalhes <ChevronRight className="h-3 w-3 stroke-[1.25]" />
@@ -300,22 +300,22 @@ function AstreaDashboard() {
             <Link
               href="/clientes"
               id="kpi-card-clientes"
-              className="group legal-glass-card p-5 relative overflow-hidden flex flex-col justify-between hover:-translate-y-0.5 transition-all"
+              className="group legal-glass-card fio-de-luz p-5 relative overflow-hidden flex flex-col justify-between hover:-translate-y-0.5 transition-all"
             >
               <div className="flex items-start justify-between">
                 <div>
                   <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                     Carteira de Clientes
                   </span>
-                  <div className="mt-1 text-2xl font-bold text-slate-900 dark:text-white">
+                  <div className="mt-1.5 text-3xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc] tabular-nums">
                     {totalClientes}
                   </div>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-white/[0.05] border border-[0.75px] border-slate-200/80 dark:border-white/[0.08] text-slate-700 dark:text-[#dfcaa0] group-hover:scale-105 transition-transform">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100/80 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0] group-hover:scale-105 transition-transform">
                   <Users className="h-5 w-5 stroke-[1.25]" />
                 </div>
               </div>
-              <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-[0.75px] border-slate-100 dark:border-white/[0.06] pt-2.5">
+              <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-[0.5px] border-slate-100 dark:border-white/[0.04] pt-2.5">
                 <span>{clientesPf} PF / {clientesPj} PJ</span>
                 <span className="text-slate-700 dark:text-[#dfcaa0] font-semibold group-hover:underline flex items-center gap-0.5">
                   Ver detalhes <ChevronRight className="h-3 w-3 stroke-[1.25]" />
@@ -327,22 +327,22 @@ function AstreaDashboard() {
             <Link
               href="/prazos"
               id="kpi-card-taxa"
-              className="group legal-glass-card p-5 relative overflow-hidden flex flex-col justify-between hover:-translate-y-0.5 transition-all"
+              className="group legal-glass-card fio-de-luz p-5 relative overflow-hidden flex flex-col justify-between hover:-translate-y-0.5 transition-all"
             >
               <div className="flex items-start justify-between">
                 <div>
                   <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                     Taxa de Cumprimento
                   </span>
-                  <div className="mt-1 text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                  <div className="mt-1.5 text-3xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc] tabular-nums flex items-center gap-1.5">
                     <span>{taxaCumprimento}%</span>
                   </div>
                 </div>
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 dark:bg-white/[0.05] border border-[0.75px] border-slate-200/80 dark:border-white/[0.08] text-slate-700 dark:text-[#dfcaa0] group-hover:scale-105 transition-transform">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100/80 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0] group-hover:scale-105 transition-transform">
                   <CheckCircle2 className="h-5 w-5 stroke-[1.25]" />
                 </div>
               </div>
-              <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-[0.75px] border-slate-100 dark:border-white/[0.06] pt-2.5">
+              <div className="mt-4 flex items-center justify-between text-[11px] font-medium text-slate-500 dark:text-slate-400 border-t border-[0.5px] border-slate-100 dark:border-white/[0.04] pt-2.5">
                 <span>{prazosCumpridos} de {totalPrazos} prazos</span>
                 <span className="text-slate-700 dark:text-[#dfcaa0] font-semibold group-hover:underline flex items-center gap-0.5">
                   Ver detalhes <ChevronRight className="h-3 w-3 stroke-[1.25]" />
@@ -358,9 +358,9 @@ function AstreaDashboard() {
         {/* Coluna 1 & 2: Prazos Imediatos e Agenda */}
         <div className="lg:col-span-2 legal-glass-card p-6 flex flex-col justify-between h-full">
           <div>
-            <div className="flex items-center justify-between pb-4 border-b border-[0.75px] border-slate-100 dark:border-white/[0.08]">
+            <div className="flex items-center justify-between pb-4 border-b border-[0.5px] border-slate-100 dark:border-white/[0.04]">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 dark:bg-white/[0.05] border border-[0.75px] border-slate-200/80 dark:border-white/[0.08] text-slate-700 dark:text-[#dfcaa0]">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100/80 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0]">
                   <CalendarClock className="h-4 w-4 stroke-[1.25]" />
                 </div>
                 <div>
@@ -408,16 +408,16 @@ function AstreaDashboard() {
                     <div
                       key={prazo.id_prazo}
                       onClick={() => router.push('/prazos')}
-                      className="group flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-xl border border-[0.75px] border-slate-200/70 dark:border-white/[0.06] bg-slate-50/70 dark:bg-[#0d1117]/50 hover:bg-white dark:hover:bg-[#161b22] hover:border-slate-300 dark:hover:border-white/[0.12] transition cursor-pointer gap-3"
+                      className="group flex flex-col sm:flex-row sm:items-center justify-between p-3.5 rounded-xl border border-[0.5px] border-slate-200/60 dark:border-white/[0.04] bg-slate-50/60 dark:bg-white/[0.02] hover:bg-white dark:hover:bg-white/[0.05] hover:border-slate-300/80 dark:hover:border-white/[0.08] transition cursor-pointer gap-3"
                     >
                       <div className="flex items-start gap-3">
                         <div
-                          className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[0.75px] ${
+                          className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[0.5px] ${
                             isVencido
                               ? 'bg-rose-500/10 text-rose-700 dark:text-rose-300 border-rose-500/25'
                               : isHoje
                               ? 'bg-amber-500/10 text-amber-800 dark:text-amber-300 border-amber-500/25'
-                              : 'bg-slate-100 text-slate-700 dark:bg-white/[0.05] dark:text-slate-300 border-slate-200/80 dark:border-white/[0.08]'
+                              : 'bg-slate-100 text-slate-700 dark:bg-white/[0.04] dark:text-slate-300 border-slate-200/80 dark:border-white/[0.06]'
                           }`}
                         >
                           <Calendar className="h-4 w-4 stroke-[1.25]" />
@@ -428,12 +428,12 @@ function AstreaDashboard() {
                               {prazo.descricao}
                             </span>
                             {isHoje && (
-                              <span className="rounded-full bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-[0.75px] border-amber-500/30 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider">
+                              <span className="rounded-full bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-[0.5px] border-amber-500/30 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider">
                                 Hoje
                               </span>
                             )}
                             {isVencido && (
-                              <span className="rounded-full bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-[0.75px] border-rose-500/30 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider">
+                              <span className="rounded-full bg-rose-500/20 text-rose-700 dark:text-rose-300 border border-[0.5px] border-rose-500/30 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider">
                                 Vencido
                               </span>
                             )}
@@ -455,7 +455,7 @@ function AstreaDashboard() {
                       <div className="flex items-center gap-2 self-end sm:self-center">
                         <button
                           onClick={(e) => handleCumprirPrazoRapido(prazo.id_prazo, e)}
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-[0.75px] border-slate-200 dark:border-white/[0.1] bg-white dark:bg-[#161b22] px-2.5 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1f2631] transition"
+                          className="inline-flex items-center gap-1.5 rounded-lg border border-[0.5px] border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] px-2.5 py-1.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.08] transition"
                         >
                           <CheckCircle2 className="h-3.5 w-3.5 stroke-[1.25] text-slate-500 dark:text-[#dfcaa0]" />
                           <span>Cumprir</span>
@@ -468,7 +468,7 @@ function AstreaDashboard() {
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-[0.75px] border-slate-100 dark:border-white/[0.08] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
+          <div className="mt-6 pt-4 border-t border-[0.5px] border-slate-100 dark:border-white/[0.04] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 text-xs text-slate-500 dark:text-slate-400">
             <span className="flex items-center gap-1.5">
               <Clock className="h-3.5 w-3.5 stroke-[1.25] text-slate-400" />
               <span>Contagem de prazos em dias úteis CPC/CLT</span>
@@ -483,12 +483,12 @@ function AstreaDashboard() {
           </div>
         </div>
 
-        {/* Coluna 3: Assistente Jurídico (Conteúdo Simplificado, Sem Slop, Botão Fosco e Discreto) */}
+        {/* Coluna 3: Assistente Jurídico (Conteúdo Simplificado, Sem Slop, Altura Equilibrada) */}
         <div className="legal-glass-card p-6 flex flex-col justify-between h-full">
           <div>
-            <div className="flex items-center justify-between pb-4 border-b border-[0.75px] border-slate-100 dark:border-white/[0.08]">
+            <div className="flex items-center justify-between pb-4 border-b border-[0.5px] border-slate-100 dark:border-white/[0.04]">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100 dark:bg-white/[0.05] border border-[0.75px] border-slate-200/80 dark:border-white/[0.08] text-slate-700 dark:text-[#dfcaa0]">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-100/80 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0]">
                   <Sparkles className="h-4 w-4 stroke-[1.25]" />
                 </div>
                 <div>
@@ -500,32 +500,32 @@ function AstreaDashboard() {
                   </p>
                 </div>
               </div>
-              <span className="rounded-full bg-slate-100 dark:bg-white/[0.05] px-2.5 py-0.5 text-[10px] font-semibold text-slate-700 dark:text-slate-300 border border-[0.75px] border-slate-200/80 dark:border-white/[0.08]">
+              <span className="rounded-full bg-slate-100 dark:bg-white/[0.04] px-2.5 py-0.5 text-[10px] font-semibold text-slate-700 dark:text-[#dfcaa0] border border-[0.5px] border-slate-200/80 dark:border-white/[0.06]">
                 IA Segura
               </span>
             </div>
 
-            <p className="mt-4 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              Triagem ágil de intimações, geração estruturada de minutas processuais e sínteses executivas com rigor técnico e sigilo profissional.
+            <p className="mt-3.5 text-xs text-slate-600 dark:text-slate-300 leading-snug">
+              Triagem ágil de intimações, minutas processuais e sínteses executivas com rigor técnico e sigilo.
             </p>
 
-            <div className="mt-4 space-y-2 text-xs text-slate-500 dark:text-slate-400">
+            <div className="mt-3.5 space-y-2 text-xs text-slate-500 dark:text-slate-400">
               <div className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#c5a059]" />
-                <span>Extração de prazos e termos de intimações</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-[#c5a059] shrink-0" />
+                <span className="truncate">Extração ágil de prazos e intimações</span>
               </div>
               <div className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#c5a059]" />
-                <span>Resumos executivos de decisões para clientes</span>
+                <span className="h-1.5 w-1.5 rounded-full bg-[#c5a059] shrink-0" />
+                <span className="truncate">Minutas processuais e sínteses executivas</span>
               </div>
             </div>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-[0.75px] border-slate-100 dark:border-white/[0.08]">
+          <div className="mt-6 pt-4 border-t border-[0.5px] border-slate-100 dark:border-white/[0.04]">
             <Link
               href="/gemini"
               id="btn-abrir-assistente-ia"
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-[0.75px] border-slate-300 dark:border-white/[0.12] bg-slate-100 hover:bg-slate-200/80 dark:bg-[#161b22] dark:hover:bg-[#1f2631] px-4 py-2.5 text-xs font-semibold text-slate-800 dark:text-[#dfcaa0] transition active:scale-95 shadow-2xs"
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-[0.5px] border-slate-200/80 dark:border-white/[0.08] bg-slate-100 hover:bg-slate-200/80 dark:bg-white/[0.04] dark:hover:bg-white/[0.07] px-4 py-2.5 text-xs font-semibold text-slate-800 dark:text-[#dfcaa0] transition active:scale-95 shadow-2xs"
             >
               <Sparkles className="h-4 w-4 stroke-[1.25]" />
               <span>Abrir Assistente Jurídico</span>
@@ -540,9 +540,9 @@ function AstreaDashboard() {
           <div className="lg:col-span-5 legal-glass-card p-6 flex flex-col justify-between">
             <div>
               {/* Header do Card */}
-              <div className="flex items-start justify-between pb-4 border-b border-[0.75px] border-slate-100 dark:border-white/[0.08]">
+              <div className="flex items-start justify-between pb-4 border-b border-[0.5px] border-slate-100 dark:border-white/[0.04]">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100 dark:bg-white/[0.05] border border-[0.75px] border-slate-200/80 dark:border-white/[0.08] text-slate-700 dark:text-[#dfcaa0]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100/80 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0]">
                     <Cake className="h-5 w-5 stroke-[1.25]" />
                   </div>
                   <div>
@@ -565,13 +565,13 @@ function AstreaDashboard() {
               </div>
 
               {/* Filtros rápidos: Todos, Equipe, Clientes */}
-              <div className="mt-4 flex items-center gap-1.5 p-1 bg-slate-100/80 dark:bg-[#0d1117]/60 rounded-xl border border-[0.75px] border-slate-200/60 dark:border-white/[0.06] text-xs">
+              <div className="mt-4 flex items-center gap-1.5 p-1 bg-slate-100/70 dark:bg-white/[0.02] rounded-xl border border-[0.5px] border-slate-200/50 dark:border-white/[0.04] text-xs">
                 <button
                   type="button"
                   onClick={() => setAniversariantesFilter('TODOS')}
                   className={`flex-1 py-1 px-2 text-center rounded-lg font-medium transition cursor-pointer ${
                     aniversariantesFilter === 'TODOS'
-                      ? 'bg-white dark:bg-[#161b22] text-slate-900 dark:text-[#dfcaa0] border border-[0.75px] border-slate-200/80 dark:border-white/[0.08] shadow-2xs font-semibold'
+                      ? 'bg-white dark:bg-white/[0.06] text-slate-900 dark:text-[#dfcaa0] border border-[0.5px] border-slate-200/80 dark:border-white/[0.08] shadow-2xs font-semibold'
                       : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
                   }`}
                 >
@@ -582,7 +582,7 @@ function AstreaDashboard() {
                   onClick={() => setAniversariantesFilter('USUARIO')}
                   className={`flex-1 py-1 px-2 text-center rounded-lg font-medium transition cursor-pointer ${
                     aniversariantesFilter === 'USUARIO'
-                      ? 'bg-white dark:bg-[#161b22] text-slate-900 dark:text-[#dfcaa0] border border-[0.75px] border-slate-200/80 dark:border-white/[0.08] shadow-2xs font-semibold'
+                      ? 'bg-white dark:bg-white/[0.06] text-slate-900 dark:text-[#dfcaa0] border border-[0.5px] border-slate-200/80 dark:border-white/[0.08] shadow-2xs font-semibold'
                       : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
                   }`}
                 >
@@ -593,7 +593,7 @@ function AstreaDashboard() {
                   onClick={() => setAniversariantesFilter('CLIENTE')}
                   className={`flex-1 py-1 px-2 text-center rounded-lg font-medium transition cursor-pointer ${
                     aniversariantesFilter === 'CLIENTE'
-                      ? 'bg-white dark:bg-[#161b22] text-slate-900 dark:text-[#dfcaa0] border border-[0.75px] border-slate-200/80 dark:border-white/[0.08] shadow-2xs font-semibold'
+                      ? 'bg-white dark:bg-white/[0.06] text-slate-900 dark:text-[#dfcaa0] border border-[0.5px] border-slate-200/80 dark:border-white/[0.08] shadow-2xs font-semibold'
                       : 'text-slate-500 hover:text-slate-800 dark:hover:text-slate-300'
                   }`}
                 >
@@ -726,9 +726,9 @@ function AstreaDashboard() {
           <div className="lg:col-span-7 legal-glass-card p-6 flex flex-col justify-between">
             <div>
               {/* Header do Card */}
-              <div className="flex items-start justify-between pb-4 border-b border-[0.75px] border-slate-100 dark:border-white/[0.08]">
+              <div className="flex items-start justify-between pb-4 border-b border-[0.5px] border-slate-100 dark:border-white/[0.04]">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100 dark:bg-white/[0.05] border border-[0.75px] border-slate-200/80 dark:border-white/[0.08] text-slate-700 dark:text-[#dfcaa0]">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-100/80 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0]">
                     <TrendingUp className="h-5 w-5 stroke-[1.25]" />
                   </div>
                   <div>
@@ -741,7 +741,7 @@ function AstreaDashboard() {
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="rounded-full bg-slate-100 dark:bg-white/[0.05] px-2.5 py-1 text-[10px] font-semibold text-slate-600 dark:text-slate-300 border border-[0.75px] border-slate-200/80 dark:border-white/[0.08]">
+                  <span className="rounded-full bg-slate-100/80 dark:bg-white/[0.04] px-2.5 py-1 text-[10px] font-semibold text-slate-600 dark:text-[#dfcaa0] border border-[0.5px] border-slate-200/60 dark:border-white/[0.06]">
                     Mês Corrente
                   </span>
                 </div>
@@ -750,7 +750,7 @@ function AstreaDashboard() {
               {/* Grid de 4 Cards de KPI Financeiro */}
               <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 {/* KPI 1: Faturamento Previsto */}
-                <div className="rounded-xl border border-[0.75px] border-slate-200/70 dark:border-white/[0.06] bg-slate-50/70 dark:bg-[#0d1117]/50 p-4">
+                <div className="rounded-xl border border-[0.5px] border-slate-200/60 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] p-4">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                       Honorários Previstos
@@ -759,7 +759,7 @@ function AstreaDashboard() {
                       <TrendingUp className="h-3 w-3 stroke-[1.25]" /> Previsão
                     </span>
                   </div>
-                  <div className="mt-2 text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+                  <div className="mt-2 text-xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
                       financeiroData?.metricas.entradasPrevistas ?? 0,
                     )}
@@ -772,22 +772,22 @@ function AstreaDashboard() {
                 </div>
 
                 {/* KPI 2: Honorários Liquidados */}
-                <div className="rounded-xl border border-[0.75px] border-slate-200/70 dark:border-white/[0.06] bg-slate-50/70 dark:bg-[#0d1117]/50 p-4">
+                <div className="rounded-xl border border-[0.5px] border-slate-200/60 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] p-4">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                       Entradas Realizadas
                     </span>
-                    <span className="rounded-full bg-slate-100 dark:bg-white/[0.06] px-1.5 py-0.5 text-[10px] font-semibold text-slate-700 dark:text-[#dfcaa0] border border-[0.75px] border-slate-200/80 dark:border-white/[0.08]">
+                    <span className="rounded-full bg-slate-100 dark:bg-white/[0.05] px-1.5 py-0.5 text-[10px] font-semibold text-slate-700 dark:text-[#dfcaa0] border border-[0.5px] border-slate-200/80 dark:border-white/[0.06]">
                       {financeiroData?.metricas.taxaRecebimento ?? 0}%
                     </span>
                   </div>
-                  <div className="mt-2 text-xl font-bold text-slate-900 dark:text-white tracking-tight">
+                  <div className="mt-2 text-xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
                       financeiroData?.metricas.entradasRealizadas ?? 0,
                     )}
                   </div>
                   <div className="mt-2.5">
-                    <div className="h-1.5 w-full rounded-full bg-slate-200 dark:bg-white/[0.08] overflow-hidden">
+                    <div className="h-1.5 w-full rounded-full bg-slate-200 dark:bg-white/[0.06] overflow-hidden">
                       <div
                         className="h-full rounded-full bg-[#c5a059] transition-all duration-500"
                         style={{ width: `${financeiroData?.metricas.taxaRecebimento ?? 0}%` }}
@@ -797,7 +797,7 @@ function AstreaDashboard() {
                 </div>
 
                 {/* KPI 3: Inadimplência / Pendências */}
-                <div className="rounded-xl border border-[0.75px] border-slate-200/70 dark:border-white/[0.06] bg-slate-50/70 dark:bg-[#0d1117]/50 p-4">
+                <div className="rounded-xl border border-[0.5px] border-slate-200/60 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] p-4">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                       Pendências & Atrasos
@@ -806,7 +806,7 @@ function AstreaDashboard() {
                       <TrendingDown className="h-3 w-3 stroke-[1.25]" /> Cobrança
                     </span>
                   </div>
-                  <div className="mt-2 text-xl font-bold text-slate-900 dark:text-white tracking-tight text-rose-600 dark:text-rose-300">
+                  <div className="mt-2 text-xl font-semibold tracking-tight text-rose-600 dark:text-rose-300">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
                       financeiroData?.metricas.pendenciasAtrasadas ?? 0,
                     )}
@@ -817,7 +817,7 @@ function AstreaDashboard() {
                 </div>
 
                 {/* KPI 4: Saldo Operacional Líquido */}
-                <div className="rounded-xl border border-[0.75px] border-slate-200/70 dark:border-white/[0.06] bg-slate-50/70 dark:bg-[#0d1117]/50 p-4">
+                <div className="rounded-xl border border-[0.5px] border-slate-200/60 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] p-4">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
                       Saldo Líquido em Caixa
@@ -826,7 +826,7 @@ function AstreaDashboard() {
                       Consolidado
                     </span>
                   </div>
-                  <div className="mt-2 text-xl font-bold text-slate-900 dark:text-white tracking-tight text-slate-900 dark:text-[#dfcaa0]">
+                  <div className="mt-2 text-xl font-semibold tracking-tight text-slate-900 dark:text-[#dfcaa0]">
                     {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
                       financeiroData?.metricas.saldoLiquido ?? 0,
                     )}
