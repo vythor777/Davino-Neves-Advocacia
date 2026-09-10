@@ -96,10 +96,10 @@ export function ProcessCalendar({
     // 🟡 Urgentes / Hoje (Laranja/Amarelo - amber)
     // 🔴 Vencidos (Vermelho/Rosa - rose)
     // 🟢 Cumpridos (Verde - emerald)
-    // 🔵 Em Aberto / Padrão (Azul - blue)
+    // 🟡 Em Aberto / Padrão (Dourado / Gold)
     let pillStyle =
-      'bg-blue-50 border-blue-300 text-blue-900 dark:bg-blue-950/60 dark:border-blue-500/70 dark:text-blue-200 hover:bg-blue-100/80 dark:hover:bg-blue-900/60';
-    let dotStyle = 'bg-blue-500 dark:bg-blue-400';
+      'bg-[#c5a059]/15 border-[#c5a059]/40 text-slate-900 dark:text-[#dfcaa0] dark:bg-[#c5a059]/20 dark:border-[#c5a059]/50 hover:bg-[#c5a059]/25';
+    let dotStyle = 'bg-[#c5a059] dark:bg-[#d4b36f]';
 
     if (statusCategory === 'urgente') {
       pillStyle =
@@ -154,7 +154,7 @@ export function ProcessCalendar({
         <span
           className={
             arg.isToday
-              ? 'w-7 h-7 rounded-full bg-blue-600 text-white flex items-center justify-center text-xs font-semibold shadow-xs'
+              ? 'w-7 h-7 rounded-full bg-[#c5a059] text-slate-950 flex items-center justify-center text-xs font-bold shadow-xs'
               : `text-xs font-semibold px-1 py-0.5 ${
                   arg.isOther
                     ? 'text-slate-400 dark:text-slate-600'
@@ -171,7 +171,7 @@ export function ProcessCalendar({
             e.stopPropagation();
             onDateClick?.(dateStr);
           }}
-          className="fc-day-add-btn h-6 w-6 rounded-md flex items-center justify-center text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/60 dark:hover:text-blue-400 transition cursor-pointer"
+          className="fc-day-add-btn h-6 w-6 rounded-md flex items-center justify-center text-slate-400 hover:text-[#c5a059] hover:bg-[#c5a059]/10 dark:hover:bg-[#c5a059]/20 dark:hover:text-[#d4b36f] transition cursor-pointer"
           title={`Cadastrar novo prazo para o dia ${dayNumber}`}
           aria-label={`Novo prazo em ${dateStr}`}
         >

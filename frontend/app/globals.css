@@ -350,7 +350,7 @@ body {
   --fc-page-bg-color: #ffffff;
   --fc-neutral-bg-color: #f8fafc;
   --fc-neutral-text-color: #64748b;
-  --fc-today-bg-color: rgba(0, 71, 171, 0.04);
+  --fc-today-bg-color: rgba(197, 160, 89, 0.08);
 }
 
 .dark,
@@ -359,7 +359,7 @@ body {
   --fc-page-bg-color: #0f172a;
   --fc-neutral-bg-color: #020617;
   --fc-neutral-text-color: #94a3b8;
-  --fc-today-bg-color: rgba(59, 130, 246, 0.08);
+  --fc-today-bg-color: rgba(197, 160, 89, 0.12);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -368,7 +368,7 @@ body {
     --fc-page-bg-color: #0f172a;
     --fc-neutral-bg-color: #020617;
     --fc-neutral-text-color: #94a3b8;
-    --fc-today-bg-color: rgba(59, 130, 246, 0.08);
+    --fc-today-bg-color: rgba(197, 160, 89, 0.12);
   }
 }
 
@@ -505,7 +505,7 @@ body {
 .fc-more-link {
   font-size: 0.6875rem !important;
   font-weight: 600 !important;
-  color: #0047ab !important;
+  color: #c5a059 !important;
   padding: 1px 4px !important;
   border-radius: 4px;
 }
@@ -513,7 +513,7 @@ body {
 .dark .fc-more-link,
 @media (prefers-color-scheme: dark) {
   .fc-more-link {
-    color: #60a5fa !important;
+    color: #d4b36f !important;
   }
 }
 

@@ -290,8 +290,8 @@ function UsuariosContent() {
         );
       case 'ESTAGIARIO':
         return (
-          <span className="inline-flex items-center gap-1 rounded-md bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-800 dark:bg-blue-950/70 dark:text-blue-300">
-            <GraduationCap className="h-3.5 w-3.5" />
+          <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-800 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+            <GraduationCap className="h-3.5 w-3.5 text-slate-500" />
             Estagiário
           </span>
         );
@@ -426,14 +426,14 @@ function UsuariosContent() {
               <div className="legal-glass-card fio-de-luz p-4">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Estagiários</span>
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-500/10 text-blue-500">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                     <GraduationCap className="h-3.5 w-3.5" />
                   </div>
                 </div>
                 <p className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-[#f8fafc]">
                   {stats.estagiarios}
                 </p>
-                <p className="text-[11px] text-blue-500/80 mt-0.5">Apoio jurídico e prazos</p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Apoio jurídico e prazos</p>
               </div>
             </>
           )}
@@ -712,11 +712,11 @@ function UsuariosContent() {
                     onClick={() => setFormData({ ...formData, role: 'ESTAGIARIO' })}
                     className={`rounded-xl border p-3 text-center transition cursor-pointer ${
                       formData.role === 'ESTAGIARIO'
-                        ? 'border-blue-500/40 bg-blue-500/10 text-blue-600 dark:text-blue-300'
+                        ? 'border-[#c5a059]/50 bg-[#c5a059]/15 text-slate-900 dark:text-[#dfcaa0]'
                         : 'border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
                     }`}
                   >
-                    <GraduationCap className="mx-auto h-4 w-4 mb-1 text-blue-500" />
+                    <GraduationCap className="mx-auto h-4 w-4 mb-1 text-[#c5a059]" />
                     <span className="font-semibold block">Estagiário</span>
                     <span className="text-[10px] text-slate-400">Apoio & Prazos</span>
                   </button>
@@ -880,11 +880,11 @@ function UsuariosContent() {
                     onClick={() => setEditFormData({ ...editFormData, role: 'ESTAGIARIO' })}
                     className={`rounded-xl border p-3 text-center transition cursor-pointer ${
                       editFormData.role === 'ESTAGIARIO'
-                        ? 'border-blue-500/40 bg-blue-500/10 text-blue-600 dark:text-blue-300'
+                        ? 'border-[#c5a059]/50 bg-[#c5a059]/15 text-slate-900 dark:text-[#dfcaa0]'
                         : 'border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
                     }`}
                   >
-                    <GraduationCap className="mx-auto h-4 w-4 mb-1 text-blue-500" />
+                    <GraduationCap className="mx-auto h-4 w-4 mb-1 text-[#c5a059]" />
                     <span className="font-semibold block">Estagiário</span>
                   </button>
                 </div>

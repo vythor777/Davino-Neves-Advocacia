@@ -194,7 +194,7 @@ function LancamentoModalForm({
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-4">
+        <form id="lancamento-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-4">
           {errorMessage && (
             <div className="rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 p-3 text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2">
               <AlertCircle className="h-4 w-4 shrink-0" />
@@ -425,32 +425,33 @@ function LancamentoModalForm({
               className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-[#c5a059] focus:outline-hidden transition resize-none"
             />
           </div>
-
-          {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200/60 dark:border-white/[0.06]">
-            <button
-              type="button"
-              onClick={onClose}
-              className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.04] transition cursor-pointer"
-            >
-              Cancelar
-            </button>
-            <button
-              type="submit"
-              disabled={submitting}
-              className="flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] px-5 py-2.5 text-xs font-semibold text-slate-950 transition disabled:opacity-50 cursor-pointer"
-            >
-              {submitting ? (
-                <span>Salvando...</span>
-              ) : (
-                <>
-                  <CheckCircle2 className="h-4 w-4" />
-                  <span>{initialData ? 'Atualizar Lançamento' : 'Salvar Lançamento'}</span>
-                </>
-              )}
-            </button>
-          </div>
         </form>
+
+        {/* Fixed Footer Actions */}
+        <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-200/60 dark:border-white/[0.06] bg-slate-50/50 dark:bg-slate-900/50">
+          <button
+            type="button"
+            onClick={onClose}
+            className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.04] transition cursor-pointer"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            form="lancamento-form"
+            disabled={submitting}
+            className="flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] px-5 py-2.5 text-xs font-semibold text-slate-950 transition disabled:opacity-50 cursor-pointer"
+          >
+            {submitting ? (
+              <span>Salvando...</span>
+            ) : (
+              <>
+                <CheckCircle2 className="h-4 w-4" />
+                <span>{initialData ? 'Atualizar Lançamento' : 'Salvar Lançamento'}</span>
+              </>
+            )}
+          </button>
+        </div>
       </div>
     </div>
   );

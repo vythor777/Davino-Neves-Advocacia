@@ -404,7 +404,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                           <button
                             type="button"
                             onClick={(e) => handleCopyCNJ(e, rawCNJ, String(rowKey))}
-                            className="rounded-md p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0047ab] transition-colors"
+                            className="rounded-md p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#c5a059] transition-colors"
                             title="Copiar número CNJ completo"
                             aria-label={`Copiar CNJ do processo ${formattedCNJ}`}
                           >

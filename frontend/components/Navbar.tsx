@@ -23,6 +23,7 @@ import {
   Menu,
   ChevronRight,
   ShieldCheck,
+  DollarSign,
 } from 'lucide-react';
 
 export function Navbar() {
@@ -88,6 +89,7 @@ export function Navbar() {
     { label: 'Processos', href: '/processos', icon: Briefcase },
     { label: 'Prazos', href: '/prazos', icon: CalendarClock },
     { label: 'Clientes', href: '/clientes', icon: Users },
+    { label: 'Financeiro', href: '/financeiro', icon: DollarSign },
     { label: 'DataJud', href: '/datajud', icon: Search },
     { label: 'IA Jurídica', href: '/gemini', icon: Sparkles },
   ];
@@ -120,7 +122,7 @@ export function Navbar() {
             onClick={() => setMobileDrawerOpen(true)}
             aria-label="Abrir menu de navegação"
             aria-expanded={mobileDrawerOpen}
-            className="flex lg:hidden h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:bg-slate-700 transition focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-hidden shrink-0"
+            className="flex lg:hidden h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:bg-slate-700 transition focus-visible:ring-2 focus-visible:ring-[#c5a059] focus-visible:outline-hidden shrink-0"
           >
             <Menu className="h-5 w-5" />
           </button>
@@ -239,6 +241,14 @@ export function Navbar() {
                     <UserPlus className="h-4 w-4 text-slate-400 dark:text-[#dfcaa0]" />
                     <span>Novo Cliente / Contato</span>
                   </Link>
+                  <Link
+                    href="/financeiro"
+                    onClick={() => setQuickMenuOpen(false)}
+                    className="flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/[0.05] dark:hover:text-[#dfcaa0] transition"
+                  >
+                    <DollarSign className="h-4 w-4 text-slate-400 dark:text-[#dfcaa0]" />
+                    <span>Novo Lançamento Financeiro</span>
+                  </Link>
                   <div className="border-t border-[0.75px] border-slate-100 my-1 dark:border-white/[0.08]" />
                   <Link
                     href="/datajud"
@@ -269,10 +279,10 @@ export function Navbar() {
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 aria-label={`Menu do usuário: ${user.nome}`}
                 aria-expanded={userMenuOpen}
-                className="flex min-h-[40px] sm:min-h-[44px] items-center gap-2 rounded-xl p-1 sm:px-2 sm:py-1.5 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800/80 transition focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-hidden"
+                className="flex min-h-[40px] sm:min-h-[44px] items-center gap-2 rounded-xl p-1 sm:px-2 sm:py-1.5 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800/80 transition focus-visible:ring-2 focus-visible:ring-[#c5a059] focus-visible:outline-hidden"
               >
                 <div
-                  className="flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-gradient-to-br from-sky-600 to-indigo-700 font-sans font-bold text-xs text-white shadow-xs ring-2 ring-sky-500/20 shrink-0"
+                  className="flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-slate-900 dark:bg-[#161b22] text-[#dfcaa0] font-sans font-bold text-xs shadow-xs ring-1 ring-[#c5a059]/40 shrink-0"
                 >
                   {user.nome ? user.nome.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
                 </div>
@@ -281,7 +291,7 @@ export function Navbar() {
                   <span className="text-xs font-bold text-slate-900 dark:text-slate-100 leading-tight truncate">
                     {user.nome}
                   </span>
-                  <span className="text-[10px] font-medium text-sky-600 dark:text-sky-400 capitalize">
+                  <span className="text-[10px] font-medium text-[#c5a059] dark:text-[#d4b36f] capitalize">
                     {user.role.toLowerCase()}
                   </span>
                 </div>
@@ -293,7 +303,7 @@ export function Navbar() {
                 <div className="absolute right-0 mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-slate-800 dark:bg-slate-900 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                   {/* Resumo do Usuário */}
                   <div className="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 mb-1.5 border border-slate-100 dark:border-slate-800">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-sky-600 font-bold text-sm text-white">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-900 dark:bg-[#161b22] text-[#dfcaa0] border border-[#c5a059]/30 font-bold text-sm">
                       {user.nome ? user.nome.charAt(0).toUpperCase() : <User className="h-5 w-5" />}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -304,7 +314,7 @@ export function Navbar() {
                         {user.email}
                       </p>
                       <div className="mt-1">
-                        <span className="inline-block rounded-md bg-sky-100 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-sky-800 dark:bg-sky-950 dark:text-sky-300">
+                        <span className="inline-block rounded-md bg-[#c5a059]/15 border border-[#c5a059]/30 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#c5a059] dark:text-[#d4b36f]">
                           {user.role}
                         </span>
                       </div>
@@ -327,7 +337,7 @@ export function Navbar() {
                         onClick={() => setUserMenuOpen(false)}
                         className="flex min-h-[40px] items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition"
                       >
-                        <Shield className="h-4 w-4 text-sky-600" />
+                        <Shield className="h-4 w-4 text-[#c5a059]" />
                         <span>Equipe & Permissões</span>
                       </Link>
                     )}
@@ -352,7 +362,7 @@ export function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="inline-flex min-h-[40px] sm:min-h-[44px] items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2 text-xs font-bold text-white shadow-xs hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 transition focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:outline-hidden"
+              className="inline-flex min-h-[40px] sm:min-h-[44px] items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2 text-xs font-bold text-white shadow-xs hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 transition focus-visible:ring-2 focus-visible:ring-[#c5a059] focus-visible:outline-hidden"
             >
               <LogIn className="h-4 w-4" />
               <span>Acessar</span>
@@ -381,14 +391,14 @@ export function Navbar() {
             {/* Header do Drawer */}
             <div className="flex h-16 items-center justify-between border-b border-slate-100 px-4 dark:border-slate-800">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-tr from-sky-600 to-cyan-500 text-white shadow-xs">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 dark:bg-[#161b22] text-[#dfcaa0] border border-[0.75px] border-[#c5a059]/40 shadow-xs">
                   <Scale className="h-4 w-4" />
                 </div>
                 <div>
                   <span className="font-bold text-sm text-slate-900 dark:text-white">
                     Davino Neves
                   </span>
-                  <span className="block text-[10px] text-sky-600 dark:text-sky-400 font-semibold">
+                  <span className="block text-[10px] text-[#c5a059] dark:text-[#d4b36f] font-semibold">
                     Advocacia & Controladoria
                   </span>
                 </div>
@@ -398,7 +408,7 @@ export function Navbar() {
                 type="button"
                 onClick={() => setMobileDrawerOpen(false)}
                 aria-label="Fechar menu"
-                className="flex h-11 w-11 items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white transition focus-visible:ring-2 focus-visible:ring-sky-500"
+                className="flex h-11 w-11 items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white transition focus-visible:ring-2 focus-visible:ring-[#c5a059]"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -410,7 +420,7 @@ export function Navbar() {
               {isAuthenticated && user ? (
                 <div className="rounded-2xl border border-slate-200/80 bg-slate-50/80 p-3.5 dark:border-slate-800 dark:bg-slate-800/40">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-sky-600 font-bold text-sm text-white">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 dark:bg-[#161b22] text-[#dfcaa0] border border-[#c5a059]/30 font-bold text-sm">
                       {user.nome ? user.nome.charAt(0).toUpperCase() : <User className="h-5 w-5" />}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -421,7 +431,7 @@ export function Navbar() {
                         {user.email}
                       </p>
                     </div>
-                    <span className="rounded-md bg-sky-100 px-2 py-0.5 text-[10px] font-bold text-sky-800 dark:bg-sky-950 dark:text-sky-300">
+                    <span className="rounded-md bg-[#c5a059]/15 border border-[#c5a059]/30 px-2 py-0.5 text-[10px] font-bold text-[#c5a059] dark:text-[#d4b36f]">
                       {user.role}
                     </span>
                   </div>
@@ -436,7 +446,7 @@ export function Navbar() {
                   value={mobileSearchQuery}
                   onChange={(e) => setMobileSearchQuery(e.target.value)}
                   placeholder="Buscar autos ou clientes..."
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-3 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-sky-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-3 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#c5a059] focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
               </form>
 
@@ -456,15 +466,15 @@ export function Navbar() {
                       href={item.href}
                       className={`flex min-h-[44px] items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-semibold transition ${
                         isActive
-                          ? 'bg-sky-600 text-white shadow-sm dark:bg-sky-500'
+                          ? 'bg-[#c5a059] text-slate-950 shadow-xs'
                           : 'text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <Icon className={`h-4 w-4 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                        <Icon className={`h-4 w-4 ${isActive ? 'text-slate-950' : 'text-slate-400'}`} />
                         <span>{item.label}</span>
                       </div>
-                      <ChevronRight className={`h-4 w-4 opacity-50 ${isActive ? 'text-white' : 'text-slate-400'}`} />
+                      <ChevronRight className={`h-4 w-4 opacity-50 ${isActive ? 'text-slate-950' : 'text-slate-400'}`} />
                     </Link>
                   );
                 })}
@@ -475,20 +485,27 @@ export function Navbar() {
                 <div className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                   Criar Rapidamente
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   <Link
                     href="/processos"
-                    className="flex min-h-[44px] flex-col justify-center rounded-xl border border-sky-200 bg-sky-50/70 p-2.5 text-sky-800 dark:border-sky-900/60 dark:bg-sky-950/40 dark:text-sky-300 transition hover:bg-sky-100"
+                    className="flex min-h-[44px] flex-col justify-center rounded-xl border border-[#c5a059]/30 bg-[#c5a059]/10 p-2 text-slate-800 dark:text-[#dfcaa0] transition hover:bg-[#c5a059]/20"
                   >
-                    <Briefcase className="h-4 w-4 mb-1 text-sky-600" />
-                    <span className="text-xs font-bold leading-tight">Novo Processo</span>
+                    <Briefcase className="h-4 w-4 mb-1 text-[#c5a059]" />
+                    <span className="text-[11px] font-bold leading-tight">Processo</span>
                   </Link>
                   <Link
                     href="/prazos"
-                    className="flex min-h-[44px] flex-col justify-center rounded-xl border border-amber-200 bg-amber-50/70 p-2.5 text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300 transition hover:bg-amber-100"
+                    className="flex min-h-[44px] flex-col justify-center rounded-xl border border-amber-200 bg-amber-50/70 p-2 text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300 transition hover:bg-amber-100"
                   >
                     <CalendarClock className="h-4 w-4 mb-1 text-amber-600" />
-                    <span className="text-xs font-bold leading-tight">Novo Prazo</span>
+                    <span className="text-[11px] font-bold leading-tight">Prazo</span>
+                  </Link>
+                  <Link
+                    href="/financeiro"
+                    className="flex min-h-[44px] flex-col justify-center rounded-xl border border-[#c5a059]/30 bg-[#c5a059]/10 p-2 text-slate-800 dark:text-[#dfcaa0] transition hover:bg-[#c5a059]/20"
+                  >
+                    <DollarSign className="h-4 w-4 mb-1 text-[#c5a059]" />
+                    <span className="text-[11px] font-bold leading-tight">Financeiro</span>
                   </Link>
                 </div>
               </div>

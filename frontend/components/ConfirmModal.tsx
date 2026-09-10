@@ -54,8 +54,8 @@ export function ConfirmModal({
     },
     info: {
       icon: Info,
-      iconBg: 'bg-sky-50 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-900/60',
-      button: 'bg-sky-600 hover:bg-sky-700 text-white focus-visible:ring-sky-500',
+      iconBg: 'bg-[#c5a059]/10 text-[#c5a059] dark:text-[#d4b36f] border border-[#c5a059]/25',
+      button: 'bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold focus-visible:ring-[#c5a059]',
     },
   };
 

@@ -304,7 +304,7 @@ export function calcularStatusPrazo(
     dias: diffDias,
     badgeText: `Vence em ${diffDias} dias`,
     badgeClass:
-      'bg-blue-50 text-blue-900 border-blue-200 dark:bg-blue-950/60 dark:border-blue-800 dark:text-blue-300',
+      'bg-[#c5a059]/15 text-slate-900 border-[#c5a059]/40 dark:bg-[#c5a059]/20 dark:border-[#c5a059]/50 dark:text-[#dfcaa0]',
     icon: Clock,
     isVencido: false,
     isHoje: false,

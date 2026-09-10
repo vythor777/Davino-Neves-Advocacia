@@ -101,7 +101,7 @@ export const CATEGORIAS_LABELS: Record<CategoriaLancamento, { label: string; tip
   HONORARIO_CONTRATUAL: {
     label: 'Honorário Contratual',
     tipo: 'RECEITA',
-    badgeClass: 'bg-sky-100 text-sky-800 border-sky-200 dark:bg-sky-950/70 dark:text-sky-300 dark:border-sky-800/60',
+    badgeClass: 'bg-[#c5a059]/15 text-slate-900 border-[#c5a059]/30 dark:bg-[#c5a059]/20 dark:text-[#dfcaa0] dark:border-[#c5a059]/40',
   },
   HONORARIO_EXITO: {
     label: 'Honorário de Êxito',
@@ -111,7 +111,7 @@ export const CATEGORIAS_LABELS: Record<CategoriaLancamento, { label: string; tip
   CONSULTIVO: {
     label: 'Consultivo & Pareceres',
     tipo: 'RECEITA',
-    badgeClass: 'bg-indigo-100 text-indigo-800 border-indigo-200 dark:bg-indigo-950/70 dark:text-indigo-300 dark:border-indigo-800/60',
+    badgeClass: 'bg-purple-100 text-purple-800 border-purple-200 dark:bg-purple-950/70 dark:text-purple-300 dark:border-purple-800/60',
   },
   CUSTAS_PROCESSUAIS: {
     label: 'Custas & Diligências',

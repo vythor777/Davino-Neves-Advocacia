@@ -63,13 +63,13 @@ function ProcessNotFoundIllustration() {
           cx="33"
           cy="33"
           r="8"
-          className="fill-slate-50 dark:fill-slate-800 stroke-[#0047ab] dark:stroke-blue-400"
+          className="fill-slate-50 dark:fill-slate-800 stroke-[#c5a059] dark:stroke-[#d4b36f]"
           strokeWidth="2"
         />
         {/* Lupa / Linha de busca dentro do marcador */}
         <path
           d="M30 30L36 36M36 30L30 36"
-          className="stroke-[#0047ab] dark:stroke-blue-400"
+          className="stroke-[#c5a059] dark:stroke-[#d4b36f]"
           strokeWidth="1.5"
           strokeLinecap="round"
         />
@@ -133,20 +133,20 @@ export function NoProcessFoundView({
       {/* Dicas Práticas de Verificação */}
       <div className="mx-auto mt-6 max-w-lg rounded-xl border border-slate-100 bg-slate-50/80 p-4 text-left dark:border-slate-800/80 dark:bg-slate-800/40">
         <h4 className="flex items-center gap-1.5 text-xs font-semibold text-slate-800 dark:text-slate-200">
-          <HelpCircle className="h-3.5 w-3.5 text-[#0047ab] dark:text-blue-400" />
+          <HelpCircle className="h-3.5 w-3.5 text-[#c5a059] dark:text-[#d4b36f]" />
           <span>O que verificar:</span>
         </h4>
         <ul className="mt-2 space-y-1.5 text-[11px] sm:text-xs text-slate-600 dark:text-slate-400">
           <li className="flex items-start gap-1.5">
-            <span className="text-[#0047ab] dark:text-blue-400 font-bold">•</span>
+            <span className="text-[#c5a059] dark:text-[#d4b36f] font-bold">•</span>
             <span>Certifique-se de que os 20 dígitos do padrão CNJ foram digitados integralmente.</span>
           </li>
           <li className="flex items-start gap-1.5">
-            <span className="text-[#0047ab] dark:text-blue-400 font-bold">•</span>
+            <span className="text-[#c5a059] dark:text-[#d4b36f] font-bold">•</span>
             <span>Confira se a corte selecionada (ex: TJSP, TRF3, TST) corresponde à jurisdição da ação.</span>
           </li>
           <li className="flex items-start gap-1.5">
-            <span className="text-[#0047ab] dark:text-blue-400 font-bold">•</span>
+            <span className="text-[#c5a059] dark:text-[#d4b36f] font-bold">•</span>
             <span>Processos recém-distribuídos podem levar algumas horas para indexação no DataJud.</span>
           </li>
         </ul>
@@ -159,7 +159,7 @@ export function NoProcessFoundView({
             <button
               type="button"
               onClick={onResetSearch}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#0047ab] px-4 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-[#003785] dark:bg-blue-600 dark:hover:bg-blue-500 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0047ab] active:scale-98 transition-all"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] px-4 py-2.5 text-xs font-semibold text-slate-950 shadow-xs focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#c5a059] active:scale-98 transition-all"
             >
               <Search className="h-3.5 w-3.5" />
               <span>{resetLabel}</span>

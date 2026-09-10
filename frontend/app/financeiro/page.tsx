@@ -25,6 +25,7 @@ import { ConfirmModal } from '@/components/ConfirmModal';
 import {
   DollarSign,
   Plus,
+  PlusCircle,
   Search,
   Download,
   Calendar,
@@ -52,7 +53,7 @@ export default function FinanceiroPage() {
       <Suspense
         fallback={
           <div className="flex h-96 items-center justify-center">
-            <div className="h-8 w-8 animate-spin rounded-full border-3 border-blue-600 border-t-transparent" />
+            <div className="h-8 w-8 animate-spin rounded-full border-3 border-[#c5a059] border-t-transparent" />
           </div>
         }
       >
@@ -280,19 +281,16 @@ function FinanceiroContent() {
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6 animate-fade-in-up">
       {/* Breadcrumbs */}
-      <Breadcrumbs
-        items={[
-          { label: 'Painel', href: '/' },
-          { label: 'Gestão Financeira' },
-        ]}
-      />
+      <div>
+        <Breadcrumbs items={[{ label: 'Financeiro', icon: DollarSign }]} />
+      </div>
 
       {/* Header Principal da Página */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200/60 dark:border-white/[0.05]">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide uppercase bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-[#d4af37]/90 border border-slate-200 dark:border-white/[0.08]">
-              Controladoria Jurídica • Financeiro
+            <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide uppercase bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-[#dfcaa0] border border-slate-200 dark:border-white/[0.08]">
+              Controladoria Jurídica • Módulo Financeiro
             </span>
           </div>
           <div className="flex items-center gap-2.5">
@@ -309,7 +307,7 @@ function FinanceiroContent() {
         </div>
 
         {/* Botões de Ação do Topo */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2.5">
           {/* Seletor de Período / Mês */}
           <div className="flex items-center gap-2 rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2 text-xs text-slate-700 dark:text-slate-300">
             <Calendar className="h-3.5 w-3.5 text-slate-400" />
@@ -329,11 +327,12 @@ function FinanceiroContent() {
           <button
             type="button"
             onClick={() => loadData(false)}
-            disabled={refreshing}
-            className="inline-flex items-center justify-center h-8.5 w-8.5 rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.03] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.06] transition cursor-pointer"
+            disabled={refreshing || loading}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white/60 px-3.5 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100/80 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] backdrop-blur-sm transition-colors cursor-pointer"
             title="Atualizar dados financeiros"
           >
-            <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? 'animate-spin text-[#c5a059]' : ''}`} />
+            <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? 'animate-spin' : ''}`} />
+            Atualizar
           </button>
 
           <button
@@ -352,10 +351,10 @@ function FinanceiroContent() {
               setModalDefaultTipo(activeTab === 'PAGAR' ? 'DESPESA' : 'RECEITA');
               setIsModalOpen(true);
             }}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs transition active:scale-98 cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition-all active:scale-98 cursor-pointer"
           >
-            <Plus className="h-4 w-4 text-slate-950" />
-            <span>Novo Lançamento</span>
+            <PlusCircle className="h-4 w-4 text-slate-950" />
+            Novo Lançamento
           </button>
         </div>
       </div>

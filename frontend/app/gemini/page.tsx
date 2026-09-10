@@ -992,7 +992,7 @@ export default function GeminiPage() {
       <Suspense
         fallback={
           <div className="min-h-screen bg-slate-50 flex items-center justify-center dark:bg-slate-950">
-            <div className="h-8 w-8 animate-spin rounded-full border-3 border-blue-600 border-t-transparent dark:border-blue-400" />
+            <div className="h-8 w-8 animate-spin rounded-full border-3 border-[#c5a059] border-t-transparent dark:border-[#d4b36f]" />
           </div>
         }
       >

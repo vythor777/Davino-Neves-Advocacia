@@ -620,7 +620,7 @@ function PrazosContent() {
               <select
                 value={selectedProcessoFilter}
                 onChange={(e) => setSelectedProcessoFilter(e.target.value)}
-                className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-medium text-slate-800 dark:text-slate-100 focus:border-blue-500 focus:outline-hidden max-w-[200px] truncate cursor-pointer"
+                className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-medium text-slate-800 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden max-w-[200px] truncate cursor-pointer"
               >
                 <option value="todos">Todos os Processos</option>
                 {processos.map((p) => (
@@ -653,7 +653,7 @@ function PrazosContent() {
                     ? '🟢 Cumpridos'
                     : selectedFilter === 'pendentes'
                     ? 'Em Aberto (Pendentes)'
-                    : '🔵 Em Aberto / Padrão'}
+                    : '🟡 Em Aberto / Padrão'}
                 </span>
               )}
               {selectedProcessoFilter !== 'todos' && (
@@ -674,7 +674,7 @@ function PrazosContent() {
                 setSelectedProcessoFilter('todos');
                 setSearchTerm('');
               }}
-              className="text-xs font-semibold text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 underline underline-offset-2 cursor-pointer transition"
+              className="text-xs font-semibold text-[#c5a059] hover:text-[#d4b36f] dark:text-[#dfcaa0] underline underline-offset-2 cursor-pointer transition"
             >
               Limpar filtros
             </button>

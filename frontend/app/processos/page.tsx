@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import AuthGuard from '@/components/AuthGuard';
 import { processoService, Processo, CreateProcessoInput } from '@/services/processoService';
 import { clienteService, Cliente } from '@/services/clienteService';
@@ -39,12 +40,15 @@ const STATUS_OPCOES = [
 export default function ProcessosPage() {
   return (
     <AuthGuard>
-      <ProcessosContent />
+      <Suspense fallback={<div className="p-8 text-center text-xs text-slate-500">Carregando acervo processual...</div>}>
+        <ProcessosContent />
+      </Suspense>
     </AuthGuard>
   );
 }
 
 function ProcessosContent() {
+  const searchParams = useSearchParams();
   const [processos, setProcessos] = useState<Processo[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -133,6 +137,12 @@ function ProcessosContent() {
       fetchClientesList();
     }
   };
+
+  useEffect(() => {
+    if (searchParams.get('novo') === 'true') {
+      openCreateModal();
+    }
+  }, [searchParams]);
 
   const openEditModal = (proc: Processo) => {
     setEditingProcesso(proc);

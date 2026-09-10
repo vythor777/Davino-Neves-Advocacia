@@ -42,7 +42,7 @@ export function Breadcrumbs({ items, className = '' }: BreadcrumbsProps) {
                 aria-current={isLast ? 'page' : undefined}
                 className="flex items-center gap-1 text-slate-900 dark:text-slate-100 font-semibold truncate max-w-[220px] sm:max-w-xs"
               >
-                {Icon && <Icon className="h-3.5 w-3.5 shrink-0 text-sky-600 dark:text-sky-400" />}
+                {Icon && <Icon className="h-3.5 w-3.5 shrink-0 text-[#c5a059] dark:text-[#d4b36f]" />}
                 <span className="truncate">{item.label}</span>
               </span>
             ) : (
@@ -50,7 +50,7 @@ export function Breadcrumbs({ items, className = '' }: BreadcrumbsProps) {
                 href={item.href}
                 className="flex items-center gap-1 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100 transition-colors rounded-md p-0.5 hover:bg-slate-100 dark:hover:bg-slate-800/60 truncate max-w-[160px]"
               >
-                {Icon && <Icon className="h-3.5 w-3.5 shrink-0" />}
+                {Icon && <Icon className="h-3.5 w-3.5 shrink-0 text-[#c5a059] dark:text-[#d4b36f]" />}
                 <span className="truncate">{item.label}</span>
               </Link>
             )}

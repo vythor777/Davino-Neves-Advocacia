@@ -48,7 +48,7 @@ export function AuditTrail({
         return {
           icon: Edit3,
           badge: 'Edição',
-          color: 'text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/60 border-sky-200 dark:border-sky-900',
+          color: 'text-[#c5a059] dark:text-[#d4b36f] bg-[#c5a059]/10 dark:bg-[#c5a059]/20 border-[#c5a059]/30',
         };
       case 'STATUS':
         return {
@@ -66,7 +66,7 @@ export function AuditTrail({
         return {
           icon: History,
           badge: 'Consulta DataJud',
-          color: 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 border-indigo-200 dark:border-indigo-900',
+          color: 'text-[#c5a059] dark:text-[#d4b36f] bg-[#c5a059]/10 dark:bg-[#c5a059]/20 border-[#c5a059]/30',
         };
       default:
         return {
@@ -81,7 +81,7 @@ export function AuditTrail({
     <div className={`rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900 shadow-2xs ${className}`}>
       <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80">
         <div className="flex items-center gap-2">
-          <ShieldCheck className="h-4 w-4 text-sky-600 dark:text-sky-400" />
+          <ShieldCheck className="h-4 w-4 text-[#c5a059] dark:text-[#d4b36f]" />
           <h4 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
             {title}
           </h4>
@@ -110,7 +110,7 @@ export function AuditTrail({
             return (
               <div key={log.id} className="relative group text-xs">
                 {/* Marcador na linha de tempo */}
-                <div className="absolute -left-[1.35rem] top-1 h-3 w-3 rounded-full border-2 border-white bg-sky-500 dark:border-slate-900 shadow-xs" />
+                <div className="absolute -left-[1.35rem] top-1 h-3 w-3 rounded-full border-2 border-white bg-[#c5a059] dark:border-slate-900 shadow-xs" />
 
                 <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-3 dark:border-slate-800/60 dark:bg-slate-800/30 hover:border-slate-200 dark:hover:border-slate-700 transition-colors">
                   <div className="flex flex-wrap items-center justify-between gap-1.5 mb-1">

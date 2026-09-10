@@ -39,7 +39,7 @@ export function EmptyState({
       <div className="absolute inset-0 bg-gradient-to-b from-slate-50/50 via-transparent to-transparent dark:from-slate-800/10 pointer-events-none" />
 
       <div className="relative z-10 flex flex-col items-center max-w-md mx-auto">
-        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-sky-50 text-sky-600 border border-sky-100 dark:bg-sky-950/60 dark:text-sky-400 dark:border-sky-900/60 shadow-xs mb-4">
+        <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#c5a059]/10 text-[#c5a059] border border-[#c5a059]/25 dark:bg-[#c5a059]/15 dark:text-[#d4b36f] dark:border-[#c5a059]/30 shadow-xs mb-4">
           <Icon className="h-7 w-7" />
         </div>
 
@@ -63,7 +63,7 @@ export function EmptyState({
               action.href ? (
                 <a
                   href={action.href}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-sky-600 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-sky-500 dark:bg-sky-600 dark:hover:bg-sky-500 transition-all active:scale-[0.98]"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] px-4 py-2 text-xs font-semibold text-slate-950 shadow-xs hover:bg-[#d4b36f] transition-all active:scale-[0.98]"
                 >
                   {action.icon && <action.icon className="h-3.5 w-3.5" />}
                   <span>{action.label}</span>
@@ -72,7 +72,7 @@ export function EmptyState({
                 <button
                   type="button"
                   onClick={action.onClick}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-sky-600 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-sky-500 dark:bg-sky-600 dark:hover:bg-sky-500 transition-all active:scale-[0.98]"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] px-4 py-2 text-xs font-semibold text-slate-950 shadow-xs hover:bg-[#d4b36f] transition-all active:scale-[0.98]"
                 >
                   {action.icon && <action.icon className="h-3.5 w-3.5" />}
                   <span>{action.label}</span>

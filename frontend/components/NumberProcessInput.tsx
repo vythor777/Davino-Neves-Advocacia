@@ -163,7 +163,7 @@ export const NumberProcessInput = forwardRef<HTMLInputElement, NumberProcessInpu
     // Classes dinâmicas de borda e anel de foco conforme especificações de design
     const borderClasses = hasError
       ? 'border-red-500 focus:border-red-500 focus:ring-2 focus:ring-red-500/20 dark:border-red-500 dark:focus:border-red-500 dark:focus:ring-red-500/20'
-      : 'border-slate-300 hover:border-slate-400 focus:border-[#0047ab] focus:ring-2 focus:ring-[#0047ab]/25 dark:border-slate-800 dark:hover:border-slate-700 dark:focus:border-blue-500 dark:focus:ring-blue-500/20';
+      : 'border-slate-300 hover:border-slate-400 focus:border-[#c5a059] focus:ring-2 focus:ring-[#c5a059]/25 dark:border-slate-800 dark:hover:border-slate-700 dark:focus:border-[#c5a059] dark:focus:ring-[#c5a059]/20';
 
     return (
       <div className={`w-full text-left font-sans ${containerClassName}`}>
@@ -195,7 +195,7 @@ export const NumberProcessInput = forwardRef<HTMLInputElement, NumberProcessInpu
                 hasError
                   ? 'text-red-500'
                   : isFocused
-                  ? 'text-[#0047ab] dark:text-blue-400'
+                  ? 'text-[#c5a059] dark:text-[#d4b36f]'
                   : 'text-slate-400 dark:text-slate-500'
               }`}
               aria-hidden="true"
@@ -245,7 +245,7 @@ export const NumberProcessInput = forwardRef<HTMLInputElement, NumberProcessInpu
             <button
               type="button"
               onClick={handleClear}
-              className="absolute right-2.5 rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 active:scale-95 transition-all"
+              className="absolute right-2.5 rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#c5a059] active:scale-95 transition-all"
               title="Limpar número do processo"
               aria-label="Limpar campo de número do processo"
             >

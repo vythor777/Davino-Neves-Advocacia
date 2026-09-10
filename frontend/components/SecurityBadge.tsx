@@ -23,10 +23,10 @@ export function SecurityBadge({ variant = 'pill', className = '' }: SecurityBadg
   if (variant === 'banner') {
     return (
       <div
-        className={`rounded-2xl border border-sky-100 bg-sky-50/70 p-4 dark:border-sky-900/40 dark:bg-sky-950/20 text-xs text-slate-700 dark:text-slate-300 flex items-center justify-between gap-4 ${className}`}
+        className={`rounded-2xl border border-[#c5a059]/25 bg-[#c5a059]/5 p-4 dark:border-[#c5a059]/20 dark:bg-[#c5a059]/10 text-xs text-slate-700 dark:text-slate-300 flex items-center justify-between gap-4 ${className}`}
       >
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-sky-600 text-white shadow-xs">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#c5a059] text-slate-950 shadow-xs">
             <ShieldCheck className="h-5 w-5" />
           </div>
           <div>
@@ -51,7 +51,7 @@ export function SecurityBadge({ variant = 'pill', className = '' }: SecurityBadg
     <div
       className={`inline-flex items-center gap-2 rounded-full bg-slate-100 px-3 py-1 text-[11px] font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300 border border-slate-200 dark:border-slate-700 ${className}`}
     >
-      <ShieldCheck className="h-3.5 w-3.5 text-sky-600 dark:text-sky-400" />
+      <ShieldCheck className="h-3.5 w-3.5 text-[#c5a059] dark:text-[#d4b36f]" />
       <span>Conforme LGPD • Sigilo Advocatício</span>
     </div>
   );
