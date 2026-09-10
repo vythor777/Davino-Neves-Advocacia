@@ -96,7 +96,8 @@ function AstreaDashboard() {
     loadData();
   }, []);
 
-  // Cálculos de métricas do sistema
+  const [abaAgenda, setAbaAgenda] = useState<'urgentes' | 'hoje' | 'semana'>('urgentes');
+
   const totalProcessos = processos.length;
   const processosAtivos = processos.filter(
     (p) => p.status !== 'Arquivado' && p.status !== 'Encerrado',
@@ -110,11 +111,22 @@ function AstreaDashboard() {
   });
   const prazosUrgentes = prazosPendentes.filter((p) => {
     const calc = calcularStatusPrazo(p.data_vencimento, p.status, p.hora);
-    return calc.urgencia === 'vencido' || calc.urgencia === 'hoje' || calc.dias <= 7;
+    return calc.urgencia === 'vencido' || calc.urgencia === 'hoje' || (calc.dias >= 0 && calc.dias <= 7);
+  });
+  const prazosSemana = prazosPendentes.filter((p) => {
+    const calc = calcularStatusPrazo(p.data_vencimento, p.status, p.hora);
+    return calc.dias >= 0 && calc.dias <= 7;
   });
   const prazosCumpridos = prazos.filter((p) => p.status?.toLowerCase() === 'cumprido').length;
   const taxaCumprimento =
     totalPrazos > 0 ? Math.round((prazosCumpridos / totalPrazos) * 100) : 100;
+
+  const prazosExibicao =
+    abaAgenda === 'hoje'
+      ? prazosHoje
+      : abaAgenda === 'semana'
+      ? prazosSemana
+      : prazosUrgentes;
 
   const totalClientes = clientes.length;
   const clientesPj = clientes.filter(
@@ -425,49 +437,126 @@ function AstreaDashboard() {
         </div>
       </div>
 
-      {/* 2. SEÇÃO: Agenda / Prazos Críticos */}
+      {/* 2. SEÇÃO: Agenda / Prazos & Produtividade Operacional */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
-        {/* Coluna 1 & 2: Agenda & Prazos Críticos */}
-        <div className="lg:col-span-2 legal-card p-6 flex flex-col justify-between">
+        {/* Coluna 1 & 2: Agenda & Prazos Críticos com Filtro Rápido */}
+        <div className="lg:col-span-2 legal-card p-5 sm:p-6 flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.04]">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3.5 border-b border-slate-100 dark:border-white/[0.04] gap-3">
               <div>
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
                   <CalendarClock className="h-4 w-4 stroke-[1.5] text-[#c5a059]" />
-                  Agenda & Prazos Críticos
+                  Agenda & Prazos
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  Termos processuais ordenados por urgência e vencimento imediato
+                  Acompanhamento de prazos fatais, audiências e termos processuais
                 </p>
               </div>
-              <Link
-                href="/prazos"
-                id="link-ver-todos-prazos"
-                className="text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-[#dfcaa0] dark:hover:text-white flex items-center gap-1 transition"
-              >
-                <span>Ver agenda completa ({prazos.length})</span>
-                <ArrowRight className="h-3.5 w-3.5 stroke-[1.25]" />
-              </Link>
+
+              {/* Seletor de visualização rápida */}
+              <div className="flex items-center gap-1 p-1 bg-slate-100/80 dark:bg-white/[0.04] rounded-xl self-start sm:self-center border border-slate-200/60 dark:border-white/[0.06]">
+                <button
+                  type="button"
+                  onClick={() => setAbaAgenda('urgentes')}
+                  className={`px-2.5 py-1 text-xs font-medium rounded-lg transition cursor-pointer flex items-center gap-1.5 ${
+                    abaAgenda === 'urgentes'
+                      ? 'bg-white dark:bg-[#161b22] text-slate-900 dark:text-white shadow-2xs font-semibold'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <span>Críticos</span>
+                  {prazosUrgentes.length > 0 && (
+                    <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-rose-100 dark:bg-rose-950/60 text-rose-700 dark:text-rose-300 font-bold">
+                      {prazosUrgentes.length}
+                    </span>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setAbaAgenda('hoje')}
+                  className={`px-2.5 py-1 text-xs font-medium rounded-lg transition cursor-pointer flex items-center gap-1.5 ${
+                    abaAgenda === 'hoje'
+                      ? 'bg-white dark:bg-[#161b22] text-slate-900 dark:text-white shadow-2xs font-semibold'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <span>Hoje</span>
+                  {prazosHoje.length > 0 ? (
+                    <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 font-bold">
+                      {prazosHoje.length}
+                    </span>
+                  ) : (
+                    <span className="text-[10px] text-slate-400 font-normal">0</span>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setAbaAgenda('semana')}
+                  className={`px-2.5 py-1 text-xs font-medium rounded-lg transition cursor-pointer flex items-center gap-1.5 ${
+                    abaAgenda === 'semana'
+                      ? 'bg-white dark:bg-[#161b22] text-slate-900 dark:text-white shadow-2xs font-semibold'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  }`}
+                >
+                  <span>Próximos 7 dias</span>
+                  {prazosSemana.length > 0 && (
+                    <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-slate-200 dark:bg-white/[0.1] text-slate-800 dark:text-slate-200 font-medium">
+                      {prazosSemana.length}
+                    </span>
+                  )}
+                </button>
+              </div>
             </div>
 
-            {/* Lista de Prazos Críticos */}
-            <div className="mt-4 space-y-2">
+            {/* Lista ou Empty State Compacto */}
+            <div className="mt-3.5 space-y-2">
               {loading ? (
-                <div className="py-8 text-center text-xs text-slate-400">
+                <div className="py-6 text-center text-xs text-slate-400">
                   Carregando agenda de prazos...
                 </div>
-              ) : prazosUrgentes.length === 0 ? (
-                <div className="py-8 text-center">
-                  <CheckCircle2 className="h-7 w-7 text-emerald-500/80 mx-auto mb-2 stroke-[1.25]" />
-                  <p className="text-xs font-medium text-slate-700 dark:text-slate-300">
-                    Nenhum prazo pendente para os próximos dias
-                  </p>
-                  <p className="text-[11px] text-slate-400 mt-0.5">
-                    Todos os termos processuais estão rigorosamente em dia.
-                  </p>
+              ) : prazosExibicao.length === 0 ? (
+                <div className="rounded-xl border border-slate-200/70 dark:border-white/[0.06] bg-slate-50/70 dark:bg-white/[0.02] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                      <CheckCircle2 className="h-5 w-5 stroke-[1.5]" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-semibold text-slate-900 dark:text-slate-100">
+                        {abaAgenda === 'hoje'
+                          ? 'Nenhum prazo ou audiência para hoje'
+                          : abaAgenda === 'semana'
+                          ? 'Nenhum prazo pendente nos próximos 7 dias'
+                          : 'Nenhum prazo crítico pendente'}
+                      </h4>
+                      <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                        {totalPrazos > 0
+                          ? `Total de ${totalPrazos} termos no escritório (${prazosCumpridos} cumpridos com ${taxaCumprimento}% de conformidade).`
+                          : 'Todos os termos processuais estão rigorosamente em dia.'}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
+                    <Link
+                      href="/prazos?novo=true"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-[#c5a059] dark:hover:bg-[#d4b36f] text-white dark:text-slate-950 font-semibold text-xs transition shadow-2xs cursor-pointer"
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                      <span>Novo Prazo</span>
+                    </Link>
+                    <Link
+                      href="/gemini?acao=identificar_prazos"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/[0.08] transition cursor-pointer"
+                    >
+                      <Sparkles className="h-3.5 w-3.5 text-[#c5a059]" />
+                      <span>Extrair DJE</span>
+                    </Link>
+                  </div>
                 </div>
               ) : (
-                prazosUrgentes.slice(0, 5).map((prazo) => {
+                prazosExibicao.slice(0, 4).map((prazo) => {
                   const calc = calcularStatusPrazo(prazo.data_vencimento, prazo.status, prazo.hora);
                   const isHoje = calc.urgencia === 'hoje';
                   const isVencido = calc.urgencia === 'vencido';
@@ -476,7 +565,7 @@ function AstreaDashboard() {
                     <div
                       key={prazo.id_prazo}
                       onClick={() => router.push('/prazos')}
-                      className="group flex flex-col sm:flex-row sm:items-center justify-between p-3 rounded-lg border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] hover:bg-slate-100/60 dark:hover:bg-white/[0.05] transition cursor-pointer gap-3"
+                      className="group flex flex-col sm:flex-row sm:items-center justify-between p-2.5 sm:p-3 rounded-xl border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] hover:bg-slate-100/60 dark:hover:bg-white/[0.05] transition cursor-pointer gap-2.5"
                     >
                       <div className="flex items-start gap-3 min-w-0">
                         <div
@@ -537,60 +626,108 @@ function AstreaDashboard() {
             </div>
           </div>
 
-          <div className="mt-6 pt-3 border-t border-slate-100 dark:border-white/[0.04] flex items-center justify-between text-xs text-slate-400">
+          <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.04] flex items-center justify-between text-xs text-slate-400">
             <span>Contagem em dias úteis CPC/CLT</span>
             <Link
               href="/prazos"
+              id="link-ver-todos-prazos"
               className="text-slate-700 dark:text-[#dfcaa0] hover:underline flex items-center gap-1 font-medium"
             >
-              Central de Prazos <ArrowRight className="h-3 w-3 stroke-[1.5]" />
+              <span>Ver agenda completa ({prazos.length})</span>
+              <ArrowRight className="h-3 w-3 stroke-[1.5]" />
             </Link>
           </div>
         </div>
 
-        {/* Coluna 3: Assistente Jurídico & Suporte de Produtividade */}
-        <div className="legal-card p-6 flex flex-col justify-between">
+        {/* Coluna 3: Ações Rápidas & Produtividade do Escritório */}
+        <div className="legal-card p-5 sm:p-6 flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.04]">
+            <div className="flex items-center justify-between pb-3.5 border-b border-slate-100 dark:border-white/[0.04]">
               <div>
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 stroke-[1.25] text-[#c5a059]" />
-                  Assistente Jurídico
+                  <CheckSquare className="h-4 w-4 stroke-[1.5] text-[#c5a059]" />
+                  Ações & Produtividade
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                  Análise e redação de peças processuais
+                  Atalhos imediatos para as rotinas diárias
                 </p>
               </div>
             </div>
 
-            <p className="mt-4 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-              Triagem de intimações, minutas de petições e sínteses com segurança e rigor técnico.
-            </p>
+            {/* Grid de Ações Rápidas */}
+            <div className="mt-3.5 grid grid-cols-2 gap-2">
+              <Link
+                href="/processos?novo=true"
+                className="p-3 rounded-xl border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] hover:bg-slate-100/80 dark:hover:bg-white/[0.06] transition flex flex-col gap-1 text-left"
+              >
+                <div className="flex items-center justify-between">
+                  <Scale className="h-4 w-4 text-[#0047ab] dark:text-[#dfcaa0]" />
+                  <Plus className="h-3 w-3 text-slate-400" />
+                </div>
+                <span className="text-xs font-semibold text-slate-900 dark:text-white mt-1">Novo Processo</span>
+                <span className="text-[10px] text-slate-400">Cadastrar ação judicial</span>
+              </Link>
 
-            <div className="mt-4 space-y-2.5 text-xs text-slate-500 dark:text-slate-400">
-              <div className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#c5a059] shrink-0" />
-                <span>Identificação de prazos em publicações</span>
+              <Link
+                href="/prazos?novo=true"
+                className="p-3 rounded-xl border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] hover:bg-slate-100/80 dark:hover:bg-white/[0.06] transition flex flex-col gap-1 text-left"
+              >
+                <div className="flex items-center justify-between">
+                  <CalendarClock className="h-4 w-4 text-[#c5a059]" />
+                  <Plus className="h-3 w-3 text-slate-400" />
+                </div>
+                <span className="text-xs font-semibold text-slate-900 dark:text-white mt-1">Novo Prazo</span>
+                <span className="text-[10px] text-slate-400">Termo ou audiência</span>
+              </Link>
+
+              <Link
+                href="/clientes?novo=true"
+                className="p-3 rounded-xl border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] hover:bg-slate-100/80 dark:hover:bg-white/[0.06] transition flex flex-col gap-1 text-left"
+              >
+                <div className="flex items-center justify-between">
+                  <Users className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                  <Plus className="h-3 w-3 text-slate-400" />
+                </div>
+                <span className="text-xs font-semibold text-slate-900 dark:text-white mt-1">Novo Cliente</span>
+                <span className="text-[10px] text-slate-400">Pessoa Física ou Jurídica</span>
+              </Link>
+
+              <Link
+                href="/gemini?acao=identificar_prazos"
+                className="p-3 rounded-xl border border-[#c5a059]/20 bg-[#c5a059]/5 hover:bg-[#c5a059]/10 transition flex flex-col gap-1 text-left"
+              >
+                <div className="flex items-center justify-between">
+                  <Sparkles className="h-4 w-4 text-[#c5a059]" />
+                  <ArrowRight className="h-3 w-3 text-[#c5a059]" />
+                </div>
+                <span className="text-xs font-semibold text-slate-900 dark:text-white mt-1">Triagem DJE</span>
+                <span className="text-[10px] text-slate-500 dark:text-slate-400">Extrair com IA</span>
+              </Link>
+            </div>
+
+            {/* Eficiência / Indicador de Cumprimento */}
+            <div className="mt-3.5 p-3 rounded-xl bg-slate-50/80 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.04]">
+              <div className="flex items-center justify-between text-xs mb-1.5">
+                <span className="font-medium text-slate-700 dark:text-slate-300">Conformidade de Prazos</span>
+                <span className="font-bold text-slate-900 dark:text-[#dfcaa0]">{taxaCumprimento}%</span>
               </div>
-              <div className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#c5a059] shrink-0" />
-                <span>Estruturação de teses e jurisprudência</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#c5a059] shrink-0" />
-                <span>Resumos executivos de autos volumosos</span>
+              <div className="w-full bg-slate-200 dark:bg-white/[0.08] h-1.5 rounded-full overflow-hidden">
+                <div
+                  className="bg-emerald-500 h-full rounded-full transition-all duration-500"
+                  style={{ width: `${taxaCumprimento}%` }}
+                />
               </div>
             </div>
           </div>
 
-          <div className="mt-6 pt-3 border-t border-slate-100 dark:border-white/[0.04]">
+          <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.04]">
             <Link
               href="/gemini"
               id="btn-abrir-assistente-ia"
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-100 dark:bg-white/[0.05] hover:bg-slate-200/70 dark:hover:bg-white/[0.08] px-4 py-2 text-xs font-semibold text-slate-800 dark:text-[#dfcaa0] transition cursor-pointer"
             >
               <Sparkles className="h-3.5 w-3.5 stroke-[1.25]" />
-              <span>Abrir Assistente</span>
+              <span>Abrir Central de IA</span>
             </Link>
           </div>
         </div>
