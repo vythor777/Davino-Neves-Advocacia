@@ -479,8 +479,8 @@ function ProcessosContent() {
 
       {/* Modal de Criação / Edição */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-md">
-          <div className="legal-glass-card fio-de-luz w-full max-w-lg p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md">
+          <div className="legal-modal-card fio-de-luz w-full max-w-lg p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-200/60 pb-4 dark:border-white/[0.06]">
               <div className="flex items-center gap-2.5">
                 <div className="rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25 p-2">
@@ -639,8 +639,8 @@ function ProcessosContent() {
 
       {/* Modal / Drawer de Detalhes */}
       {detailsModalOpen && selectedProcesso && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-md">
-          <div className="legal-glass-card fio-de-luz w-full max-w-lg p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md">
+          <div className="legal-modal-card fio-de-luz w-full max-w-lg p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-200/60 pb-4 dark:border-white/[0.06]">
               <div className="flex items-center gap-2.5">
                 <div className="rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25 p-2">
@@ -665,7 +665,7 @@ function ProcessosContent() {
             </div>
 
             <div className="mt-4 space-y-3 text-xs">
-              <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06]">
+              <div className="rounded-xl bg-slate-50/90 dark:bg-[#141a26] p-3.5 border border-slate-200/80 dark:border-white/[0.08] shadow-xs">
                 <span className="text-slate-400 block text-[10px] uppercase font-semibold">
                   Ação / Classe
                 </span>
@@ -675,7 +675,7 @@ function ProcessosContent() {
               </div>
 
               <div className="grid grid-cols-2 gap-2.5">
-                <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06]">
+                <div className="rounded-xl bg-slate-50/90 dark:bg-[#141a26] p-3.5 border border-slate-200/80 dark:border-white/[0.08] shadow-xs">
                   <span className="text-slate-400 block text-[10px] uppercase font-semibold">
                     Cliente
                   </span>
@@ -683,7 +683,7 @@ function ProcessosContent() {
                     {selectedProcesso.cliente?.nome || `Cliente #${selectedProcesso.id_cliente}`}
                   </span>
                 </div>
-                <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06]">
+                <div className="rounded-xl bg-slate-50/90 dark:bg-[#141a26] p-3.5 border border-slate-200/80 dark:border-white/[0.08] shadow-xs">
                   <span className="text-slate-400 block text-[10px] uppercase font-semibold">
                     Status
                   </span>
@@ -697,7 +697,7 @@ function ProcessosContent() {
                 </div>
               </div>
 
-              <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06]">
+              <div className="rounded-xl bg-slate-50/90 dark:bg-[#141a26] p-3.5 border border-slate-200/80 dark:border-white/[0.08] shadow-xs">
                 <span className="text-slate-400 block text-[10px] uppercase font-semibold">
                   Descrição dos Autos
                 </span>
@@ -720,7 +720,7 @@ function ProcessosContent() {
               <button
                 type="button"
                 onClick={() => setDetailsModalOpen(false)}
-                className="rounded-xl border border-slate-200/80 bg-white/60 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-slate-200 dark:hover:bg-white/[0.08] transition-colors cursor-pointer"
+                className="rounded-xl border border-slate-200/80 bg-slate-100/80 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-200 dark:border-white/[0.08] dark:bg-[#141a26] dark:text-slate-200 dark:hover:bg-[#1a2232] transition-colors cursor-pointer"
               >
                 Fechar Autos
               </button>

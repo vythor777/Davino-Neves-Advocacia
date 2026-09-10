@@ -65,13 +65,12 @@ body {
 .astrea-card,
 .legal-glass-card {
   position: relative;
-  background: radial-gradient(120% 90% at 50% 0%, rgba(255, 255, 255, 0.96) 0%, rgba(248, 250, 252, 0.88) 100%);
-  backdrop-filter: blur(20px) saturate(130%);
-  -webkit-backdrop-filter: blur(20px) saturate(130%);
-  border: 0.5px solid rgba(15, 23, 42, 0.05);
+  background: #ffffff;
+  background-image: linear-gradient(180deg, #ffffff 0%, #fbfcfd 100%);
+  border: 1px solid rgba(15, 23, 42, 0.08);
   border-radius: 1.25rem;
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.03), 0 1px 2px -1px rgba(15, 23, 42, 0.02);
-  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease;
+  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.02);
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), background 0.25s ease, border-color 0.25s ease;
 }
 
 .dark .legal-card,
@@ -81,12 +80,11 @@ body {
 [data-theme="dark"] .astrea-card,
 [data-theme="dark"] .legal-glass-card {
   position: relative;
-  background: radial-gradient(130% 90% at 50% 0%, rgba(255, 255, 255, 0.045) 0%, rgba(22, 27, 34, 0.42) 50%, rgba(13, 17, 23, 0.65) 100%);
-  backdrop-filter: blur(24px) saturate(140%);
-  -webkit-backdrop-filter: blur(24px) saturate(140%);
-  border: none;
+  background: #0d121c;
+  background-image: linear-gradient(180deg, #131926 0%, #0c1017 100%);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   border-radius: 1.25rem;
-  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(223, 202, 160, 0.16), inset 0 -1px 0 0 rgba(255, 255, 255, 0.015);
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(223, 202, 160, 0.16);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -94,19 +92,20 @@ body {
   :root:not(.light) .astrea-card,
   :root:not(.light) .legal-glass-card {
     position: relative;
-    background: radial-gradient(130% 90% at 50% 0%, rgba(255, 255, 255, 0.045) 0%, rgba(22, 27, 34, 0.42) 50%, rgba(13, 17, 23, 0.65) 100%);
-    backdrop-filter: blur(24px) saturate(140%);
-    -webkit-backdrop-filter: blur(24px) saturate(140%);
-    border: none;
+    background: #0d121c;
+    background-image: linear-gradient(180deg, #131926 0%, #0c1017 100%);
+    border: 1px solid rgba(255, 255, 255, 0.09);
     border-radius: 1.25rem;
-    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 0 rgba(223, 202, 160, 0.16), inset 0 -1px 0 0 rgba(255, 255, 255, 0.015);
+    box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(223, 202, 160, 0.16);
   }
 }
 
 .legal-card:hover,
 .astrea-card:hover,
 .legal-glass-card:hover {
-  box-shadow: 0 8px 28px -4px rgba(15, 23, 42, 0.06);
+  background-image: linear-gradient(180deg, #ffffff 0%, #f4f6f8 100%);
+  border-color: rgba(197, 160, 89, 0.35);
+  box-shadow: 0 8px 28px -4px rgba(15, 23, 42, 0.08);
 }
 
 .dark .legal-card:hover,
@@ -115,16 +114,66 @@ body {
 [data-theme="dark"] .legal-card:hover,
 [data-theme="dark"] .astrea-card:hover,
 [data-theme="dark"] .legal-glass-card:hover {
-  background: radial-gradient(130% 90% at 50% 0%, rgba(255, 255, 255, 0.065) 0%, rgba(22, 27, 34, 0.48) 50%, rgba(13, 17, 23, 0.7) 100%);
-  box-shadow: 0 20px 42px -6px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(223, 202, 160, 0.3);
+  background-image: linear-gradient(180deg, #161e2e 0%, #0e131b 100%);
+  border-color: rgba(197, 160, 89, 0.3);
+  box-shadow: 0 20px 42px -6px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(223, 202, 160, 0.3);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) .legal-card:hover,
   :root:not(.light) .astrea-card:hover,
   :root:not(.light) .legal-glass-card:hover {
-    background: radial-gradient(130% 90% at 50% 0%, rgba(255, 255, 255, 0.065) 0%, rgba(22, 27, 34, 0.48) 50%, rgba(13, 17, 23, 0.7) 100%);
-    box-shadow: 0 20px 42px -6px rgba(0, 0, 0, 0.7), inset 0 1px 0 0 rgba(223, 202, 160, 0.3);
+    background-image: linear-gradient(180deg, #161e2e 0%, #0e131b 100%);
+    border-color: rgba(197, 160, 89, 0.3);
+    box-shadow: 0 20px 42px -6px rgba(0, 0, 0, 0.8), inset 0 1px 0 0 rgba(223, 202, 160, 0.3);
+  }
+}
+
+/* Modais de Alta Densidade: Opacidade total de 100% para eliminar visualização do fundo */
+.legal-modal-card {
+  position: relative;
+  background: #ffffff !important;
+  border: 1px solid rgba(15, 23, 42, 0.12) !important;
+  border-radius: 1.25rem;
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.35) !important;
+}
+
+.dark .legal-modal-card,
+[data-theme="dark"] .legal-modal-card {
+  position: relative;
+  background: #0b0f17 !important;
+  background-image: linear-gradient(180deg, #111722 0%, #090d14 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.95), inset 0 1px 0 0 rgba(223, 202, 160, 0.22) !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) .legal-modal-card {
+    position: relative;
+    background: #0b0f17 !important;
+    background-image: linear-gradient(180deg, #111722 0%, #090d14 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.12) !important;
+    box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.95), inset 0 1px 0 0 rgba(223, 202, 160, 0.22) !important;
+  }
+}
+
+/* Caixa de Widget Interno Sólido de Alta Legibilidade */
+.legal-widget-box {
+  background: #f8fafc;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  border-radius: 0.75rem;
+}
+
+.dark .legal-widget-box,
+[data-theme="dark"] .legal-widget-box {
+  background: #141a26;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) .legal-widget-box {
+    background: #141a26;
+    border: 1px solid rgba(255, 255, 255, 0.08);
   }
 }
 

@@ -68,10 +68,10 @@ export function ConfirmModal({
       aria-modal="true"
       aria-labelledby="confirm-modal-title"
       aria-describedby="confirm-modal-description"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-fade-in-up"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in-up"
     >
       <div
-        className="legal-glass-card fio-de-luz w-full max-w-md p-6 shadow-2xl transition-all transform animate-in fade-in zoom-in-95 duration-150"
+        className="legal-modal-card fio-de-luz w-full max-w-md p-6 shadow-2xl transition-all transform animate-in fade-in zoom-in-95 duration-150"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start gap-3.5">
