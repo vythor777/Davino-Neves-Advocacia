@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 // Lista de rotas públicas que não requerem autenticação
 const PUBLIC_PATHS = ['/login'];
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Ignorar arquivos estáticos, bundles internos do Next.js e requisições públicas de API
@@ -47,6 +47,8 @@ export function middleware(request: NextRequest) {
 
   return NextResponse.next();
 }
+
+export default proxy;
 
 export const config = {
   matcher: [
