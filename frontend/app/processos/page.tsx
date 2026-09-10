@@ -301,13 +301,18 @@ function ProcessosContent() {
       </div>
 
         {/* Cabeçalho Minimalista & Tipografia Sofisticada */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200/80 dark:border-slate-800">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200/60 dark:border-white/[0.05]">
           <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide uppercase bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-[#d4af37]/90 border border-slate-200 dark:border-white/[0.08]">
+                Controladoria Jurídica • Módulo Processual
+              </span>
+            </div>
             <div className="flex items-center gap-2.5">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 text-blue-700 dark:bg-blue-950/60 dark:text-blue-300">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
                 <Scale className="h-4 w-4" />
               </span>
-              <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+              <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
                 Controle de Processos
               </h1>
             </div>
@@ -320,7 +325,7 @@ function ProcessosContent() {
             <button
               onClick={fetchProcessos}
               disabled={loading}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white/60 px-3.5 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100/80 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] backdrop-blur-sm transition-colors cursor-pointer"
               title="Atualizar lista"
             >
               <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
@@ -329,10 +334,10 @@ function ProcessosContent() {
 
             <button
               onClick={openCreateModal}
-              className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500 transition-colors active:scale-98"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition-all active:scale-98 cursor-pointer"
             >
-              <PlusCircle className="h-4 w-4" />
-              Novo Processo
+              <PlusCircle className="h-4 w-4 text-slate-950" />
+              + Novo Processo
             </button>
           </div>
         </div>
@@ -348,50 +353,58 @@ function ProcessosContent() {
             </>
           ) : (
             <>
-              <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
+              <div className="legal-glass-card fio-de-luz p-4 sm:p-5 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
                     Total Ativo
                   </span>
-                  <Briefcase className="h-4 w-4 text-slate-400" />
+                  <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-400">
+                    <Briefcase className="h-3.5 w-3.5" />
+                  </div>
                 </div>
-                <p className="mt-2 text-2xl font-bold font-mono text-slate-900 dark:text-white">
+                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
                   {totalProcessos}
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
+              <div className="legal-glass-card fio-de-luz p-4 sm:p-5 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
                     Em Andamento
                   </span>
-                  <Scale className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                  <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400/90">
+                    <Scale className="h-3.5 w-3.5" />
+                  </div>
                 </div>
-                <p className="mt-2 text-2xl font-bold font-mono text-slate-900 dark:text-white">
+                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
                   {totalEmAndamento}
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
+              <div className="legal-glass-card fio-de-luz p-4 sm:p-5 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
                     Conclusos / Pautas
                   </span>
-                  <Clock className="h-4 w-4 text-purple-600 dark:text-purple-400" />
+                  <div className="p-1.5 rounded-lg bg-purple-500/10 text-purple-600 dark:text-purple-400/90">
+                    <Clock className="h-3.5 w-3.5" />
+                  </div>
                 </div>
-                <p className="mt-2 text-2xl font-bold font-mono text-slate-900 dark:text-white">
+                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
                   {totalConclusos}
                 </p>
               </div>
 
-              <div className="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
+              <div className="legal-glass-card fio-de-luz p-4 sm:p-5 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
                     Encerrados
                   </span>
-                  <FileCheck2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                  <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400/90">
+                    <FileCheck2 className="h-3.5 w-3.5" />
+                  </div>
                 </div>
-                <p className="mt-2 text-2xl font-bold font-mono text-slate-900 dark:text-white">
+                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
                   {totalFinalizados}
                 </p>
               </div>
@@ -413,7 +426,7 @@ function ProcessosContent() {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-900 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+              className="rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-xs font-medium text-slate-900 focus:border-[#c5a059] focus:outline-hidden dark:border-white/[0.08] dark:bg-[#12161f] dark:text-slate-200 cursor-pointer"
             >
               <option value="todos" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Todos os Status</option>
               {STATUS_OPCOES.map((st) => (
@@ -427,7 +440,7 @@ function ProcessosContent() {
               <select
                 value={selectedClienteFilter}
                 onChange={(e) => setSelectedClienteFilter(e.target.value)}
-                className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-medium text-slate-900 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                className="rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-xs font-medium text-slate-900 focus:border-[#c5a059] focus:outline-hidden dark:border-white/[0.08] dark:bg-[#12161f] dark:text-slate-200 cursor-pointer"
               >
                 <option value="todos" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Todos os Clientes</option>
                 {clientes.map((c) => (
@@ -466,21 +479,26 @@ function ProcessosContent() {
 
       {/* Modal de Criação / Edição */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
-              <div className="flex items-center gap-2">
-                <div className="rounded-xl bg-blue-50 p-2 text-blue-600 dark:bg-blue-950/80 dark:text-blue-400">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-md">
+          <div className="legal-glass-card fio-de-luz w-full max-w-lg p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between border-b border-slate-200/60 pb-4 dark:border-white/[0.06]">
+              <div className="flex items-center gap-2.5">
+                <div className="rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25 p-2">
                   {editingProcesso ? <Edit2 className="h-4 w-4" /> : <PlusCircle className="h-4 w-4" />}
                 </div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-white">
-                  {editingProcesso ? 'Editar Processo Judicial' : 'Novo Processo Judicial'}
-                </h3>
+                <div>
+                  <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
+                    {editingProcesso ? 'Editar Processo Judicial' : 'Novo Processo Judicial'}
+                  </h3>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                    Preencha os dados dos autos e vincule ao cliente
+                  </p>
+                </div>
               </div>
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-200 transition cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -506,7 +524,7 @@ function ProcessosContent() {
                   value={titulo}
                   onChange={(e) => setTitulo(e.target.value)}
                   placeholder="Ex: Ação de Cobrança e Perdas e Danos"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                  className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-[#c5a059] focus:outline-hidden dark:border-white/[0.08] dark:bg-[#12161f] dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
                 {formErrors.titulo && <p className="text-rose-500 mt-1">{formErrors.titulo}</p>}
               </div>
@@ -519,7 +537,7 @@ function ProcessosContent() {
                   <select
                     value={idCliente}
                     onChange={(e) => setIdCliente(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                    className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 focus:border-[#c5a059] focus:outline-hidden dark:border-white/[0.08] dark:bg-[#12161f] dark:text-slate-100"
                   >
                     <option value="" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Selecione o Cliente</option>
                     {clientes.map((c) => (
@@ -541,7 +559,7 @@ function ProcessosContent() {
                     type="date"
                     value={dataAbertura}
                     onChange={(e) => setDataAbertura(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                    className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 focus:border-[#c5a059] focus:outline-hidden dark:border-white/[0.08] dark:bg-[#12161f] dark:text-slate-100"
                   />
                   {formErrors.dataAbertura && (
                     <p className="text-rose-500 mt-1">{formErrors.dataAbertura}</p>
@@ -556,7 +574,7 @@ function ProcessosContent() {
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                  className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 focus:border-[#c5a059] focus:outline-hidden dark:border-white/[0.08] dark:bg-[#12161f] dark:text-slate-100"
                 >
                   {STATUS_OPCOES.map((st) => (
                     <option key={st} value={st} className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">
@@ -575,25 +593,25 @@ function ProcessosContent() {
                   value={descricao}
                   onChange={(e) => setDescricao(e.target.value)}
                   placeholder="Síntese da demanda, vara, foro e anotações essenciais..."
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden resize-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                  className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-[#c5a059] focus:outline-hidden resize-none dark:border-white/[0.08] dark:bg-[#12161f] dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
                 {formErrors.descricao && (
                   <p className="text-rose-500 mt-1">{formErrors.descricao}</p>
                 )}
               </div>
 
-              <div className="mt-5 flex items-center justify-end gap-2.5 border-t border-slate-100 pt-4 dark:border-slate-800">
+              <div className="mt-5 flex items-center justify-end gap-2.5 border-t border-slate-200/60 pt-4 dark:border-white/[0.06]">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="rounded-xl border border-slate-200 px-4 py-2 font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-300 dark:hover:bg-slate-800 transition-colors"
+                  className="rounded-xl border border-slate-200/80 bg-white/60 px-4 py-2 font-medium text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] transition-colors cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-50 transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] px-4 py-2 font-semibold text-slate-950 disabled:opacity-50 transition-all cursor-pointer"
                 >
                   {saving ? 'Salvando...' : editingProcesso ? 'Salvar Alterações' : 'Cadastrar Processo'}
                 </button>
@@ -621,18 +639,18 @@ function ProcessosContent() {
 
       {/* Modal / Drawer de Detalhes */}
       {detailsModalOpen && selectedProcesso && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-md">
+          <div className="legal-glass-card fio-de-luz w-full max-w-lg p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between border-b border-slate-200/60 pb-4 dark:border-white/[0.06]">
               <div className="flex items-center gap-2.5">
-                <div className="rounded-xl bg-blue-50 p-2 text-blue-600 dark:bg-blue-950/80 dark:text-blue-400">
+                <div className="rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25 p-2">
                   <Scale className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-white">
+                  <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
                     Autos Processuais
                   </h3>
-                  <p className="text-[11px] font-mono text-slate-500">
+                  <p className="text-[11px] font-mono text-slate-400">
                     {formatarNumeroCNJ(selectedProcesso.numero_processo)}
                   </p>
                 </div>
@@ -640,14 +658,14 @@ function ProcessosContent() {
               <button
                 type="button"
                 onClick={() => setDetailsModalOpen(false)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200"
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-200 transition cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
             <div className="mt-4 space-y-3 text-xs">
-              <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/80">
+              <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06]">
                 <span className="text-slate-400 block text-[10px] uppercase font-semibold">
                   Ação / Classe
                 </span>
@@ -657,7 +675,7 @@ function ProcessosContent() {
               </div>
 
               <div className="grid grid-cols-2 gap-2.5">
-                <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/80">
+                <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06]">
                   <span className="text-slate-400 block text-[10px] uppercase font-semibold">
                     Cliente
                   </span>
@@ -665,7 +683,7 @@ function ProcessosContent() {
                     {selectedProcesso.cliente?.nome || `Cliente #${selectedProcesso.id_cliente}`}
                   </span>
                 </div>
-                <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/80">
+                <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06]">
                   <span className="text-slate-400 block text-[10px] uppercase font-semibold">
                     Status
                   </span>
@@ -679,7 +697,7 @@ function ProcessosContent() {
                 </div>
               </div>
 
-              <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-slate-950/40 border border-slate-200/60 dark:border-slate-800/80">
+              <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06]">
                 <span className="text-slate-400 block text-[10px] uppercase font-semibold">
                   Descrição dos Autos
                 </span>
@@ -698,11 +716,11 @@ function ProcessosContent() {
               </div>
             </div>
 
-            <div className="mt-5 flex items-center justify-end border-t border-slate-100 pt-4 dark:border-slate-800">
+            <div className="mt-5 flex items-center justify-end border-t border-slate-200/60 pt-4 dark:border-white/[0.06]">
               <button
                 type="button"
                 onClick={() => setDetailsModalOpen(false)}
-                className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
+                className="rounded-xl border border-slate-200/80 bg-white/60 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-slate-200 dark:hover:bg-white/[0.08] transition-colors cursor-pointer"
               >
                 Fechar Autos
               </button>

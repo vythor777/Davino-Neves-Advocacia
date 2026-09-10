@@ -195,15 +195,15 @@ export function ProcessCalendar({
   }
 
   return (
-    <div className="w-full flex flex-col rounded-2xl border border-slate-200 bg-white shadow-2xs dark:border-slate-800 dark:bg-slate-900 overflow-hidden">
+    <div className="w-full flex flex-col legal-glass-card overflow-hidden">
       {/* Header Interativo no estilo Google Calendar */}
-      <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between bg-slate-50/50 dark:bg-slate-900/50">
+      <div className="p-4 sm:p-5 border-b border-slate-200/60 dark:border-white/[0.06] flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between bg-slate-50/40 dark:bg-white/[0.02]">
         {/* Esquerda: Botão Hoje, Chevrons de Navegação e Título do Mês */}
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={handleToday}
             type="button"
-            className="rounded-xl border border-slate-300 bg-white px-3.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-750 transition active:scale-95 shadow-2xs cursor-pointer"
+            className="rounded-xl border border-slate-200/80 bg-white/60 px-3.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-200 dark:hover:bg-white/[0.06] transition active:scale-95 shadow-2xs cursor-pointer"
           >
             Hoje
           </button>
@@ -212,7 +212,7 @@ export function ProcessCalendar({
             <button
               onClick={handlePrev}
               type="button"
-              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-750 transition active:scale-95 shadow-2xs cursor-pointer"
+              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200/80 bg-white/60 text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-200 dark:hover:bg-white/[0.06] transition active:scale-95 shadow-2xs cursor-pointer"
               title="Mês anterior"
               aria-label="Mês anterior"
             >
@@ -221,7 +221,7 @@ export function ProcessCalendar({
             <button
               onClick={handleNext}
               type="button"
-              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-750 transition active:scale-95 shadow-2xs cursor-pointer"
+              className="flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200/80 bg-white/60 text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-200 dark:hover:bg-white/[0.06] transition active:scale-95 shadow-2xs cursor-pointer"
               title="Próximo mês"
               aria-label="Próximo mês"
             >
@@ -229,7 +229,7 @@ export function ProcessCalendar({
             </button>
           </div>
 
-          <h2 className="font-serif text-lg sm:text-xl font-bold tracking-tight text-slate-900 dark:text-white ml-1">
+          <h2 className="text-base sm:text-lg font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc] ml-1">
             {currentTitle || 'Agenda de Prazos'}
           </h2>
         </div>
@@ -237,33 +237,33 @@ export function ProcessCalendar({
         {/* Direita: Legenda Semântica com os 4 Status + Alternância de Visão (Mês, Semana, Dia) */}
         <div className="flex flex-wrap items-center gap-4 self-end lg:self-auto">
           {/* Legenda de Status com as 4 cores rigorosamente alinhadas */}
-          <div className="hidden sm:flex flex-wrap items-center gap-4 text-xs font-medium text-slate-500 dark:text-slate-400 border-r border-slate-200 dark:border-slate-800 pr-4">
+          <div className="hidden sm:flex flex-wrap items-center gap-4 text-xs font-medium text-slate-500 dark:text-slate-400 border-r border-slate-200/60 dark:border-white/[0.06] pr-4">
             <div className="flex items-center gap-2" title="Vence hoje ou nos próximos 3 dias">
-              <span className="h-2.5 w-2.5 rounded-full bg-amber-500 shrink-0" />
+              <span className="h-2 w-2 rounded-full bg-amber-400 shrink-0" />
               <span>Urgentes / Hoje</span>
             </div>
             <div className="flex items-center gap-2" title="Prazo com data de vencimento expirada">
-              <span className="h-2.5 w-2.5 rounded-full bg-rose-500 shrink-0" />
+              <span className="h-2 w-2 rounded-full bg-rose-400 shrink-0" />
               <span>Vencidos</span>
             </div>
             <div className="flex items-center gap-2" title="Prazo já cumprido">
-              <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 shrink-0" />
+              <span className="h-2 w-2 rounded-full bg-emerald-400 shrink-0" />
               <span>Cumpridos</span>
             </div>
             <div className="flex items-center gap-2" title="Prazo regular em aberto">
-              <span className="h-2.5 w-2.5 rounded-full bg-blue-500 shrink-0" />
+              <span className="h-2 w-2 rounded-full bg-[#c5a059] shrink-0" />
               <span>Em Aberto / Padrão</span>
             </div>
           </div>
 
-          {/* Seletor de Visão (Mês, Semana, Dia) - Segmented Control Moderno */}
-          <div className="flex items-center rounded-xl bg-slate-100 dark:bg-slate-800 p-1 border border-slate-200/80 dark:border-slate-700/60 shadow-2xs">
+          {/* Seletor de Visão (Mês, Semana, Dia) */}
+          <div className="flex items-center rounded-xl bg-slate-100 dark:bg-white/[0.04] p-1 border border-slate-200/60 dark:border-white/[0.06]">
             <button
               type="button"
               onClick={() => handleChangeView('dayGridMonth')}
-              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition cursor-pointer ${
+              className={`rounded-lg px-3 py-1 text-xs font-semibold transition cursor-pointer ${
                 currentView === 'dayGridMonth'
-                  ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-700 dark:text-white'
+                  ? 'bg-[#c5a059] text-slate-950 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
               }`}
             >
@@ -272,9 +272,9 @@ export function ProcessCalendar({
             <button
               type="button"
               onClick={() => handleChangeView('timeGridWeek')}
-              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition cursor-pointer ${
+              className={`rounded-lg px-3 py-1 text-xs font-semibold transition cursor-pointer ${
                 currentView === 'timeGridWeek'
-                  ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-700 dark:text-white'
+                  ? 'bg-[#c5a059] text-slate-950 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
               }`}
             >
@@ -283,9 +283,9 @@ export function ProcessCalendar({
             <button
               type="button"
               onClick={() => handleChangeView('timeGridDay')}
-              className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition cursor-pointer ${
+              className={`rounded-lg px-3 py-1 text-xs font-semibold transition cursor-pointer ${
                 currentView === 'timeGridDay'
-                  ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-700 dark:text-white'
+                  ? 'bg-[#c5a059] text-slate-950 shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
               }`}
             >

@@ -52,29 +52,29 @@ export function PrazoDetailModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-xs animate-fade-in-up">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-md animate-fade-in-up">
       <div
-        className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-slate-800 dark:bg-slate-900 overflow-hidden"
+        className="w-full max-w-lg legal-glass-card fio-de-luz shadow-2xl overflow-hidden text-slate-900 dark:text-slate-100"
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-prazo-title"
       >
         {/* Cabeçalho do Modal */}
-        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 p-5 bg-slate-50/60 dark:bg-slate-900/60">
+        <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] p-5 bg-slate-50/40 dark:bg-white/[0.02]">
           <div className="flex items-center gap-2.5">
             <div
-              className={`rounded-xl p-2 ${
+              className={`rounded-xl p-2 border ${
                 isCumprido
-                  ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
                   : calc.urgencia === 'vencido' || calc.urgencia === 'hoje' || calc.urgencia === 'urgente'
-                  ? 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300'
-                  : 'bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300'
+                  ? 'bg-rose-500/10 text-rose-400 border-rose-500/20'
+                  : 'bg-[#c5a059]/15 text-[#c5a059] border-[#c5a059]/25'
               }`}
             >
               <Calendar className="h-5 w-5" />
             </div>
             <div>
-              <h3 id="modal-prazo-title" className="font-serif text-lg font-bold text-slate-900 dark:text-white">
+              <h3 id="modal-prazo-title" className="text-base font-semibold text-slate-900 dark:text-[#f8fafc]">
                 Detalhes do Prazo Judicial
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -84,7 +84,7 @@ export function PrazoDetailModal({
           </div>
           <button
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition"
+            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04] hover:text-slate-200 transition cursor-pointer"
             aria-label="Fechar modal"
           >
             <X className="h-5 w-5" />
@@ -94,18 +94,18 @@ export function PrazoDetailModal({
         {/* Corpo dos Detalhes */}
         <div className="p-5 space-y-4 max-h-[75vh] overflow-y-auto text-xs">
           {/* Status e Urgência */}
-          <div className="flex items-center justify-between rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 p-3.5">
+          <div className="flex items-center justify-between rounded-xl border border-slate-200/60 dark:border-white/[0.06] bg-slate-50/50 dark:bg-white/[0.02] p-3.5">
             <div className="flex items-center gap-2">
-              <StatusIcon className="h-4 w-4 text-slate-500 dark:text-slate-400" />
+              <StatusIcon className="h-4 w-4 text-slate-400" />
               <span className="font-medium text-slate-700 dark:text-slate-300">Situação do Prazo:</span>
             </div>
             <span
               className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1 font-semibold text-xs ${
                 isCumprido
-                  ? 'bg-emerald-50 border-emerald-300 text-emerald-800 dark:bg-emerald-900/50 dark:border-emerald-500 dark:text-emerald-200'
+                  ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400'
                   : calc.urgencia === 'vencido' || calc.urgencia === 'hoje' || calc.urgencia === 'urgente'
-                  ? 'bg-red-50 border-red-300 text-red-800 dark:bg-red-900/50 dark:border-red-500 dark:text-red-200'
-                  : 'bg-blue-50 border-blue-300 text-blue-800 dark:bg-blue-900/50 dark:border-blue-500 dark:text-blue-200'
+                  ? 'bg-rose-500/10 border-rose-500/20 text-rose-600 dark:text-rose-400'
+                  : 'bg-[#c5a059]/10 border-[#c5a059]/20 text-[#c5a059]'
               }`}
             >
               {calc.badgeText}
@@ -115,7 +115,7 @@ export function PrazoDetailModal({
           {/* Descrição do Prazo */}
           <div className="space-y-1.5">
             <span className="text-slate-500 dark:text-slate-400 font-medium">Ato Processual / Descrição:</span>
-            <p className="text-sm font-semibold text-slate-900 dark:text-white leading-relaxed p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+            <p className="text-sm font-semibold text-slate-900 dark:text-[#f8fafc] leading-relaxed p-3 bg-white/60 dark:bg-white/[0.02] rounded-xl border border-slate-200/60 dark:border-white/[0.06]">
               {prazo.descricao}
             </p>
           </div>
@@ -124,7 +124,7 @@ export function PrazoDetailModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <span className="text-slate-500 dark:text-slate-400 font-medium">Data Fatal:</span>
-              <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-950/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200 bg-slate-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-slate-200/60 dark:border-white/[0.06]">
                 <Calendar className="h-4 w-4 text-slate-400 shrink-0" />
                 <span className="capitalize font-medium">{dataFormatada}</span>
               </div>
@@ -132,7 +132,7 @@ export function PrazoDetailModal({
 
             <div className="space-y-1.5">
               <span className="text-slate-500 dark:text-slate-400 font-medium">Horário Marcado:</span>
-              <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-950/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200 bg-slate-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-slate-200/60 dark:border-white/[0.06]">
                 <Clock className="h-4 w-4 text-slate-400 shrink-0" />
                 <span className="font-mono font-medium">{prazo.hora || '09:00'}</span>
               </div>
@@ -143,15 +143,15 @@ export function PrazoDetailModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1.5">
               <span className="text-slate-500 dark:text-slate-400 font-medium">Tipo de Compromisso:</span>
-              <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-950/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
-                <Tag className="h-4 w-4 text-orange-500 shrink-0" />
+              <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200 bg-slate-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-slate-200/60 dark:border-white/[0.06]">
+                <Tag className="h-4 w-4 text-[#c5a059] shrink-0" />
                 <span className="font-semibold">{prazo.tipoCompromisso || 'Prazo Fatal'}</span>
               </div>
             </div>
 
             <div className="space-y-1.5">
               <span className="text-slate-500 dark:text-slate-400 font-medium">Responsável:</span>
-              <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200 bg-slate-50 dark:bg-slate-950/40 p-3 rounded-xl border border-slate-200 dark:border-slate-800">
+              <div className="flex items-center gap-2 text-slate-800 dark:text-slate-200 bg-slate-50/50 dark:bg-white/[0.02] p-3 rounded-xl border border-slate-200/60 dark:border-white/[0.06]">
                 <User className="h-4 w-4 text-slate-400 shrink-0" />
                 <span className="font-medium truncate">{prazo.responsavel || 'Não atribuído'}</span>
               </div>
@@ -162,17 +162,17 @@ export function PrazoDetailModal({
           <div className="space-y-2">
             <span className="text-slate-500 dark:text-slate-400 font-medium">Processo Vinculado:</span>
             {prazo.processo ? (
-              <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950/50 p-4 space-y-2.5">
+              <div className="rounded-xl border border-slate-200/60 dark:border-white/[0.06] bg-white/40 dark:bg-white/[0.02] p-4 space-y-2.5">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Scale className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
-                    <span className="font-mono font-bold text-slate-900 dark:text-white text-xs">
+                    <Scale className="h-4 w-4 text-[#c5a059] shrink-0" />
+                    <span className="font-mono font-semibold text-slate-900 dark:text-white text-xs">
                       {prazo.processo.numero_processo}
                     </span>
                   </div>
                   <button
                     onClick={() => handleCopyCNJ(prazo.processo!.numero_processo)}
-                    className="flex items-center gap-1 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200 transition"
+                    className="flex items-center gap-1 rounded-md p-1 text-slate-400 hover:bg-white/[0.06] hover:text-slate-200 transition cursor-pointer"
                     title="Copiar CNJ"
                   >
                     <Copy className="h-3.5 w-3.5" />
@@ -190,10 +190,10 @@ export function PrazoDetailModal({
                   </div>
                 )}
 
-                <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80">
+                <div className="pt-2 border-t border-slate-200/60 dark:border-white/[0.06]">
                   <Link
                     href={`/processos?busca=${prazo.processo.numero_processo}`}
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 dark:text-blue-400 hover:underline"
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#c5a059] hover:underline"
                     onClick={onClose}
                   >
                     <span>Ver autos do processo</span>
@@ -202,7 +202,7 @@ export function PrazoDetailModal({
                 </div>
               </div>
             ) : (
-              <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950/40 p-3 text-slate-500">
+              <div className="rounded-xl border border-slate-200/60 dark:border-white/[0.06] bg-slate-50/50 dark:bg-white/[0.02] p-3 text-slate-500">
                 Processo ID #{prazo.id_processo}
               </div>
             )}
@@ -210,17 +210,17 @@ export function PrazoDetailModal({
         </div>
 
         {/* Rodapé de Ações */}
-        <div className="border-t border-slate-100 dark:border-slate-800 p-4 bg-slate-50/60 dark:bg-slate-900/60 flex flex-wrap items-center justify-between gap-2">
+        <div className="border-t border-slate-200/60 dark:border-white/[0.06] p-4 bg-slate-50/40 dark:bg-white/[0.02] flex flex-wrap items-center justify-between gap-2">
           {/* Alternar Cumprimento */}
           <button
             onClick={() => {
               onToggleStatus(prazo);
               onClose();
             }}
-            className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold transition active:scale-95 ${
+            className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold transition active:scale-95 cursor-pointer ${
               isCumprido
-                ? 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
-                : 'bg-emerald-600 text-white hover:bg-emerald-500 shadow-xs'
+                ? 'border border-slate-200/80 bg-white/60 text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300'
+                : 'bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold shadow-xs'
             }`}
           >
             {isCumprido ? (
@@ -243,10 +243,10 @@ export function PrazoDetailModal({
                 onClose();
                 onEdit(prazo);
               }}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-750 transition"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white/60 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] transition cursor-pointer"
               title="Editar Prazo"
             >
-              <Edit2 className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400" />
+              <Edit2 className="h-3.5 w-3.5 text-[#c5a059]" />
               <span>Editar</span>
             </button>
 
@@ -256,7 +256,7 @@ export function PrazoDetailModal({
                 onClose();
                 onDelete(prazo);
               }}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-100 dark:border-rose-900/60 dark:bg-rose-950/40 dark:text-rose-300 transition"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-rose-500/20 bg-rose-500/10 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-500/20 dark:border-rose-500/30 dark:text-rose-400 transition cursor-pointer"
               title="Excluir Prazo"
             >
               <Trash2 className="h-3.5 w-3.5" />
@@ -265,7 +265,7 @@ export function PrazoDetailModal({
             {/* Fechar */}
             <button
               onClick={onClose}
-              className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 transition"
+              className="rounded-xl border border-slate-200/80 bg-white/60 px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 transition cursor-pointer"
             >
               Fechar
             </button>

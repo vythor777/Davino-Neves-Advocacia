@@ -428,38 +428,43 @@ function PrazosContent() {
         )}
 
         {/* Cabeçalho da Página */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 dark:border-slate-800 pb-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200/60 dark:border-white/[0.05] pb-4">
           <div>
-            <div className="flex items-center gap-2">
-              <span className="rounded-md bg-blue-50 p-1.5 text-blue-700 dark:bg-blue-950 dark:text-blue-300">
-                <CalendarClock className="h-5 w-5" />
+            <div className="flex items-center gap-2 mb-1">
+              <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide uppercase bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-[#d4af37]/90 border border-slate-200 dark:border-white/[0.08]">
+                Controladoria Jurídica • Agenda Processual
               </span>
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+            </div>
+            <div className="flex items-center gap-2.5">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
+                <CalendarClock className="h-4 w-4" />
+              </span>
+              <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
                 Prazos & Agenda Processual
               </h1>
             </div>
-            <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
               Cronograma de audiências, manifestações e intimações ordenadas por urgência de vencimento.
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <button
               onClick={fetchPrazos}
               disabled={loading}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 transition"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white/60 px-3.5 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100/80 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] backdrop-blur-sm transition-colors cursor-pointer"
               title="Atualizar lista"
             >
-              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
               Atualizar
             </button>
 
             <button
               onClick={openCreateModal}
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500 transition active:scale-95"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition-all active:scale-98 cursor-pointer"
             >
-              <PlusCircle className="h-4 w-4" />
-              Novo Prazo
+              <PlusCircle className="h-4 w-4 text-slate-950" />
+              + Novo Prazo
             </button>
           </div>
         </div>
@@ -480,89 +485,97 @@ function PrazosContent() {
                 type="button"
                 onClick={() => setSelectedFilter('todos')}
                 aria-pressed={selectedFilter === 'todos'}
-                className={`text-left rounded-xl border p-4 transition-all duration-200 cursor-pointer shadow-2xs group active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-blue-500 h-24 flex flex-col justify-between ${
+                className={`legal-glass-card fio-de-luz p-4 sm:p-5 text-left flex flex-col justify-between transition-all duration-200 cursor-pointer ${
                   selectedFilter === 'todos'
-                    ? 'border-blue-400 bg-blue-50/60 dark:border-blue-500 dark:bg-blue-950/40 ring-2 ring-blue-500/60 shadow-xs'
-                    : 'border-slate-200 bg-white hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700'
+                    ? 'ring-1 ring-[#c5a059]'
+                    : ''
                 }`}
                 title="Clique para exibir todos os prazos"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-600 dark:text-slate-400 group-hover:text-slate-800 dark:group-hover:text-slate-200 transition-colors">
+                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
                     Total de Prazos
                   </span>
-                  <CalendarClock className="h-4 w-4 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300 transition-colors" />
+                  <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-400">
+                    <CalendarClock className="h-3.5 w-3.5" />
+                  </div>
                 </div>
-                <p className="text-2xl font-bold font-serif text-slate-900 dark:text-white">
+                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
                   {totalPrazos}
                 </p>
               </button>
 
-              {/* Card 2: 🟡 Urgentes / Hoje (Laranja/Amarelo) */}
+              {/* Card 2: 🟡 Urgentes / Hoje */}
               <button
                 type="button"
                 onClick={() => setSelectedFilter((prev) => (prev === 'urgentes' ? 'todos' : 'urgentes'))}
                 aria-pressed={selectedFilter === 'urgentes'}
-                className={`text-left rounded-xl border p-4 transition-all duration-200 cursor-pointer shadow-2xs group active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-amber-500 h-24 flex flex-col justify-between ${
+                className={`legal-glass-card fio-de-luz p-4 sm:p-5 text-left flex flex-col justify-between transition-all duration-200 cursor-pointer ${
                   selectedFilter === 'urgentes'
-                    ? 'border-amber-400 bg-amber-100/70 dark:border-amber-500 dark:bg-amber-950/60 ring-2 ring-amber-500 shadow-xs'
-                    : 'border-amber-200 bg-amber-50/50 hover:border-amber-300 hover:bg-amber-50 dark:border-amber-900/60 dark:bg-amber-950/20 dark:hover:border-amber-800'
+                    ? 'ring-1 ring-amber-400'
+                    : ''
                 }`}
                 title="Clique para filtrar apenas prazos Urgentes e de Hoje"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-amber-900 dark:text-amber-300">
+                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
                     Urgentes / Hoje
                   </span>
-                  <Flame className="h-4 w-4 text-amber-600 dark:text-amber-400" />
+                  <div className="p-1.5 rounded-lg bg-amber-500/10 text-amber-600 dark:text-amber-400">
+                    <Flame className="h-3.5 w-3.5" />
+                  </div>
                 </div>
-                <p className="text-2xl font-bold font-serif text-amber-900 dark:text-amber-200">
+                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
                   {totalUrgentes}
                 </p>
               </button>
 
-              {/* Card 3: 🔴 Prazos Vencidos (Vermelho/Rosa) */}
+              {/* Card 3: 🔴 Prazos Vencidos */}
               <button
                 type="button"
                 onClick={() => setSelectedFilter((prev) => (prev === 'vencidos' ? 'todos' : 'vencidos'))}
                 aria-pressed={selectedFilter === 'vencidos'}
-                className={`text-left rounded-xl border p-4 transition-all duration-200 cursor-pointer shadow-2xs group active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-rose-500 h-24 flex flex-col justify-between ${
+                className={`legal-glass-card fio-de-luz p-4 sm:p-5 text-left flex flex-col justify-between transition-all duration-200 cursor-pointer ${
                   selectedFilter === 'vencidos'
-                    ? 'border-rose-400 bg-rose-100/70 dark:border-rose-500 dark:bg-rose-950/60 ring-2 ring-rose-500 shadow-xs'
-                    : 'border-rose-200 bg-rose-50/50 hover:border-rose-300 hover:bg-rose-50 dark:border-rose-900/60 dark:bg-rose-950/20 dark:hover:border-rose-800'
+                    ? 'ring-1 ring-rose-400'
+                    : ''
                 }`}
                 title="Clique para filtrar apenas prazos Vencidos"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-rose-900 dark:text-rose-300">
+                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
                     Prazos Vencidos
                   </span>
-                  <XCircle className="h-4 w-4 text-rose-600 dark:text-rose-400" />
+                  <div className="p-1.5 rounded-lg bg-rose-500/10 text-rose-600 dark:text-rose-400">
+                    <XCircle className="h-3.5 w-3.5" />
+                  </div>
                 </div>
-                <p className="text-2xl font-bold font-serif text-rose-900 dark:text-rose-200">
+                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
                   {totalVencidos}
                 </p>
               </button>
 
-              {/* Card 4: 🟢 Cumpridos (Verde) */}
+              {/* Card 4: 🟢 Cumpridos */}
               <button
                 type="button"
                 onClick={() => setSelectedFilter((prev) => (prev === 'cumpridos' ? 'todos' : 'cumpridos'))}
                 aria-pressed={selectedFilter === 'cumpridos'}
-                className={`text-left rounded-xl border p-4 transition-all duration-200 cursor-pointer shadow-2xs group active:scale-[0.98] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-emerald-500 h-24 flex flex-col justify-between ${
+                className={`legal-glass-card fio-de-luz p-4 sm:p-5 text-left flex flex-col justify-between transition-all duration-200 cursor-pointer ${
                   selectedFilter === 'cumpridos'
-                    ? 'border-emerald-400 bg-emerald-100/70 dark:border-emerald-500 dark:bg-emerald-950/60 ring-2 ring-emerald-500 shadow-xs'
-                    : 'border-emerald-200 bg-emerald-50/50 hover:border-emerald-300 hover:bg-emerald-50 dark:border-emerald-900/60 dark:bg-emerald-950/20 dark:hover:border-emerald-800'
+                    ? 'ring-1 ring-emerald-400'
+                    : ''
                 }`}
                 title="Clique para filtrar apenas prazos Cumpridos"
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-emerald-900 dark:text-emerald-300">
+                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
                     Cumpridos
                   </span>
-                  <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                  <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                  </div>
                 </div>
-                <p className="text-2xl font-bold font-serif text-emerald-900 dark:text-emerald-200">
+                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
                   {totalCumpridos}
                 </p>
               </button>
@@ -579,18 +592,18 @@ function PrazosContent() {
               placeholder="Buscar prazo, processo ou cliente..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-xl border border-slate-300 bg-white pl-10 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:outline-hidden focus:ring-1 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+              className="w-full rounded-xl border border-slate-200/80 bg-white/80 pl-10 pr-4 py-2 text-xs text-slate-900 placeholder-slate-400 focus:border-[#c5a059] focus:outline-hidden dark:border-white/[0.08] dark:bg-[#12161f] dark:text-slate-100"
             />
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center rounded-xl bg-slate-200 p-1 dark:bg-slate-800">
+            <div className="flex items-center rounded-xl bg-slate-100 dark:bg-white/[0.04] p-1 border border-slate-200/60 dark:border-white/[0.06]">
               <button
                 onClick={() => setViewMode('calendar')}
                 className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition cursor-pointer ${
                   viewMode === 'calendar'
-                    ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-700 dark:text-white'
-                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400'
+                    ? 'bg-[#c5a059] text-slate-950 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
                 }`}
                 title="Visualização em Calendário"
               >
@@ -601,8 +614,8 @@ function PrazosContent() {
                 onClick={() => setViewMode('table')}
                 className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition cursor-pointer ${
                   viewMode === 'table'
-                    ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-700 dark:text-white'
-                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400'
+                    ? 'bg-[#c5a059] text-slate-950 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
                 }`}
                 title="Visualização em Tabela"
               >
@@ -613,8 +626,8 @@ function PrazosContent() {
                 onClick={() => setViewMode('cards')}
                 className={`inline-flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-semibold transition cursor-pointer ${
                   viewMode === 'cards'
-                    ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-700 dark:text-white'
-                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400'
+                    ? 'bg-[#c5a059] text-slate-950 shadow-xs'
+                    : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
                 }`}
                 title="Visualização em Cards"
               >
@@ -627,14 +640,14 @@ function PrazosContent() {
             <select
               value={selectedFilter}
               onChange={(e) => setSelectedFilter(e.target.value as FilterType)}
-              className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-medium text-slate-800 dark:text-slate-100 focus:border-blue-500 focus:outline-hidden cursor-pointer"
+              className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2 text-xs font-medium text-slate-800 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden cursor-pointer"
             >
-              <option value="todos">Todos os Prazos</option>
-              <option value="urgentes">🟡 Urgentes / Hoje</option>
-              <option value="vencidos">🔴 Vencidos</option>
-              <option value="cumpridos">🟢 Cumpridos</option>
-              <option value="pendentes">Em Aberto (Todos Pendentes)</option>
-              <option value="aberto">🔵 Em Aberto / Padrão</option>
+              <option value="todos" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Todos os Prazos</option>
+              <option value="urgentes" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">🟡 Urgentes / Hoje</option>
+              <option value="vencidos" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">🔴 Vencidos</option>
+              <option value="cumpridos" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">🟢 Cumpridos</option>
+              <option value="pendentes" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Em Aberto (Todos Pendentes)</option>
+              <option value="aberto" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">🔵 Em Aberto / Padrão</option>
             </select>
 
             {processos.length > 0 && (
@@ -752,10 +765,10 @@ function PrazosContent() {
             }
           />
         ) : viewMode === 'table' ? (
-          <div className="mt-6 rounded-2xl border border-slate-200 bg-white shadow-2xs overflow-hidden dark:border-slate-800 dark:bg-slate-900">
+          <div className="mt-6 legal-glass-card overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="border-b border-slate-200 bg-slate-50 font-semibold text-slate-700 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-300">
+                <thead className="border-b border-[0.5px] border-slate-200/70 bg-slate-50/80 font-semibold text-slate-700 dark:border-white/[0.04] dark:bg-[#12161f]/80 dark:text-slate-300 backdrop-blur-md">
                   <tr>
                     <th className="py-3.5 pl-6 pr-3 w-12 text-center">Status</th>
                     <th className="px-3 py-3.5">Descrição do Ato / Prazo</th>
@@ -765,7 +778,7 @@ function PrazosContent() {
                     <th className="py-3.5 pl-3 pr-6 text-right">Ações</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+                <tbody className="divide-y divide-slate-100/80 dark:divide-white/[0.03]">
                   {filteredPrazos.map((prazo) => {
                     const calc = calcularStatusPrazo(prazo.data_vencimento, prazo.status, prazo.hora);
                     const Icon = calc.icon;
@@ -774,21 +787,21 @@ function PrazosContent() {
                     return (
                       <tr
                         key={prazo.id_prazo}
-                        className={`hover:bg-slate-50/70 dark:hover:bg-slate-800/40 transition ${
+                        className={`hover:bg-slate-50/70 dark:hover:bg-white/[0.03] transition ${
                           calc.urgencia === 'hoje'
-                            ? 'bg-red-50/40 dark:bg-red-950/20'
+                            ? 'bg-red-50/30 dark:bg-red-950/20'
                             : calc.urgencia === 'vencido'
-                            ? 'bg-rose-50/30 dark:bg-rose-950/10'
+                            ? 'bg-rose-50/20 dark:bg-rose-950/10'
                             : ''
                         }`}
                       >
                         <td className="py-4 pl-6 pr-3 text-center">
                           <button
                             onClick={() => handleToggleStatus(prazo)}
-                            className={`flex min-h-[36px] min-w-[36px] mx-auto items-center justify-center rounded-xl border transition ${
+                            className={`flex min-h-[36px] min-w-[36px] mx-auto items-center justify-center rounded-xl border transition cursor-pointer ${
                               isCumprido
                                 ? 'border-emerald-500 bg-emerald-500 text-white shadow-xs'
-                                : 'border-slate-300 bg-white text-transparent hover:border-blue-600 dark:border-slate-600 dark:bg-slate-800'
+                                : 'border-slate-300/80 bg-white/60 text-transparent hover:border-[#c5a059] dark:border-white/[0.1] dark:bg-white/[0.03]'
                             }`}
                             title={isCumprido ? 'Reabrir prazo' : 'Marcar como cumprido'}
                             aria-label={isCumprido ? 'Reabrir prazo' : 'Marcar como cumprido'}
@@ -799,7 +812,7 @@ function PrazosContent() {
 
                         <td className="px-3 py-4">
                           <span
-                            className={`font-semibold block text-slate-900 dark:text-slate-100 ${
+                            className={`font-semibold block text-slate-900 dark:text-[#f8fafc] ${
                               isCumprido ? 'line-through text-slate-400 dark:text-slate-500' : ''
                             }`}
                           >
@@ -807,7 +820,7 @@ function PrazosContent() {
                           </span>
                           <div className="flex items-center gap-2 mt-0.5 text-[11px] text-slate-500">
                             {prazo.tipoCompromisso && (
-                              <span className="font-medium text-orange-600 dark:text-orange-400">
+                              <span className="font-medium text-amber-600 dark:text-amber-400">
                                 {prazo.tipoCompromisso}
                               </span>
                             )}
@@ -856,7 +869,7 @@ function PrazosContent() {
                           <div className="flex items-center justify-end gap-1.5">
                             <button
                               onClick={() => openEditModal(prazo)}
-                              className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-blue-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-blue-400"
+                              className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-[#c5a059] dark:text-slate-400 dark:hover:text-[#c5a059] cursor-pointer transition-colors"
                               title="Editar prazo"
                               aria-label="Editar prazo"
                             >
@@ -868,7 +881,7 @@ function PrazosContent() {
                                 setPrazoToDelete(prazo);
                                 setDeleteModalOpen(true);
                               }}
-                              className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl text-slate-500 hover:bg-red-50 hover:text-red-600 dark:text-slate-400 dark:hover:bg-red-950/40 dark:hover:text-red-400"
+                              className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl text-slate-500 hover:bg-red-50 hover:text-red-600 dark:text-slate-400 dark:hover:bg-red-950/40 dark:hover:text-red-400 cursor-pointer transition-colors"
                               title="Excluir prazo"
                               aria-label="Excluir prazo"
                             >
@@ -894,14 +907,14 @@ function PrazosContent() {
               return (
                 <div
                   key={prazo.id_prazo}
-                  className={`rounded-2xl border p-5 shadow-2xs transition flex flex-col justify-between ${
+                  className={`legal-glass-card fio-de-luz p-5 flex flex-col justify-between ${
                     isCumprido
-                      ? 'border-slate-200 bg-white/60 dark:border-slate-800 dark:bg-slate-900/60 opacity-80'
+                      ? 'opacity-70'
                       : calc.urgencia === 'hoje'
-                      ? 'border-red-300 bg-red-50/40 dark:border-red-900/60 dark:bg-red-950/20 ring-1 ring-red-400'
+                      ? 'border-red-400/40 bg-red-950/10'
                       : calc.urgencia === 'vencido'
-                      ? 'border-rose-300 bg-rose-50/40 dark:border-rose-900/60 dark:bg-rose-950/20'
-                      : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900'
+                      ? 'border-rose-400/40 bg-rose-950/10'
+                      : ''
                   }`}
                 >
                   <div>
@@ -913,10 +926,10 @@ function PrazosContent() {
 
                       <button
                         onClick={() => handleToggleStatus(prazo)}
-                        className={`flex min-h-[36px] min-w-[36px] items-center justify-center rounded-xl border transition ${
+                        className={`flex min-h-[36px] min-w-[36px] items-center justify-center rounded-xl border transition cursor-pointer ${
                           isCumprido
                             ? 'border-emerald-500 bg-emerald-500 text-white'
-                            : 'border-slate-300 bg-white text-transparent hover:border-blue-600 dark:border-slate-600 dark:bg-slate-800'
+                            : 'border-slate-300/80 bg-white/60 text-transparent hover:border-[#c5a059] dark:border-white/[0.1] dark:bg-white/[0.03]'
                         }`}
                         title={isCumprido ? 'Reabrir prazo' : 'Marcar como cumprido'}
                         aria-label={isCumprido ? 'Reabrir prazo' : 'Marcar como cumprido'}
@@ -925,34 +938,34 @@ function PrazosContent() {
                       </button>
                     </div>
 
-                    <h4 className={`mt-3 font-semibold text-xs text-slate-900 dark:text-slate-100 ${isCumprido ? 'line-through text-slate-400' : ''}`}>
+                    <h4 className={`mt-3 font-semibold text-xs text-slate-900 dark:text-[#f8fafc] ${isCumprido ? 'line-through text-slate-400' : ''}`}>
                       {prazo.descricao}
                     </h4>
 
                     <div className="flex flex-wrap items-center gap-2 mt-2">
-                      <span className="text-[10px] font-semibold text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-950/40 px-2 py-0.5 rounded border border-orange-200 dark:border-orange-800/60">
+                      <span className="text-[10px] font-semibold text-[#c5a059] bg-[#c5a059]/10 px-2 py-0.5 rounded border border-[#c5a059]/20">
                         {prazo.tipoCompromisso || 'Prazo Fatal'}
                       </span>
                       {prazo.responsavel && (
-                        <span className="text-[11px] text-slate-500 truncate">
+                        <span className="text-[11px] text-slate-400 truncate">
                           {prazo.responsavel}
                         </span>
                       )}
                     </div>
 
                     {prazo.processo && (
-                      <div className="mt-3 rounded-xl bg-slate-50 p-2.5 text-[11px] dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800">
-                        <span className="font-mono font-bold text-slate-800 dark:text-slate-200 block truncate">
+                      <div className="mt-3 rounded-xl bg-slate-50/80 p-2.5 text-[11px] dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06]">
+                        <span className="font-mono font-semibold text-slate-800 dark:text-slate-200 block truncate">
                           {prazo.processo.numero_processo}
                         </span>
-                        <span className="text-slate-500 block truncate mt-0.5">
+                        <span className="text-slate-400 block truncate mt-0.5">
                           {prazo.processo.cliente?.nome || prazo.processo.titulo}
                         </span>
                       </div>
                     )}
                   </div>
 
-                  <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-3 dark:border-slate-800/80 text-xs">
+                  <div className="mt-4 flex items-center justify-between border-t border-slate-200/60 pt-3 dark:border-white/[0.06] text-xs">
                     <span className="font-mono font-medium text-slate-600 dark:text-slate-400">
                       Vence: {calc.dataExibicao} {prazo.hora ? `às ${prazo.hora}` : ''}
                     </span>
@@ -960,7 +973,7 @@ function PrazosContent() {
                     <div className="flex items-center gap-1">
                       <button
                         onClick={() => openEditModal(prazo)}
-                        className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-blue-600 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-blue-400"
+                        className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-[#c5a059] transition-colors cursor-pointer"
                         title="Editar"
                         aria-label="Editar prazo"
                       >
@@ -971,7 +984,7 @@ function PrazosContent() {
                           setPrazoToDelete(prazo);
                           setDeleteModalOpen(true);
                         }}
-                        className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl text-slate-500 hover:bg-rose-50 hover:text-rose-600 dark:text-slate-400 dark:hover:bg-rose-950/50 dark:hover:text-rose-400"
+                        className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/50 dark:hover:text-rose-400 transition-colors cursor-pointer"
                         title="Excluir"
                         aria-label="Excluir prazo"
                       >
@@ -987,20 +1000,25 @@ function PrazosContent() {
 
       {/* Modal de Criação / Edição */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] p-6 shadow-2xl text-slate-900 dark:text-slate-100 transition-colors">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
-              <div className="flex items-center gap-2">
-                <div className="rounded-lg bg-orange-100 dark:bg-orange-950/80 p-2 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800/60">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-md">
+          <div className="w-full max-w-lg legal-glass-card fio-de-luz p-6 shadow-2xl text-slate-900 dark:text-slate-100 transition-colors">
+            <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] pb-4">
+              <div className="flex items-center gap-2.5">
+                <div className="rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25 p-2">
                   {editingPrazo ? <Edit2 className="h-5 w-5" /> : <PlusCircle className="h-5 w-5" />}
                 </div>
-                <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white">
-                  {editingPrazo ? 'Editar Prazo Processual' : 'Cadastrar Novo Prazo'}
-                </h3>
+                <div>
+                  <h3 className="text-base font-semibold text-slate-900 dark:text-[#f8fafc]">
+                    {editingPrazo ? 'Editar Prazo Processual' : 'Cadastrar Novo Prazo'}
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Controle de prazos e compromissos judiciais
+                  </p>
+                </div>
               </div>
               <button
                 onClick={() => setModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-white transition cursor-pointer"
+                className="rounded-lg p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-white transition cursor-pointer hover:bg-white/[0.04]"
                 aria-label="Fechar modal"
               >
                 <X className="h-5 w-5" />
@@ -1009,13 +1027,13 @@ function PrazosContent() {
 
             <form onSubmit={handleSavePrazo} className="mt-4 space-y-4 text-xs">
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1">
+                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Processo Judicial Vinculado *
                 </label>
                 <select
                   value={idProcesso}
                   onChange={(e) => setIdProcesso(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/80 dark:bg-[#12161f] px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
                 >
                   <option value="" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Selecione o Processo</option>
                   {processos.map((p) => (
@@ -1030,7 +1048,7 @@ function PrazosContent() {
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1">
+                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Descrição do Ato Processual / Intimação *
                 </label>
                 <input
@@ -1038,7 +1056,7 @@ function PrazosContent() {
                   value={descricao}
                   onChange={(e) => setDescricao(e.target.value)}
                   placeholder="Ex: Apresentar Réplica à Contestação com documentos"
-                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/80 dark:bg-[#12161f] px-3 py-2 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-[#c5a059] focus:outline-hidden"
                 />
                 {formErrors.descricao && (
                   <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.descricao}</p>
@@ -1047,13 +1065,13 @@ function PrazosContent() {
 
               {/* Campo de Tipo de Compromisso */}
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1">
+                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Tipo de Compromisso *
                 </label>
                 <select
                   value={tipoCompromisso}
                   onChange={(e) => setTipoCompromisso(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/80 dark:bg-[#12161f] px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
                 >
                   <option value="Prazo Fatal" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Prazo Fatal</option>
                   <option value="Audiência" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Audiência</option>
@@ -1068,14 +1086,14 @@ function PrazosContent() {
               {/* Divisão da data em duas colunas (grid grid-cols-2 gap-4) */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1">
+                  <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                     Data *
                   </label>
                   <input
                     type="date"
                     value={dataVencimento}
                     onChange={(e) => setDataVencimento(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:outline-hidden"
+                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/80 dark:bg-[#12161f] px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
                   />
                   {formErrors.dataVencimento && (
                     <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.dataVencimento}</p>
@@ -1083,14 +1101,14 @@ function PrazosContent() {
                 </div>
 
                 <div>
-                  <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1">
+                  <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                     Hora *
                   </label>
                   <input
                     type="time"
                     value={hora}
                     onChange={(e) => setHora(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:outline-hidden"
+                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/80 dark:bg-[#12161f] px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
                   />
                   {formErrors.hora && (
                     <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.hora}</p>
@@ -1100,13 +1118,13 @@ function PrazosContent() {
 
               {/* Campo opcional de Responsável pelo Cumprimento com Usuários Reais */}
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1">
+                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Responsável pelo Cumprimento <span className="text-slate-500 dark:text-slate-400 font-normal">(Opcional)</span>
                 </label>
                 <select
                   value={responsavel}
                   onChange={(e) => setResponsavel(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/80 dark:bg-[#12161f] px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
                 >
                   <option value="" className="bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-300">
                     {loadingResponsaveis ? 'Carregando equipe...' : 'Selecione um Responsável (Opcional)'}
@@ -1129,13 +1147,13 @@ function PrazosContent() {
 
               {/* Status do Prazo */}
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-200 mb-1">
+                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Status do Prazo *
                 </label>
                 <select
                   value={status}
                   onChange={(e) => setStatus(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-900 px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-blue-500 focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/80 dark:bg-[#12161f] px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
                 >
                   <option value="Pendente" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Pendente</option>
                   <option value="Cumprido" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Cumprido</option>
@@ -1143,18 +1161,18 @@ function PrazosContent() {
               </div>
 
               {/* Botões do Rodapé */}
-              <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 dark:border-slate-800 pt-4">
+              <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-200/60 dark:border-white/[0.06] pt-4">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="rounded-xl border border-slate-300 dark:border-slate-700 px-4 py-2 font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+                  className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] px-4 py-2 font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.04] transition cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-500 active:bg-blue-700 disabled:opacity-50 transition shadow-xs"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md disabled:opacity-50 transition cursor-pointer active:scale-98"
                 >
                   {saving ? 'Salvando...' : editingPrazo ? 'Atualizar Prazo' : 'Salvar no Banco'}
                 </button>

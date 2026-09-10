@@ -298,12 +298,12 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
   if (processos.length === 0) {
     return (
       <div
-        className={`flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white p-12 text-center shadow-2xs dark:border-slate-800 dark:bg-slate-900 ${className}`}
+        className={`legal-glass-card flex flex-col items-center justify-center p-12 text-center ${className}`}
       >
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-50 text-amber-700 dark:bg-amber-950/60 dark:text-amber-400 border border-amber-200/50 dark:border-amber-900/50">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
           <Scale className="h-6 w-6" aria-hidden="true" />
         </div>
-        <h3 className="mt-4 text-sm font-bold text-slate-900 dark:text-white tracking-tight">
+        <h3 className="mt-4 text-sm font-semibold text-slate-900 dark:text-[#f8fafc] tracking-tight">
           {emptyMessage}
         </h3>
         <p className="mx-auto mt-1 max-w-md text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
@@ -313,7 +313,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
           <button
             type="button"
             onClick={onEmptyAction}
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#0047ab] px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-[#003785] dark:bg-blue-600 dark:hover:bg-blue-500 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0047ab] active:scale-98 transition-all"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] px-4 py-2 text-xs font-semibold text-slate-950 shadow-xs hover:shadow-md transition-all active:scale-98 cursor-pointer"
           >
             <span>{emptyActionLabel}</span>
           </button>
@@ -327,14 +327,14 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
   // ==========================================
   return (
     <div
-      className={`flex flex-col w-full overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-2xs dark:border-slate-800/90 dark:bg-slate-900 ${className}`}
+      className={`legal-glass-card flex flex-col w-full overflow-hidden ${className}`}
     >
       <div className={`overflow-x-auto ${maxHeight} focus:outline-hidden`}>
         <table className="w-full text-left border-collapse text-xs">
           <caption className="sr-only">{caption}</caption>
 
           {/* Cabeçalhos Fixos (Sticky Top) */}
-          <thead className="sticky top-0 z-10 border-b border-slate-200/90 bg-slate-50/95 backdrop-blur-xs font-semibold text-slate-600 dark:border-slate-800 dark:bg-slate-900/95 dark:text-slate-300">
+          <thead className="sticky top-0 z-10 border-b border-[0.5px] border-slate-200/70 bg-slate-50/80 dark:bg-[#12161f]/80 dark:border-white/[0.04] backdrop-blur-md font-semibold text-slate-600 dark:text-slate-300">
             <tr>
               <th scope="col" className="py-3.5 pl-6 pr-4 font-medium tracking-tight">
                 Processo (CNJ) / Ação
@@ -361,7 +361,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
           </thead>
 
           {/* Linhas com Efeito Hover */}
-          <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 font-sans">
+          <tbody className="divide-y divide-slate-100/80 dark:divide-white/[0.03] font-sans">
             {displayedItems.map((proc, index) => {
               const rawCNJ = getNumeroCNJ(proc);
               const formattedCNJ = formatarNumeroCNJ(rawCNJ);
@@ -382,7 +382,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                   key={String(rowKey)}
                   onClick={() => onViewDetails?.(proc)}
                   style={{ animationDelay: `${Math.min(index * 25, 200)}ms` }}
-                  className="animate-row-fade-in group transition-colors duration-150 hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer"
+                  className="animate-row-fade-in group transition-colors duration-150 hover:bg-slate-50/80 dark:hover:bg-white/[0.03] cursor-pointer"
                   tabIndex={0}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -509,11 +509,11 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                           e.stopPropagation();
                           onViewDetails?.(proc);
                         }}
-                        className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs hover:border-[#0047ab]/30 hover:bg-[#0047ab]/5 hover:text-[#0047ab] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0047ab] active:scale-98 transition-all dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:border-blue-500/40 dark:hover:bg-blue-500/10 dark:hover:text-blue-400"
+                        className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white/60 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs hover:border-[#c5a059]/40 hover:text-[#c5a059] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#c5a059] active:scale-98 transition-all dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-200 dark:hover:border-[#c5a059]/40 dark:hover:bg-white/[0.06] dark:hover:text-[#c5a059] cursor-pointer"
                         title="Ver detalhes completos do processo"
                         aria-label={`Ver detalhes do processo ${formattedCNJ || titulo}`}
                       >
-                        <Eye className="h-3.5 w-3.5 text-[#0047ab] dark:text-blue-400" aria-hidden="true" />
+                        <Eye className="h-3.5 w-3.5 text-[#c5a059]" aria-hidden="true" />
                         <span>Ver Detalhes</span>
                       </button>
 
@@ -524,7 +524,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                             e.stopPropagation();
                             onEdit(proc);
                           }}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0047ab] transition-colors"
+                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-white/[0.06] dark:hover:text-slate-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#c5a059] transition-colors cursor-pointer"
                           title="Editar processo"
                           aria-label={`Editar processo ${formattedCNJ || titulo}`}
                         >
@@ -539,7 +539,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                             e.stopPropagation();
                             onDelete(proc);
                           }}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-rose-500 transition-colors"
+                          className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-600 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-rose-500 transition-colors cursor-pointer"
                           title="Excluir processo"
                           aria-label={`Excluir processo ${formattedCNJ || titulo}`}
                         >
@@ -556,7 +556,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
       </div>
 
       {/* Barra de Paginação / Resumo Inferior */}
-      <div className="border-t border-slate-200 bg-slate-50/70 px-6 py-3 dark:border-slate-800 dark:bg-slate-900/70 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
+      <div className="border-t border-slate-200/60 bg-slate-50/60 px-6 py-3 dark:border-white/[0.04] dark:bg-white/[0.02] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
         <div>
           Exibindo <span className="font-semibold text-slate-700 dark:text-slate-200">{startItem}</span> a{' '}
           <span className="font-semibold text-slate-700 dark:text-slate-200">{endItem}</span> de{' '}
