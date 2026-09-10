@@ -214,169 +214,172 @@ function AstreaDashboard() {
         </div>
       </div>
 
-      {/* 1. TOP SUMMARY METRICS (5 Indicadores-Chave):
-          Processos ativos | Prazos próximos | Clientes | Tarefas pendentes | Honorários */}
-      <div>
-        <div className="flex items-center justify-between mb-3.5">
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-            Resumo do Escritório Hoje
+      {/* 1. TOP SUMMARY METRICS:
+          3 Destaques Principais (Processos ativos | Prazos próximos | Honorários)
+          + Indicadores Secundários Discretos (Clientes | Tarefas) */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+            Métricas Estratégicas do Escritório
           </h2>
-          <span className="text-xs text-slate-400">
+          <span className="text-[11px] text-slate-400">
             Atualizado em tempo real
           </span>
         </div>
 
         {loading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
-            <MetricCardSkeleton />
-            <MetricCardSkeleton />
-            <MetricCardSkeleton />
-            <MetricCardSkeleton />
-            <MetricCardSkeleton />
+          <div className="space-y-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <MetricCardSkeleton />
+              <MetricCardSkeleton />
+              <MetricCardSkeleton />
+            </div>
+            <div className="h-10 rounded-xl bg-slate-100 dark:bg-white/[0.03] animate-pulse" />
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
-            {/* KPI 1: Processos Ativos */}
-            <Link
-              href="/processos"
-              id="kpi-card-processos"
-              className="group legal-card p-4 relative flex flex-col justify-between hover:border-slate-300 dark:hover:border-white/[0.12] transition-colors"
-            >
-              <div className="flex items-start justify-between">
+          <div className="space-y-3">
+            {/* 3 CARDS DE DESTAQUE PRINCIPAL */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* DESTAQUE 1: Processos Ativos */}
+              <Link
+                href="/processos"
+                id="kpi-card-processos"
+                className="group legal-card p-5 relative flex flex-col justify-between hover:border-slate-300 dark:hover:border-white/[0.15] transition-all duration-200"
+              >
                 <div>
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                    Processos Ativos
-                  </span>
-                  <div className="mt-1.5 text-2xl font-semibold tracking-tight text-slate-900 dark:text-white tabular-nums">
-                    {processosAtivos}
+                  <div className="flex items-start justify-between">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                      Processos Ativos
+                    </span>
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0047ab]/10 dark:bg-white/[0.06] text-[#0047ab] dark:text-[#dfcaa0]">
+                      <Briefcase className="h-4.5 w-4.5 stroke-[1.5]" />
+                    </div>
+                  </div>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white tabular-nums">
+                      {processosAtivos}
+                    </span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                      em andamento
+                    </span>
                   </div>
                 </div>
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0]">
-                  <Briefcase className="h-4 w-4 stroke-[1.25]" />
-                </div>
-              </div>
-              <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
-                <span>Total: {totalProcessos}</span>
-                <span className="text-slate-700 dark:text-[#dfcaa0] font-medium group-hover:underline flex items-center gap-0.5">
-                  Ver <ChevronRight className="h-3 w-3 stroke-[1.5]" />
-                </span>
-              </div>
-            </Link>
 
-            {/* KPI 2: Prazos Próximos */}
-            <Link
-              href="/prazos"
-              id="kpi-card-prazos"
-              className="group legal-card p-4 relative flex flex-col justify-between hover:border-slate-300 dark:hover:border-white/[0.12] transition-colors"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                    Prazos Próximos
+                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.04] flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                  <span>Total em carteira: <strong className="font-semibold text-slate-700 dark:text-slate-300">{totalProcessos}</strong></span>
+                  <span className="text-slate-700 dark:text-[#dfcaa0] font-semibold group-hover:underline flex items-center gap-0.5">
+                    Acessar <ChevronRight className="h-3.5 w-3.5 stroke-[1.5]" />
                   </span>
-                  <div className="mt-1.5 text-2xl font-semibold tracking-tight text-slate-900 dark:text-white tabular-nums flex items-center gap-1.5">
-                    <span>{prazosUrgentes.length}</span>
-                    {prazosHoje.length > 0 && (
-                      <span className="inline-flex items-center text-[9px] font-semibold px-1.5 py-0.2 rounded-md bg-rose-50 dark:bg-rose-950/40 text-rose-600 dark:text-rose-400 border border-rose-200/80 dark:border-rose-900/50">
-                        {prazosHoje.length} hoje
+                </div>
+              </Link>
+
+              {/* DESTAQUE 2: Prazos Próximos */}
+              <Link
+                href="/prazos"
+                id="kpi-card-prazos"
+                className="group legal-card p-5 relative flex flex-col justify-between hover:border-slate-300 dark:hover:border-white/[0.15] transition-all duration-200"
+              >
+                <div>
+                  <div className="flex items-start justify-between">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                      Prazos Próximos
+                    </span>
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 dark:bg-white/[0.06] text-amber-600 dark:text-[#dfcaa0]">
+                      <CalendarClock className="h-4.5 w-4.5 stroke-[1.5]" />
+                    </div>
+                  </div>
+                  <div className="mt-2 flex items-baseline gap-2.5">
+                    <span className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white tabular-nums">
+                      {prazosUrgentes.length}
+                    </span>
+                    {prazosHoje.length > 0 ? (
+                      <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-200/80 dark:border-rose-900/50">
+                        {prazosHoje.length} vencem hoje
+                      </span>
+                    ) : (
+                      <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
+                        próximos 7 dias
                       </span>
                     )}
                   </div>
                 </div>
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0]">
-                  <CalendarClock className="h-4 w-4 stroke-[1.25]" />
-                </div>
-              </div>
-              <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
-                <span>Próximos 7 dias</span>
-                <span className="text-slate-700 dark:text-[#dfcaa0] font-medium group-hover:underline flex items-center gap-0.5">
-                  Ver <ChevronRight className="h-3 w-3 stroke-[1.5]" />
-                </span>
-              </div>
-            </Link>
 
-            {/* KPI 3: Clientes */}
-            <Link
-              href="/clientes"
-              id="kpi-card-clientes"
-              className="group legal-card p-4 relative flex flex-col justify-between hover:border-slate-300 dark:hover:border-white/[0.12] transition-colors"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                    Clientes
+                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.04] flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                  <span>Conformidade: <strong className="font-semibold text-slate-700 dark:text-slate-300">{taxaCumprimento}%</strong></span>
+                  <span className="text-slate-700 dark:text-[#dfcaa0] font-semibold group-hover:underline flex items-center gap-0.5">
+                    Agenda <ChevronRight className="h-3.5 w-3.5 stroke-[1.5]" />
                   </span>
-                  <div className="mt-1.5 text-2xl font-semibold tracking-tight text-slate-900 dark:text-white tabular-nums">
-                    {totalClientes}
+                </div>
+              </Link>
+
+              {/* DESTAQUE 3: Honorários do Mês */}
+              <Link
+                href="/financeiro"
+                id="kpi-card-honorarios"
+                className="group legal-card p-5 relative flex flex-col justify-between hover:border-slate-300 dark:hover:border-white/[0.15] transition-all duration-200"
+              >
+                <div>
+                  <div className="flex items-start justify-between">
+                    <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                      Honorários (Mês)
+                    </span>
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 dark:bg-white/[0.06] text-emerald-600 dark:text-emerald-400">
+                      <TrendingUp className="h-4.5 w-4.5 stroke-[1.5]" />
+                    </div>
+                  </div>
+                  <div className="mt-2 flex items-baseline gap-2">
+                    <span className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white tabular-nums">
+                      {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(
+                        financeiroData?.metricas.entradasPrevistas ?? 0,
+                      )}
+                    </span>
                   </div>
                 </div>
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0]">
-                  <Users className="h-4 w-4 stroke-[1.25]" />
-                </div>
-              </div>
-              <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
-                <span>{clientesPf} PF • {clientesPj} PJ</span>
-                <span className="text-slate-700 dark:text-[#dfcaa0] font-medium group-hover:underline flex items-center gap-0.5">
-                  Ver <ChevronRight className="h-3 w-3 stroke-[1.5]" />
-                </span>
-              </div>
-            </Link>
 
-            {/* KPI 4: Tarefas Pendentes */}
-            <Link
-              href="/prazos"
-              id="kpi-card-tarefas"
-              className="group legal-card p-4 relative flex flex-col justify-between hover:border-slate-300 dark:hover:border-white/[0.12] transition-colors"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                    Tarefas Pendentes
+                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.04] flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                  <span>Recebido: <strong className="font-semibold text-emerald-600 dark:text-emerald-400">{financeiroData?.metricas.taxaRecebimento ?? 0}%</strong></span>
+                  <span className="text-slate-700 dark:text-[#dfcaa0] font-semibold group-hover:underline flex items-center gap-0.5">
+                    Financeiro <ChevronRight className="h-3.5 w-3.5 stroke-[1.5]" />
                   </span>
-                  <div className="mt-1.5 text-2xl font-semibold tracking-tight text-slate-900 dark:text-white tabular-nums">
-                    {prazosPendentes.length}
-                  </div>
                 </div>
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0]">
-                  <CheckSquare className="h-4 w-4 stroke-[1.25]" />
-                </div>
-              </div>
-              <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
-                <span>{taxaCumprimento}% cumpridas</span>
-                <span className="text-slate-700 dark:text-[#dfcaa0] font-medium group-hover:underline flex items-center gap-0.5">
-                  Ver <ChevronRight className="h-3 w-3 stroke-[1.5]" />
-                </span>
-              </div>
-            </Link>
+              </Link>
+            </div>
 
-            {/* KPI 5: Honorários */}
-            <Link
-              href="/financeiro"
-              id="kpi-card-honorarios"
-              className="group legal-card p-4 relative flex flex-col justify-between hover:border-slate-300 dark:hover:border-white/[0.12] transition-colors col-span-2 sm:col-span-1"
-            >
-              <div className="flex items-start justify-between">
-                <div>
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                    Honorários (Mês)
+            {/* FAIXA SECUNDÁRIA DISCRETA: Clientes & Tarefas */}
+            <div className="rounded-xl border border-slate-200/60 dark:border-white/[0.04] bg-slate-50/70 dark:bg-white/[0.02] px-4 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-slate-600 dark:text-slate-400">
+                {/* Indicador discreto: Clientes */}
+                <Link
+                  href="/clientes"
+                  id="kpi-discreto-clientes"
+                  className="inline-flex items-center gap-2 hover:text-slate-900 dark:hover:text-white transition group"
+                >
+                  <Users className="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200" />
+                  <span>
+                    Clientes: <strong className="font-semibold text-slate-900 dark:text-white">{totalClientes}</strong> ({clientesPf} PF • {clientesPj} PJ)
                   </span>
-                  <div className="mt-1.5 text-xl font-semibold tracking-tight text-slate-900 dark:text-white tabular-nums">
-                    {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }).format(
-                      financeiroData?.metricas.entradasPrevistas ?? 0,
-                    )}
-                  </div>
-                </div>
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-700 dark:text-[#dfcaa0]">
-                  <TrendingUp className="h-4 w-4 stroke-[1.25]" />
-                </div>
+                </Link>
+
+                <span className="hidden sm:inline text-slate-300 dark:text-white/[0.1]">•</span>
+
+                {/* Indicador discreto: Tarefas */}
+                <Link
+                  href="/prazos"
+                  id="kpi-discreto-tarefas"
+                  className="inline-flex items-center gap-2 hover:text-slate-900 dark:hover:text-white transition group"
+                >
+                  <CheckSquare className="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200" />
+                  <span>
+                    Tarefas: <strong className="font-semibold text-slate-900 dark:text-white">{prazosPendentes.length} pendentes</strong> ({taxaCumprimento}% cumpridas)
+                  </span>
+                </Link>
               </div>
-              <div className="mt-3 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
-                <span>{financeiroData?.metricas.taxaRecebimento ?? 0}% recebido</span>
-                <span className="text-slate-700 dark:text-[#dfcaa0] font-medium group-hover:underline flex items-center gap-0.5">
-                  Ver <ChevronRight className="h-3 w-3 stroke-[1.5]" />
-                </span>
+
+              <div className="flex items-center gap-2 text-[11px] text-slate-400 self-end sm:self-center">
+                <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                <span>Base sincronizada</span>
               </div>
-            </Link>
+            </div>
           </div>
         )}
       </div>
