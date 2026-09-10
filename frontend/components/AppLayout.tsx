@@ -25,7 +25,13 @@ import {
   UserPlus,
   Settings,
   CircleDollarSign,
+  AlertCircle,
+  CheckCheck,
+  RefreshCw,
+  PartyPopper,
+  Calendar,
 } from 'lucide-react';
+import { notificacaoService, ResumoNotificacoes, ItemNotificacao } from '@/services/notificacaoService';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -41,6 +47,61 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // Notificações Reais do Escritório
+  const [notificacoesData, setNotificacoesData] = useState<ResumoNotificacoes>({
+    totalNaoLidas: 0,
+    total: 0,
+    notificacoes: [],
+  });
+  const [loadingNotificacoes, setLoadingNotificacoes] = useState(false);
+
+  const carregarNotificacoes = async () => {
+    try {
+      setLoadingNotificacoes(true);
+      const data = await notificacaoService.getNotificacoes();
+      setNotificacoesData(data);
+    } catch (err) {
+      console.warn('[AppLayout] Erro ao carregar notificações reais:', err);
+    } finally {
+      setLoadingNotificacoes(false);
+    }
+  };
+
+  useEffect(() => {
+    carregarNotificacoes();
+    // Atualizar a cada 45 segundos para refletir prazos e eventos reais
+    const interval = setInterval(carregarNotificacoes, 45000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleMarcarComoLida = (item: ItemNotificacao) => {
+    notificacaoService.marcarComoLida(item.id);
+    setNotificacoesData((prev) => {
+      const updated = prev.notificacoes.map((n) => (n.id === item.id ? { ...n, lida: true } : n));
+      const naoLidas = updated.filter((n) => !n.lida).length;
+      return {
+        ...prev,
+        totalNaoLidas: naoLidas,
+        notificacoes: updated,
+      };
+    });
+    setNotificationsOpen(false);
+    if (item.link) {
+      router.push(item.link);
+    }
+  };
+
+  const handleMarcarTodasLidas = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const ids = notificacoesData.notificacoes.map((n) => n.id);
+    notificacaoService.marcarTodasComoLidas(ids);
+    setNotificacoesData((prev) => ({
+      ...prev,
+      totalNaoLidas: 0,
+      notificacoes: prev.notificacoes.map((n) => ({ ...n, lida: true })),
+    }));
+  };
 
   const quickMenuRef = useRef<HTMLDivElement>(null);
   const notificationsRef = useRef<HTMLDivElement>(null);
@@ -197,7 +258,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         </div>
 
         {/* Rodapé da Sidebar */}
-        <div className="flex flex-col gap-3 pt-4 border-t border-[0.75px] border-slate-200/80 dark:border-white/[0.08] transition-colors">
+        <div className="flex flex-col gap-3 pt-4 transition-colors">
           {/* Card compacto de status da integração ('DataJud CNJ 100% Operacional') */}
           <div className="rounded-xl border border-[0.75px] border-slate-200/70 dark:border-white/[0.08] bg-slate-100/70 dark:bg-[#161b22]/70 p-3 shadow-2xs transition-colors">
             <div className="flex items-center justify-between">
@@ -345,7 +406,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               </nav>
             </div>
 
-            <div className="pt-4 border-t border-[0.75px] border-slate-200 dark:border-white/[0.08] space-y-3">
+            <div className="pt-4 space-y-3">
               <div className="flex items-center justify-between px-2 py-1">
                 <span className="text-xs font-medium text-slate-600 dark:text-slate-400">Tema do App</span>
                 <ThemeToggle variant="segmented" />
@@ -418,57 +479,171 @@ export function AppLayout({ children }: AppLayoutProps) {
             {/* Alternador de Tema Inteligente (Light/Dark/Auto) */}
             <ThemeToggle variant="dropdown" />
 
-            {/* Botão Rápido de Notificações */}
+            {/* Botão Rápido de Notificações com Dados Reais */}
             <div className="relative" ref={notificationsRef}>
               <button
                 type="button"
-                onClick={() => setNotificationsOpen(!notificationsOpen)}
+                onClick={() => {
+                  setNotificationsOpen(!notificationsOpen);
+                  if (!notificationsOpen) carregarNotificacoes();
+                }}
                 className="relative flex h-9 w-9 items-center justify-center rounded-xl border border-[0.75px] border-slate-200 dark:border-white/[0.08] bg-white/80 dark:bg-[#161b22]/70 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#1f2631] transition cursor-pointer shadow-2xs"
                 title="Notificações corporativas"
                 aria-label="Notificações corporativas"
                 aria-expanded={notificationsOpen}
               >
                 <Bell className="h-4 w-4 stroke-[1.25]" />
-                <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-[#161b22] border border-[0.75px] border-[#c5a059]/40 text-[9px] font-semibold text-[#dfcaa0] tabular-nums ring-2 ring-white dark:ring-[#0d1117]">
-                  2
-                </span>
+                {notificacoesData.totalNaoLidas > 0 && (
+                  <span className="absolute -top-1 -right-1 flex min-w-[16px] h-4 px-1 items-center justify-center rounded-full bg-[#161b22] border border-[0.75px] border-[#c5a059]/40 text-[9px] font-semibold text-[#dfcaa0] tabular-nums ring-2 ring-white dark:ring-[#0d1117]">
+                    {notificacoesData.totalNaoLidas > 9 ? '9+' : notificacoesData.totalNaoLidas}
+                  </span>
+                )}
               </button>
 
-              {/* Popover de Notificações */}
+              {/* Popover de Notificações com Dados Reais */}
               {notificationsOpen && (
-                <div className="absolute right-0 mt-2 w-80 rounded-2xl border border-[0.75px] border-slate-200 dark:border-white/[0.1] bg-white/95 dark:bg-[#161b22]/95 backdrop-blur-xl p-3 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                <div className="absolute right-0 mt-2 w-84 sm:w-96 rounded-2xl border border-[0.75px] border-slate-200 dark:border-white/[0.1] bg-white/95 dark:bg-[#161b22]/95 backdrop-blur-xl p-3 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                   <div className="flex items-center justify-between pb-2 border-b border-[0.75px] border-slate-100 dark:border-white/[0.08]">
-                    <span className="text-xs font-semibold text-slate-900 dark:text-white">Alertas do Escritório</span>
-                    <span className="text-[10px] font-medium text-[#c5a059] dark:text-[#dfcaa0] tabular-nums">2 pendentes</span>
-                  </div>
-                  <div className="mt-2 space-y-2">
-                    <div className="rounded-xl border border-[0.75px] border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 p-2.5 text-xs">
-                      <div className="flex items-center gap-1.5 text-amber-700 dark:text-amber-400 font-medium">
-                        <Clock className="h-3.5 w-3.5 stroke-[1.25] shrink-0" />
-                        <span>Prazo Fatal TJSP</span>
-                      </div>
-                      <p className="mt-1 text-[11px] text-slate-600 dark:text-slate-300">
-                        Contestação do Processo 0001234-56.2024 vence hoje às 18h.
-                      </p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs font-semibold text-slate-900 dark:text-white">Alertas do Escritório</span>
+                      {notificacoesData.totalNaoLidas > 0 ? (
+                        <span className="text-[10px] font-medium text-[#c5a059] dark:text-[#dfcaa0] bg-[#c5a059]/10 dark:bg-[#c5a059]/20 px-1.5 py-0.5 rounded-md tabular-nums">
+                          {notificacoesData.totalNaoLidas} pendente{notificacoesData.totalNaoLidas > 1 ? 's' : ''}
+                        </span>
+                      ) : (
+                        <span className="text-[10px] font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded-md">
+                          Em dia
+                        </span>
+                      )}
                     </div>
+                    <div className="flex items-center gap-1">
+                      {notificacoesData.totalNaoLidas > 0 && (
+                        <button
+                          type="button"
+                          onClick={handleMarcarTodasLidas}
+                          className="flex items-center gap-1 text-[10px] font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/[0.06] px-1.5 py-0.5 rounded transition cursor-pointer"
+                          title="Marcar todas como lidas"
+                        >
+                          <CheckCheck className="h-3 w-3 stroke-[1.5]" />
+                          <span>Lidas</span>
+                        </button>
+                      )}
+                      <button
+                        type="button"
+                        onClick={carregarNotificacoes}
+                        disabled={loadingNotificacoes}
+                        className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.06] rounded transition cursor-pointer"
+                        title="Atualizar alertas"
+                      >
+                        <RefreshCw className={`h-3 w-3 stroke-[1.5] ${loadingNotificacoes ? 'animate-spin text-[#c5a059]' : ''}`} />
+                      </button>
+                    </div>
+                  </div>
 
-                    <div className="rounded-xl border border-[0.75px] border-slate-300/40 dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.03] p-2.5 text-xs">
-                      <div className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 font-medium">
-                        <CheckCircle2 className="h-3.5 w-3.5 stroke-[1.25] text-[#dfcaa0] shrink-0" />
-                        <span>DataJud Sincronizado</span>
+                  {/* Lista de Alertas Reais */}
+                  <div className="mt-2 max-h-80 overflow-y-auto space-y-2 pr-0.5">
+                    {loadingNotificacoes && notificacoesData.notificacoes.length === 0 ? (
+                      <div className="space-y-2 py-2">
+                        {[1, 2, 3].map((i) => (
+                          <div key={i} className="animate-pulse rounded-xl bg-slate-100 dark:bg-white/[0.04] p-3 space-y-1.5">
+                            <div className="h-3 w-28 bg-slate-200 dark:bg-white/[0.08] rounded" />
+                            <div className="h-2.5 w-full bg-slate-200 dark:bg-white/[0.08] rounded" />
+                          </div>
+                        ))}
                       </div>
-                      <p className="mt-1 text-[11px] text-slate-600 dark:text-slate-300">
-                        92 tribunais monitorados e atualizados com sucesso.
-                      </p>
-                    </div>
+                    ) : notificacoesData.notificacoes.length === 0 ? (
+                      <div className="py-6 text-center px-4">
+                        <CheckCircle2 className="h-8 w-8 text-emerald-500 mx-auto mb-2 stroke-[1.25]" />
+                        <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Tudo em dia!</p>
+                        <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                          Nenhum prazo vencendo hoje ou pendência urgente no momento.
+                        </p>
+                      </div>
+                    ) : (
+                      notificacoesData.notificacoes.map((item) => {
+                        const isAlta = item.urgencia === 'alta';
+                        const isMedia = item.urgencia === 'media';
+
+                        return (
+                          <div
+                            key={item.id}
+                            onClick={() => handleMarcarComoLida(item)}
+                            className={`group rounded-xl border p-2.5 text-xs transition cursor-pointer ${
+                              item.lida ? 'opacity-60 bg-slate-50/50 dark:bg-white/[0.02] border-slate-200/50 dark:border-white/[0.05]' : ''
+                            } ${
+                              !item.lida && isAlta
+                                ? 'border-rose-500/25 bg-rose-500/5 dark:bg-rose-500/10 hover:border-rose-500/40'
+                                : !item.lida && isMedia
+                                ? 'border-amber-500/25 bg-amber-500/5 dark:bg-amber-500/10 hover:border-amber-500/40'
+                                : !item.lida
+                                ? 'border-slate-300/50 dark:border-white/[0.08] bg-slate-50 dark:bg-white/[0.03] hover:border-slate-400/60 dark:hover:border-white/[0.15]'
+                                : ''
+                            }`}
+                          >
+                            <div className="flex items-start gap-2">
+                              <div className="mt-0.5 shrink-0">
+                                {item.tipo === 'prazo' && (
+                                  isAlta ? (
+                                    <AlertCircle className="h-3.5 w-3.5 text-rose-600 dark:text-rose-400 stroke-[1.5]" />
+                                  ) : (
+                                    <Clock className="h-3.5 w-3.5 text-amber-600 dark:text-amber-400 stroke-[1.5]" />
+                                  )
+                                )}
+                                {item.tipo === 'financeiro' && (
+                                  <CircleDollarSign className={`h-3.5 w-3.5 stroke-[1.5] ${isAlta ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'}`} />
+                                )}
+                                {item.tipo === 'agenda' && (
+                                  <Calendar className="h-3.5 w-3.5 text-sky-600 dark:text-sky-400 stroke-[1.5]" />
+                                )}
+                                {item.tipo === 'aniversario' && (
+                                  <PartyPopper className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400 stroke-[1.5]" />
+                                )}
+                                {(item.tipo === 'sistema' || item.tipo === 'processo') && (
+                                  <CheckCircle2 className="h-3.5 w-3.5 text-[#dfcaa0] stroke-[1.5]" />
+                                )}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center justify-between gap-1">
+                                  <span className={`font-medium truncate ${
+                                    isAlta
+                                      ? 'text-rose-900 dark:text-rose-300'
+                                      : isMedia
+                                      ? 'text-amber-900 dark:text-amber-300'
+                                      : 'text-slate-800 dark:text-slate-200'
+                                  }`}>
+                                    {item.titulo}
+                                  </span>
+                                  {!item.lida && (
+                                    <span className="h-1.5 w-1.5 rounded-full bg-[#c5a059] shrink-0" />
+                                  )}
+                                </div>
+                                <p className="mt-0.5 text-[11px] text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                                  {item.descricao}
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })
+                    )}
                   </div>
-                  <Link
-                    href="/prazos"
-                    onClick={() => setNotificationsOpen(false)}
-                    className="mt-3 block text-center text-[11px] font-medium text-[#c5a059] dark:text-[#dfcaa0] hover:underline transition"
-                  >
-                    Ver todos os prazos e compromissos &rarr;
-                  </Link>
+
+                  <div className="mt-3 pt-2 border-t border-[0.75px] border-slate-100 dark:border-white/[0.08] flex items-center justify-between text-[11px]">
+                    <Link
+                      href="/prazos"
+                      onClick={() => setNotificationsOpen(false)}
+                      className="font-medium text-[#c5a059] dark:text-[#dfcaa0] hover:underline transition"
+                    >
+                      Prazos & Agenda &rarr;
+                    </Link>
+                    <Link
+                      href="/financeiro"
+                      onClick={() => setNotificationsOpen(false)}
+                      className="font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:underline transition"
+                    >
+                      Financeiro &rarr;
+                    </Link>
+                  </div>
                 </div>
               )}
             </div>

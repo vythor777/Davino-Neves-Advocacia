@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module.js';
 import { UsuariosModule } from './usuarios/usuarios.module.js';
 import { AniversariantesModule } from './aniversariantes/aniversariantes.module.js';
 import { FinanceiroModule } from './financeiro/financeiro.module.js';
+import { NotificacoesModule } from './notificacoes/notificacoes.module.js';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { FinanceiroModule } from './financeiro/financeiro.module.js';
     GeminiModule,
     AniversariantesModule,
     FinanceiroModule,
+    NotificacoesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
