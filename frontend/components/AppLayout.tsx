@@ -181,21 +181,21 @@ export function AppLayout({ children }: AppLayoutProps) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#f6f8fa] dark:bg-[#0d1117] text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors duration-200">
-      {/* Sidebar Esquerda (Fixa, w-64 border-r border-slate-200/80 dark:border-white/[0.06] bg-white dark:bg-[#0e131d] flex flex-col justify-between p-4) */}
-      <aside className="hidden lg:flex w-64 shrink-0 flex-col justify-between border-r border-slate-200/80 dark:border-white/[0.06] bg-white dark:bg-[#0e131d] p-5 select-none z-30 transition-colors">
+    <div className="flex h-screen overflow-hidden bg-[#f7f9fc] dark:bg-[#070e1a] text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors duration-200">
+      {/* Sidebar Esquerda (Fixa, w-64 border-r border-[#0c1f3d]/[0.08] dark:border-white/[0.06] bg-white dark:bg-[#091322] flex flex-col justify-between p-5) */}
+      <aside className="hidden lg:flex w-64 shrink-0 flex-col justify-between border-r border-[#0c1f3d]/[0.08] dark:border-white/[0.06] bg-white dark:bg-[#091322] p-5 select-none z-30 transition-colors">
         {/* Topo da Sidebar */}
         <div className="flex flex-col">
           {/* Logotipo estilizado do escritório 'Davino Neves Advocacia' */}
           <Link href="/" className="group flex items-center gap-3 transition-opacity hover:opacity-95">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-900 dark:bg-white/[0.06] text-[#dfcaa0] border border-slate-800 dark:border-white/[0.08] transition-transform group-hover:scale-105">
-              <Scale className="h-4.5 w-4.5 stroke-[1.25] text-[#dfcaa0]" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0c1f3d] dark:bg-[#10203a] text-[#dfcaa0] border border-[#c5a059]/30 dark:border-[#c5a059]/25 shadow-xs transition-transform group-hover:scale-105">
+              <Scale className="h-5 w-5 stroke-[1.25] text-[#dfcaa0]" />
             </div>
             <div className="min-w-0 flex-1">
-              <span className="font-semibold text-sm tracking-tight text-slate-900 dark:text-white block truncate">
+              <span className="font-semibold text-sm tracking-tight text-[#0c1f3d] dark:text-white block truncate">
                 Davino Neves
               </span>
-              <span className="text-[10px] font-medium tracking-widest uppercase text-[#c5a059] dark:text-[#dfcaa0] block">
+              <span className="text-[10px] font-semibold tracking-widest uppercase text-[#c5a059] dark:text-[#dfcaa0] block">
                 Advocacia
               </span>
             </div>
@@ -216,15 +216,15 @@ export function AppLayout({ children }: AppLayoutProps) {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`group flex items-center gap-3 px-3 py-2 text-xs transition-all duration-150 rounded-lg ${
+                  className={`group flex items-center gap-3 px-3 py-2.5 text-xs transition-all duration-150 rounded-lg ${
                     isActive
-                      ? 'bg-slate-100 dark:bg-white/[0.08] text-slate-900 dark:text-white font-medium'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/[0.03] font-normal'
+                      ? 'bg-[#0c1f3d]/[0.06] dark:bg-[#dfcaa0]/[0.1] text-[#0c1f3d] dark:text-[#dfcaa0] font-medium border-l-2 border-[#c5a059] pl-2.5'
+                      : 'text-slate-600 dark:text-slate-400 hover:text-[#0c1f3d] dark:hover:text-slate-200 hover:bg-[#0c1f3d]/[0.03] dark:hover:bg-white/[0.03] font-normal'
                   }`}
                 >
                   <Icon
                     className={`h-4 w-4 shrink-0 stroke-[1.25] transition-colors ${
-                      isActive ? 'text-[#c5a059] dark:text-[#dfcaa0]' : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-300'
+                      isActive ? 'text-[#c5a059] dark:text-[#dfcaa0]' : 'text-slate-400 dark:text-slate-500 group-hover:text-[#0c1f3d] dark:group-hover:text-slate-300'
                     }`}
                   />
                   <span className="truncate">{item.label}</span>
@@ -241,16 +241,16 @@ export function AppLayout({ children }: AppLayoutProps) {
             <button
               type="button"
               onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-              className="flex w-full items-center justify-between gap-2.5 rounded-xl border border-slate-200/70 dark:border-white/[0.06] bg-slate-50/70 dark:bg-white/[0.02] p-2 text-left hover:bg-slate-100/80 dark:hover:bg-white/[0.05] transition-colors cursor-pointer group"
+              className="flex w-full items-center justify-between gap-2.5 rounded-xl border border-[#0c1f3d]/[0.08] dark:border-white/[0.06] bg-[#f7f9fc] dark:bg-white/[0.02] p-2 text-left hover:bg-slate-100/80 dark:hover:bg-white/[0.05] transition-colors cursor-pointer group"
               aria-expanded={userDropdownOpen}
               aria-haspopup="true"
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-lg bg-slate-900 dark:bg-white/[0.08] text-xs font-semibold text-[#dfcaa0]">
+                <div className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-lg bg-[#0c1f3d] dark:bg-white/[0.08] text-xs font-semibold text-[#dfcaa0] border border-[#c5a059]/20">
                   {displayName.charAt(0).toUpperCase()}
                 </div>
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-medium text-slate-800 dark:text-slate-200 truncate group-hover:text-slate-950 dark:group-hover:text-white">
+                  <p className="text-xs font-medium text-slate-800 dark:text-slate-200 truncate group-hover:text-[#0c1f3d] dark:group-hover:text-white">
                     {displayName}
                   </p>
                   <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
@@ -260,22 +260,22 @@ export function AppLayout({ children }: AppLayoutProps) {
               </div>
               <ChevronDown
                 className={`h-3.5 w-3.5 stroke-[1.25] text-slate-400 transition-transform duration-150 shrink-0 ${
-                  userDropdownOpen ? 'rotate-180 text-[#dfcaa0]' : ''
+                  userDropdownOpen ? 'rotate-180 text-[#c5a059]' : ''
                 }`}
               />
             </button>
 
             {/* Dropdown de Configurações do Usuário */}
             {userDropdownOpen && (
-              <div className="absolute bottom-full left-0 mb-2 w-full rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#161b22] p-1.5 shadow-lg z-50 animate-in fade-in slide-in-from-bottom-2 duration-150">
+              <div className="absolute bottom-full left-0 mb-2 w-full rounded-xl border border-[#0c1f3d]/[0.1] dark:border-white/[0.08] bg-white dark:bg-[#0d192e] p-1.5 shadow-lg z-50 animate-in fade-in slide-in-from-bottom-2 duration-150">
                 <div className="px-2.5 py-1.5 border-b border-slate-100 dark:border-white/[0.06] text-[10px] text-slate-500 dark:text-slate-400">
-                  Conectado como <strong className="text-slate-900 dark:text-slate-200">{displayName}</strong>
+                  Conectado como <strong className="text-[#0c1f3d] dark:text-slate-200">{displayName}</strong>
                 </div>
                 <div className="mt-1 space-y-0.5">
                   <Link
                     href="/usuarios"
                     onClick={() => setUserDropdownOpen(false)}
-                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] hover:text-slate-900 dark:hover:text-white transition"
+                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-[#f7f9fc] dark:hover:bg-white/[0.05] hover:text-[#0c1f3d] dark:hover:text-white transition"
                   >
                     <Settings className="h-3.5 w-3.5 stroke-[1.25] text-slate-400" />
                     <span>Configurações & Equipe</span>
@@ -283,9 +283,9 @@ export function AppLayout({ children }: AppLayoutProps) {
                   <Link
                     href="/datajud"
                     onClick={() => setUserDropdownOpen(false)}
-                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.05] hover:text-slate-900 dark:hover:text-white transition"
+                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-[#f7f9fc] dark:hover:bg-white/[0.05] hover:text-[#0c1f3d] dark:hover:text-white transition"
                   >
-                    <Scale className="h-3.5 w-3.5 stroke-[1.25] text-[#dfcaa0]" />
+                    <Scale className="h-3.5 w-3.5 stroke-[1.25] text-[#c5a059]" />
                     <span>Status de Conexão CNJ</span>
                   </Link>
                   <div className="border-t border-slate-100 dark:border-white/[0.06] my-1" />
@@ -319,16 +319,16 @@ export function AppLayout({ children }: AppLayoutProps) {
             onClick={() => setMobileDrawerOpen(false)}
             aria-hidden="true"
           />
-          <div className="fixed inset-y-0 left-0 w-72 bg-white dark:bg-[#0e131d] border-r border-slate-200 dark:border-white/[0.08] p-5 flex flex-col justify-between z-50 shadow-2xl animate-in slide-in-from-left duration-200">
+          <div className="fixed inset-y-0 left-0 w-72 bg-white dark:bg-[#091322] border-r border-[#0c1f3d]/[0.08] dark:border-white/[0.08] p-5 flex flex-col justify-between z-50 shadow-2xl animate-in slide-in-from-left duration-200">
             <div>
               <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.06]">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-900 text-[#dfcaa0]">
-                    <Scale className="h-4 w-4 stroke-[1.25] text-[#dfcaa0]" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0c1f3d] text-[#dfcaa0] border border-[#c5a059]/30">
+                    <Scale className="h-4.5 w-4.5 stroke-[1.25] text-[#dfcaa0]" />
                   </div>
                   <div>
-                    <span className="text-sm font-semibold text-slate-900 dark:text-white block">Davino Neves</span>
-                    <span className="text-[10px] font-medium tracking-widest text-[#c5a059] dark:text-[#dfcaa0] uppercase">Advocacia</span>
+                    <span className="text-sm font-semibold text-[#0c1f3d] dark:text-white block">Davino Neves</span>
+                    <span className="text-[10px] font-semibold tracking-widest text-[#c5a059] dark:text-[#dfcaa0] uppercase">Advocacia</span>
                   </div>
                 </div>
                 <button
@@ -353,8 +353,8 @@ export function AppLayout({ children }: AppLayoutProps) {
                       href={item.href}
                       className={`flex items-center gap-3 px-3 py-2 text-xs rounded-lg transition ${
                         isActive
-                          ? 'bg-slate-100 dark:bg-white/[0.08] text-slate-900 dark:text-white font-medium'
-                          : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/[0.03]'
+                          ? 'bg-[#0c1f3d]/[0.06] dark:bg-[#dfcaa0]/[0.1] text-[#0c1f3d] dark:text-[#dfcaa0] font-medium border-l-2 border-[#c5a059]'
+                          : 'text-slate-600 dark:text-slate-400 hover:text-[#0c1f3d] dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/[0.03]'
                       }`}
                     >
                       <Icon className={`h-4 w-4 stroke-[1.25] ${isActive ? 'text-[#c5a059] dark:text-[#dfcaa0]' : 'text-slate-400 dark:text-slate-500'}`} />
@@ -371,8 +371,8 @@ export function AppLayout({ children }: AppLayoutProps) {
                 <ThemeToggle variant="segmented" />
               </div>
 
-              <div className="flex items-center gap-2.5 p-2 rounded-lg bg-slate-50 dark:bg-white/[0.04]">
-                <div className="flex h-7.5 w-7.5 items-center justify-center rounded-lg bg-slate-900 font-semibold text-xs text-[#dfcaa0]">
+              <div className="flex items-center gap-2.5 p-2 rounded-lg bg-[#f7f9fc] dark:bg-white/[0.04]">
+                <div className="flex h-7.5 w-7.5 items-center justify-center rounded-lg bg-[#0c1f3d] font-semibold text-xs text-[#dfcaa0]">
                   {displayName.charAt(0).toUpperCase()}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -399,7 +399,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       {/* Área Principal de Conteúdo */}
       <div className="flex flex-1 flex-col min-w-0 h-full overflow-hidden">
         {/* Header Superior Responsivo */}
-        <header className="h-14 shrink-0 border-b border-slate-200/70 dark:border-white/[0.06] bg-white dark:bg-[#0e131d] px-4 sm:px-6 flex items-center justify-between gap-4 z-20 transition-colors">
+        <header className="h-14 shrink-0 border-b border-[#0c1f3d]/[0.08] dark:border-white/[0.06] bg-white/95 dark:bg-[#091322]/95 backdrop-blur-xs px-4 sm:px-6 flex items-center justify-between gap-4 z-20 transition-colors">
           {/* Lado Esquerdo: Botão Mobile + Busca Global Expansível */}
           <div className="flex items-center gap-3 flex-1 max-w-xl">
             {/* Hambúrguer Mobile */}
@@ -421,7 +421,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar processos, clientes, prazos..."
-                className="w-full rounded-lg border border-transparent bg-slate-100/70 dark:bg-white/[0.04] pl-9 pr-12 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-slate-300 dark:focus:border-white/[0.12] focus:bg-white dark:focus:bg-[#161b22] focus:outline-hidden transition"
+                className="w-full rounded-lg border border-[#0c1f3d]/[0.08] dark:border-white/[0.08] bg-[#f7f9fc] dark:bg-white/[0.04] pl-9 pr-12 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-[#c5a059] dark:focus:border-[#c5a059] focus:bg-white dark:focus:bg-[#0d192e] focus:outline-hidden transition"
               />
             </form>
           </div>
@@ -439,25 +439,25 @@ export function AppLayout({ children }: AppLayoutProps) {
                   setNotificationsOpen(!notificationsOpen);
                   if (!notificationsOpen) carregarNotificacoes();
                 }}
-                className="relative flex h-8.5 w-8.5 items-center justify-center rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/[0.06] transition cursor-pointer"
+                className="relative flex h-8.5 w-8.5 items-center justify-center rounded-lg text-slate-600 dark:text-slate-400 hover:text-[#0c1f3d] dark:hover:text-slate-200 hover:bg-[#f7f9fc] dark:hover:bg-white/[0.06] transition cursor-pointer"
                 title="Notificações corporativas"
                 aria-label="Notificações corporativas"
                 aria-expanded={notificationsOpen}
               >
                 <Bell className="h-4 w-4 stroke-[1.25]" />
                 {notificacoesData.totalNaoLidas > 0 && (
-                  <span className="absolute 1.5 top-1.5 right-1.5 flex h-2 w-2 rounded-full bg-[#c5a059]" />
+                  <span className="absolute top-1.5 right-1.5 flex h-2 w-2 rounded-full bg-[#c5a059]" />
                 )}
               </button>
 
               {/* Popover de Notificações com Dados Reais */}
               {notificationsOpen && (
-                <div className="absolute right-0 mt-2 w-80 sm:w-92 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#161b22] p-3 shadow-xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                <div className="absolute right-0 mt-2 w-80 sm:w-92 rounded-xl border border-[#0c1f3d]/[0.1] dark:border-white/[0.08] bg-white dark:bg-[#0d192e] p-3 shadow-xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-white/[0.06]">
                     <div className="flex items-center gap-2">
-                      <span className="text-xs font-semibold text-slate-900 dark:text-white">Alertas do Escritório</span>
+                      <span className="text-xs font-semibold text-[#0c1f3d] dark:text-white">Alertas do Escritório</span>
                       {notificacoesData.totalNaoLidas > 0 ? (
-                        <span className="text-[10px] font-medium text-[#c5a059] dark:text-[#dfcaa0] bg-[#c5a059]/10 dark:bg-[#c5a059]/20 px-1.5 py-0.5 rounded-md tabular-nums">
+                        <span className="text-[10px] font-medium text-[#c5a059] dark:text-[#dfcaa0] bg-[#c5a059]/10 dark:bg-[#c5a059]/20 px-1.5 py-0.5 rounded-md tabular-nums border border-[#c5a059]/20">
                           {notificacoesData.totalNaoLidas} pendente{notificacoesData.totalNaoLidas > 1 ? 's' : ''}
                         </span>
                       ) : (

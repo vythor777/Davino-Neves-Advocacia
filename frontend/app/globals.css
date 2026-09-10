@@ -3,38 +3,53 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #f6f8fa;
-  --foreground: #0f172a;
-  --primary: #1e293b;
-  --primary-hover: #334155;
-  --primary-light: #f1f5f9;
+  --background: #f7f9fc;
+  --foreground: #0c182c;
+  --navy-deep: #07101e;
+  --navy-primary: #0c1f3d;
+  --navy-hover: #13274c;
+  --navy-light: #eef3fa;
   --gold-matte: #c5a059;
   --gold-light: #dfcaa0;
+  --gold-subtle: rgba(197, 160, 89, 0.1);
   --titanium: #94a3b8;
+  --primary: #0c1f3d;
+  --primary-hover: #13274c;
+  --primary-light: #eef3fa;
 }
 
 .dark,
 [data-theme="dark"] {
-  --background: #0d1117;
-  --foreground: #f0f6fc;
-  --primary: #dfcaa0;
-  --primary-hover: #c5a059;
-  --primary-light: rgba(197, 160, 89, 0.1);
+  --background: #070e1a;
+  --foreground: #f1f5f9;
+  --navy-deep: #050b14;
+  --navy-primary: #0f1e36;
+  --navy-hover: #162a4a;
+  --navy-light: rgba(197, 160, 89, 0.08);
   --gold-matte: #c5a059;
   --gold-light: #dfcaa0;
+  --gold-subtle: rgba(197, 160, 89, 0.12);
   --titanium: #94a3b8;
+  --primary: #dfcaa0;
+  --primary-hover: #c5a059;
+  --primary-light: rgba(197, 160, 89, 0.12);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    --background: #0d1117;
-    --foreground: #f0f6fc;
-    --primary: #dfcaa0;
-    --primary-hover: #c5a059;
-    --primary-light: rgba(197, 160, 89, 0.1);
+    --background: #070e1a;
+    --foreground: #f1f5f9;
+    --navy-deep: #050b14;
+    --navy-primary: #0f1e36;
+    --navy-hover: #162a4a;
+    --navy-light: rgba(197, 160, 89, 0.08);
     --gold-matte: #c5a059;
     --gold-light: #dfcaa0;
+    --gold-subtle: rgba(197, 160, 89, 0.12);
     --titanium: #94a3b8;
+    --primary: #dfcaa0;
+    --primary-hover: #c5a059;
+    --primary-light: rgba(197, 160, 89, 0.12);
   }
 }
 
@@ -58,7 +73,8 @@ body {
 }
 
 /* =========================================================
-   Davino Neves UI - Modern Legal Software Design System
+   Davino Neves UI - Identidade Visual Jurídica:
+   Azul-Marinho + Off-White + Dourado Discreto
    ========================================================= */
 
 .legal-card,
@@ -66,9 +82,9 @@ body {
 .legal-glass-card {
   position: relative;
   background: #ffffff;
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  border-radius: 1rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.02), 0 1px 2px -1px rgba(0, 0, 0, 0.02);
+  border: 1px solid rgba(12, 31, 61, 0.08);
+  border-radius: 0.875rem;
+  box-shadow: 0 1px 3px 0 rgba(12, 31, 61, 0.03), 0 1px 2px -1px rgba(12, 31, 61, 0.02);
   transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
@@ -79,10 +95,10 @@ body {
 [data-theme="dark"] .astrea-card,
 [data-theme="dark"] .legal-glass-card {
   position: relative;
-  background: #111722;
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  border-radius: 1rem;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  background: #0d192e;
+  border: 1px solid rgba(197, 160, 89, 0.12);
+  border-radius: 0.875rem;
+  box-shadow: 0 2px 8px 0 rgba(5, 11, 20, 0.4);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -90,10 +106,10 @@ body {
   :root:not(.light) .astrea-card,
   :root:not(.light) .legal-glass-card {
     position: relative;
-    background: #111722;
-    border: 1px solid rgba(255, 255, 255, 0.06);
-    border-radius: 1rem;
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+    background: #0d192e;
+    border: 1px solid rgba(197, 160, 89, 0.12);
+    border-radius: 0.875rem;
+    box-shadow: 0 2px 8px 0 rgba(5, 11, 20, 0.4);
   }
 }
 
@@ -101,7 +117,7 @@ body {
 .astrea-card:hover,
 .legal-glass-card:hover {
   border-color: rgba(197, 160, 89, 0.4);
-  box-shadow: 0 4px 16px -2px rgba(15, 23, 42, 0.06);
+  box-shadow: 0 6px 20px -2px rgba(12, 31, 61, 0.07);
 }
 
 .dark .legal-card:hover,
@@ -110,16 +126,16 @@ body {
 [data-theme="dark"] .legal-card:hover,
 [data-theme="dark"] .astrea-card:hover,
 [data-theme="dark"] .legal-glass-card:hover {
-  border-color: rgba(197, 160, 89, 0.3);
-  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5);
+  border-color: rgba(197, 160, 89, 0.35);
+  box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.6);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) .legal-card:hover,
   :root:not(.light) .astrea-card:hover,
   :root:not(.light) .legal-glass-card:hover {
-    border-color: rgba(197, 160, 89, 0.3);
-    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.5);
+    border-color: rgba(197, 160, 89, 0.35);
+    box-shadow: 0 8px 24px -4px rgba(0, 0, 0, 0.6);
   }
 }
 
@@ -127,45 +143,45 @@ body {
 .legal-modal-card {
   position: relative;
   background: #ffffff !important;
-  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+  border: 1px solid rgba(12, 31, 61, 0.12) !important;
   border-radius: 1rem;
-  box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.15) !important;
+  box-shadow: 0 20px 50px -12px rgba(12, 31, 61, 0.2) !important;
 }
 
 .dark .legal-modal-card,
 [data-theme="dark"] .legal-modal-card {
   position: relative;
-  background: #111722 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.8) !important;
+  background: #0d192e !important;
+  border: 1px solid rgba(197, 160, 89, 0.2) !important;
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.85) !important;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) .legal-modal-card {
     position: relative;
-    background: #111722 !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
-    box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.8) !important;
+    background: #0d192e !important;
+    border: 1px solid rgba(197, 160, 89, 0.2) !important;
+    box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.85) !important;
   }
 }
 
 /* Caixa de Widget Interno Sólido de Alta Legibilidade */
 .legal-widget-box {
-  background: #f8fafc;
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: #f7f9fc;
+  border: 1px solid rgba(12, 31, 61, 0.08);
   border-radius: 0.75rem;
 }
 
 .dark .legal-widget-box,
 [data-theme="dark"] .legal-widget-box {
-  background: #161d2a;
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: #10203a;
+  border: 1px solid rgba(197, 160, 89, 0.12);
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not(.light) .legal-widget-box {
-    background: #161d2a;
-    border: 1px solid rgba(255, 255, 255, 0.06);
+    background: #10203a;
+    border: 1px solid rgba(197, 160, 89, 0.12);
   }
 }
 
