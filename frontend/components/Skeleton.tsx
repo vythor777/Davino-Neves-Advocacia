@@ -14,7 +14,7 @@ export function Skeleton({ className = '', id }: SkeletonProps) {
   return (
     <div
       id={id}
-      className={`animate-pulse rounded-lg bg-slate-200/80 dark:bg-slate-800/70 ${className}`}
+      className={`animate-pulse rounded-lg bg-slate-200/70 dark:bg-white/[0.06] ${className}`}
     />
   );
 }
@@ -30,16 +30,16 @@ export function TableSkeleton({
   columns?: number;
 }) {
   return (
-    <div className="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
+    <div className="w-full overflow-hidden rounded-2xl border border-[0.75px] border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#161b22]/70 backdrop-blur-md shadow-xs">
       {/* Header Skeleton */}
-      <div className="border-b border-slate-200 bg-slate-50/80 p-4 dark:border-slate-800 dark:bg-slate-800/50 flex items-center justify-between gap-4">
+      <div className="border-b border-[0.75px] border-slate-200 bg-slate-50/80 p-4 dark:border-white/[0.08] dark:bg-[#0d1117]/50 flex items-center justify-between gap-4">
         {Array.from({ length: columns }).map((_, i) => (
           <Skeleton key={`th-${i}`} className="h-4 w-24" />
         ))}
       </div>
 
       {/* Body Rows Skeleton */}
-      <div className="divide-y divide-slate-100 dark:divide-slate-800/60 p-2">
+      <div className="divide-y divide-[0.75px] divide-slate-100 dark:divide-white/[0.05] p-2">
         {Array.from({ length: rows }).map((_, rIdx) => (
           <div
             key={`row-${rIdx}`}
@@ -61,7 +61,7 @@ export function TableSkeleton({
       </div>
 
       {/* Footer Pagination Skeleton */}
-      <div className="border-t border-slate-200 bg-slate-50/60 px-6 py-3.5 dark:border-slate-800 dark:bg-slate-800/30 flex items-center justify-between">
+      <div className="border-t border-[0.75px] border-slate-200 bg-slate-50/60 px-6 py-3.5 dark:border-white/[0.08] dark:bg-[#0d1117]/40 flex items-center justify-between">
         <Skeleton className="h-3.5 w-32" />
         <div className="flex gap-2">
           <Skeleton className="h-7 w-20 rounded-lg" />
@@ -77,7 +77,7 @@ export function TableSkeleton({
  */
 export function MetricCardSkeleton() {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
+    <div className="rounded-2xl border border-[0.75px] border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#161b22]/70 backdrop-blur-md p-5 shadow-xs">
       <div className="flex items-center justify-between">
         <Skeleton className="h-3.5 w-28" />
         <Skeleton className="h-8 w-8 rounded-xl" />
@@ -97,7 +97,7 @@ export function CardGridSkeleton({ count = 6 }: { count?: number }) {
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={`card-skel-${i}`}
-          className="rounded-2xl border border-slate-200/80 bg-white p-5 dark:border-slate-800 dark:bg-slate-900 shadow-2xs space-y-4"
+          className="rounded-2xl border border-[0.75px] border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#161b22]/70 backdrop-blur-md p-5 shadow-xs space-y-4"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -110,7 +110,7 @@ export function CardGridSkeleton({ count = 6 }: { count?: number }) {
             <Skeleton className="h-5 w-14 rounded-full" />
           </div>
 
-          <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800/80">
+          <div className="space-y-2 pt-2 border-t border-[0.75px] border-slate-100 dark:border-white/[0.06]">
             <Skeleton className="h-3 w-full" />
             <Skeleton className="h-3 w-4/5" />
           </div>
