@@ -338,37 +338,42 @@ function ClientesContent() {
       </div>
 
         {/* Cabeçalho da Página */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200 dark:border-slate-800/80 pb-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200/60 dark:border-white/[0.05] pb-4">
           <div>
+            <div className="flex items-center gap-2 mb-1">
+              <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide uppercase bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-[#dfcaa0] border border-slate-200 dark:border-white/[0.08]">
+                Controladoria Jurídica • Carteira de Clientes
+              </span>
+            </div>
             <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400">
-                <Users className="h-5 w-5" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 border border-[#c5a059]/25 text-[#c5a059]">
+                <Users className="h-4 w-4" />
               </div>
-              <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+              <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
                 Gestão de Clientes
               </h1>
             </div>
-            <p className="mt-1 text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
               Cadastro unificado de pessoas físicas e jurídicas, processos e contatos corporativos.
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             <button
               onClick={fetchClientes}
               disabled={loading}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white transition cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white/60 px-3.5 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100/80 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] backdrop-blur-sm transition-colors cursor-pointer"
               title="Atualizar lista"
             >
-              <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+              <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
               Atualizar
             </button>
 
             <button
               onClick={openCreateModal}
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-blue-500 transition active:scale-95 cursor-pointer"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition-all active:scale-98 cursor-pointer"
             >
-              <UserPlus className="h-4 w-4" />
+              <UserPlus className="h-4 w-4 text-slate-950" />
               + Novo Cliente
             </button>
           </div>
@@ -376,7 +381,7 @@ function ClientesContent() {
 
         {/* Mensagens de Sucesso / Erro */}
         {successMsg && (
-          <div className="mt-6 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-xs text-emerald-800 flex items-center justify-between dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300">
+          <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3.5 text-xs text-emerald-700 dark:text-emerald-300 flex items-center justify-between">
             <div className="flex items-center gap-2">
               <CheckCircle2 className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
               <span>{successMsg}</span>
@@ -388,21 +393,21 @@ function ClientesContent() {
         )}
 
         {errorMsg && (
-          <div className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-xs text-red-800 flex items-center justify-between dark:border-red-900/50 dark:bg-red-950/40 dark:text-red-300">
+          <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 p-3.5 text-xs text-rose-700 dark:text-rose-300 flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
+              <AlertCircle className="h-4 w-4 text-rose-600 dark:text-rose-400" />
               <span>{errorMsg}</span>
             </div>
             <button
               onClick={fetchClientes}
-              className="underline hover:text-red-950 dark:hover:text-white font-semibold cursor-pointer ml-3"
+              className="underline hover:text-rose-950 dark:hover:text-white font-semibold cursor-pointer ml-3"
             >
               Tentar novamente
             </button>
           </div>
         )}
 
-        {/* Cards de Métricas: 4 cards com gradiente sutil no fundo e ícones em caixas translúcidas */}
+        {/* Cards de Métricas: 4 cards com o design system legal-glass-card */}
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
           {loading ? (
             <>
@@ -413,50 +418,58 @@ function ClientesContent() {
             </>
           ) : (
             <>
-              <div className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs dark:border-slate-800/70 dark:bg-gradient-to-b dark:from-slate-900/80 dark:to-slate-950/80">
+              <div className="legal-glass-card fio-de-luz p-4 sm:p-5 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total de Clientes</span>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400">
-                    <Users className="h-4 w-4" />
+                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
+                    Total de Clientes
+                  </span>
+                  <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-400">
+                    <Users className="h-3.5 w-3.5" />
                   </div>
                 </div>
-                <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
+                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
                   {totalClientes}
                 </p>
               </div>
 
-              <div className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs dark:border-slate-800/70 dark:bg-gradient-to-b dark:from-slate-900/80 dark:to-slate-950/80">
+              <div className="legal-glass-card fio-de-luz p-4 sm:p-5 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Pessoas Físicas</span>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 dark:text-cyan-400">
-                    <User className="h-4 w-4" />
+                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
+                    Pessoas Físicas
+                  </span>
+                  <div className="p-1.5 rounded-lg bg-[#c5a059]/10 text-[#c5a059]">
+                    <User className="h-3.5 w-3.5" />
                   </div>
                 </div>
-                <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
+                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
                   {totalPF}
                 </p>
               </div>
 
-              <div className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs dark:border-slate-800/70 dark:bg-gradient-to-b dark:from-slate-900/80 dark:to-slate-950/80">
+              <div className="legal-glass-card fio-de-luz p-4 sm:p-5 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Pessoas Jurídicas</span>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-600 dark:text-amber-400">
-                    <Building2 className="h-4 w-4" />
+                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
+                    Pessoas Jurídicas
+                  </span>
+                  <div className="p-1.5 rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-400 dark:text-[#dfcaa0]">
+                    <Building2 className="h-3.5 w-3.5" />
                   </div>
                 </div>
-                <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
+                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
                   {totalPJ}
                 </p>
               </div>
 
-              <div className="rounded-xl border border-slate-200/90 bg-white p-4 shadow-2xs dark:border-slate-800/70 dark:bg-gradient-to-b dark:from-slate-900/80 dark:to-slate-950/80">
+              <div className="legal-glass-card fio-de-luz p-4 sm:p-5 flex flex-col justify-between">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Com Processos Ativos</span>
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400">
-                    <Briefcase className="h-4 w-4" />
+                  <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
+                    Com Processos Ativos
+                  </span>
+                  <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400/90">
+                    <Briefcase className="h-3.5 w-3.5" />
                   </div>
                 </div>
-                <p className="mt-2 text-2xl font-bold font-serif text-slate-900 dark:text-white">
+                <p className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
                   {totalComProcessos}
                 </p>
               </div>
@@ -464,8 +477,8 @@ function ClientesContent() {
           )}
         </div>
 
-        {/* Filtros e Tabela: Barra de ferramentas integrada (Busca + Segmented Control) */}
-        <div className="rounded-xl border border-slate-200/90 bg-white p-2 sm:p-2.5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 shadow-2xs dark:border-slate-800/80 dark:bg-gradient-to-b dark:from-slate-900/80 dark:to-slate-950/80">
+        {/* Filtros e Tabela: Barra de ferramentas integrada */}
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
           <div className="relative flex-1 min-w-[240px]">
             <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
             <input
@@ -473,7 +486,7 @@ function ClientesContent() {
               placeholder="Buscar por nome, CPF/CNPJ, e-mail ou cidade..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-8 py-2 text-xs text-slate-900 placeholder-slate-400 focus:border-blue-500 focus:bg-white focus:outline-hidden focus:ring-1 focus:ring-blue-500/30 dark:border-slate-800 dark:bg-slate-950/80 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:bg-slate-950 transition"
+              className="w-full rounded-xl border border-slate-200/80 bg-white/80 pl-10 pr-8 py-2 text-xs text-slate-900 placeholder-slate-400 focus:border-[#c5a059] focus:outline-hidden dark:border-white/[0.08] dark:bg-[#12161f] dark:text-slate-100 dark:placeholder-slate-500 transition"
             />
             {searchTerm && (
               <button
@@ -488,7 +501,7 @@ function ClientesContent() {
           </div>
 
           <div
-            className="flex items-center gap-1 rounded-lg border border-slate-200 bg-slate-50 p-1 shrink-0 dark:border-slate-800 dark:bg-slate-950/80"
+            className="flex items-center gap-1 rounded-xl border border-slate-200/80 bg-white/80 p-1 shrink-0 dark:border-white/[0.08] dark:bg-[#12161f]"
             role="tablist"
             aria-label="Filtro por tipo de pessoa"
           >
@@ -501,10 +514,10 @@ function ClientesContent() {
                   role="tab"
                   aria-selected={isActive}
                   onClick={() => setFiltroTipo(tipo)}
-                  className={`rounded-md px-3 py-1.5 text-xs font-medium transition cursor-pointer ${
+                  className={`rounded-lg px-3 py-1.5 text-xs font-medium transition cursor-pointer ${
                     isActive
-                      ? 'bg-blue-600 text-white shadow-xs font-semibold'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800/60'
+                      ? 'bg-[#c5a059] text-slate-950 font-semibold shadow-xs'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-slate-400 dark:hover:text-[#dfcaa0] dark:hover:bg-white/[0.04]'
                   }`}
                 >
                   {tipo === 'todos' ? 'Todos' : tipo === 'pf' ? 'Pessoas Físicas' : 'Pessoas Jurídicas'}
@@ -515,7 +528,7 @@ function ClientesContent() {
         </div>
 
         {/* Tabela de Clientes */}
-        <div className="rounded-2xl border border-slate-200 bg-white shadow-2xs overflow-hidden dark:border-slate-800/80 dark:bg-slate-900/60 backdrop-blur-sm">
+        <div className="legal-glass-card rounded-2xl overflow-hidden">
           {loading ? (
             <TableSkeleton rows={6} columns={6} />
           ) : filteredClientes.length === 0 ? (
@@ -542,7 +555,7 @@ function ClientesContent() {
               {/* Desktop Table View */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-left text-xs">
-                  <thead className="border-b border-slate-200 bg-slate-50 font-semibold text-slate-600 dark:border-slate-800 dark:bg-slate-900/90 dark:text-slate-300">
+                  <thead className="border-b border-slate-200/60 bg-slate-50/50 font-semibold text-slate-600 dark:border-white/[0.06] dark:bg-white/[0.02] dark:text-slate-300">
                     <tr>
                       <th className="py-3.5 pl-6 pr-3">Cliente / Razão Social</th>
                       <th className="px-3 py-3.5">Documento (CPF/CNPJ)</th>
@@ -552,7 +565,7 @@ function ClientesContent() {
                       <th className="py-3.5 pl-3 pr-6 text-right">Ações</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+                  <tbody className="divide-y divide-slate-100 dark:divide-white/[0.04]">
                     {filteredClientes.map((client) => {
                       const digits = client.cpf_cnpj.replace(/\D/g, '');
                       const isPJ = digits.length > 11;
@@ -561,15 +574,15 @@ function ClientesContent() {
                       return (
                         <tr
                           key={client.id_cliente}
-                          className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors"
+                          className="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors"
                         >
                           <td className="py-4 pl-6 pr-3">
                             <div className="flex items-center gap-3">
                               <div
                                 className={`flex h-9 w-9 items-center justify-center rounded-xl font-bold shrink-0 ${
                                   isPJ
-                                    ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20'
-                                    : 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/20'
+                                    ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+                                    : 'bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25'
                                 }`}
                               >
                                 {isPJ ? <Building2 className="h-4 w-4" /> : <User className="h-4 w-4" />}
@@ -581,16 +594,16 @@ function ClientesContent() {
                                       setSelectedClient(client);
                                       setDetailsModalOpen(true);
                                     }}
-                                    className="font-semibold text-slate-900 hover:text-blue-600 dark:text-slate-100 dark:hover:text-blue-400 text-left transition cursor-pointer"
+                                    className="font-semibold text-slate-900 hover:text-[#c5a059] dark:text-[#f8fafc] dark:hover:text-[#dfcaa0] text-left transition cursor-pointer"
                                   >
                                     {client.nome}
                                   </button>
                                   {isPJ ? (
-                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-950/70 dark:text-amber-300 dark:border-amber-800/60">
+                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-500/10 text-amber-600 border border-amber-500/20 dark:text-amber-300">
                                       Pessoa Jurídica
                                     </span>
                                   ) : (
-                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-blue-50 text-blue-800 border border-blue-200 dark:bg-blue-950/70 dark:text-blue-300 dark:border-blue-800/60">
+                                    <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-[#c5a059]/10 text-[#c5a059] border border-[#c5a059]/20 dark:text-[#dfcaa0]">
                                       Pessoa Física
                                     </span>
                                   )}
@@ -604,7 +617,7 @@ function ClientesContent() {
 
                           <td className="px-3 py-4">
                             <div className="flex items-center gap-1.5">
-                              <span className="font-mono text-slate-300">
+                              <span className="font-mono text-slate-700 dark:text-slate-300">
                                 {formatarCpfCnpj(client.cpf_cnpj)}
                               </span>
                               <button
@@ -624,18 +637,18 @@ function ClientesContent() {
 
                           <td className="px-3 py-4">
                             <div className="space-y-0.5 text-[11px]">
-                              <div className="flex items-center gap-1 text-slate-300">
+                              <div className="flex items-center gap-1 text-slate-600 dark:text-slate-300">
                                 <Mail className="h-3 w-3 text-slate-400" />
                                 <span>{client.email}</span>
                               </div>
-                              <div className="flex items-center gap-1 text-slate-300">
+                              <div className="flex items-center gap-1 text-slate-600 dark:text-slate-300">
                                 <Phone className="h-3 w-3 text-slate-400" />
                                 <span>{formatarTelefone(client.telefone)}</span>
                               </div>
                             </div>
                           </td>
 
-                          <td className="px-3 py-4 max-w-xs truncate text-slate-300">
+                          <td className="px-3 py-4 max-w-xs truncate text-slate-600 dark:text-slate-300">
                             {client.endereco}
                           </td>
 
@@ -643,8 +656,8 @@ function ClientesContent() {
                             <span
                               className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${
                                 countProc > 0
-                                  ? 'bg-blue-950/60 text-blue-300 border border-blue-800/50'
-                                  : 'bg-slate-800/80 text-slate-400 border border-slate-700/60'
+                                  ? 'bg-[#c5a059]/15 text-[#c5a059] dark:text-[#dfcaa0] border border-[#c5a059]/25'
+                                  : 'bg-slate-100 text-slate-500 dark:bg-white/[0.04] dark:text-slate-400 border border-slate-200/60 dark:border-white/[0.06]'
                               }`}
                             >
                               <Briefcase className="h-3 w-3" />
@@ -659,7 +672,7 @@ function ClientesContent() {
                                   setSelectedClient(client);
                                   setDetailsModalOpen(true);
                                 }}
-                                className="rounded-lg p-2 text-slate-400 hover:text-blue-400 hover:bg-blue-950/40 transition-colors cursor-pointer"
+                                className="rounded-lg p-1.5 text-slate-400 hover:text-slate-900 hover:bg-slate-100 dark:hover:text-[#dfcaa0] dark:hover:bg-white/[0.04] transition-colors cursor-pointer"
                                 title="Visualizar ficha detalhada do cliente"
                                 aria-label="Visualizar ficha do cliente"
                               >
@@ -668,7 +681,7 @@ function ClientesContent() {
 
                               <button
                                 onClick={() => openEditModal(client)}
-                                className="rounded-lg p-2 text-slate-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:text-blue-400 dark:hover:bg-blue-950/40 transition-colors cursor-pointer"
+                                className="rounded-lg p-1.5 text-slate-400 hover:text-slate-900 hover:bg-slate-100 dark:hover:text-[#dfcaa0] dark:hover:bg-white/[0.04] transition-colors cursor-pointer"
                                 title="Editar dados do cliente"
                                 aria-label="Editar cliente"
                               >
@@ -680,7 +693,7 @@ function ClientesContent() {
                                   setClientToDelete(client);
                                   setDeleteModalOpen(true);
                                 }}
-                                className="rounded-lg p-2 text-slate-400 hover:text-rose-400 hover:bg-rose-950/40 transition-colors cursor-pointer"
+                                className="rounded-lg p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-500/10 transition-colors cursor-pointer"
                                 title="Excluir cliente do sistema"
                                 aria-label="Excluir cliente"
                               >
@@ -696,21 +709,21 @@ function ClientesContent() {
               </div>
 
               {/* Mobile Cards View */}
-              <div className="block md:hidden divide-y divide-slate-100 dark:divide-slate-800/60">
+              <div className="block md:hidden divide-y divide-slate-100 dark:divide-white/[0.04]">
                 {filteredClientes.map((client) => {
                   const digits = client.cpf_cnpj.replace(/\D/g, '');
                   const isPJ = digits.length > 11;
                   const countProc = client._count?.processos ?? client.processos?.length ?? 0;
 
                   return (
-                    <div key={client.id_cliente} className="p-4 space-y-3 hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
+                    <div key={client.id_cliente} className="p-4 space-y-3 hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition-colors">
                       <div className="flex items-start justify-between gap-2">
                         <div className="flex items-center gap-2.5 min-w-0">
                           <div
                             className={`flex h-10 w-10 items-center justify-center rounded-xl font-bold shrink-0 ${
                               isPJ
-                                ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/20'
-                                : 'bg-blue-500/15 text-blue-600 dark:text-blue-400 border border-blue-500/20'
+                                ? 'bg-amber-500/10 text-amber-500 border border-amber-500/20'
+                                : 'bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25'
                             }`}
                           >
                             {isPJ ? <Building2 className="h-5 w-5" /> : <User className="h-5 w-5" />}
@@ -721,17 +734,17 @@ function ClientesContent() {
                                 setSelectedClient(client);
                                 setDetailsModalOpen(true);
                               }}
-                              className="font-bold text-sm text-slate-900 hover:text-blue-600 dark:text-slate-100 dark:hover:text-blue-400 truncate block text-left"
+                              className="font-bold text-sm text-slate-900 hover:text-[#c5a059] dark:text-[#f8fafc] dark:hover:text-[#dfcaa0] truncate block text-left"
                             >
                               {client.nome}
                             </button>
                             <div className="flex items-center gap-1.5 mt-0.5">
                               {isPJ ? (
-                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-950/70 dark:text-amber-300 dark:border-amber-800/60">
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-amber-500/10 text-amber-600 border border-amber-500/20 dark:text-amber-300">
                                   Pessoa Jurídica
                                 </span>
                               ) : (
-                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-blue-50 text-blue-800 border border-blue-200 dark:bg-blue-950/70 dark:text-blue-300 dark:border-blue-800/60">
+                                <span className="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-medium bg-[#c5a059]/10 text-[#c5a059] border border-[#c5a059]/20 dark:text-[#dfcaa0]">
                                   Pessoa Física
                                 </span>
                               )}
@@ -745,8 +758,8 @@ function ClientesContent() {
                         <span
                           className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ${
                             countProc > 0
-                              ? 'bg-blue-50 text-blue-800 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800/50'
-                              : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'
+                              ? 'bg-[#c5a059]/15 text-[#c5a059] dark:text-[#dfcaa0] border border-[#c5a059]/25'
+                              : 'bg-slate-100 text-slate-600 dark:bg-white/[0.04] dark:text-slate-400'
                           }`}
                         >
                           {countProc} {countProc === 1 ? 'processo' : 'processos'}
@@ -764,13 +777,13 @@ function ClientesContent() {
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800/60">
+                      <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-white/[0.04]">
                         <button
                           onClick={() => {
                             setSelectedClient(client);
                             setDetailsModalOpen(true);
                           }}
-                          className="flex min-h-[38px] items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:text-blue-600 hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:text-blue-400 dark:hover:bg-slate-800"
+                          className="flex min-h-[38px] items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white/60 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] dark:hover:text-[#dfcaa0]"
                           title="Visualizar ficha completa do cliente"
                         >
                           <Eye className="h-3.5 w-3.5" />
@@ -779,7 +792,7 @@ function ClientesContent() {
 
                         <button
                           onClick={() => openEditModal(client)}
-                          className="flex min-h-[38px] items-center gap-1.5 rounded-xl border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-700 hover:bg-blue-100 dark:border-blue-900/50 dark:bg-blue-950/30 dark:text-blue-300 dark:hover:bg-blue-950/50"
+                          className="flex min-h-[38px] items-center gap-1.5 rounded-xl border border-[#c5a059]/30 bg-[#c5a059]/10 px-3 py-1.5 text-xs font-semibold text-slate-800 dark:text-[#dfcaa0] hover:bg-[#c5a059]/20"
                           title="Editar dados do cliente"
                         >
                           <Edit2 className="h-3.5 w-3.5" />
@@ -791,7 +804,7 @@ function ClientesContent() {
                             setClientToDelete(client);
                             setDeleteModalOpen(true);
                           }}
-                          className="flex min-h-[38px] items-center justify-center rounded-xl border border-rose-200 bg-rose-50 px-3 py-1.5 text-rose-700 hover:bg-rose-100 dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-400 dark:hover:bg-rose-950/50"
+                          className="flex min-h-[38px] items-center justify-center rounded-xl border border-rose-500/20 bg-rose-500/10 px-3 py-1.5 text-rose-600 hover:bg-rose-500/20 dark:text-rose-400"
                           title="Excluir cliente do sistema"
                           aria-label="Excluir cadastro"
                         >
@@ -808,22 +821,27 @@ function ClientesContent() {
 
       {/* Modal de Criação / Edição */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
-              <div className="flex items-center gap-2">
-                <div className="rounded-lg bg-blue-50 p-2 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-md">
+          <div className="legal-glass-card fio-de-luz w-full max-w-lg p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between border-b border-slate-200/60 pb-4 dark:border-white/[0.06]">
+              <div className="flex items-center gap-2.5">
+                <div className="rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25 p-2">
                   {editingClient ? <Edit2 className="h-5 w-5" /> : <UserPlus className="h-5 w-5" />}
                 </div>
-                <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                  {editingClient ? 'Editar Cadastro de Cliente' : 'Novo Cadastro de Cliente'}
-                </h3>
+                <div>
+                  <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
+                    {editingClient ? 'Editar Cadastro de Cliente' : 'Novo Cadastro de Cliente'}
+                  </h3>
+                  <p className="text-[11px] text-slate-400">
+                    Preencha os dados cadastrais do titular
+                  </p>
+                </div>
               </div>
               <button
                 onClick={() => setModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-200 transition cursor-pointer"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
@@ -838,8 +856,8 @@ function ClientesContent() {
                   onClick={() => handleTrocarTipoPessoa('pf')}
                   className={`rounded-xl border p-2.5 text-center font-semibold transition cursor-pointer ${
                     formTipo === 'pf'
-                      ? 'border-blue-600 bg-blue-50 text-blue-900 dark:border-blue-500 dark:bg-blue-950/50 dark:text-blue-300 shadow-2xs'
-                      : 'border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900'
+                      ? 'border-[#c5a059]/50 bg-[#c5a059]/15 text-[#dfcaa0] shadow-xs'
+                      : 'border-slate-200/80 bg-white/60 text-slate-700 dark:border-white/[0.06] dark:bg-white/[0.02] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
                   }`}
                 >
                   Pessoa Física (CPF)
@@ -852,8 +870,8 @@ function ClientesContent() {
                   onClick={() => handleTrocarTipoPessoa('pj')}
                   className={`rounded-xl border p-2.5 text-center font-semibold transition cursor-pointer ${
                     formTipo === 'pj'
-                      ? 'border-blue-600 bg-blue-50 text-blue-900 dark:border-blue-500 dark:bg-blue-950/50 dark:text-blue-300 shadow-2xs'
-                      : 'border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-900'
+                      ? 'border-[#c5a059]/50 bg-[#c5a059]/15 text-[#dfcaa0] shadow-xs'
+                      : 'border-slate-200/80 bg-white/60 text-slate-700 dark:border-white/[0.06] dark:bg-white/[0.02] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
                   }`}
                 >
                   Pessoa Jurídica (CNPJ)
@@ -861,7 +879,7 @@ function ClientesContent() {
               </div>
 
               <div>
-                <label htmlFor="input-nome-cliente" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label htmlFor="input-nome-cliente" className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                   {formTipo === 'pf' ? 'Nome Completo *' : 'Razão Social / Nome Fantasia *'}
                 </label>
                 <input
@@ -870,14 +888,14 @@ function ClientesContent() {
                   value={nome}
                   onChange={(e) => setNome(e.target.value)}
                   placeholder={formTipo === 'pf' ? 'Ex: Carlos Eduardo Silveira' : 'Ex: Horizonte Verde Engenharia S/A'}
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                  className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-[#c5a059] focus:outline-hidden dark:border-white/[0.08] dark:bg-[#12161f] dark:text-slate-100 dark:placeholder:text-slate-500 transition"
                 />
-                {formErrors.nome && <p className="text-red-500 mt-1">{formErrors.nome}</p>}
+                {formErrors.nome && <p className="text-rose-400 mt-1">{formErrors.nome}</p>}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label htmlFor="input-cpf-cnpj" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label htmlFor="input-cpf-cnpj" className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                     {formTipo === 'pf' ? 'CPF *' : 'CNPJ *'}
                   </label>
                   <input
@@ -888,7 +906,6 @@ function ClientesContent() {
                     value={cpfCnpj}
                     onChange={(e) => {
                       const val = e.target.value;
-                      // Separação estrita: nunca compartilha formato misto
                       const formatted = formTipo === 'pf' ? formatarCPF(val) : formatarCNPJ(val);
                       setCpfCnpj(formatted);
                       if (formErrors.cpfCnpj) {
@@ -900,13 +917,13 @@ function ClientesContent() {
                       }
                     }}
                     placeholder={formTipo === 'pf' ? '000.000.000-00' : '00.000.000/0001-00'}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden font-mono dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                    className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-[#c5a059] focus:outline-hidden font-mono dark:border-white/[0.08] dark:bg-[#12161f] dark:text-slate-100 dark:placeholder:text-slate-500 transition"
                   />
-                  {formErrors.cpfCnpj && <p className="text-red-500 mt-1">{formErrors.cpfCnpj}</p>}
+                  {formErrors.cpfCnpj && <p className="text-rose-400 mt-1">{formErrors.cpfCnpj}</p>}
                 </div>
 
                 <div>
-                  <label htmlFor="input-telefone-cliente" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                  <label htmlFor="input-telefone-cliente" className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                     Telefone de Contato *
                   </label>
                   <input
@@ -917,14 +934,14 @@ function ClientesContent() {
                     value={telefone}
                     onChange={(e) => setTelefone(formatarTelefone(e.target.value))}
                     placeholder="(11) 98765-4321"
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden font-mono dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                    className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-[#c5a059] focus:outline-hidden font-mono dark:border-white/[0.08] dark:bg-[#12161f] dark:text-slate-100 dark:placeholder:text-slate-500 transition"
                   />
-                  {formErrors.telefone && <p className="text-red-500 mt-1">{formErrors.telefone}</p>}
+                  {formErrors.telefone && <p className="text-rose-400 mt-1">{formErrors.telefone}</p>}
                 </div>
               </div>
 
               <div>
-                <label htmlFor="input-email-cliente" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label htmlFor="input-email-cliente" className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                   E-mail de Contato *
                 </label>
                 <input
@@ -933,13 +950,13 @@ function ClientesContent() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="cliente@dominio.com.br"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                  className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-[#c5a059] focus:outline-hidden dark:border-white/[0.08] dark:bg-[#12161f] dark:text-slate-100 dark:placeholder:text-slate-500 transition"
                 />
-                {formErrors.email && <p className="text-red-500 mt-1">{formErrors.email}</p>}
+                {formErrors.email && <p className="text-rose-400 mt-1">{formErrors.email}</p>}
               </div>
 
               <div>
-                <label htmlFor="input-data-nascimento" className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label htmlFor="input-data-nascimento" className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                   {formTipo === 'pf'
                     ? 'Data de Nascimento (para aniversariantes do mês)'
                     : 'Data de Fundação / Abertura (opcional)'}
@@ -951,16 +968,16 @@ function ClientesContent() {
                     max={new Date().toISOString().split('T')[0]}
                     value={dataNascimento}
                     onChange={(e) => setDataNascimento(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                    className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-[#c5a059] focus:outline-hidden dark:border-white/[0.08] dark:bg-[#12161f] dark:text-slate-100 dark:placeholder:text-slate-500 transition"
                   />
                   {formErrors.dataNascimento && (
-                    <p className="text-red-500 text-xs mt-1">{formErrors.dataNascimento}</p>
+                    <p className="text-rose-400 text-xs mt-1">{formErrors.dataNascimento}</p>
                   )}
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Endereço Completo (Logradouro, Nº, Bairro, Cidade/UF) *
                 </label>
                 <textarea
@@ -968,23 +985,23 @@ function ClientesContent() {
                   value={endereco}
                   onChange={(e) => setEndereco(e.target.value)}
                   placeholder="Av. Paulista, 1000, Apto 42 - Bela Vista, São Paulo/SP"
-                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-blue-500 focus:outline-hidden resize-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                  className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-[#c5a059] focus:outline-hidden resize-none dark:border-white/[0.08] dark:bg-[#12161f] dark:text-slate-100 dark:placeholder:text-slate-500 transition"
                 />
-                {formErrors.endereco && <p className="text-red-500 mt-1">{formErrors.endereco}</p>}
+                {formErrors.endereco && <p className="text-rose-400 mt-1">{formErrors.endereco}</p>}
               </div>
 
-              <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
+              <div className="mt-6 flex items-center justify-end gap-2.5 border-t border-slate-200/60 pt-4 dark:border-white/[0.06]">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="rounded-xl border border-slate-300 px-4 py-2 font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                  className="rounded-xl border border-slate-200/80 bg-white/60 px-4 py-2 font-medium text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] transition-colors cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 font-semibold text-white hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-50 transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] px-4 py-2 font-semibold text-slate-950 disabled:opacity-50 transition-all cursor-pointer"
                 >
                   {saving ? 'Salvando...' : editingClient ? 'Atualizar Cliente' : 'Salvar no Banco'}
                 </button>
@@ -1012,81 +1029,81 @@ function ClientesContent() {
 
       {/* Modal / Ficha Detalhada */}
       {detailsModalOpen && selectedClient && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-xs overflow-y-auto">
-          <div className="w-full max-w-xl rounded-2xl border border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-800 dark:bg-slate-900 my-8">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
-              <div className="flex items-center gap-2">
-                <div className="rounded-lg bg-blue-50 p-2 text-blue-600 dark:bg-blue-950 dark:text-blue-400">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-md overflow-y-auto">
+          <div className="legal-glass-card fio-de-luz w-full max-w-xl p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150 my-8">
+            <div className="flex items-center justify-between border-b border-slate-200/60 pb-4 dark:border-white/[0.06]">
+              <div className="flex items-center gap-2.5">
+                <div className="rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25 p-2">
                   <User className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                  <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
                     Ficha do Cliente #{selectedClient.id_cliente}
                   </h3>
-                  <p className="text-[11px] text-slate-500">{selectedClient.nome}</p>
+                  <p className="text-[11px] text-slate-400">{selectedClient.nome}</p>
                 </div>
               </div>
               <button
                 onClick={() => setDetailsModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-200 transition cursor-pointer"
               >
-                <X className="h-5 w-5" />
+                <X className="h-4 w-4" />
               </button>
             </div>
 
             <div className="mt-4 space-y-3 text-xs">
-              <div className="grid grid-cols-2 gap-2">
-                <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
+              <div className="grid grid-cols-2 gap-2.5">
+                <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06]">
                   <span className="text-slate-400 block text-[10px] uppercase font-semibold">Documento de Identificação</span>
-                  <span className="text-slate-800 dark:text-slate-200 font-mono font-medium">
+                  <span className="text-slate-800 dark:text-slate-200 font-mono font-medium mt-0.5 block">
                     {formatarCpfCnpj(selectedClient.cpf_cnpj)}
                   </span>
                 </div>
-                <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
+                <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06]">
                   <span className="text-slate-400 block text-[10px] uppercase font-semibold">
                     {selectedClient.cpf_cnpj.replace(/\D/g, '').length > 11
                       ? 'Data de Fundação / Abertura'
                       : 'Data de Nascimento'}
                   </span>
-                  <span className="text-slate-800 dark:text-slate-200 font-medium">
+                  <span className="text-slate-800 dark:text-slate-200 font-medium mt-0.5 block">
                     {formatarDataNascimento(selectedClient.data_nascimento)}
                   </span>
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-2">
-                <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
+              <div className="grid grid-cols-2 gap-2.5">
+                <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06]">
                   <span className="text-slate-400 block text-[10px] uppercase font-semibold">E-mail Corporativo</span>
-                  <span className="text-slate-800 dark:text-slate-200 truncate block">
+                  <span className="text-slate-800 dark:text-slate-200 truncate block mt-0.5 font-medium">
                     {selectedClient.email}
                   </span>
                 </div>
-                <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
+                <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06]">
                   <span className="text-slate-400 block text-[10px] uppercase font-semibold">Telefone de Contato</span>
-                  <span className="text-slate-800 dark:text-slate-200 font-mono">
+                  <span className="text-slate-800 dark:text-slate-200 font-mono mt-0.5 block font-medium">
                     {formatarTelefone(selectedClient.telefone)}
                   </span>
                 </div>
               </div>
 
-              <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
+              <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06]">
                 <span className="text-slate-400 block text-[10px] uppercase font-semibold">Endereço Cadastrado</span>
-                <span className="text-slate-800 dark:text-slate-200">
+                <span className="text-slate-800 dark:text-slate-200 mt-0.5 block">
                   {selectedClient.endereco}
                 </span>
               </div>
 
               {/* Metadados Reais de Persistência */}
-              <div className="grid grid-cols-2 gap-2">
-                <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
+              <div className="grid grid-cols-2 gap-2.5">
+                <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06]">
                   <span className="text-slate-400 block text-[10px] uppercase font-semibold">Data de Cadastro</span>
-                  <span className="text-slate-800 dark:text-slate-200 font-mono font-medium">
+                  <span className="text-slate-800 dark:text-slate-200 font-mono font-medium mt-0.5 block">
                     {formatarDataHora(selectedClient.data_criacao)}
                   </span>
                 </div>
-                <div className="rounded-xl bg-slate-50 p-3 dark:bg-slate-950/50 border border-slate-100 dark:border-slate-800/80">
+                <div className="rounded-xl bg-slate-50/80 p-3.5 dark:bg-white/[0.03] border border-slate-200/60 dark:border-white/[0.06]">
                   <span className="text-slate-400 block text-[10px] uppercase font-semibold">Última Atualização</span>
-                  <span className="text-slate-800 dark:text-slate-200 font-mono font-medium">
+                  <span className="text-slate-800 dark:text-slate-200 font-mono font-medium mt-0.5 block">
                     {formatarDataHora(selectedClient.data_atualizacao)}
                   </span>
                 </div>
@@ -1102,11 +1119,11 @@ function ClientesContent() {
               </div>
             </div>
 
-            <div className="mt-6 flex items-center justify-end border-t border-slate-100 pt-4 dark:border-slate-800">
+            <div className="mt-5 flex items-center justify-end border-t border-slate-200/60 pt-4 dark:border-white/[0.06]">
               <button
                 type="button"
                 onClick={() => setDetailsModalOpen(false)}
-                className="rounded-xl bg-slate-900 px-4 py-2 text-xs font-semibold text-white hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 transition-colors"
+                className="rounded-xl border border-slate-200/80 bg-white/60 px-4 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.04] dark:text-slate-200 dark:hover:bg-white/[0.08] transition-colors cursor-pointer"
               >
                 Fechar Ficha
               </button>

@@ -288,13 +288,18 @@ function FinanceiroContent() {
       />
 
       {/* Header Principal da Página */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200/80 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200/60 dark:border-white/[0.05]">
         <div>
+          <div className="flex items-center gap-2 mb-1">
+            <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide uppercase bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-[#d4af37]/90 border border-slate-200 dark:border-white/[0.08]">
+              Controladoria Jurídica • Financeiro
+            </span>
+          </div>
           <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-100/80 text-blue-900 dark:bg-blue-950/60 dark:text-blue-300">
+            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
               <DollarSign className="h-4 w-4" />
             </span>
-            <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
               Gestão Financeira & DRE
             </h1>
           </div>
@@ -306,18 +311,18 @@ function FinanceiroContent() {
         {/* Botões de Ação do Topo */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Seletor de Período / Mês */}
-          <div className="flex items-center gap-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 shadow-2xs">
+          <div className="flex items-center gap-2 rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2 text-xs text-slate-700 dark:text-slate-300">
             <Calendar className="h-3.5 w-3.5 text-slate-400" />
             <select
               value={mesFiltro}
               onChange={(e) => setMesFiltro(e.target.value)}
               className="bg-transparent font-medium text-slate-800 dark:text-slate-200 focus:outline-hidden cursor-pointer"
             >
-              <option value="2026-09">Setembro / 2026 (Mês Atual)</option>
-              <option value="2026-08">Agosto / 2026</option>
-              <option value="2026-07">Julho / 2026</option>
-              <option value="2026">Ano 2026 Completo</option>
-              <option value="TODOS">Todo o Histórico</option>
+              <option value="2026-09" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Setembro / 2026 (Mês Atual)</option>
+              <option value="2026-08" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Agosto / 2026</option>
+              <option value="2026-07" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Julho / 2026</option>
+              <option value="2026" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Ano 2026 Completo</option>
+              <option value="TODOS" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Todo o Histórico</option>
             </select>
           </div>
 
@@ -325,16 +330,16 @@ function FinanceiroContent() {
             type="button"
             onClick={() => loadData(false)}
             disabled={refreshing}
-            className="inline-flex items-center justify-center h-8.5 w-8.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition shadow-2xs cursor-pointer"
+            className="inline-flex items-center justify-center h-8.5 w-8.5 rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.03] text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.06] transition cursor-pointer"
             title="Atualizar dados financeiros"
           >
-            <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? 'animate-spin text-blue-600' : ''}`} />
+            <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? 'animate-spin text-[#c5a059]' : ''}`} />
           </button>
 
           <button
             type="button"
             onClick={handleExportCSV}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition shadow-2xs cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.03] px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.06] transition cursor-pointer"
           >
             <Download className="h-3.5 w-3.5 text-slate-500" />
             <span className="hidden sm:inline">Exportar CSV</span>
@@ -347,9 +352,9 @@ function FinanceiroContent() {
               setModalDefaultTipo(activeTab === 'PAGAR' ? 'DESPESA' : 'RECEITA');
               setIsModalOpen(true);
             }}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 px-4 py-2 text-xs font-semibold text-white shadow-xs transition active:scale-98 cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs transition active:scale-98 cursor-pointer"
           >
-            <Plus className="h-4 w-4" />
+            <Plus className="h-4 w-4 text-slate-950" />
             <span>Novo Lançamento</span>
           </button>
         </div>
@@ -359,20 +364,20 @@ function FinanceiroContent() {
       <FinancialMetricsCards data={resumoData} loading={loading} />
 
       {/* Navegação por Abas Segmentadas */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-2">
-        <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 w-fit overflow-x-auto">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/60 dark:border-white/[0.06] pb-2">
+        <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-200/60 dark:border-white/[0.06] w-fit overflow-x-auto">
           <button
             type="button"
             onClick={() => setActiveTab('EXTRATO')}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
               activeTab === 'EXTRATO'
-                ? 'bg-white dark:bg-slate-800 text-blue-600 dark:text-blue-400 shadow-xs'
+                ? 'bg-[#c5a059] text-slate-950 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <FileSpreadsheet className="h-3.5 w-3.5" />
             <span>Extrato Geral</span>
-            <span className="rounded-full bg-slate-200 dark:bg-slate-700 px-1.5 py-0.2 text-[10px] font-bold">
+            <span className="rounded-full bg-slate-950/20 dark:bg-white/15 px-1.5 py-0.2 text-[10px] font-bold">
               {lancamentos.length}
             </span>
           </button>
@@ -382,13 +387,13 @@ function FinanceiroContent() {
             onClick={() => setActiveTab('RECEBER')}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
               activeTab === 'RECEBER'
-                ? 'bg-white dark:bg-slate-800 text-emerald-600 dark:text-emerald-400 shadow-xs'
+                ? 'bg-[#c5a059] text-slate-950 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <ArrowUpRight className="h-3.5 w-3.5 text-emerald-500" />
             <span>Contas a Receber</span>
-            <span className="rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-400 px-1.5 py-0.2 text-[10px] font-bold">
+            <span className="rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 px-1.5 py-0.2 text-[10px] font-bold">
               {lancamentos.filter((l) => l.tipo === 'RECEITA').length}
             </span>
           </button>
@@ -398,13 +403,13 @@ function FinanceiroContent() {
             onClick={() => setActiveTab('PAGAR')}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
               activeTab === 'PAGAR'
-                ? 'bg-white dark:bg-slate-800 text-rose-600 dark:text-rose-400 shadow-xs'
+                ? 'bg-[#c5a059] text-slate-950 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <ArrowDownRight className="h-3.5 w-3.5 text-rose-500" />
             <span>Contas a Pagar</span>
-            <span className="rounded-full bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-400 px-1.5 py-0.2 text-[10px] font-bold">
+            <span className="rounded-full bg-rose-500/15 text-rose-600 dark:text-rose-400 px-1.5 py-0.2 text-[10px] font-bold">
               {lancamentos.filter((l) => l.tipo === 'DESPESA').length}
             </span>
           </button>
@@ -414,7 +419,7 @@ function FinanceiroContent() {
             onClick={() => setActiveTab('DRE')}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
               activeTab === 'DRE'
-                ? 'bg-white dark:bg-slate-800 text-indigo-600 dark:text-indigo-400 shadow-xs'
+                ? 'bg-[#c5a059] text-slate-950 shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
@@ -426,7 +431,7 @@ function FinanceiroContent() {
         {/* Indicador de Resumo Rápido da Aba */}
         <div className="text-xs text-slate-500 dark:text-slate-400">
           Exibindo{' '}
-          <strong className="text-slate-900 dark:text-white">
+          <strong className="text-slate-900 dark:text-slate-200">
             {filteredLancamentos.length}
           </strong>{' '}
           lançamentos no período
@@ -448,7 +453,7 @@ function FinanceiroContent() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar por descrição, cliente, processo ou nota..."
-                className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 pl-9 pr-8 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-blue-500 focus:outline-hidden focus:ring-1 focus:ring-blue-500 transition shadow-2xs"
+                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] pl-9 pr-8 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-[#c5a059] focus:outline-hidden transition"
               />
               {searchQuery && (
                 <button
@@ -467,33 +472,33 @@ function FinanceiroContent() {
               <select
                 value={statusFiltro}
                 onChange={(e) => setStatusFiltro(e.target.value)}
-                className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 focus:border-blue-500 focus:outline-hidden transition cursor-pointer shadow-2xs"
+                className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2 text-xs text-slate-700 dark:text-slate-300 focus:border-[#c5a059] focus:outline-hidden transition cursor-pointer"
               >
-                <option value="TODOS">Todos os Status</option>
-                <option value="PENDENTE">Apenas Pendentes</option>
-                <option value="PAGO">Apenas Pagos</option>
-                <option value="ATRASADO">Apenas em Atraso</option>
+                <option value="TODOS" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Todos os Status</option>
+                <option value="PENDENTE" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Apenas Pendentes</option>
+                <option value="PAGO" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Apenas Pagos</option>
+                <option value="ATRASADO" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Apenas em Atraso</option>
               </select>
 
               {/* Filtro Categoria */}
               <select
                 value={categoriaFiltro}
                 onChange={(e) => setCategoriaFiltro(e.target.value)}
-                className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-700 dark:text-slate-300 focus:border-blue-500 focus:outline-hidden transition cursor-pointer shadow-2xs"
+                className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2 text-xs text-slate-700 dark:text-slate-300 focus:border-[#c5a059] focus:outline-hidden transition cursor-pointer"
               >
-                <option value="TODAS">Todas as Categorias</option>
-                <option value="HONORARIO_CONTRATUAL">Honorário Contratual</option>
-                <option value="HONORARIO_EXITO">Honorário de Êxito</option>
-                <option value="CONSULTIVO">Consultivo & Pareceres</option>
-                <option value="CUSTAS_PROCESSUAIS">Custas & Diligências</option>
-                <option value="OPERACIONAL">Operacional & Software</option>
-                <option value="IMPOSTOS">Impostos & Tributos</option>
+                <option value="TODAS" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Todas as Categorias</option>
+                <option value="HONORARIO_CONTRATUAL" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Honorário Contratual</option>
+                <option value="HONORARIO_EXITO" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Honorário de Êxito</option>
+                <option value="CONSULTIVO" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Consultivo & Pareceres</option>
+                <option value="CUSTAS_PROCESSUAIS" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Custas & Diligências</option>
+                <option value="OPERACIONAL" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Operacional & Software</option>
+                <option value="IMPOSTOS" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Impostos & Tributos</option>
               </select>
             </div>
           </div>
 
           {/* Tabela de Lançamentos */}
-          <div className="rounded-2xl border border-slate-200 bg-white shadow-2xs overflow-hidden dark:border-slate-800/80 dark:bg-slate-900">
+          <div className="legal-glass-card fio-de-luz overflow-hidden">
             {loading ? (
               <div className="p-8 space-y-3">
                 {[1, 2, 3, 4, 5].map((i) => (
@@ -527,7 +532,7 @@ function FinanceiroContent() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="border-b border-slate-200 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/50 text-[11px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                    <tr className="border-b border-slate-200/60 dark:border-white/[0.06] bg-slate-50/70 dark:bg-white/[0.02] text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                       <th className="py-3 px-4">Vencimento</th>
                       <th className="py-3 px-4">Descrição & Detalhes</th>
                       <th className="py-3 px-4">Categoria</th>
@@ -537,7 +542,7 @@ function FinanceiroContent() {
                       <th className="py-3 px-4 text-center">Ações</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs">
+                  <tbody className="divide-y divide-slate-100 dark:divide-white/[0.04] text-xs">
                     {filteredLancamentos.map((item) => {
                       const isReceita = item.tipo === 'RECEITA';
                       const categoriaInfo = CATEGORIAS_LABELS[item.categoria] || {
@@ -548,11 +553,11 @@ function FinanceiroContent() {
                       return (
                         <tr
                           key={item.id}
-                          className="hover:bg-slate-50/80 dark:hover:bg-slate-850/40 transition group"
+                          className="hover:bg-slate-50/80 dark:hover:bg-white/[0.02] transition group"
                         >
                           {/* Data de Vencimento */}
                           <td className="py-3.5 px-4 whitespace-nowrap">
-                            <div className="font-semibold text-slate-900 dark:text-white">
+                            <div className="font-medium text-slate-900 dark:text-[#f8fafc]">
                               {formatData(item.dataVencimento)}
                             </div>
                             <div className="text-[10px] text-slate-400 font-mono">
@@ -567,7 +572,7 @@ function FinanceiroContent() {
                                 setSelectedLancamento(item);
                                 setIsDetailOpen(true);
                               }}
-                              className="font-bold text-slate-900 dark:text-white hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer line-clamp-1 transition-colors"
+                              className="font-semibold text-slate-900 dark:text-[#f8fafc] hover:text-[#c5a059] dark:hover:text-[#c5a059] cursor-pointer line-clamp-1 transition-colors"
                             >
                               {item.descricao}
                             </div>
@@ -587,7 +592,7 @@ function FinanceiroContent() {
                           {/* Categoria */}
                           <td className="py-3.5 px-4 whitespace-nowrap">
                             <span
-                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${categoriaInfo.badgeClass}`}
+                              className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-medium border ${categoriaInfo.badgeClass}`}
                             >
                               {categoriaInfo.label}
                             </span>
@@ -597,12 +602,12 @@ function FinanceiroContent() {
                           <td className="py-3.5 px-4">
                             {item.cliente ? (
                               <div className="flex items-center gap-1.5 text-[11px] text-slate-700 dark:text-slate-300 font-medium truncate max-w-[180px]">
-                                <User className="h-3 w-3 text-blue-500 shrink-0" />
+                                <User className="h-3 w-3 text-[#c5a059] shrink-0" />
                                 <span className="truncate">{item.cliente.nome}</span>
                               </div>
                             ) : item.processo ? (
                               <div className="flex items-center gap-1.5 text-[11px] text-slate-700 dark:text-slate-300 font-mono truncate max-w-[180px]">
-                                <Scale className="h-3 w-3 text-indigo-500 shrink-0" />
+                                <Scale className="h-3 w-3 text-[#c5a059] shrink-0" />
                                 <span className="truncate">{item.processo.numero_processo}</span>
                               </div>
                             ) : (
@@ -617,7 +622,7 @@ function FinanceiroContent() {
                                 type="button"
                                 onClick={() => handleToggleStatus(item.id, 'PENDENTE')}
                                 title="Clique para reverter para pendente"
-                                className="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 px-2.5 py-1 text-[10px] font-bold border border-emerald-300 dark:border-emerald-800/60 hover:bg-emerald-200 transition cursor-pointer"
+                                className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2.5 py-1 text-[10px] font-semibold border border-emerald-500/20 hover:bg-emerald-500/20 transition cursor-pointer"
                               >
                                 <CheckCircle2 className="h-3 w-3" /> Liquidado
                               </button>
@@ -626,7 +631,7 @@ function FinanceiroContent() {
                                 type="button"
                                 onClick={() => handleToggleStatus(item.id, 'PAGO')}
                                 title="Clique para liquidar / marcar como pago"
-                                className="inline-flex items-center gap-1.5 rounded-full bg-rose-100 dark:bg-rose-950/80 text-rose-800 dark:text-rose-300 px-2.5 py-1 text-[10px] font-bold border border-rose-300 dark:border-rose-800/60 hover:bg-rose-200 transition cursor-pointer"
+                                className="inline-flex items-center gap-1.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 px-2.5 py-1 text-[10px] font-semibold border border-rose-500/20 hover:bg-rose-500/20 transition cursor-pointer"
                               >
                                 <AlertTriangle className="h-3 w-3" /> Atrasado
                               </button>
@@ -635,7 +640,7 @@ function FinanceiroContent() {
                                 type="button"
                                 onClick={() => handleToggleStatus(item.id, 'PAGO')}
                                 title="Clique para liquidar / marcar como pago"
-                                className="inline-flex items-center gap-1.5 rounded-full bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 px-2.5 py-1 text-[10px] font-bold border border-amber-300 dark:border-amber-800/60 hover:bg-amber-200 transition cursor-pointer"
+                                className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2.5 py-1 text-[10px] font-semibold border border-amber-500/20 hover:bg-amber-500/20 transition cursor-pointer"
                               >
                                 <Clock className="h-3 w-3" /> Pendente
                               </button>
@@ -645,7 +650,7 @@ function FinanceiroContent() {
                           {/* Valor */}
                           <td className="py-3.5 px-4 text-right whitespace-nowrap">
                             <span
-                              className={`font-extrabold text-sm ${
+                              className={`font-semibold text-sm tabular-nums ${
                                 isReceita
                                   ? 'text-emerald-600 dark:text-emerald-400'
                                   : 'text-rose-600 dark:text-rose-400'
@@ -665,7 +670,7 @@ function FinanceiroContent() {
                                   setSelectedLancamento(item);
                                   setIsDetailOpen(true);
                                 }}
-                                className="p-1.5 rounded-lg text-slate-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950/40 transition cursor-pointer"
+                                className="p-1.5 rounded-lg text-slate-400 hover:text-[#c5a059] hover:bg-slate-100 dark:hover:bg-white/[0.04] transition cursor-pointer"
                                 title="Ver comprovante detalhado"
                               >
                                 <Eye className="h-4 w-4" />
@@ -676,7 +681,7 @@ function FinanceiroContent() {
                                   setEditingLancamento(item);
                                   setIsModalOpen(true);
                                 }}
-                                className="p-1.5 rounded-lg text-slate-500 hover:text-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950/40 transition cursor-pointer"
+                                className="p-1.5 rounded-lg text-slate-400 hover:text-[#c5a059] hover:bg-slate-100 dark:hover:bg-white/[0.04] transition cursor-pointer"
                                 title="Editar lançamento"
                               >
                                 <Edit className="h-4 w-4" />
@@ -687,7 +692,7 @@ function FinanceiroContent() {
                                   setDeleteTargetId(item.id);
                                   setIsDeleteModalOpen(true);
                                 }}
-                                className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
+                                className="p-1.5 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-slate-100 dark:hover:bg-white/[0.04] transition cursor-pointer"
                                 title="Excluir lançamento"
                               >
                                 <Trash2 className="h-4 w-4" />

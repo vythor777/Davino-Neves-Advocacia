@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import Link from 'next/link';
 import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { EmptyState } from '@/components/EmptyState';
@@ -10,7 +9,6 @@ import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { ConfirmModal } from '@/components/ConfirmModal';
 import { ProcessCalendar } from '@/components/ProcessCalendar';
 import { PrazoDetailModal } from '@/components/PrazoDetailModal';
-import { toast } from 'sonner';
 import { prazoService, Prazo, CreatePrazoInput } from '@/services/prazoService';
 import { processoService, Processo } from '@/services/processoService';
 import { usuarioService, ResponsavelItem } from '@/services/usuarioService';
@@ -19,7 +17,6 @@ import {
   PlusCircle,
   Search,
   Calendar,
-  Clock,
   AlertTriangle,
   Flame,
   CheckCircle2,
@@ -28,22 +25,14 @@ import {
   Trash2,
   Check,
   X,
-  Copy,
   RefreshCw,
   LayoutGrid,
   ListFilter,
-  Scale,
-  Building2,
-  User,
-  ArrowUpDown,
-  FileText,
 } from 'lucide-react';
 import {
   calcularStatusPrazo,
-  formatPrazoDateBR,
   formatDateForInput,
   parsePrazoDateTime,
-  type PrazoStatusCategory,
 } from '@/utils/dateUtils';
 
 type FilterType = 'todos' | 'urgentes' | 'vencidos' | 'cumpridos' | 'pendentes' | 'aberto';
@@ -60,7 +49,6 @@ function PrazosContent() {
   const [prazos, setPrazos] = useState<Prazo[]>([]);
   const [processos, setProcessos] = useState<Processo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [loadingProcessos, setLoadingProcessos] = useState<boolean>(false);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
@@ -98,9 +86,6 @@ function PrazosContent() {
   const [prazoToDelete, setPrazoToDelete] = useState<Prazo | null>(null);
   const [deleting, setDeleting] = useState<boolean>(false);
 
-  // Cópia
-  const [copiedId, setCopiedId] = useState<string | null>(null);
-
   // Carregar Responsáveis (Advogados e Estagiários)
   const fetchResponsaveis = useCallback(async () => {
     setLoadingResponsaveis(true);
@@ -112,19 +97,6 @@ function PrazosContent() {
       setResponsaveis([]);
     } finally {
       setLoadingResponsaveis(false);
-    }
-  }, []);
-
-  // Carregar Processos para o Select Dinâmico
-  const fetchProcessosList = useCallback(async () => {
-    setLoadingProcessos(true);
-    try {
-      const data = await processoService.getAll();
-      setProcessos(Array.isArray(data) ? data : []);
-    } catch {
-      setProcessos([]);
-    } finally {
-      setLoadingProcessos(false);
     }
   }, []);
 
@@ -153,12 +125,6 @@ function PrazosContent() {
     fetchResponsaveis();
   }, [fetchPrazos, fetchResponsaveis]);
 
-  const handleCopy = (text: string, id: string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
-  };
-
   const openCreateModal = () => {
     setEditingPrazo(null);
     setDescricao('');
@@ -174,7 +140,7 @@ function PrazosContent() {
     setFormErrors({});
     setModalOpen(true);
     if (processos.length === 0) {
-      fetchProcessosList();
+      fetchPrazos();
     }
     if (responsaveis.length === 0) {
       fetchResponsaveis();
@@ -198,7 +164,7 @@ function PrazosContent() {
     setFormErrors({});
     setModalOpen(true);
     if (processos.length === 0) {
-      fetchProcessosList();
+      fetchPrazos();
     }
     if (responsaveis.length === 0) {
       fetchResponsaveis();

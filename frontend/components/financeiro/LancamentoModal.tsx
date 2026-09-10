@@ -158,25 +158,25 @@ function LancamentoModalForm({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-150">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-md animate-in fade-in duration-150">
       <div
-        className="relative w-full max-w-2xl rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0F172A] shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
+        className="relative w-full max-w-2xl legal-glass-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100 dark:border-slate-800/80 bg-slate-50/70 dark:bg-slate-900/50">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/60 dark:border-white/[0.06]">
           <div className="flex items-center gap-3">
             <div
               className={`flex h-10 w-10 items-center justify-center rounded-xl shadow-xs ${
                 tipo === 'RECEITA'
-                  ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/80 dark:text-emerald-400'
-                  : 'bg-rose-100 text-rose-700 dark:bg-rose-950/80 dark:text-rose-400'
+                  ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25'
+                  : 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/25'
               }`}
             >
               <DollarSign className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-base font-bold text-slate-900 dark:text-white">
+              <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
                 {initialData ? 'Editar Lançamento Financeiro' : 'Novo Lançamento Financeiro'}
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -187,14 +187,14 @@ function LancamentoModalForm({
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition"
+            className="rounded-lg p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/[0.06] transition cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-5">
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-4">
           {errorMessage && (
             <div className="rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 p-3 text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2">
               <AlertCircle className="h-4 w-4 shrink-0" />
@@ -211,10 +211,10 @@ function LancamentoModalForm({
               <button
                 type="button"
                 onClick={() => handleTipoChange('RECEITA')}
-                className={`flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border text-xs font-bold transition cursor-pointer ${
+                className={`flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border text-xs font-semibold transition cursor-pointer ${
                   tipo === 'RECEITA'
-                    ? 'border-emerald-500 bg-emerald-50/80 text-emerald-700 dark:border-emerald-500/80 dark:bg-emerald-950/50 dark:text-emerald-300 ring-2 ring-emerald-500/20 shadow-xs'
-                    : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40'
+                    ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 ring-1 ring-emerald-500/30 shadow-xs'
+                    : 'border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
                 }`}
               >
                 <span className="h-2 w-2 rounded-full bg-emerald-500" />
@@ -223,10 +223,10 @@ function LancamentoModalForm({
               <button
                 type="button"
                 onClick={() => handleTipoChange('DESPESA')}
-                className={`flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border text-xs font-bold transition cursor-pointer ${
+                className={`flex items-center justify-center gap-2 py-2.5 px-4 rounded-xl border text-xs font-semibold transition cursor-pointer ${
                   tipo === 'DESPESA'
-                    ? 'border-rose-500 bg-rose-50/80 text-rose-700 dark:border-rose-500/80 dark:bg-rose-950/50 dark:text-rose-300 ring-2 ring-rose-500/20 shadow-xs'
-                    : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/40 text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/40'
+                    ? 'border-rose-500/50 bg-rose-500/10 text-rose-600 dark:text-rose-400 ring-1 ring-rose-500/30 shadow-xs'
+                    : 'border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
                 }`}
               >
                 <span className="h-2 w-2 rounded-full bg-rose-500" />
@@ -246,7 +246,7 @@ function LancamentoModalForm({
               value={descricao}
               onChange={(e) => setDescricao(e.target.value)}
               placeholder="Ex: Honorários Contratuais Mensais - Parcela 01/12"
-              className="w-full rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-900/70 px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-blue-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 transition"
+              className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3.5 py-2.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-[#c5a059] focus:outline-hidden transition"
             />
           </div>
 
@@ -259,21 +259,21 @@ function LancamentoModalForm({
               <select
                 value={categoria}
                 onChange={(e) => setCategoria(e.target.value as CategoriaLancamento)}
-                className="w-full rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-900/70 px-3 py-2.5 text-xs text-slate-900 dark:text-white focus:border-blue-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 transition"
+                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden transition"
               >
                 {tipo === 'RECEITA' ? (
                   <>
-                    <option value="HONORARIO_CONTRATUAL">Honorário Contratual Fixo</option>
-                    <option value="HONORARIO_EXITO">Honorário de Êxito / Sucumbência</option>
-                    <option value="CONSULTIVO">Consultivo & Pareceres</option>
-                    <option value="OUTROS">Outras Receitas</option>
+                    <option value="HONORARIO_CONTRATUAL" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Honorário Contratual Fixo</option>
+                    <option value="HONORARIO_EXITO" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Honorário de Êxito / Sucumbência</option>
+                    <option value="CONSULTIVO" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Consultivo & Pareceres</option>
+                    <option value="OUTROS" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Outras Receitas</option>
                   </>
                 ) : (
                   <>
-                    <option value="CUSTAS_PROCESSUAIS">Custas & Diligências Judiciais</option>
-                    <option value="OPERACIONAL">Operacional, Aluguel & Softwares</option>
-                    <option value="IMPOSTOS">Impostos (Simples, ISS, DARF)</option>
-                    <option value="OUTROS">Outras Despesas</option>
+                    <option value="CUSTAS_PROCESSUAIS" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Custas & Diligências Judiciais</option>
+                    <option value="OPERACIONAL" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Operacional, Aluguel & Softwares</option>
+                    <option value="IMPOSTOS" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Impostos (Simples, ISS, DARF)</option>
+                    <option value="OUTROS" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Outras Despesas</option>
                   </>
                 )}
               </select>
@@ -295,7 +295,7 @@ function LancamentoModalForm({
                   value={valor}
                   onChange={(e) => setValor(e.target.value)}
                   placeholder="0,00"
-                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-900/70 pl-10 pr-3.5 py-2.5 text-xs font-semibold text-slate-900 dark:text-white placeholder-slate-400 focus:border-blue-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 transition"
+                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] pl-10 pr-3.5 py-2.5 text-xs font-semibold text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-[#c5a059] focus:outline-hidden transition"
                 />
               </div>
             </div>
@@ -312,7 +312,7 @@ function LancamentoModalForm({
                 required
                 value={dataVencimento}
                 onChange={(e) => setDataVencimento(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-900/70 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-blue-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 transition"
+                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden transition"
               />
             </div>
 
@@ -329,12 +329,12 @@ function LancamentoModalForm({
                     setDataPagamento(new Date().toISOString().split('T')[0]);
                   }
                 }}
-                className="w-full rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-900/70 px-3 py-2 text-xs text-slate-900 dark:text-white focus:border-blue-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 transition"
+                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden transition"
               >
-                <option value="PENDENTE">Pendente</option>
-                <option value="PAGO">Liquidado / Pago</option>
-                <option value="ATRASADO">Em Atraso</option>
-                <option value="CANCELADO">Cancelado</option>
+                <option value="PENDENTE" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Pendente</option>
+                <option value="PAGO" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Liquidado / Pago</option>
+                <option value="ATRASADO" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Em Atraso</option>
+                <option value="CANCELADO" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Cancelado</option>
               </select>
             </div>
 
@@ -348,7 +348,7 @@ function LancamentoModalForm({
                 value={dataPagamento}
                 onChange={(e) => setDataPagamento(e.target.value)}
                 placeholder="Opcional"
-                className="w-full rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-900/70 px-3 py-2 text-xs text-slate-900 dark:text-white disabled:opacity-40 disabled:cursor-not-allowed focus:border-blue-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 transition"
+                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2 text-xs text-slate-900 dark:text-slate-100 disabled:opacity-40 disabled:cursor-not-allowed focus:border-[#c5a059] focus:outline-hidden transition"
               />
             </div>
           </div>
@@ -361,20 +361,20 @@ function LancamentoModalForm({
             <select
               value={formaPagamento}
               onChange={(e) => setFormaPagamento(e.target.value)}
-              className="w-full rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-900/70 px-3 py-2.5 text-xs text-slate-900 dark:text-white focus:border-blue-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 transition"
+              className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden transition"
             >
-              <option value="PIX Bancário">PIX Bancário</option>
-              <option value="Boleto Bancário">Boleto Bancário</option>
-              <option value="Transferência TED">Transferência TED / DOC</option>
-              <option value="Cartão Corporativo">Cartão de Crédito / Débito</option>
-              <option value="Depósito Judicial / Alvará">Depósito Judicial / Alvará / MLE</option>
-              <option value="DARE / Guia Tributária">DARE / Guia Tributária</option>
-              <option value="Espécie / Cheque">Espécie / Dinheiro</option>
+              <option value="PIX Bancário" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">PIX Bancário</option>
+              <option value="Boleto Bancário" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Boleto Bancário</option>
+              <option value="Transferência TED" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Transferência TED / DOC</option>
+              <option value="Cartão Corporativo" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Cartão de Crédito / Débito</option>
+              <option value="Depósito Judicial / Alvará" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Depósito Judicial / Alvará / MLE</option>
+              <option value="DARE / Guia Tributária" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">DARE / Guia Tributária</option>
+              <option value="Espécie / Cheque" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Espécie / Dinheiro</option>
             </select>
           </div>
 
           {/* Vínculo com Cliente & Processo (Opcionais) */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-100 dark:border-slate-800/60">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-200/60 dark:border-white/[0.06]">
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 Vincular ao Cliente (Opcional)
@@ -382,11 +382,11 @@ function LancamentoModalForm({
               <select
                 value={clienteId}
                 onChange={(e) => setClienteId(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-900/70 px-3 py-2.5 text-xs text-slate-900 dark:text-white focus:border-blue-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 transition"
+                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden transition"
               >
-                <option value="">Nenhum cliente específico</option>
+                <option value="" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Nenhum cliente específico</option>
                 {clientes.map((c) => (
-                  <option key={c.id_cliente} value={c.id_cliente}>
+                  <option key={c.id_cliente} value={c.id_cliente} className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">
                     {c.nome} ({c.cpf_cnpj})
                   </option>
                 ))}
@@ -400,11 +400,11 @@ function LancamentoModalForm({
               <select
                 value={processoId}
                 onChange={(e) => setProcessoId(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-900/70 px-3 py-2.5 text-xs text-slate-900 dark:text-white focus:border-blue-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 transition"
+                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden transition"
               >
-                <option value="">Nenhum processo específico</option>
+                <option value="" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Nenhum processo específico</option>
                 {processos.map((p) => (
-                  <option key={p.id_processo} value={p.id_processo}>
+                  <option key={p.id_processo} value={p.id_processo} className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">
                     {p.numero_processo} - {p.titulo.slice(0, 30)}...
                   </option>
                 ))}
@@ -422,23 +422,23 @@ function LancamentoModalForm({
               value={observacoes}
               onChange={(e) => setObservacoes(e.target.value)}
               placeholder="Ex: Nota fiscal 1042 emitida; referente ao acordo judicial homologado na 3ª Vara."
-              className="w-full rounded-xl border border-slate-200 dark:border-slate-700/80 bg-white dark:bg-slate-900/70 px-3.5 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:border-blue-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500/20 transition resize-none"
+              className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-[#c5a059] focus:outline-hidden transition resize-none"
             />
           </div>
 
           {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800/80">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200/60 dark:border-white/[0.06]">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-slate-200 dark:border-slate-700 px-4 py-2.5 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+              className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] px-4 py-2.5 text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.04] transition cursor-pointer"
             >
               Cancelar
             </button>
             <button
               type="submit"
               disabled={submitting}
-              className="flex items-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-500 px-5 py-2.5 text-xs font-bold text-white shadow-md shadow-blue-600/20 transition disabled:opacity-50 cursor-pointer"
+              className="flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] px-5 py-2.5 text-xs font-semibold text-slate-950 transition disabled:opacity-50 cursor-pointer"
             >
               {submitting ? (
                 <span>Salvando...</span>

@@ -419,7 +419,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
 
                       {/* Título com Truncagem e Reticências */}
                       <p
-                        className="truncate text-xs font-medium text-slate-700 group-hover:text-[#0047ab] dark:text-slate-300 dark:group-hover:text-blue-400 transition-colors"
+                        className="truncate text-xs font-medium text-slate-700 group-hover:text-[#c5a059] dark:text-slate-300 dark:group-hover:text-[#dfcaa0] transition-colors"
                         title={titulo}
                       >
                         {titulo}
@@ -440,7 +440,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                   {/* Coluna 2: Cliente Vinculado com Truncagem */}
                   <td className="px-4 py-3.5">
                     <div className="flex items-center gap-2 max-w-[180px] sm:max-w-[220px]">
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#c5a059]/10 text-[#c5a059] border border-[#c5a059]/20">
                         <User className="h-3.5 w-3.5" aria-hidden="true" />
                       </div>
                       <div className="flex flex-col truncate">
@@ -463,7 +463,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                   <td className="px-4 py-3.5">
                     <div className="flex flex-col gap-0.5 max-w-[160px] sm:max-w-[200px]">
                       {tribunal ? (
-                        <span className="inline-flex w-fit items-center gap-1 rounded-md bg-[#0047ab]/10 px-2 py-0.5 font-mono text-[10px] font-bold text-[#0047ab] dark:bg-blue-500/20 dark:text-blue-400 border border-[#0047ab]/20 dark:border-blue-500/30">
+                        <span className="inline-flex w-fit items-center gap-1 rounded-md bg-[#c5a059]/10 px-2 py-0.5 font-mono text-[10px] font-bold text-[#c5a059] dark:bg-[#c5a059]/15 dark:text-[#dfcaa0] border border-[#c5a059]/25">
                           <Landmark className="h-3 w-3" aria-hidden="true" />
                           <span>{tribunal}</span>
                         </span>
@@ -569,7 +569,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
               type="button"
               disabled={currentPage <= 1}
               onClick={() => onPageChange?.(currentPage - 1)}
-              className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
+              className="inline-flex items-center gap-1 rounded-lg border border-slate-200/80 bg-white/60 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] transition-colors cursor-pointer"
               aria-label="Página anterior"
             >
               <ChevronLeft className="h-3.5 w-3.5" />
@@ -584,7 +584,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
               type="button"
               disabled={currentPage >= totalPages}
               onClick={() => onPageChange?.(currentPage + 1)}
-              className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 transition-colors"
+              className="inline-flex items-center gap-1 rounded-lg border border-slate-200/80 bg-white/60 px-2.5 py-1 text-xs font-medium text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] transition-colors cursor-pointer"
               aria-label="Próxima página"
             >
               <span>Próxima</span>

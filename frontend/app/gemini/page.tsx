@@ -251,16 +251,21 @@ function GeminiContent() {
       </div>
 
         {/* Banner Superior da IA */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200 pb-6 dark:border-slate-800">
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200/60 dark:border-white/[0.05] pb-6">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-900 border border-blue-200 dark:bg-blue-950/60 dark:border-blue-900 dark:text-blue-300">
-              <Sparkles className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+            <div className="inline-flex items-center gap-2 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide uppercase bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-[#d4af37]/90 border border-slate-200 dark:border-white/[0.08]">
+              <Sparkles className="h-3.5 w-3.5 text-[#c5a059]" />
               Google Gemini 3.7 Flash • Inteligência Artificial Jurídica
             </div>
-            <h1 className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100 sm:text-3xl">
-              Assistente de IA & Controladoria Jurídica
-            </h1>
-            <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+            <div className="flex items-center gap-2.5 mt-2">
+              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
+                <Scale className="h-4 w-4" />
+              </span>
+              <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
+                Assistente de IA & Controladoria Jurídica
+              </h1>
+            </div>
+            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
               Análise aprofundada de peças, simplificação de andamentos para clientes e detecção automatizada de termos fatais.
             </p>
           </div>
@@ -268,9 +273,9 @@ function GeminiContent() {
           <div className="flex items-center gap-2">
             <Link
               href="/prazos"
-              className="inline-flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 shadow-xs hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+              className="inline-flex items-center gap-2 rounded-xl border border-slate-200/80 bg-white/60 px-3.5 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100/80 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] backdrop-blur-sm transition-colors cursor-pointer"
             >
-              <CalendarClock className="h-4 w-4" />
+              <CalendarClock className="h-4 w-4 text-[#c5a059]" />
               Agenda de Prazos
             </Link>
           </div>
@@ -278,13 +283,13 @@ function GeminiContent() {
 
         {/* Abas de Ferramentas */}
         <div className="mt-6">
-          <div className="flex flex-wrap gap-2 border-b border-slate-200 pb-2 dark:border-slate-800">
+          <div className="flex flex-wrap gap-2 border-b border-slate-200/60 dark:border-white/[0.05] pb-3">
             <button
               onClick={() => setAbaAtiva('documento')}
-              className={`flex items-center gap-2 rounded-xl px-4 py-3 text-xs sm:text-sm font-semibold transition ${
+              className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-medium transition cursor-pointer ${
                 abaAtiva === 'documento'
-                  ? 'bg-blue-600 text-white shadow-xs dark:bg-blue-600'
-                  : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-800 dark:hover:bg-slate-800'
+                  ? 'bg-[#c5a059] text-slate-950 font-semibold shadow-xs'
+                  : 'border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.03] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               <FileSearch className="h-4 w-4" />
@@ -293,10 +298,10 @@ function GeminiContent() {
 
             <button
               onClick={() => setAbaAtiva('resumo')}
-              className={`flex items-center gap-2 rounded-xl px-4 py-3 text-xs sm:text-sm font-semibold transition ${
+              className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-medium transition cursor-pointer ${
                 abaAtiva === 'resumo'
-                  ? 'bg-blue-600 text-white shadow-xs dark:bg-blue-600'
-                  : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-800 dark:hover:bg-slate-800'
+                  ? 'bg-[#c5a059] text-slate-950 font-semibold shadow-xs'
+                  : 'border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.03] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
               <MessageSquareQuote className="h-4 w-4" />
@@ -305,13 +310,13 @@ function GeminiContent() {
 
             <button
               onClick={() => setAbaAtiva('prazo')}
-              className={`flex items-center gap-2 rounded-xl px-4 py-3 text-xs sm:text-sm font-semibold transition ${
+              className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-xs sm:text-sm font-medium transition cursor-pointer ${
                 abaAtiva === 'prazo'
-                  ? 'bg-blue-600 text-white shadow-xs dark:bg-blue-600'
-                  : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-800 dark:hover:bg-slate-800'
+                  ? 'bg-[#c5a059] text-slate-950 font-semibold shadow-xs'
+                  : 'border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.03] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              <Zap className="h-4 w-4 text-amber-400" />
+              <Zap className="h-4 w-4 text-[#c5a059]" />
               <span>Extração Automática de Prazos (DJE)</span>
             </button>
           </div>
@@ -321,17 +326,17 @@ function GeminiContent() {
         {/* ABA 1: ANÁLISE DE DOCUMENTOS & PEÇAS */}
         {/* ========================================================================= */}
         {abaAtiva === 'documento' && (
-          <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-12">
+          <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
             {/* Coluna da Esquerda: Formulário de Entrada */}
             <div className="lg:col-span-6 space-y-6">
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
+              <div className="legal-glass-card fio-de-luz p-6">
+                <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] pb-4">
                   <div className="flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300">
-                      <FileSearch className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
+                      <FileSearch className="h-4 w-4" />
                     </div>
                     <div>
-                      <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                      <h3 className="text-base font-semibold text-slate-900 dark:text-[#f8fafc]">
                         Dados da Peça Processual / Contrato
                       </h3>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -340,8 +345,8 @@ function GeminiContent() {
                     </div>
                   </div>
 
-                  <label className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                    <Upload className="h-3.5 w-3.5" />
+                  <label className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-white/60 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 transition">
+                    <Upload className="h-3.5 w-3.5 text-[#c5a059]" />
                     <span>Upload .txt</span>
                     <input
                       type="file"
@@ -356,7 +361,7 @@ function GeminiContent() {
                   <div>
                     <label
                       htmlFor="docTipoSelect"
-                      className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+                      className="block text-xs font-medium uppercase tracking-wider text-slate-700 dark:text-slate-300"
                     >
                       Tipo de Documento
                     </label>
@@ -364,7 +369,7 @@ function GeminiContent() {
                       id="docTipoSelect"
                       value={docTipo}
                       onChange={(e) => setDocTipo(e.target.value)}
-                      className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                      className="mt-1 block w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
                     >
                       <option value="Petição Inicial">Petição Inicial</option>
                       <option value="Contestação">Contestação</option>
@@ -379,7 +384,7 @@ function GeminiContent() {
                   <div>
                     <label
                       htmlFor="docTextoArea"
-                      className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+                      className="block text-xs font-medium uppercase tracking-wider text-slate-700 dark:text-slate-300"
                     >
                       Teor do Documento *
                     </label>
@@ -390,14 +395,14 @@ function GeminiContent() {
                       value={docTexto}
                       onChange={(e) => setDocTexto(e.target.value)}
                       placeholder="Cole aqui o texto da sentença, contestação, contrato ou petição inicial..."
-                      className="mt-1 block w-full rounded-xl border border-slate-200 bg-white p-3.5 font-mono text-xs leading-relaxed text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
+                      className="mt-1 block w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] p-3.5 font-mono text-xs leading-relaxed text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-[#c5a059] focus:outline-hidden"
                     />
                   </div>
 
                   <div>
                     <label
                       htmlFor="docInstrucoesInput"
-                      className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+                      className="block text-xs font-medium uppercase tracking-wider text-slate-700 dark:text-slate-300"
                     >
                       Instruções Estratégicas do Advogado (Opcional)
                     </label>
@@ -407,12 +412,12 @@ function GeminiContent() {
                       value={docInstrucoes}
                       onChange={(e) => setDocInstrucoes(e.target.value)}
                       placeholder="Ex: Focar em teses de nulidade de citação, prescrição quinquenal..."
-                      className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
+                      className="mt-1 block w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-[#c5a059] focus:outline-hidden"
                     />
                   </div>
 
                   {docErro && (
-                    <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-800 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300">
+                    <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 p-3 text-xs text-rose-700 dark:text-rose-300">
                       {docErro}
                     </div>
                   )}
@@ -426,18 +431,18 @@ function GeminiContent() {
                         setDocResultado(null);
                         setDocErro(null);
                       }}
-                      className="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                      className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.03] px-3.5 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.04] transition cursor-pointer"
                     >
                       Limpar
                     </button>
                     <button
                       type="submit"
                       disabled={docLoading || !docTexto.trim()}
-                      className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-blue-500 active:scale-98 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-500 transition"
+                      className="inline-flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-5 py-2 text-xs shadow-xs hover:shadow-md active:scale-98 disabled:opacity-50 transition cursor-pointer"
                     >
                       {docLoading ? (
                         <>
-                          <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                          <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-slate-950 border-t-transparent" />
                           <span>Analisando com Gemini...</span>
                         </>
                       ) : (
@@ -454,11 +459,11 @@ function GeminiContent() {
 
             {/* Coluna da Direita: Relatório de Análise */}
             <div className="lg:col-span-6 space-y-6">
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 min-h-[480px] flex flex-col">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
+              <div className="legal-glass-card fio-de-luz p-6 min-h-[480px] flex flex-col">
+                <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] pb-4">
                   <div className="flex items-center gap-2">
-                    <Scale className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                    <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                    <Scale className="h-4 w-4 text-[#c5a059]" />
+                    <h3 className="text-base font-semibold text-slate-900 dark:text-[#f8fafc]">
                       Parecer & Matriz de Risco Estratégica
                     </h3>
                   </div>
@@ -466,9 +471,9 @@ function GeminiContent() {
                   {docResultado && (
                     <button
                       onClick={() => handleCopiar(docResultado)}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-white/60 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 cursor-pointer transition"
                     >
-                      {copiado ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+                      {copiado ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
                       <span>{copiado ? 'Copiado!' : 'Copiar Análise'}</span>
                     </button>
                   )}
@@ -477,14 +482,14 @@ function GeminiContent() {
                 <div className="mt-4 flex-1 flex flex-col justify-center">
                   {docLoading ? (
                     <div className="py-16 text-center space-y-3">
-                      <div className="mx-auto h-8 w-8 animate-spin rounded-full border-3 border-blue-600 border-t-transparent dark:border-blue-400" />
+                      <div className="mx-auto h-8 w-8 animate-spin rounded-full border-3 border-[#c5a059] border-t-transparent" />
                       <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                         O Gemini 3.7 está avaliando o teor da peça, identificando riscos e teses cabíveis...
                       </p>
                       <p className="text-[11px] text-slate-400">Tempo estimado: 3 a 7 segundos.</p>
                     </div>
                   ) : docResultado ? (
-                    <div className="rounded-xl bg-slate-50/80 p-5 font-sans text-xs leading-relaxed text-slate-800 border border-slate-100 dark:bg-slate-800/40 dark:border-slate-800 dark:text-slate-200 whitespace-pre-wrap">
+                    <div className="rounded-xl bg-slate-50/60 dark:bg-white/[0.02] p-5 font-sans text-xs leading-relaxed text-slate-800 dark:text-slate-200 border border-slate-200/40 dark:border-white/[0.04] whitespace-pre-wrap">
                       {docResultado}
                     </div>
                   ) : (
@@ -503,16 +508,16 @@ function GeminiContent() {
         {/* ABA 2: RESUMO EXECUTIVO PARA CLIENTE */}
         {/* ========================================================================= */}
         {abaAtiva === 'resumo' && (
-          <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-12">
+          <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
             <div className="lg:col-span-6 space-y-6">
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
+              <div className="legal-glass-card fio-de-luz p-6">
+                <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] pb-4">
                   <div className="flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300">
-                      <MessageSquareQuote className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
+                      <MessageSquareQuote className="h-4 w-4" />
                     </div>
                     <div>
-                      <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                      <h3 className="text-base font-semibold text-slate-900 dark:text-[#f8fafc]">
                         Histórico de Movimentações
                       </h3>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -538,7 +543,7 @@ function GeminiContent() {
                     <div>
                       <label
                         htmlFor="resumoPublicoSelect"
-                        className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+                        className="block text-xs font-medium uppercase tracking-wider text-slate-700 dark:text-slate-300"
                       >
                         Público-Alvo / Tom de Voz
                       </label>
@@ -546,7 +551,7 @@ function GeminiContent() {
                         id="resumoPublicoSelect"
                         value={resumoPublico}
                         onChange={(e) => setResumoPublico(e.target.value as 'cliente' | 'advogado')}
-                        className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-medium text-slate-900 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                        className="mt-1 block w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
                       >
                         <option value="cliente">Cliente (Linguagem Acessível / WhatsApp)</option>
                         <option value="advogado">Advogado (Técnico e Estratégico)</option>
@@ -557,7 +562,7 @@ function GeminiContent() {
                   <div>
                     <label
                       htmlFor="resumoTituloInput"
-                      className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+                      className="block text-xs font-medium uppercase tracking-wider text-slate-700 dark:text-slate-300"
                     >
                       Título ou Identificação da Causa
                     </label>
@@ -567,14 +572,14 @@ function GeminiContent() {
                       value={resumoTitulo}
                       onChange={(e) => setResumoTitulo(e.target.value)}
                       placeholder="Ex: Ação Indenizatória por Vício em Imóvel"
-                      className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
+                      className="mt-1 block w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-[#c5a059] focus:outline-hidden"
                     />
                   </div>
 
                   <div>
                     <label
                       htmlFor="resumoMovsArea"
-                      className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+                      className="block text-xs font-medium uppercase tracking-wider text-slate-700 dark:text-slate-300"
                     >
                       Movimentações ou Andamentos Processuais *
                     </label>
@@ -585,12 +590,12 @@ function GeminiContent() {
                       value={resumoMovsTexto}
                       onChange={(e) => setResumoMovsTexto(e.target.value)}
                       placeholder="Cole aqui a lista de andamentos do tribunal, linha por linha ou em formato JSON..."
-                      className="mt-1 block w-full rounded-xl border border-slate-200 bg-white p-3 font-mono text-xs leading-relaxed text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
+                      className="mt-1 block w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] p-3 font-mono text-xs leading-relaxed text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-[#c5a059] focus:outline-hidden"
                     />
                   </div>
 
                   {resumoErro && (
-                    <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-800 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300">
+                    <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 p-3 text-xs text-rose-700 dark:text-rose-300">
                       {resumoErro}
                     </div>
                   )}
@@ -599,11 +604,11 @@ function GeminiContent() {
                     <button
                       type="submit"
                       disabled={resumoLoading || !resumoMovsTexto.trim()}
-                      className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-blue-500 active:scale-98 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-500 transition"
+                      className="inline-flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-5 py-2 text-xs shadow-xs hover:shadow-md active:scale-98 disabled:opacity-50 transition cursor-pointer"
                     >
                       {resumoLoading ? (
                         <>
-                          <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                          <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-slate-950 border-t-transparent" />
                           <span>Gerando Resumo...</span>
                         </>
                       ) : (
@@ -619,11 +624,11 @@ function GeminiContent() {
             </div>
 
             <div className="lg:col-span-6 space-y-6">
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 min-h-[480px] flex flex-col">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
+              <div className="legal-glass-card fio-de-luz p-6 min-h-[480px] flex flex-col">
+                <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] pb-4">
                   <div className="flex items-center gap-2">
-                    <Users className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                    <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                    <Users className="h-4 w-4 text-[#c5a059]" />
+                    <h3 className="text-base font-semibold text-slate-900 dark:text-[#f8fafc]">
                       Relatório Formatado para Envio
                     </h3>
                   </div>
@@ -631,9 +636,9 @@ function GeminiContent() {
                   {resumoResultado && (
                     <button
                       onClick={() => handleCopiar(resumoResultado)}
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300"
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-white/60 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 cursor-pointer transition"
                     >
-                      {copiado ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Copy className="h-3.5 w-3.5" />}
+                      {copiado ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
                       <span>{copiado ? 'Copiado!' : 'Copiar Texto'}</span>
                     </button>
                   )}
@@ -642,13 +647,13 @@ function GeminiContent() {
                 <div className="mt-4 flex-1 flex flex-col justify-center">
                   {resumoLoading ? (
                     <div className="py-16 text-center space-y-3">
-                      <div className="mx-auto h-8 w-8 animate-spin rounded-full border-3 border-blue-600 border-t-transparent dark:border-blue-400" />
+                      <div className="mx-auto h-8 w-8 animate-spin rounded-full border-3 border-[#c5a059] border-t-transparent" />
                       <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                         Traduzindo termos processuais para linguagem simplificada...
                       </p>
                     </div>
                   ) : resumoResultado ? (
-                    <div className="rounded-xl bg-slate-50/80 p-5 font-sans text-xs leading-relaxed text-slate-800 border border-slate-100 dark:bg-slate-800/40 dark:border-slate-800 dark:text-slate-200 whitespace-pre-wrap">
+                    <div className="rounded-xl bg-slate-50/60 dark:bg-white/[0.02] p-5 font-sans text-xs leading-relaxed text-slate-800 dark:text-slate-200 border border-slate-200/40 dark:border-white/[0.04] whitespace-pre-wrap">
                       {resumoResultado}
                     </div>
                   ) : (
@@ -667,16 +672,16 @@ function GeminiContent() {
         {/* ABA 3: EXTRAÇÃO AUTOMÁTICA DE PRAZOS (DJE) */}
         {/* ========================================================================= */}
         {abaAtiva === 'prazo' && (
-          <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-12">
+          <div className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-12">
             <div className="lg:col-span-6 space-y-6">
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
+              <div className="legal-glass-card fio-de-luz p-6">
+                <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] pb-4">
                   <div className="flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-100 text-blue-900 dark:bg-blue-950 dark:text-blue-300">
-                      <Zap className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
+                      <Zap className="h-4 w-4" />
                     </div>
                     <div>
-                      <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                      <h3 className="text-base font-semibold text-slate-900 dark:text-[#f8fafc]">
                         Intimação / Publicação do DJE
                       </h3>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -690,7 +695,7 @@ function GeminiContent() {
                   <div>
                     <label
                       htmlFor="prazoDataPubInput"
-                      className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+                      className="block text-xs font-medium uppercase tracking-wider text-slate-700 dark:text-slate-300"
                     >
                       Data da Publicação / Disponibilização no Diário
                     </label>
@@ -699,15 +704,14 @@ function GeminiContent() {
                       type="date"
                       value={prazoDataPub}
                       onChange={(e) => setPrazoDataPub(e.target.value)}
-                      className="mt-1 block w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs text-slate-900 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
-                    >
-                    </input>
+                      className="mt-1 block w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
+                    />
                   </div>
 
                   <div>
                     <label
                       htmlFor="prazoTextoArea"
-                      className="block text-xs font-semibold uppercase tracking-wider text-slate-700 dark:text-slate-300"
+                      className="block text-xs font-medium uppercase tracking-wider text-slate-700 dark:text-slate-300"
                     >
                       Texto Completo da Publicação / Despacho *
                     </label>
@@ -718,12 +722,12 @@ function GeminiContent() {
                       value={prazoTexto}
                       onChange={(e) => setPrazoTexto(e.target.value)}
                       placeholder="Cole aqui o texto da publicação do Diário da Justiça Eletrônico..."
-                      className="mt-1 block w-full rounded-xl border border-slate-200 bg-white p-3 font-mono text-xs leading-relaxed text-slate-900 placeholder:text-slate-400 focus:border-blue-600 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500"
+                      className="mt-1 block w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] p-3 font-mono text-xs leading-relaxed text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-[#c5a059] focus:outline-hidden"
                     />
                   </div>
 
                   {prazoErro && (
-                    <div className="rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-800 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300">
+                    <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 p-3 text-xs text-rose-700 dark:text-rose-300">
                       {prazoErro}
                     </div>
                   )}
@@ -732,16 +736,16 @@ function GeminiContent() {
                     <button
                       type="submit"
                       disabled={prazoLoading || !prazoTexto.trim()}
-                      className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-blue-500 active:scale-98 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-500 transition"
+                      className="inline-flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-5 py-2 text-xs shadow-xs hover:shadow-md active:scale-98 disabled:opacity-50 transition cursor-pointer"
                     >
                       {prazoLoading ? (
                         <>
-                          <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                          <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-slate-950 border-t-transparent" />
                           <span>Identificando Prazos...</span>
                         </>
                       ) : (
                         <>
-                          <Zap className="h-3.5 w-3.5 text-blue-200" />
+                          <Zap className="h-3.5 w-3.5" />
                           <span>Calcular Prazos e Providências</span>
                         </>
                       )}
@@ -753,11 +757,11 @@ function GeminiContent() {
 
             {/* Coluna da Direita: Card Estruturado do Prazo Extraído */}
             <div className="lg:col-span-6 space-y-6">
-              <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-xs dark:border-slate-800 dark:bg-slate-900 min-h-[480px] flex flex-col">
-                <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
+              <div className="legal-glass-card fio-de-luz p-6 min-h-[480px] flex flex-col">
+                <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] pb-4">
                   <div className="flex items-center gap-2">
-                    <CalendarClock className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                    <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                    <CalendarClock className="h-4 w-4 text-[#c5a059]" />
+                    <h3 className="text-base font-semibold text-slate-900 dark:text-[#f8fafc]">
                       Resultado Estruturado de Controladoria
                     </h3>
                   </div>
@@ -765,7 +769,7 @@ function GeminiContent() {
                   {prazoResultado && (
                     <button
                       onClick={abrirModalSalvarPrazo}
-                      className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-3.5 py-2 text-xs font-semibold text-white shadow-xs hover:bg-blue-500 dark:bg-blue-600 dark:hover:bg-blue-500 transition"
+                      className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-3.5 py-1.5 text-xs shadow-xs hover:shadow-md transition cursor-pointer"
                     >
                       <BookmarkPlus className="h-4 w-4" />
                       <span>Agendar na Pauta</span>
@@ -774,9 +778,9 @@ function GeminiContent() {
                 </div>
 
                 {sucessoPrazo && (
-                  <div className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-xs text-emerald-900 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300">
+                  <div className="mt-4 rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3 text-xs text-emerald-700 dark:text-emerald-300">
                     <div className="flex items-center gap-2 font-semibold">
-                      <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+                      <CheckCircle2 className="h-4 w-4 text-emerald-500" />
                       <span>{sucessoPrazo}</span>
                     </div>
                   </div>
@@ -785,7 +789,7 @@ function GeminiContent() {
                 <div className="mt-4 flex-1 flex flex-col justify-center">
                   {prazoLoading ? (
                     <div className="py-16 text-center space-y-3">
-                      <div className="mx-auto h-8 w-8 animate-spin rounded-full border-3 border-blue-600 border-t-transparent dark:border-blue-400" />
+                      <div className="mx-auto h-8 w-8 animate-spin rounded-full border-3 border-[#c5a059] border-t-transparent" />
                       <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                         O Gemini está computando os dias úteis/corridos e providência exigida...
                       </p>
@@ -793,16 +797,16 @@ function GeminiContent() {
                   ) : prazoResultado ? (
                     <div className="space-y-4">
                       {/* Urgência e Tem Prazo */}
-                      <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50 p-4 border border-slate-100 dark:bg-slate-800/50 dark:border-slate-800">
+                      <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-slate-50/60 dark:bg-white/[0.02] p-4 border border-slate-200/40 dark:border-white/[0.04]">
                         <div>
-                          <span className="text-[11px] font-semibold text-slate-400 uppercase">Status do Prazo</span>
+                          <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Status do Prazo</span>
                           <div className="flex items-center gap-2 mt-0.5">
                             {prazoResultado.tem_prazo ? (
-                              <span className="inline-flex items-center gap-1 text-xs font-bold text-red-700 dark:text-red-400">
+                              <span className="inline-flex items-center gap-1 text-xs font-semibold text-rose-600 dark:text-rose-400">
                                 <AlertCircle className="h-4 w-4" /> Há Prazo Peremptório / Processual
                               </span>
                             ) : (
-                              <span className="inline-flex items-center gap-1 text-xs font-bold text-slate-600 dark:text-slate-400">
+                              <span className="inline-flex items-center gap-1 text-xs font-semibold text-slate-600 dark:text-slate-400">
                                 Sem prazo fatal identificado
                               </span>
                             )}
@@ -810,15 +814,15 @@ function GeminiContent() {
                         </div>
 
                         <div>
-                          <span className="text-[11px] font-semibold text-slate-400 uppercase">Urgência</span>
+                          <span className="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Urgência</span>
                           <div className="mt-0.5">
                             <span
-                              className={`inline-block rounded-full px-3 py-1 text-xs font-bold ${
+                              className={`inline-block rounded-full px-2.5 py-0.5 text-xs font-medium border ${
                                 prazoResultado.urgencia === 'Fatal' || prazoResultado.urgencia === 'Alta'
-                                  ? 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300'
+                                  ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/20'
                                   : prazoResultado.urgencia === 'Média'
-                                    ? 'bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-300'
-                                    : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                                    ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/20'
+                                    : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20'
                               }`}
                             >
                               Urgência: {prazoResultado.urgencia}
@@ -828,19 +832,19 @@ function GeminiContent() {
                       </div>
 
                       {/* Providência */}
-                      <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-800/30">
-                        <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                      <div className="rounded-xl border border-slate-200/40 dark:border-white/[0.04] bg-slate-50/40 dark:bg-white/[0.01] p-4">
+                        <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                           Providência Exigida
                         </span>
-                        <p className="mt-1 text-sm font-bold text-slate-900 dark:text-slate-100">
+                        <p className="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">
                           {prazoResultado.descricao_providencia}
                         </p>
                       </div>
 
                       {/* Grid de Dias e Data Estimada */}
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-800/30">
-                          <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        <div className="rounded-xl border border-slate-200/40 dark:border-white/[0.04] bg-slate-50/40 dark:bg-white/[0.01] p-4">
+                          <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                             Contagem Legal
                           </span>
                           <p className="mt-1 text-sm font-semibold text-slate-800 dark:text-slate-200">
@@ -849,11 +853,11 @@ function GeminiContent() {
                           </p>
                         </div>
 
-                        <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-800/30">
-                          <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        <div className="rounded-xl border border-slate-200/40 dark:border-white/[0.04] bg-slate-50/40 dark:bg-white/[0.01] p-4">
+                          <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                             Termo Fatal Sugerido
                           </span>
-                          <p className="mt-1 font-mono text-sm font-bold text-blue-700 dark:text-blue-400">
+                          <p className="mt-1 font-mono text-sm font-bold text-[#c5a059]">
                             {prazoResultado.data_limite_estimada
                               ? new Date(prazoResultado.data_limite_estimada).toLocaleDateString('pt-BR', { timeZone: 'UTC' })
                               : 'A calcular'}
@@ -863,8 +867,8 @@ function GeminiContent() {
 
                       {/* Observações */}
                       {prazoResultado.observacoes && (
-                        <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-4 dark:border-slate-800 dark:bg-slate-800/30">
-                          <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                        <div className="rounded-xl border border-slate-200/40 dark:border-white/[0.04] bg-slate-50/40 dark:bg-white/[0.01] p-4">
+                          <span className="text-[11px] font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                             Observações e Recomendações
                           </span>
                           <p className="mt-1 text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
@@ -887,18 +891,18 @@ function GeminiContent() {
 
       {/* Modal para Salvar Prazo Extraído */}
       {modalPrazoAberto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 shadow-xl dark:border-slate-800 dark:bg-slate-900">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-4 dark:border-slate-800">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-xs">
+          <div className="legal-glass-card fio-de-luz w-full max-w-lg p-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] pb-4">
               <div className="flex items-center gap-2">
-                <BookmarkPlus className="h-5 w-5 text-blue-600 dark:text-blue-400" />
-                <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">
+                <BookmarkPlus className="h-5 w-5 text-[#c5a059]" />
+                <h3 className="text-base font-semibold text-slate-900 dark:text-[#f8fafc]">
                   Agendar Prazo na Pauta do Escritório
                 </h3>
               </div>
               <button
                 onClick={() => setModalPrazoAberto(false)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800"
+                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer"
               >
                 ✕
               </button>
@@ -906,7 +910,7 @@ function GeminiContent() {
 
             <form onSubmit={handleSalvarPrazoModal} className="mt-4 space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
                   Processo Vinculado *
                 </label>
                 {processosDisponiveis.length > 0 ? (
@@ -914,7 +918,7 @@ function GeminiContent() {
                     required
                     value={processoSelecionadoId}
                     onChange={(e) => setProcessoSelecionadoId(Number(e.target.value))}
-                    className="mt-1 block w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs text-slate-900 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                    className="mt-1 block w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
                   >
                     {processosDisponiveis.map((p) => (
                       <option key={p.id_processo} value={p.id_processo}>
@@ -923,14 +927,14 @@ function GeminiContent() {
                     ))}
                   </select>
                 ) : (
-                  <div className="mt-1 rounded-lg bg-amber-50 p-2.5 text-xs text-amber-900 border border-amber-200 dark:bg-amber-950/40 dark:border-amber-900 dark:text-amber-300">
+                  <div className="mt-1 rounded-xl bg-amber-500/10 p-2.5 text-xs text-amber-700 dark:text-amber-300 border border-amber-500/20">
                     Nenhum processo cadastrado no momento. Cadastre um processo primeiro no módulo de Processos.
                   </div>
                 )}
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
                   Descrição da Providência *
                 </label>
                 <input
@@ -938,12 +942,12 @@ function GeminiContent() {
                   required
                   value={descricaoPrazoModal}
                   onChange={(e) => setDescricaoPrazoModal(e.target.value)}
-                  className="mt-1 block w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs text-slate-900 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                  className="mt-1 block w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                <label className="block text-xs font-medium text-slate-700 dark:text-slate-300">
                   Data de Vencimento / Termo Fatal *
                 </label>
                 <input
@@ -951,22 +955,22 @@ function GeminiContent() {
                   required
                   value={dataVencimentoModal}
                   onChange={(e) => setDataVencimentoModal(e.target.value)}
-                  className="mt-1 block w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2 text-xs text-slate-900 focus:border-blue-600 focus:outline-none focus:ring-1 focus:ring-blue-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
+                  className="mt-1 block w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200/60 dark:border-white/[0.06]">
                 <button
                   type="button"
                   onClick={() => setModalPrazoAberto(false)}
-                  className="rounded-xl border border-slate-300 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                  className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.03] px-3.5 py-2 text-xs font-medium text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.04] transition cursor-pointer"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={salvandoPrazo || processosDisponiveis.length === 0}
-                  className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-2 text-xs font-semibold text-white shadow-xs hover:bg-blue-500 disabled:opacity-50 dark:bg-blue-600 dark:hover:bg-blue-500 transition"
+                  className="inline-flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-5 py-2 text-xs shadow-xs hover:shadow-md disabled:opacity-50 transition cursor-pointer"
                 >
                   {salvandoPrazo ? 'Agendando...' : 'Confirmar Agendamento'}
                 </button>
