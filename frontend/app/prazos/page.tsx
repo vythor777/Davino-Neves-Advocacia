@@ -430,7 +430,7 @@ function PrazosContent() {
               className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition-all active:scale-98 cursor-pointer"
             >
               <PlusCircle className="h-4 w-4 text-slate-950" />
-              + Novo Prazo
+              Novo Prazo
             </button>
           </div>
         </div>
@@ -966,15 +966,15 @@ function PrazosContent() {
 
       {/* Modal de Criação / Edição */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-md">
-          <div className="w-full max-w-lg legal-glass-card fio-de-luz p-6 shadow-2xl text-slate-900 dark:text-slate-100 transition-colors">
-            <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] pb-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto animate-in fade-in duration-150">
+          <div className="relative w-full max-w-lg legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-[90vh] my-auto text-slate-900 dark:text-slate-100 transition-colors animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] p-5 shrink-0 bg-slate-50/80 dark:bg-[#111722]">
               <div className="flex items-center gap-2.5">
                 <div className="rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25 p-2">
                   {editingPrazo ? <Edit2 className="h-5 w-5" /> : <PlusCircle className="h-5 w-5" />}
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold text-slate-900 dark:text-[#f8fafc]">
+                  <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
                     {editingPrazo ? 'Editar Prazo Processual' : 'Cadastrar Novo Prazo'}
                   </h3>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -983,155 +983,158 @@ function PrazosContent() {
                 </div>
               </div>
               <button
+                type="button"
                 onClick={() => setModalOpen(false)}
-                className="rounded-lg p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-white transition cursor-pointer hover:bg-white/[0.04]"
+                className="rounded-lg p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-white transition cursor-pointer hover:bg-slate-100 dark:hover:bg-white/[0.04]"
                 aria-label="Fechar modal"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSavePrazo} className="mt-4 space-y-4 text-xs">
-              <div>
-                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Processo Judicial Vinculado *
-                </label>
-                <select
-                  value={idProcesso}
-                  onChange={(e) => setIdProcesso(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/80 dark:bg-[#12161f] px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
-                >
-                  <option value="" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Selecione o Processo</option>
-                  {processos.map((p) => (
-                    <option key={p.id_processo} value={String(p.id_processo)} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
-                      {p.numero_processo} — {p.titulo}
-                    </option>
-                  ))}
-                </select>
-                {formErrors.idProcesso && (
-                  <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.idProcesso}</p>
-                )}
-              </div>
-
-              <div>
-                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Descrição do Ato Processual / Intimação *
-                </label>
-                <input
-                  type="text"
-                  value={descricao}
-                  onChange={(e) => setDescricao(e.target.value)}
-                  placeholder="Ex: Apresentar Réplica à Contestação com documentos"
-                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/80 dark:bg-[#12161f] px-3 py-2 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-[#c5a059] focus:outline-hidden"
-                />
-                {formErrors.descricao && (
-                  <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.descricao}</p>
-                )}
-              </div>
-
-              {/* Campo de Tipo de Compromisso */}
-              <div>
-                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Tipo de Compromisso *
-                </label>
-                <select
-                  value={tipoCompromisso}
-                  onChange={(e) => setTipoCompromisso(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/80 dark:bg-[#12161f] px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
-                >
-                  <option value="Prazo Fatal" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Prazo Fatal</option>
-                  <option value="Audiência" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Audiência</option>
-                  <option value="Reunião Externa" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Reunião Externa</option>
-                  <option value="Diligência" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Diligência</option>
-                </select>
-                {formErrors.tipoCompromisso && (
-                  <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.tipoCompromisso}</p>
-                )}
-              </div>
-
-              {/* Divisão da data em duas colunas (grid grid-cols-2 gap-4) */}
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSavePrazo} className="flex flex-col flex-1 min-h-0 overflow-hidden">
+              <div className="overflow-y-auto p-5 space-y-4 text-xs flex-1">
                 <div>
                   <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Data *
+                    Processo Judicial Vinculado *
                   </label>
-                  <input
-                    type="date"
-                    value={dataVencimento}
-                    onChange={(e) => setDataVencimento(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/80 dark:bg-[#12161f] px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
-                  />
-                  {formErrors.dataVencimento && (
-                    <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.dataVencimento}</p>
-                  )}
-                </div>
-
-                <div>
-                  <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
-                    Hora *
-                  </label>
-                  <input
-                    type="time"
-                    value={hora}
-                    onChange={(e) => setHora(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/80 dark:bg-[#12161f] px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
-                  />
-                  {formErrors.hora && (
-                    <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.hora}</p>
-                  )}
-                </div>
-              </div>
-
-              {/* Campo opcional de Responsável pelo Cumprimento com Usuários Reais */}
-              <div>
-                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Responsável pelo Cumprimento <span className="text-slate-500 dark:text-slate-400 font-normal">(Opcional)</span>
-                </label>
-                <select
-                  value={responsavel}
-                  onChange={(e) => setResponsavel(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/80 dark:bg-[#12161f] px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
-                >
-                  <option value="" className="bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-300">
-                    {loadingResponsaveis ? 'Carregando equipe...' : 'Selecione um Responsável (Opcional)'}
-                  </option>
-                  {responsaveis.map((u) => {
-                    const cargoFormatado = u.cargo || (u.role === 'ADVOGADO' ? 'Advogado' : 'Estagiário');
-                    return (
-                      <option key={u.id || u.id_usuario} value={u.nome} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
-                        {u.nome} ({cargoFormatado})
+                  <select
+                    value={idProcesso}
+                    onChange={(e) => setIdProcesso(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/90 dark:bg-[#141a26] px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
+                  >
+                    <option value="" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Selecione o Processo</option>
+                    {processos.map((p) => (
+                      <option key={p.id_processo} value={String(p.id_processo)} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+                        {p.numero_processo} — {p.titulo}
                       </option>
-                    );
-                  })}
-                  {responsavel && !responsaveis.some((u) => u.nome === responsavel) && (
-                    <option value={responsavel} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
-                      {responsavel}
-                    </option>
+                    ))}
+                  </select>
+                  {formErrors.idProcesso && (
+                    <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.idProcesso}</p>
                   )}
-                </select>
-              </div>
+                </div>
 
-              {/* Status do Prazo */}
-              <div>
-                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Status do Prazo *
-                </label>
-                <select
-                  value={status}
-                  onChange={(e) => setStatus(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/80 dark:bg-[#12161f] px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
-                >
-                  <option value="Pendente" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Pendente</option>
-                  <option value="Cumprido" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Cumprido</option>
-                </select>
+                <div>
+                  <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+                    Descrição do Ato Processual / Intimação *
+                  </label>
+                  <input
+                    type="text"
+                    value={descricao}
+                    onChange={(e) => setDescricao(e.target.value)}
+                    placeholder="Ex: Apresentar Réplica à Contestação com documentos"
+                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/90 dark:bg-[#141a26] px-3 py-2 text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-[#c5a059] focus:outline-hidden"
+                  />
+                  {formErrors.descricao && (
+                    <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.descricao}</p>
+                  )}
+                </div>
+
+                {/* Campo de Tipo de Compromisso */}
+                <div>
+                  <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+                    Tipo de Compromisso *
+                  </label>
+                  <select
+                    value={tipoCompromisso}
+                    onChange={(e) => setTipoCompromisso(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/90 dark:bg-[#141a26] px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
+                  >
+                    <option value="Prazo Fatal" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Prazo Fatal</option>
+                    <option value="Audiência" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Audiência</option>
+                    <option value="Reunião Externa" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Reunião Externa</option>
+                    <option value="Diligência" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Diligência</option>
+                  </select>
+                  {formErrors.tipoCompromisso && (
+                    <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.tipoCompromisso}</p>
+                  )}
+                </div>
+
+                {/* Divisão da data em duas colunas (grid grid-cols-2 gap-4) */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+                      Data *
+                    </label>
+                    <input
+                      type="date"
+                      value={dataVencimento}
+                      onChange={(e) => setDataVencimento(e.target.value)}
+                      className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/90 dark:bg-[#141a26] px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
+                    />
+                    {formErrors.dataVencimento && (
+                      <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.dataVencimento}</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+                      Hora *
+                    </label>
+                    <input
+                      type="time"
+                      value={hora}
+                      onChange={(e) => setHora(e.target.value)}
+                      className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/90 dark:bg-[#141a26] px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
+                    />
+                    {formErrors.hora && (
+                      <p className="text-red-500 dark:text-red-400 mt-1">{formErrors.hora}</p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Campo opcional de Responsável pelo Cumprimento com Usuários Reais */}
+                <div>
+                  <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+                    Responsável pelo Cumprimento <span className="text-slate-500 dark:text-slate-400 font-normal">(Opcional)</span>
+                  </label>
+                  <select
+                    value={responsavel}
+                    onChange={(e) => setResponsavel(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/90 dark:bg-[#141a26] px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
+                  >
+                    <option value="" className="bg-white dark:bg-slate-900 text-slate-500 dark:text-slate-300">
+                      {loadingResponsaveis ? 'Carregando equipe...' : 'Selecione um Responsável (Opcional)'}
+                    </option>
+                    {responsaveis.map((u) => {
+                      const cargoFormatado = u.cargo || (u.role === 'ADVOGADO' ? 'Advogado' : 'Estagiário');
+                      return (
+                        <option key={u.id || u.id_usuario} value={u.nome} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+                          {u.nome} ({cargoFormatado})
+                        </option>
+                      );
+                    })}
+                    {responsavel && !responsaveis.some((u) => u.nome === responsavel) && (
+                      <option value={responsavel} className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">
+                        {responsavel}
+                      </option>
+                    )}
+                  </select>
+                </div>
+
+                {/* Status do Prazo */}
+                <div>
+                  <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+                    Status do Prazo *
+                  </label>
+                  <select
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/90 dark:bg-[#141a26] px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
+                  >
+                    <option value="Pendente" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Pendente</option>
+                    <option value="Cumprido" className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100">Cumprido</option>
+                  </select>
+                </div>
               </div>
 
               {/* Botões do Rodapé */}
-              <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-200/60 dark:border-white/[0.06] pt-4">
+              <div className="shrink-0 flex items-center justify-end gap-3 border-t border-slate-200/60 dark:border-white/[0.06] p-4 bg-slate-50/80 dark:bg-[#111722]">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] px-4 py-2 font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.04] transition cursor-pointer"
+                  className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] px-4 py-2 font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.04] transition cursor-pointer text-xs"
                 >
                   Cancelar
                 </button>

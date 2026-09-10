@@ -374,7 +374,7 @@ function ClientesContent() {
               className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition-all active:scale-98 cursor-pointer"
             >
               <UserPlus className="h-4 w-4 text-slate-950" />
-              + Novo Cliente
+              Novo Cliente
             </button>
           </div>
         </div>
@@ -821,9 +821,9 @@ function ClientesContent() {
 
       {/* Modal de Criação / Edição */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md">
-          <div className="legal-modal-card fio-de-luz w-full max-w-lg p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
-            <div className="flex items-center justify-between border-b border-slate-200/60 pb-4 dark:border-white/[0.06]">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto animate-in fade-in duration-150">
+          <div className="relative w-full max-w-lg legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-[90vh] my-auto animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between border-b border-slate-200/60 p-5 dark:border-white/[0.06] shrink-0 bg-slate-50/80 dark:bg-[#111722]">
               <div className="flex items-center gap-2.5">
                 <div className="rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25 p-2">
                   {editingClient ? <Edit2 className="h-5 w-5" /> : <UserPlus className="h-5 w-5" />}
@@ -838,6 +838,7 @@ function ClientesContent() {
                 </div>
               </div>
               <button
+                type="button"
                 onClick={() => setModalOpen(false)}
                 className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-200 transition cursor-pointer"
               >
@@ -845,7 +846,8 @@ function ClientesContent() {
               </button>
             </div>
 
-            <form onSubmit={handleSaveClient} className="mt-4 space-y-4 text-xs">
+            <form onSubmit={handleSaveClient} className="flex flex-col flex-1 min-h-0 overflow-hidden">
+              <div className="overflow-y-auto p-5 space-y-4 text-xs flex-1">
               {/* Tipo PF ou PJ com Reset Estrito de Estado */}
               <div className="grid grid-cols-2 gap-2" role="tablist" aria-label="Tipo de Pessoa">
                 <button
@@ -990,18 +992,20 @@ function ClientesContent() {
                 {formErrors.endereco && <p className="text-rose-400 mt-1">{formErrors.endereco}</p>}
               </div>
 
-              <div className="mt-6 flex items-center justify-end gap-2.5 border-t border-slate-200/60 pt-4 dark:border-white/[0.06]">
+              </div>
+
+              <div className="shrink-0 flex items-center justify-end gap-2.5 border-t border-slate-200/60 p-4 dark:border-white/[0.06] bg-slate-50/80 dark:bg-[#111722]">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="rounded-xl border border-slate-200/80 bg-white/60 px-4 py-2 font-medium text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] transition-colors cursor-pointer"
+                  className="rounded-xl border border-slate-200/80 bg-white/60 px-4 py-2 font-medium text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] transition-colors cursor-pointer text-xs"
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] px-4 py-2 font-semibold text-slate-950 disabled:opacity-50 transition-all cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] px-4 py-2 font-semibold text-slate-950 disabled:opacity-50 transition-all cursor-pointer text-xs"
                 >
                   {saving ? 'Salvando...' : editingClient ? 'Atualizar Cliente' : 'Salvar no Banco'}
                 </button>
