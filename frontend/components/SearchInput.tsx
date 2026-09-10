@@ -53,7 +53,7 @@ export function SearchInput({
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         placeholder={placeholder}
-        className="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-9 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 transition-colors focus:border-[#c5a059] focus:outline-hidden focus:ring-2 focus:ring-[#c5a059]/25 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-[#c5a059] dark:focus:ring-[#c5a059]/25"
+        className="w-full rounded-xl border border-slate-200 bg-white pl-10 pr-9 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 transition-colors focus:border-[#0047ab] focus:outline-hidden focus:ring-2 focus:ring-[#0047ab]/20 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-blue-500 dark:focus:ring-blue-500/20"
       />
 
       {searchTerm && (

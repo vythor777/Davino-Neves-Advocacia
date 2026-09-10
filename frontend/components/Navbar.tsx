@@ -132,15 +132,15 @@ export function Navbar() {
             href="/"
             className="flex items-center gap-2 sm:gap-2.5 transition-all hover:opacity-95 shrink-0 group"
           >
-            <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-slate-900 dark:bg-[#161b22] text-[#dfcaa0] border border-[0.75px] border-[#c5a059]/40 shadow-xs group-hover:scale-105 transition-transform shrink-0">
-              <Scale className="h-4 w-4 sm:h-5 sm:w-5 stroke-[1.25]" />
+            <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-slate-900 dark:bg-slate-800 text-[#dfcaa0] border border-[0.75px] border-[#c5a059]/40 shadow-xs group-hover:scale-105 transition-transform shrink-0">
+              <Scale className="h-4 w-4 sm:h-5 sm:w-5 stroke-[1.5]" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="font-sans text-sm sm:text-base font-semibold tracking-tight text-slate-900 dark:text-white truncate">
+                <span className="font-sans text-sm sm:text-base font-bold tracking-tight text-slate-900 dark:text-white truncate">
                   Davino Neves
                 </span>
-                <span className="hidden sm:inline-block text-xs font-semibold px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-white/[0.05] text-slate-700 dark:text-[#dfcaa0] border border-[0.75px] border-slate-200/80 dark:border-white/[0.08] shrink-0">
+                <span className="hidden sm:inline-block text-xs font-semibold px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-white/[0.05] text-slate-700 dark:text-slate-300 border border-[0.75px] border-slate-200/80 dark:border-white/[0.08] shrink-0">
                   Advocacia
                 </span>
               </div>
@@ -161,11 +161,11 @@ export function Navbar() {
                 href={item.href}
                 className={`relative flex items-center gap-1.5 rounded-xl px-2.5 xl:px-3 py-2 text-xs font-semibold transition-all ${
                   isActive
-                    ? 'bg-slate-100 dark:bg-white/[0.07] text-slate-900 dark:text-[#dfcaa0] shadow-2xs border border-[0.75px] border-slate-200/80 dark:border-[#c5a059]/30'
-                    : 'text-slate-600 hover:bg-slate-100/80 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/[0.05] dark:hover:text-white'
+                    ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/[0.06] dark:hover:text-white'
                 }`}
               >
-                <Icon className={`h-4 w-4 stroke-[1.25] ${isActive ? 'text-slate-900 dark:text-[#dfcaa0]' : 'text-slate-400'}`} />
+                <Icon className={`h-4 w-4 stroke-[1.5] ${isActive ? 'text-white dark:text-slate-900' : 'text-slate-400'}`} />
                 <span>{item.label}</span>
               </Link>
             );
@@ -185,7 +185,7 @@ export function Navbar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar processo..."
-              className="w-full rounded-xl border border-slate-200/80 bg-slate-50 pl-8 pr-7 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-slate-400 focus:outline-hidden dark:border-white/[0.08] dark:bg-[#161b22] dark:text-slate-100 dark:placeholder:text-slate-500 transition-all"
+              className="w-full rounded-xl border border-slate-200/80 bg-slate-50 pl-8 pr-7 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#0047ab] focus:outline-hidden dark:border-white/[0.08] dark:bg-[#161b22] dark:text-slate-100 dark:placeholder:text-slate-500 transition-all"
             />
             {searchQuery && (
               <button
@@ -204,15 +204,15 @@ export function Navbar() {
               onClick={() => setQuickMenuOpen(!quickMenuOpen)}
               aria-label="Criar novo registro"
               aria-expanded={quickMenuOpen}
-              className="flex min-h-[40px] sm:min-h-[44px] items-center gap-1.5 rounded-xl border border-[0.75px] border-[#c5a059]/60 hover:border-[#dfcaa0] bg-slate-900/90 dark:bg-[#161b22]/90 px-3 sm:px-3.5 py-2 text-xs font-semibold text-slate-100 dark:text-[#dfcaa0] shadow-sm hover:shadow-[#c5a059]/10 transition active:scale-95 focus-visible:ring-2 focus-visible:ring-[#c5a059]/40 focus-visible:outline-hidden backdrop-blur-md cursor-pointer"
+              className="flex min-h-[40px] sm:min-h-[44px] items-center gap-1.5 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] hover:bg-slate-50 dark:hover:bg-white/[0.08] px-3 sm:px-3.5 py-2 text-xs font-semibold text-slate-800 dark:text-slate-200 shadow-2xs transition active:scale-95 focus-visible:ring-2 focus-visible:ring-blue-600/40 focus-visible:outline-hidden cursor-pointer"
             >
-              <Plus className="h-4 w-4 stroke-[2] text-[#c5a059]" />
+              <Plus className="h-4 w-4 stroke-[2] text-[#0047ab] dark:text-blue-400" />
               <span className="hidden sm:inline">Novo</span>
-              <ChevronDown className={`h-3.5 w-3.5 text-slate-400 dark:text-[#dfcaa0]/70 transition-transform ${quickMenuOpen ? 'rotate-180' : ''}`} />
+              <ChevronDown className={`h-3.5 w-3.5 text-slate-400 transition-transform ${quickMenuOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {quickMenuOpen && (
-              <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-[0.75px] border-slate-200/80 dark:border-white/[0.1] bg-white/95 dark:bg-[#161b22]/95 backdrop-blur-xl p-2 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+              <div className="absolute right-0 mt-2 w-56 rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white/98 dark:bg-slate-900/98 backdrop-blur-xl p-2 shadow-2xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                 <div className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-400">
                   Ações Rápidas
                 </div>
@@ -220,51 +220,51 @@ export function Navbar() {
                   <Link
                     href="/processos"
                     onClick={() => setQuickMenuOpen(false)}
-                    className="flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/[0.05] dark:hover:text-[#dfcaa0] transition"
+                    className="flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/[0.05] transition"
                   >
-                    <Briefcase className="h-4 w-4 text-slate-400 dark:text-[#dfcaa0]" />
+                    <Briefcase className="h-4 w-4 text-slate-400" />
                     <span>Novo Processo</span>
                   </Link>
                   <Link
                     href="/prazos"
                     onClick={() => setQuickMenuOpen(false)}
-                    className="flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/[0.05] dark:hover:text-[#dfcaa0] transition"
+                    className="flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/[0.05] transition"
                   >
-                    <CalendarClock className="h-4 w-4 text-slate-400 dark:text-[#dfcaa0]" />
+                    <CalendarClock className="h-4 w-4 text-slate-400" />
                     <span>Novo Prazo / Tarefa</span>
                   </Link>
                   <Link
                     href="/clientes"
                     onClick={() => setQuickMenuOpen(false)}
-                    className="flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/[0.05] dark:hover:text-[#dfcaa0] transition"
+                    className="flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/[0.05] transition"
                   >
-                    <UserPlus className="h-4 w-4 text-slate-400 dark:text-[#dfcaa0]" />
+                    <UserPlus className="h-4 w-4 text-slate-400" />
                     <span>Novo Cliente / Contato</span>
                   </Link>
                   <Link
                     href="/financeiro"
                     onClick={() => setQuickMenuOpen(false)}
-                    className="flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/[0.05] dark:hover:text-[#dfcaa0] transition"
+                    className="flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/[0.05] transition"
                   >
-                    <DollarSign className="h-4 w-4 text-slate-400 dark:text-[#dfcaa0]" />
+                    <DollarSign className="h-4 w-4 text-slate-400" />
                     <span>Novo Lançamento Financeiro</span>
                   </Link>
-                  <div className="border-t border-[0.75px] border-slate-100 my-1 dark:border-white/[0.08]" />
+                  <div className="border-t border-slate-100 my-1 dark:border-white/[0.06]" />
                   <Link
                     href="/datajud"
                     onClick={() => setQuickMenuOpen(false)}
-                    className="flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/[0.05] dark:hover:text-[#dfcaa0] transition"
+                    className="flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/[0.05] transition"
                   >
-                    <Search className="h-4 w-4 text-slate-400 dark:text-[#dfcaa0]" />
+                    <Search className="h-4 w-4 text-slate-400" />
                     <span>Consultar Tribunal (CNJ)</span>
                   </Link>
                   <Link
                     href="/gemini"
                     onClick={() => setQuickMenuOpen(false)}
-                    className="flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/[0.05] dark:hover:text-[#dfcaa0] transition"
+                    className="flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/[0.05] transition group"
                   >
                     <Sparkles className="h-4 w-4 text-[#c5a059]" />
-                    <span>Análise com Google Gemini</span>
+                    <span className="font-semibold text-slate-900 dark:text-white">Assistente IA Gemini</span>
                   </Link>
                 </div>
               </div>
@@ -279,10 +279,10 @@ export function Navbar() {
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
                 aria-label={`Menu do usuário: ${user.nome}`}
                 aria-expanded={userMenuOpen}
-                className="flex min-h-[40px] sm:min-h-[44px] items-center gap-2 rounded-xl p-1 sm:px-2 sm:py-1.5 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800/80 transition focus-visible:ring-2 focus-visible:ring-[#c5a059] focus-visible:outline-hidden"
+                className="flex min-h-[40px] sm:min-h-[44px] items-center gap-2 rounded-xl p-1 sm:px-2 sm:py-1.5 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800/80 transition focus-visible:ring-2 focus-visible:ring-blue-600/40 focus-visible:outline-hidden"
               >
                 <div
-                  className="flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-slate-900 dark:bg-[#161b22] text-[#dfcaa0] font-sans font-bold text-xs shadow-xs ring-1 ring-[#c5a059]/40 shrink-0"
+                  className="flex h-9 w-9 sm:h-8 sm:w-8 items-center justify-center rounded-xl bg-slate-900 dark:bg-slate-800 text-white font-sans font-bold text-xs shadow-xs border border-slate-700 dark:border-white/[0.1] shrink-0"
                 >
                   {user.nome ? user.nome.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
                 </div>
@@ -291,7 +291,7 @@ export function Navbar() {
                   <span className="text-xs font-bold text-slate-900 dark:text-slate-100 leading-tight truncate">
                     {user.nome}
                   </span>
-                  <span className="text-[10px] font-medium text-[#c5a059] dark:text-[#d4b36f] capitalize">
+                  <span className="text-[10px] font-medium text-slate-500 dark:text-slate-400 capitalize">
                     {user.role.toLowerCase()}
                   </span>
                 </div>
@@ -303,7 +303,7 @@ export function Navbar() {
                 <div className="absolute right-0 mt-2 w-64 rounded-2xl border border-slate-200 bg-white p-2 shadow-2xl dark:border-slate-800 dark:bg-slate-900 z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                   {/* Resumo do Usuário */}
                   <div className="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 mb-1.5 border border-slate-100 dark:border-slate-800">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-900 dark:bg-[#161b22] text-[#dfcaa0] border border-[#c5a059]/30 font-bold text-sm">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-slate-900 dark:bg-slate-800 text-white font-bold text-sm">
                       {user.nome ? user.nome.charAt(0).toUpperCase() : <User className="h-5 w-5" />}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -314,7 +314,7 @@ export function Navbar() {
                         {user.email}
                       </p>
                       <div className="mt-1">
-                        <span className="inline-block rounded-md bg-[#c5a059]/15 border border-[#c5a059]/30 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#c5a059] dark:text-[#d4b36f]">
+                        <span className="inline-block rounded-md bg-blue-50 dark:bg-blue-950/50 border border-blue-200/60 dark:border-blue-800/50 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#0047ab] dark:text-blue-300">
                           {user.role}
                         </span>
                       </div>
@@ -337,7 +337,7 @@ export function Navbar() {
                         onClick={() => setUserMenuOpen(false)}
                         className="flex min-h-[40px] items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800 transition"
                       >
-                        <Shield className="h-4 w-4 text-[#c5a059]" />
+                        <Shield className="h-4 w-4 text-slate-500" />
                         <span>Equipe & Permissões</span>
                       </Link>
                     )}
@@ -362,7 +362,7 @@ export function Navbar() {
           ) : (
             <Link
               href="/login"
-              className="inline-flex min-h-[40px] sm:min-h-[44px] items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2 text-xs font-bold text-white shadow-xs hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 transition focus-visible:ring-2 focus-visible:ring-[#c5a059] focus-visible:outline-hidden"
+              className="inline-flex min-h-[40px] sm:min-h-[44px] items-center gap-1.5 rounded-xl bg-slate-900 px-3.5 py-2 text-xs font-bold text-white shadow-xs hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 transition focus-visible:ring-2 focus-visible:ring-blue-600 focus-visible:outline-hidden"
             >
               <LogIn className="h-4 w-4" />
               <span>Acessar</span>
@@ -391,14 +391,14 @@ export function Navbar() {
             {/* Header do Drawer */}
             <div className="flex h-16 items-center justify-between border-b border-slate-100 px-4 dark:border-slate-800">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 dark:bg-[#161b22] text-[#dfcaa0] border border-[0.75px] border-[#c5a059]/40 shadow-xs">
-                  <Scale className="h-4 w-4" />
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 dark:bg-slate-800 text-[#dfcaa0] border border-[0.75px] border-[#c5a059]/40 shadow-xs">
+                  <Scale className="h-4 w-4 stroke-[1.5]" />
                 </div>
                 <div>
                   <span className="font-bold text-sm text-slate-900 dark:text-white">
                     Davino Neves
                   </span>
-                  <span className="block text-[10px] text-[#c5a059] dark:text-[#d4b36f] font-semibold">
+                  <span className="block text-[10px] text-slate-500 dark:text-slate-400 font-semibold">
                     Advocacia & Controladoria
                   </span>
                 </div>
@@ -408,7 +408,7 @@ export function Navbar() {
                 type="button"
                 onClick={() => setMobileDrawerOpen(false)}
                 aria-label="Fechar menu"
-                className="flex h-11 w-11 items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white transition focus-visible:ring-2 focus-visible:ring-[#c5a059]"
+                className="flex h-11 w-11 items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white transition focus-visible:ring-2 focus-visible:ring-blue-600"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -420,7 +420,7 @@ export function Navbar() {
               {isAuthenticated && user ? (
                 <div className="rounded-2xl border border-slate-200/80 bg-slate-50/80 p-3.5 dark:border-slate-800 dark:bg-slate-800/40">
                   <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 dark:bg-[#161b22] text-[#dfcaa0] border border-[#c5a059]/30 font-bold text-sm">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-900 dark:bg-slate-800 text-white font-bold text-sm">
                       {user.nome ? user.nome.charAt(0).toUpperCase() : <User className="h-5 w-5" />}
                     </div>
                     <div className="flex-1 min-w-0">
@@ -431,7 +431,7 @@ export function Navbar() {
                         {user.email}
                       </p>
                     </div>
-                    <span className="rounded-md bg-[#c5a059]/15 border border-[#c5a059]/30 px-2 py-0.5 text-[10px] font-bold text-[#c5a059] dark:text-[#d4b36f]">
+                    <span className="rounded-md bg-blue-50 dark:bg-blue-950/50 border border-blue-200/60 dark:border-blue-800/50 px-2 py-0.5 text-[10px] font-bold text-[#0047ab] dark:text-blue-300">
                       {user.role}
                     </span>
                   </div>
@@ -446,7 +446,7 @@ export function Navbar() {
                   value={mobileSearchQuery}
                   onChange={(e) => setMobileSearchQuery(e.target.value)}
                   placeholder="Buscar autos ou clientes..."
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-3 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#c5a059] focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-3 py-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#0047ab] focus:outline-hidden dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500"
                 />
               </form>
 
@@ -466,15 +466,15 @@ export function Navbar() {
                       href={item.href}
                       className={`flex min-h-[44px] items-center justify-between rounded-xl px-3.5 py-2.5 text-xs font-semibold transition ${
                         isActive
-                          ? 'bg-[#c5a059] text-slate-950 shadow-xs'
+                          ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-xs'
                           : 'text-slate-700 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800'
                       }`}
                     >
                       <div className="flex items-center gap-3">
-                        <Icon className={`h-4 w-4 ${isActive ? 'text-slate-950' : 'text-slate-400'}`} />
+                        <Icon className={`h-4 w-4 stroke-[1.5] ${isActive ? 'text-white dark:text-slate-900' : 'text-slate-400'}`} />
                         <span>{item.label}</span>
                       </div>
-                      <ChevronRight className={`h-4 w-4 opacity-50 ${isActive ? 'text-slate-950' : 'text-slate-400'}`} />
+                      <ChevronRight className={`h-4 w-4 opacity-50 ${isActive ? 'text-white dark:text-slate-900' : 'text-slate-400'}`} />
                     </Link>
                   );
                 })}
@@ -488,23 +488,23 @@ export function Navbar() {
                 <div className="grid grid-cols-3 gap-2">
                   <Link
                     href="/processos"
-                    className="flex min-h-[44px] flex-col justify-center rounded-xl border border-[#c5a059]/30 bg-[#c5a059]/10 p-2 text-slate-800 dark:text-[#dfcaa0] transition hover:bg-[#c5a059]/20"
+                    className="flex min-h-[44px] flex-col justify-center rounded-xl border border-slate-200 bg-slate-50 p-2 text-slate-800 dark:border-slate-800 dark:bg-slate-800/60 dark:text-slate-200 transition hover:bg-slate-100"
                   >
-                    <Briefcase className="h-4 w-4 mb-1 text-[#c5a059]" />
+                    <Briefcase className="h-4 w-4 mb-1 text-slate-600 dark:text-slate-300" />
                     <span className="text-[11px] font-bold leading-tight">Processo</span>
                   </Link>
                   <Link
                     href="/prazos"
-                    className="flex min-h-[44px] flex-col justify-center rounded-xl border border-amber-200 bg-amber-50/70 p-2 text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300 transition hover:bg-amber-100"
+                    className="flex min-h-[44px] flex-col justify-center rounded-xl border border-amber-200/80 bg-amber-50/70 p-2 text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300 transition hover:bg-amber-100"
                   >
                     <CalendarClock className="h-4 w-4 mb-1 text-amber-600" />
                     <span className="text-[11px] font-bold leading-tight">Prazo</span>
                   </Link>
                   <Link
                     href="/financeiro"
-                    className="flex min-h-[44px] flex-col justify-center rounded-xl border border-[#c5a059]/30 bg-[#c5a059]/10 p-2 text-slate-800 dark:text-[#dfcaa0] transition hover:bg-[#c5a059]/20"
+                    className="flex min-h-[44px] flex-col justify-center rounded-xl border border-emerald-200/80 bg-emerald-50/70 p-2 text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300 transition hover:bg-emerald-100"
                   >
-                    <DollarSign className="h-4 w-4 mb-1 text-[#c5a059]" />
+                    <DollarSign className="h-4 w-4 mb-1 text-emerald-600" />
                     <span className="text-[11px] font-bold leading-tight">Financeiro</span>
                   </Link>
                 </div>

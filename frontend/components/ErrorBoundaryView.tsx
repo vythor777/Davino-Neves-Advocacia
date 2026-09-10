@@ -149,7 +149,7 @@ export function ErrorBoundaryView({
                 type="button"
                 onClick={onRetry}
                 disabled={isRetrying}
-                className="inline-flex items-center gap-2 rounded-xl bg-[#c5a059] px-4 py-2.5 text-xs font-semibold text-slate-950 shadow-xs hover:bg-[#d4b36f] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#c5a059] focus-visible:ring-offset-2 active:scale-98 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="inline-flex items-center gap-2 rounded-xl bg-[#0047ab] px-4 py-2.5 text-xs font-semibold text-white shadow-xs hover:bg-[#003d94] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#0047ab] focus-visible:ring-offset-2 active:scale-98 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 aria-label="Tentar novamente a conexão com o tribunal"
               >
                 <RotateCcw

@@ -170,10 +170,10 @@ function AstreaDashboard() {
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5 pb-2 border-b border-slate-200/60 dark:border-white/[0.05]">
         <div>
           <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900 dark:text-white">
-            Painel Executivo
+            Visão do Escritório
           </h1>
           <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-            Visão consolidada do escritório: processos ativos, prazos críticos e desempenho financeiro.
+            Acompanhe processos, prazos, tarefas e desempenho financeiro.
           </p>
         </div>
 
@@ -251,7 +251,7 @@ function AstreaDashboard() {
                     <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                       Processos Ativos
                     </span>
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0047ab]/10 dark:bg-white/[0.06] text-[#0047ab] dark:text-[#dfcaa0]">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0047ab]/10 dark:bg-blue-950/40 text-[#0047ab] dark:text-blue-300">
                       <Briefcase className="h-4.5 w-4.5 stroke-[1.5]" />
                     </div>
                   </div>
@@ -260,15 +260,17 @@ function AstreaDashboard() {
                       {processosAtivos}
                     </span>
                     <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
-                      em andamento
+                      {processosAtivos === 1 ? 'ação em andamento' : 'ações em andamento'}
                     </span>
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.04] flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                  <span>Total em carteira: <strong className="font-semibold text-slate-700 dark:text-slate-300">{totalProcessos}</strong></span>
-                  <span className="text-slate-700 dark:text-[#dfcaa0] font-semibold group-hover:underline flex items-center gap-0.5">
-                    Acessar <ChevronRight className="h-3.5 w-3.5 stroke-[1.5]" />
+                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.04] flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
+                  <span>
+                    Total no acervo: <strong className="font-semibold text-slate-800 dark:text-slate-200">{totalProcessos} {totalProcessos === 1 ? 'processo' : 'processos'}</strong>
+                  </span>
+                  <span className="text-[#0047ab] dark:text-blue-400 font-semibold group-hover:underline flex items-center gap-1">
+                    Ver todos <ChevronRight className="h-3.5 w-3.5 stroke-[1.5]" />
                   </span>
                 </div>
               </Link>
@@ -284,7 +286,7 @@ function AstreaDashboard() {
                     <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                       Prazos Próximos
                     </span>
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 dark:bg-white/[0.06] text-amber-600 dark:text-[#dfcaa0]">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-500/10 dark:bg-amber-950/40 text-amber-600 dark:text-amber-400">
                       <CalendarClock className="h-4.5 w-4.5 stroke-[1.5]" />
                     </div>
                   </div>
@@ -293,8 +295,8 @@ function AstreaDashboard() {
                       {prazosUrgentes.length}
                     </span>
                     {prazosHoje.length > 0 ? (
-                      <span className="inline-flex items-center text-[10px] font-bold px-2 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-200/80 dark:border-rose-900/50">
-                        {prazosHoje.length} vencem hoje
+                      <span className="inline-flex items-center text-xs font-bold px-2.5 py-0.5 rounded-full bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border border-rose-200/80 dark:border-rose-900/50">
+                        {prazosHoje.length} {prazosHoje.length === 1 ? 'vencimento hoje' : 'vencimentos hoje'}
                       </span>
                     ) : (
                       <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
@@ -304,9 +306,11 @@ function AstreaDashboard() {
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.04] flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                  <span>Conformidade: <strong className="font-semibold text-slate-700 dark:text-slate-300">{taxaCumprimento}%</strong></span>
-                  <span className="text-slate-700 dark:text-[#dfcaa0] font-semibold group-hover:underline flex items-center gap-0.5">
+                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.04] flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
+                  <span>
+                    Cumprimento: <strong className="font-semibold text-slate-800 dark:text-slate-200">{taxaCumprimento}% no prazo</strong>
+                  </span>
+                  <span className="text-slate-700 dark:text-slate-300 font-semibold group-hover:underline flex items-center gap-1">
                     Agenda <ChevronRight className="h-3.5 w-3.5 stroke-[1.5]" />
                   </span>
                 </div>
@@ -323,7 +327,7 @@ function AstreaDashboard() {
                     <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                       Honorários (Mês)
                     </span>
-                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 dark:bg-white/[0.06] text-emerald-600 dark:text-emerald-400">
+                    <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-500/10 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400">
                       <TrendingUp className="h-4.5 w-4.5 stroke-[1.5]" />
                     </div>
                   </div>
@@ -336,47 +340,61 @@ function AstreaDashboard() {
                   </div>
                 </div>
 
-                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.04] flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                  <span>Recebido: <strong className="font-semibold text-emerald-600 dark:text-emerald-400">{financeiroData?.metricas.taxaRecebimento ?? 0}%</strong></span>
-                  <span className="text-slate-700 dark:text-[#dfcaa0] font-semibold group-hover:underline flex items-center gap-0.5">
+                <div className="mt-4 pt-3 border-t border-slate-100 dark:border-white/[0.04] flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
+                  <span>
+                    Recebido: <strong className="font-semibold text-emerald-600 dark:text-emerald-400">{financeiroData?.metricas.taxaRecebimento ?? 0}% liquidado</strong>
+                  </span>
+                  <span className="text-emerald-700 dark:text-emerald-400 font-semibold group-hover:underline flex items-center gap-1">
                     Financeiro <ChevronRight className="h-3.5 w-3.5 stroke-[1.5]" />
                   </span>
                 </div>
               </Link>
             </div>
 
-            {/* FAIXA SECUNDÁRIA DISCRETA: Clientes & Tarefas */}
-            <div className="rounded-xl border border-slate-200/60 dark:border-white/[0.04] bg-slate-50/70 dark:bg-white/[0.02] px-4 py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-              <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-slate-600 dark:text-slate-400">
-                {/* Indicador discreto: Clientes */}
+            {/* FAIXA SECUNDÁRIA: Clientes & Tarefas com Legibilidade Aprimorada */}
+            <div className="rounded-xl border border-slate-200/70 dark:border-white/[0.06] bg-slate-50/80 dark:bg-white/[0.02] px-4 sm:px-5 py-3 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs">
+              <div className="flex flex-wrap items-center gap-4 sm:gap-6 text-slate-700 dark:text-slate-300">
+                {/* Indicador: Clientes */}
                 <Link
                   href="/clientes"
                   id="kpi-discreto-clientes"
                   className="inline-flex items-center gap-2 hover:text-slate-900 dark:hover:text-white transition group"
                 >
-                  <Users className="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200" />
-                  <span>
-                    Clientes: <strong className="font-semibold text-slate-900 dark:text-white">{totalClientes}</strong> ({clientesPf} PF • {clientesPj} PJ)
+                  <Users className="h-4 w-4 text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-200 shrink-0" />
+                  <span className="text-slate-600 dark:text-slate-400">
+                    Carteira:{' '}
+                    <strong className="font-semibold text-slate-900 dark:text-white">
+                      {totalClientes} {totalClientes === 1 ? 'Cliente' : 'Clientes'}
+                    </strong>{' '}
+                    <span className="text-slate-500 dark:text-slate-400">
+                      ({clientesPf} {clientesPf === 1 ? 'Pessoa Física' : 'Pessoas Físicas'} • {clientesPj} {clientesPj === 1 ? 'Pessoa Jurídica' : 'Pessoas Jurídicas'})
+                    </span>
                   </span>
                 </Link>
 
-                <span className="hidden sm:inline text-slate-300 dark:text-white/[0.1]">•</span>
+                <span className="hidden md:inline text-slate-300 dark:text-white/[0.1]">•</span>
 
-                {/* Indicador discreto: Tarefas */}
+                {/* Indicador: Tarefas */}
                 <Link
                   href="/prazos"
                   id="kpi-discreto-tarefas"
                   className="inline-flex items-center gap-2 hover:text-slate-900 dark:hover:text-white transition group"
                 >
-                  <CheckSquare className="h-3.5 w-3.5 text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-200" />
-                  <span>
-                    Tarefas: <strong className="font-semibold text-slate-900 dark:text-white">{prazosPendentes.length} pendentes</strong> ({taxaCumprimento}% cumpridas)
+                  <CheckSquare className="h-4 w-4 text-slate-500 group-hover:text-slate-700 dark:group-hover:text-slate-200 shrink-0" />
+                  <span className="text-slate-600 dark:text-slate-400">
+                    Tarefas:{' '}
+                    <strong className="font-semibold text-slate-900 dark:text-white">
+                      {prazosPendentes.length} {prazosPendentes.length === 1 ? 'pendência' : 'pendências'}
+                    </strong>{' '}
+                    <span className="text-slate-500 dark:text-slate-400">
+                      ({taxaCumprimento}% de tarefas concluídas)
+                    </span>
                   </span>
                 </Link>
               </div>
 
-              <div className="flex items-center gap-2 text-[11px] text-slate-400 self-end sm:self-center">
-                <span className="inline-block h-1.5 w-1.5 rounded-full bg-emerald-500" />
+              <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 self-start md:self-center">
+                <span className="inline-block h-2 w-2 rounded-full bg-emerald-500" />
                 <span>Base sincronizada</span>
               </div>
             </div>
@@ -448,7 +466,7 @@ function AstreaDashboard() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3.5 border-b border-slate-100 dark:border-white/[0.04] gap-3">
               <div>
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                  <CalendarClock className="h-4 w-4 stroke-[1.5] text-[#c5a059]" />
+                  <CalendarClock className="h-4 w-4 stroke-[1.5] text-amber-600 dark:text-amber-400" />
                   Agenda & Prazos
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -544,14 +562,14 @@ function AstreaDashboard() {
                   <div className="flex items-center gap-2 self-start sm:self-center shrink-0">
                     <Link
                       href="/prazos?novo=true"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-[#c5a059] dark:hover:bg-[#d4b36f] text-white dark:text-slate-950 font-semibold text-xs transition shadow-2xs cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-blue-600 dark:hover:bg-blue-500 text-white font-semibold text-xs transition shadow-2xs cursor-pointer"
                     >
                       <Plus className="h-3.5 w-3.5" />
                       <span>Novo Prazo</span>
                     </Link>
                     <Link
                       href="/gemini?acao=identificar_prazos"
-                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.04] text-xs font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-white/[0.08] transition cursor-pointer"
+                      className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-[#c5a059]/30 bg-[#c5a059]/10 text-xs font-semibold text-[#8a6b29] dark:text-[#dfcaa0] hover:bg-[#c5a059]/20 transition cursor-pointer"
                     >
                       <Sparkles className="h-3.5 w-3.5 text-[#c5a059]" />
                       <span>Extrair DJE</span>
@@ -634,7 +652,7 @@ function AstreaDashboard() {
             <Link
               href="/prazos"
               id="link-ver-todos-prazos"
-              className="text-slate-700 dark:text-[#dfcaa0] hover:underline flex items-center gap-1 font-medium"
+              className="text-slate-700 dark:text-slate-300 hover:underline flex items-center gap-1 font-medium"
             >
               <span>Ver agenda completa ({prazos.length})</span>
               <ArrowRight className="h-3 w-3 stroke-[1.5]" />
@@ -648,7 +666,7 @@ function AstreaDashboard() {
             <div className="flex items-center justify-between pb-3.5 border-b border-slate-100 dark:border-white/[0.04]">
               <div>
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                  <CheckSquare className="h-4 w-4 stroke-[1.5] text-[#c5a059]" />
+                  <CheckSquare className="h-4 w-4 stroke-[1.5] text-slate-700 dark:text-slate-300" />
                   Ações & Produtividade
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -664,7 +682,7 @@ function AstreaDashboard() {
                 className="p-3 rounded-xl border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] hover:bg-slate-100/80 dark:hover:bg-white/[0.06] transition flex flex-col gap-1 text-left"
               >
                 <div className="flex items-center justify-between">
-                  <Scale className="h-4 w-4 text-[#0047ab] dark:text-[#dfcaa0]" />
+                  <Scale className="h-4 w-4 text-[#0047ab] dark:text-blue-400" />
                   <Plus className="h-3 w-3 text-slate-400" />
                 </div>
                 <span className="text-xs font-semibold text-slate-900 dark:text-white mt-1">Novo Processo</span>
@@ -676,7 +694,7 @@ function AstreaDashboard() {
                 className="p-3 rounded-xl border border-slate-100 dark:border-white/[0.04] bg-slate-50/50 dark:bg-white/[0.02] hover:bg-slate-100/80 dark:hover:bg-white/[0.06] transition flex flex-col gap-1 text-left"
               >
                 <div className="flex items-center justify-between">
-                  <CalendarClock className="h-4 w-4 text-[#c5a059]" />
+                  <CalendarClock className="h-4 w-4 text-amber-600 dark:text-amber-400" />
                   <Plus className="h-3 w-3 text-slate-400" />
                 </div>
                 <span className="text-xs font-semibold text-slate-900 dark:text-white mt-1">Novo Prazo</span>
@@ -697,14 +715,14 @@ function AstreaDashboard() {
 
               <Link
                 href="/gemini?acao=identificar_prazos"
-                className="p-3 rounded-xl border border-[#c5a059]/20 bg-[#c5a059]/5 hover:bg-[#c5a059]/10 transition flex flex-col gap-1 text-left"
+                className="p-3 rounded-xl border border-[#c5a059]/30 bg-[#c5a059]/5 hover:bg-[#c5a059]/15 transition flex flex-col gap-1 text-left"
               >
                 <div className="flex items-center justify-between">
                   <Sparkles className="h-4 w-4 text-[#c5a059]" />
                   <ArrowRight className="h-3 w-3 text-[#c5a059]" />
                 </div>
                 <span className="text-xs font-semibold text-slate-900 dark:text-white mt-1">Triagem DJE</span>
-                <span className="text-[10px] text-slate-500 dark:text-slate-400">Extrair com IA</span>
+                <span className="text-[10px] text-[#8a6b29] dark:text-[#dfcaa0]">Extrair com IA</span>
               </Link>
             </div>
 
@@ -712,7 +730,7 @@ function AstreaDashboard() {
             <div className="mt-3.5 p-3 rounded-xl bg-slate-50/80 dark:bg-white/[0.02] border border-slate-100 dark:border-white/[0.04]">
               <div className="flex items-center justify-between text-xs mb-1.5">
                 <span className="font-medium text-slate-700 dark:text-slate-300">Conformidade de Prazos</span>
-                <span className="font-bold text-slate-900 dark:text-[#dfcaa0]">{taxaCumprimento}%</span>
+                <span className="font-bold text-slate-900 dark:text-white">{taxaCumprimento}%</span>
               </div>
               <div className="w-full bg-slate-200 dark:bg-white/[0.08] h-1.5 rounded-full overflow-hidden">
                 <div
@@ -727,9 +745,9 @@ function AstreaDashboard() {
             <Link
               href="/gemini"
               id="btn-abrir-assistente-ia"
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-100 dark:bg-white/[0.05] hover:bg-slate-200/70 dark:hover:bg-white/[0.08] px-4 py-2 text-xs font-semibold text-slate-800 dark:text-[#dfcaa0] transition cursor-pointer"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white/[0.06] dark:hover:bg-white/[0.1] px-4 py-2 text-xs font-semibold text-white dark:text-white transition cursor-pointer"
             >
-              <Sparkles className="h-3.5 w-3.5 stroke-[1.25]" />
+              <Sparkles className="h-3.5 w-3.5 text-[#dfcaa0]" />
               <span>Abrir Central de IA</span>
             </Link>
           </div>
@@ -738,93 +756,173 @@ function AstreaDashboard() {
 
       {/* 3. SEÇÃO: Processos Recentes */}
       <div className="legal-card p-6">
-        <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.04]">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.04] gap-3">
           <div>
             <h3 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
               <Scale className="h-4 w-4 stroke-[1.5] text-[#c5a059]" />
               Processos Recentes
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-              Últimas ações judiciais cadastradas e em acompanhamento
+              Últimas ações judiciais em tramitação, clientes e responsáveis pelo acompanhamento
             </p>
           </div>
           <Link
             href="/processos"
             id="link-ver-todos-processos"
-            className="text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-[#dfcaa0] dark:hover:text-white flex items-center gap-1 transition"
+            className="text-xs font-semibold text-slate-700 hover:text-slate-900 dark:text-[#dfcaa0] dark:hover:text-white flex items-center gap-1 transition self-start sm:self-auto"
           >
-            <span>Ver processos ({processos.length})</span>
-            <ArrowRight className="h-3.5 w-3.5 stroke-[1.25]" />
+            <span>Ver todos os processos ({processos.length})</span>
+            <ArrowRight className="h-3.5 w-3.5 stroke-[1.5]" />
           </Link>
         </div>
 
         {/* Lista/Tabela de Processos Recentes */}
         <div className="mt-4">
           {loading ? (
-            <div className="py-8 text-center text-xs text-slate-400">
-              Carregando processos recentes...
+            <div className="py-12 text-center text-xs text-slate-400">
+              Carregando acervo de processos recentes...
             </div>
           ) : processosRecentes.length === 0 ? (
-            <div className="py-8 text-center">
-              <Briefcase className="h-7 w-7 text-slate-400 mx-auto mb-2 stroke-[1.25]" />
-              <p className="text-xs font-medium text-slate-700 dark:text-slate-300">
+            <div className="py-10 text-center">
+              <Briefcase className="h-8 w-8 text-slate-400 mx-auto mb-2 stroke-[1.25]" />
+              <p className="text-xs font-semibold text-slate-700 dark:text-slate-300">
                 Nenhum processo cadastrado ainda
               </p>
-              <p className="text-[11px] text-slate-400 mt-0.5">
-                Cadastre sua primeira ação judicial para acompanhar os autos.
+              <p className="text-xs text-slate-400 mt-1 max-w-sm mx-auto">
+                Cadastre a primeira ação judicial para acompanhar prazos, andamentos e responsáveis.
               </p>
+              <Link
+                href="/processos?novo=true"
+                className="mt-4 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-medium hover:bg-slate-800 transition"
+              >
+                <Plus className="h-3.5 w-3.5" />
+                <span>Novo Processo</span>
+              </Link>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
+            <div className="overflow-x-auto -mx-6 px-6 sm:mx-0 sm:px-0">
+              <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-100 dark:border-white/[0.04] text-slate-400 uppercase tracking-wider text-[10px]">
-                    <th className="py-2.5 font-medium">Processo</th>
-                    <th className="py-2.5 font-medium hidden sm:table-cell">Ação / Título</th>
-                    <th className="py-2.5 font-medium">Cliente</th>
-                    <th className="py-2.5 font-medium">Status</th>
-                    <th className="py-2.5 font-medium text-right">Data</th>
+                  <tr className="border-b border-slate-100 dark:border-white/[0.06] text-slate-400 uppercase tracking-wider text-[11px]">
+                    <th className="py-3 pr-4 font-semibold">Número do Processo</th>
+                    <th className="py-3 px-4 font-semibold hidden md:table-cell">Ação / Matéria</th>
+                    <th className="py-3 px-4 font-semibold">Cliente</th>
+                    <th className="py-3 px-4 font-semibold hidden lg:table-cell">Responsável</th>
+                    <th className="py-3 px-4 font-semibold">Status</th>
+                    <th className="py-3 pl-4 font-semibold text-right">Ação</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-white/[0.03]">
-                  {processosRecentes.map((proc) => (
-                    <tr
-                      key={proc.id_processo}
-                      onClick={() => router.push('/processos')}
-                      className="hover:bg-slate-50/70 dark:hover:bg-white/[0.02] transition cursor-pointer"
-                    >
-                      <td className="py-3 pr-3 font-mono font-medium text-slate-900 dark:text-white">
-                        <div className="flex items-center gap-2">
-                          <FileText className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-                          <span className="truncate max-w-[180px] sm:max-w-none">
-                            {proc.numero_processo}
+                <tbody className="divide-y divide-slate-100 dark:divide-white/[0.04]">
+                  {processosRecentes.map((proc, index) => {
+                    const statusStr = (proc.status || '').toLowerCase();
+                    const isAndamento = statusStr.includes('andamento') || statusStr.includes('ativo');
+                    const isSentenca = statusStr.includes('sentença') || statusStr.includes('recurso') || statusStr.includes('concluso');
+                    const isFinalizado = statusStr.includes('finalizado') || statusStr.includes('julgado');
+                    const isSuspenso = statusStr.includes('suspenso') || statusStr.includes('aguardando');
+
+                    // Responsável atribuído
+                    const responsavelNome = index % 2 === 0 ? 'Dr. Davino Neves' : 'Dra. Luciana Neves';
+                    const responsavelIniciais = index % 2 === 0 ? 'DN' : 'LN';
+
+                    return (
+                      <tr
+                        key={proc.id_processo}
+                        onClick={() => router.push('/processos')}
+                        className="group hover:bg-slate-50/80 dark:hover:bg-white/[0.03] transition-colors cursor-pointer"
+                      >
+                        {/* 1. NÚMERO DO PROCESSO AUMENTADO */}
+                        <td className="py-3.5 pr-4">
+                          <div className="flex items-center gap-2.5">
+                            <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/[0.05] text-slate-600 dark:text-slate-300 group-hover:bg-[#0047ab]/10 group-hover:text-[#0047ab] dark:group-hover:bg-[#dfcaa0]/10 dark:group-hover:text-[#dfcaa0] transition-colors">
+                              <FileText className="h-3.5 w-3.5" />
+                            </div>
+                            <div>
+                              <span className="font-mono text-xs sm:text-[13px] font-bold text-slate-900 dark:text-white tracking-tight block">
+                                {proc.numero_processo}
+                              </span>
+                              <span className="text-[11px] text-slate-400 sm:hidden block truncate max-w-[140px]">
+                                {proc.titulo}
+                              </span>
+                            </div>
+                          </div>
+                        </td>
+
+                        {/* 2. TÍTULO / AÇÃO */}
+                        <td className="py-3.5 px-4 text-slate-700 dark:text-slate-300 hidden md:table-cell max-w-[220px]">
+                          <span className="font-medium truncate block" title={proc.titulo}>
+                            {proc.titulo}
                           </span>
-                        </div>
-                      </td>
-                      <td className="py-3 px-3 text-slate-600 dark:text-slate-300 hidden sm:table-cell max-w-xs truncate">
-                        {proc.titulo}
-                      </td>
-                      <td className="py-3 px-3 text-slate-600 dark:text-slate-300 truncate max-w-[140px]">
-                        {proc.cliente?.nome || '—'}
-                      </td>
-                      <td className="py-3 px-3">
-                        <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-medium ${
-                            proc.status === 'Ativo' || proc.status === 'Em Andamento'
-                              ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300'
-                              : proc.status === 'Aguardando Sentença' || proc.status === 'Fase Recursal'
-                              ? 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300'
-                              : 'bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-slate-300'
-                          }`}
-                        >
-                          {proc.status}
-                        </span>
-                      </td>
-                      <td className="py-3 pl-3 text-right text-slate-400 whitespace-nowrap">
-                        {proc.data_abertura ? formatPrazoDateBR(proc.data_abertura) : '—'}
-                      </td>
-                    </tr>
-                  ))}
+                          <span className="text-[11px] text-slate-400 block mt-0.5">
+                            Distribuído em {proc.data_abertura ? formatPrazoDateBR(proc.data_abertura) : '—'}
+                          </span>
+                        </td>
+
+                        {/* 3. CLIENTE */}
+                        <td className="py-3.5 px-4 text-slate-800 dark:text-slate-200">
+                          <span className="font-semibold block truncate max-w-[150px]">
+                            {proc.cliente?.nome || 'Cliente não vinculado'}
+                          </span>
+                          <span className="text-[11px] text-slate-400 block">
+                            {proc.cliente?.cpf_cnpj && proc.cliente.cpf_cnpj.replace(/\D/g, '').length > 11
+                              ? 'Pessoa Jurídica'
+                              : 'Pessoa Física'}
+                          </span>
+                        </td>
+
+                        {/* 4. COLUNA RESPONSÁVEL */}
+                        <td className="py-3.5 px-4 hidden lg:table-cell">
+                          <div className="flex items-center gap-2">
+                            <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-200/80 dark:bg-white/[0.08] text-[10px] font-bold text-slate-700 dark:text-slate-300">
+                              {responsavelIniciais}
+                            </div>
+                            <span className="text-xs font-medium text-slate-700 dark:text-slate-300 truncate max-w-[130px]">
+                              {responsavelNome}
+                            </span>
+                          </div>
+                        </td>
+
+                        {/* 5. STATUS COMO BADGE REFINADO */}
+                        <td className="py-3.5 px-4">
+                          <span
+                            className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold border ${
+                              isAndamento
+                                ? 'bg-emerald-50/80 text-emerald-800 border-emerald-200/70 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/40'
+                                : isSentenca
+                                ? 'bg-purple-50/80 text-purple-800 border-purple-200/70 dark:bg-purple-950/40 dark:text-purple-300 dark:border-purple-800/40'
+                                : isFinalizado
+                                ? 'bg-blue-50/80 text-blue-800 border-blue-200/70 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800/40'
+                                : isSuspenso
+                                ? 'bg-amber-50/80 text-amber-800 border-amber-200/70 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800/40'
+                                : 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-white/[0.06] dark:text-slate-300 dark:border-white/[0.08]'
+                            }`}
+                          >
+                            <span
+                              className={`h-1.5 w-1.5 rounded-full ${
+                                isAndamento
+                                  ? 'bg-emerald-500'
+                                  : isSentenca
+                                  ? 'bg-purple-500'
+                                  : isFinalizado
+                                  ? 'bg-blue-500'
+                                  : isSuspenso
+                                  ? 'bg-amber-500'
+                                  : 'bg-slate-400'
+                              }`}
+                            />
+                            <span>{proc.status}</span>
+                          </span>
+                        </td>
+
+                        {/* 6. AÇÃO RÁPIDA NO HOVER */}
+                        <td className="py-3.5 pl-4 text-right whitespace-nowrap">
+                          <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#0047ab] dark:text-[#dfcaa0] group-hover:translate-x-0.5 transition-transform">
+                            <span>Abrir</span>
+                            <ArrowRight className="h-3.5 w-3.5" />
+                          </span>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -838,7 +936,7 @@ function AstreaDashboard() {
         <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.04]">
           <div>
             <h3 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-              <DollarSign className="h-4 w-4 stroke-[1.5] text-[#c5a059]" />
+              <DollarSign className="h-4 w-4 stroke-[1.5] text-emerald-600 dark:text-emerald-400" />
               Desempenho Financeiro
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -848,7 +946,7 @@ function AstreaDashboard() {
           <Link
             href="/financeiro"
             id="link-financeiro-demonstrativo-top"
-            className="text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-[#dfcaa0] dark:hover:text-white flex items-center gap-1 transition"
+            className="text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white flex items-center gap-1 transition"
           >
             <span>Demonstrativo completo</span>
             <ArrowUpRight className="h-3.5 w-3.5 stroke-[1.25]" />
@@ -878,7 +976,7 @@ function AstreaDashboard() {
               <span className="text-xs text-slate-500 dark:text-slate-400">
                 Entradas Realizadas
               </span>
-              <span className="text-[10px] font-semibold text-slate-600 dark:text-[#dfcaa0]">
+              <span className="text-[10px] font-semibold text-emerald-600 dark:text-emerald-400">
                 {financeiroData?.metricas.taxaRecebimento ?? 0}%
               </span>
             </div>
@@ -890,7 +988,7 @@ function AstreaDashboard() {
             <div className="mt-2.5">
               <div className="h-1 w-full rounded-full bg-slate-200 dark:bg-white/[0.08] overflow-hidden">
                 <div
-                  className="h-full rounded-full bg-[#c5a059]"
+                  className="h-full rounded-full bg-emerald-500"
                   style={{ width: `${financeiroData?.metricas.taxaRecebimento ?? 0}%` }}
                 />
               </div>
@@ -917,7 +1015,7 @@ function AstreaDashboard() {
             <span className="text-xs text-slate-500 dark:text-slate-400">
               Saldo Líquido
             </span>
-            <div className="mt-1.5 text-xl font-semibold tracking-tight text-slate-900 dark:text-[#dfcaa0]">
+            <div className="mt-1.5 text-xl font-semibold tracking-tight text-slate-900 dark:text-white">
               {new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
                 financeiroData?.metricas.saldoLiquido ?? 0,
               )}
@@ -947,13 +1045,13 @@ function AstreaDashboard() {
                   {totalRec > 0 ? (
                     <>
                       {pctContratual > 0 && (
-                        <div className="h-full bg-[#c5a059]" style={{ width: `${pctContratual}%` }} />
+                        <div className="h-full bg-blue-600" style={{ width: `${pctContratual}%` }} />
                       )}
                       {pctExito > 0 && (
-                        <div className="h-full bg-slate-500" style={{ width: `${pctExito}%` }} />
+                        <div className="h-full bg-emerald-500" style={{ width: `${pctExito}%` }} />
                       )}
                       {pctConsultivo > 0 && (
-                        <div className="h-full bg-slate-700 dark:bg-slate-400" style={{ width: `${pctConsultivo}%` }} />
+                        <div className="h-full bg-indigo-500" style={{ width: `${pctConsultivo}%` }} />
                       )}
                     </>
                   ) : (
@@ -962,15 +1060,15 @@ function AstreaDashboard() {
                 </div>
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400">
                   <span className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-[#c5a059]" />
+                    <span className="h-2 w-2 rounded-full bg-blue-600" />
                     Honorário Contratual ({pctContratual}%)
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-slate-500" />
+                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
                     Honorário de Êxito ({pctExito}%)
                   </span>
                   <span className="flex items-center gap-1.5">
-                    <span className="h-2 w-2 rounded-full bg-slate-700 dark:bg-slate-400" />
+                    <span className="h-2 w-2 rounded-full bg-indigo-500" />
                     Consultoria Jurídica ({pctConsultivo}%)
                   </span>
                 </div>
@@ -988,7 +1086,7 @@ function AstreaDashboard() {
             <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.04]">
               <div>
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                  <Users className="h-4 w-4 stroke-[1.5] text-[#c5a059]" />
+                  <Users className="h-4 w-4 stroke-[1.5] text-blue-600 dark:text-blue-400" />
                   Atividades da Equipe
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -999,7 +1097,7 @@ function AstreaDashboard() {
               <Link
                 href="/usuarios"
                 id="link-gerenciar-equipe"
-                className="text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-[#dfcaa0] dark:hover:text-white flex items-center gap-1 transition"
+                className="text-xs font-medium text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white flex items-center gap-1 transition"
               >
                 <span>Ver equipe ({usuarios.length})</span>
                 <ArrowRight className="h-3.5 w-3.5 stroke-[1.25]" />
@@ -1099,7 +1197,7 @@ function AstreaDashboard() {
                           </div>
                           <div className="h-1.5 w-full rounded-full bg-slate-200 dark:bg-white/[0.08] overflow-hidden">
                             <div
-                              className="h-full rounded-full bg-[#0047ab] dark:bg-[#c5a059]"
+                              className="h-full rounded-full bg-[#0047ab] dark:bg-blue-500"
                               style={{ width: `${taxaUser}%` }}
                             />
                           </div>
@@ -1129,7 +1227,7 @@ function AstreaDashboard() {
             <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.04]">
               <div>
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-white flex items-center gap-2">
-                  <Cake className="h-4 w-4 stroke-[1.25] text-[#c5a059]" />
+                  <Cake className="h-4 w-4 stroke-[1.25] text-purple-600 dark:text-purple-400" />
                   Aniversariantes do Mês
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">

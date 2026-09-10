@@ -32,20 +32,20 @@ export function InstitutionalFooter() {
               <button
                 type="button"
                 onClick={() => setActiveModal('lgpd')}
-                className="inline-flex items-center gap-1.5 font-medium text-slate-700 dark:text-slate-300 hover:text-[#0c1f3d] dark:hover:text-[#dfcaa0] active:scale-95 transition cursor-pointer py-1"
+                className="inline-flex items-center gap-1.5 font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white active:scale-95 transition cursor-pointer py-1"
                 aria-label="Ver detalhes de conformidade com a LGPD"
               >
-                <ShieldCheck className="h-4 w-4 stroke-[1.25] text-[#c5a059] dark:text-[#dfcaa0] shrink-0" />
+                <ShieldCheck className="h-4 w-4 stroke-[1.25] text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <span className="text-[11px] sm:text-xs">Conformidade LGPD (Lei 13.709/2018)</span>
               </button>
 
               <button
                 type="button"
                 onClick={() => setActiveModal('seguranca')}
-                className="inline-flex items-center gap-1.5 font-medium text-slate-700 dark:text-slate-300 hover:text-[#0c1f3d] dark:hover:text-[#dfcaa0] active:scale-95 transition cursor-pointer py-1"
+                className="inline-flex items-center gap-1.5 font-medium text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white active:scale-95 transition cursor-pointer py-1"
                 aria-label="Ver detalhes de segurança e criptografia TLS"
               >
-                <Lock className="h-3.5 w-3.5 stroke-[1.25] text-[#c5a059] dark:text-[#dfcaa0] shrink-0" />
+                <Lock className="h-3.5 w-3.5 stroke-[1.25] text-[#0047ab] dark:text-blue-400 shrink-0" />
                 <span className="text-[11px] sm:text-xs">Criptografia TLS 256-bit Ponta a Ponta</span>
               </button>
 
@@ -77,14 +77,14 @@ export function InstitutionalFooter() {
           {/* Coluna 1: Identidade */}
           <div className="space-y-3">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#0c1f3d] text-[#dfcaa0] border border-[#c5a059]/40 shadow-xs font-semibold text-xs dark:bg-[#10203a]">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-900 text-[#dfcaa0] border border-[#c5a059]/40 shadow-xs font-semibold text-xs dark:bg-slate-800">
                 DN
               </div>
               <div className="min-w-0">
-                <h4 className="font-bold text-[#0c1f3d] dark:text-white tracking-tight text-sm truncate">
+                <h4 className="font-bold text-slate-900 dark:text-white tracking-tight text-sm truncate">
                   Davino Neves
                 </h4>
-                <p className="text-[10px] text-[#c5a059] dark:text-[#dfcaa0] font-semibold tracking-wide uppercase">
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-wide uppercase">
                   Advocacia & Controladoria
                 </p>
               </div>
@@ -96,8 +96,8 @@ export function InstitutionalFooter() {
 
           {/* Coluna 2: Dados Oficiais e OAB */}
           <div className="space-y-2.5">
-            <h5 className="font-semibold text-[#0c1f3d] dark:text-white uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-              <Scale className="h-3.5 w-3.5 stroke-[1.25] text-[#c5a059] dark:text-[#dfcaa0]" />
+            <h5 className="font-semibold text-slate-900 dark:text-white uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+              <Scale className="h-3.5 w-3.5 stroke-[1.25] text-slate-600 dark:text-slate-400" />
               <span>Registros Oficiais</span>
             </h5>
             <ul className="space-y-2 text-[11px] text-slate-500 dark:text-slate-400">
@@ -116,15 +116,15 @@ export function InstitutionalFooter() {
 
           {/* Coluna 3: Atendimento e Plantão */}
           <div className="space-y-2.5">
-            <h5 className="font-semibold text-[#0c1f3d] dark:text-white uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-              <Phone className="h-3.5 w-3.5 stroke-[1.25] text-[#c5a059] dark:text-[#dfcaa0]" />
+            <h5 className="font-semibold text-slate-900 dark:text-white uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+              <Phone className="h-3.5 w-3.5 stroke-[1.25] text-slate-600 dark:text-slate-400" />
               <span>Plantão & Atendimento</span>
             </h5>
             <ul className="space-y-2 text-[11px] text-slate-500 dark:text-slate-400">
               <li>
                 <a
                   href="tel:+551134508900"
-                  className="inline-flex items-center gap-1.5 hover:text-[#0c1f3d] dark:hover:text-[#dfcaa0] transition py-0.5"
+                  className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition py-0.5"
                 >
                   <Phone className="h-3.5 w-3.5 stroke-[1.25] text-slate-400 shrink-0" />
                   <span>(11) 3450-8900 / (11) 98877-0022</span>
@@ -133,7 +133,7 @@ export function InstitutionalFooter() {
               <li>
                 <a
                   href="mailto:contato@davinoneves.com.br"
-                  className="inline-flex items-center gap-1.5 hover:text-[#0c1f3d] dark:hover:text-[#dfcaa0] transition break-all py-0.5"
+                  className="inline-flex items-center gap-1.5 hover:text-slate-900 dark:hover:text-white transition break-all py-0.5"
                 >
                   <Mail className="h-3.5 w-3.5 stroke-[1.25] text-slate-400 shrink-0" />
                   <span>contato@davinoneves.com.br</span>
@@ -143,9 +143,9 @@ export function InstitutionalFooter() {
                 <button
                   type="button"
                   onClick={() => setActiveModal('lgpd')}
-                  className="inline-flex items-center gap-1.5 text-slate-600 dark:text-slate-300 hover:text-[#0c1f3d] dark:hover:text-[#dfcaa0] transition cursor-pointer text-left py-0.5"
+                  className="inline-flex items-center gap-1.5 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition cursor-pointer text-left py-0.5"
                 >
-                  <ShieldCheck className="h-3.5 w-3.5 stroke-[1.25] text-[#c5a059] dark:text-[#dfcaa0] shrink-0" />
+                  <ShieldCheck className="h-3.5 w-3.5 stroke-[1.25] text-emerald-600 dark:text-emerald-400 shrink-0" />
                   <span>DPO / LGPD: dpo@davinoneves.com.br</span>
                 </button>
               </li>
@@ -154,45 +154,45 @@ export function InstitutionalFooter() {
 
           {/* Coluna 4: Módulos Rápidos */}
           <div className="space-y-2.5">
-            <h5 className="font-semibold text-[#0c1f3d] dark:text-white uppercase tracking-wider text-[11px] flex items-center gap-1.5">
-              <ExternalLink className="h-3.5 w-3.5 stroke-[1.25] text-[#c5a059] dark:text-[#dfcaa0]" />
+            <h5 className="font-semibold text-slate-900 dark:text-white uppercase tracking-wider text-[11px] flex items-center gap-1.5">
+              <ExternalLink className="h-3.5 w-3.5 stroke-[1.25] text-slate-600 dark:text-slate-400" />
               <span>Acesso Rápido</span>
             </h5>
             <div className="grid grid-cols-2 gap-x-2 gap-y-1.5 text-[11px]">
               <Link
                 href="/processos"
-                className="hover:text-[#0c1f3d] dark:hover:text-[#dfcaa0] hover:underline transition-colors py-1.5 flex items-center min-h-[36px]"
+                className="hover:text-[#0047ab] dark:hover:text-blue-400 hover:underline transition-colors py-1.5 flex items-center min-h-[36px]"
               >
                 Processos
               </Link>
               <Link
                 href="/prazos"
-                className="hover:text-[#0c1f3d] dark:hover:text-[#dfcaa0] hover:underline transition-colors py-1.5 flex items-center min-h-[36px]"
+                className="hover:text-[#0047ab] dark:hover:text-blue-400 hover:underline transition-colors py-1.5 flex items-center min-h-[36px]"
               >
                 Prazos Fatais
               </Link>
               <Link
                 href="/clientes"
-                className="hover:text-[#0c1f3d] dark:hover:text-[#dfcaa0] hover:underline transition-colors py-1.5 flex items-center min-h-[36px]"
+                className="hover:text-[#0047ab] dark:hover:text-blue-400 hover:underline transition-colors py-1.5 flex items-center min-h-[36px]"
               >
                 Clientes
               </Link>
               <Link
                 href="/datajud"
-                className="hover:text-[#0c1f3d] dark:hover:text-[#dfcaa0] hover:underline transition-colors py-1.5 flex items-center min-h-[36px]"
+                className="hover:text-[#0047ab] dark:hover:text-blue-400 hover:underline transition-colors py-1.5 flex items-center min-h-[36px]"
               >
                 DataJud CNJ
               </Link>
               <Link
                 href="/gemini"
-                className="hover:text-[#0c1f3d] dark:hover:text-[#dfcaa0] hover:underline transition-colors flex items-center gap-1 py-1.5 min-h-[36px]"
+                className="hover:text-[#0047ab] dark:hover:text-blue-400 hover:underline transition-colors flex items-center gap-1 py-1.5 min-h-[36px]"
               >
                 <Sparkles className="h-3 w-3 stroke-[1.25] text-[#c5a059] shrink-0" />
                 <span>IA Gemini</span>
               </Link>
               <Link
                 href="/usuarios"
-                className="hover:text-[#0c1f3d] dark:hover:text-[#dfcaa0] hover:underline transition-colors py-1.5 flex items-center min-h-[36px]"
+                className="hover:text-[#0047ab] dark:hover:text-blue-400 hover:underline transition-colors py-1.5 flex items-center min-h-[36px]"
               >
                 Equipe & RBAC
               </Link>
@@ -209,7 +209,7 @@ export function InstitutionalFooter() {
             <button
               type="button"
               onClick={() => setActiveModal('termos')}
-              className="hover:text-[#0c1f3d] dark:hover:text-[#dfcaa0] transition cursor-pointer min-h-[36px] px-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-white/[0.04]"
+              className="hover:text-[#0047ab] dark:hover:text-blue-400 transition cursor-pointer min-h-[36px] px-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-white/[0.04]"
             >
               Termos de Uso
             </button>
@@ -217,7 +217,7 @@ export function InstitutionalFooter() {
             <button
               type="button"
               onClick={() => setActiveModal('lgpd')}
-              className="hover:text-[#0c1f3d] dark:hover:text-[#dfcaa0] transition cursor-pointer min-h-[36px] px-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-white/[0.04]"
+              className="hover:text-[#0047ab] dark:hover:text-blue-400 transition cursor-pointer min-h-[36px] px-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-white/[0.04]"
             >
               Política de Privacidade & LGPD
             </button>
@@ -225,7 +225,7 @@ export function InstitutionalFooter() {
             <button
               type="button"
               onClick={() => setActiveModal('seguranca')}
-              className="hover:text-[#0c1f3d] dark:hover:text-[#dfcaa0] transition cursor-pointer min-h-[36px] px-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-white/[0.04]"
+              className="hover:text-[#0047ab] dark:hover:text-blue-400 transition cursor-pointer min-h-[36px] px-2 py-1 rounded-lg hover:bg-slate-100 dark:hover:bg-white/[0.04]"
             >
               Segurança da Informação
             </button>
