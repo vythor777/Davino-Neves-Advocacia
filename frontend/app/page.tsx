@@ -180,7 +180,7 @@ function AstreaDashboard() {
         {/* Ações Rápidas de Topo */}
         <div className="flex flex-wrap items-center gap-2.5">
           <Link
-            href="/processos"
+            href="/processos?novo=true"
             id="btn-novo-processo-hero"
             className="inline-flex items-center gap-2 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-slate-100 px-4 py-2 text-xs font-semibold transition cursor-pointer"
           >
@@ -188,7 +188,7 @@ function AstreaDashboard() {
             <span>Novo Processo</span>
           </Link>
           <Link
-            href="/prazos"
+            href="/prazos?novo=true"
             id="btn-novo-prazo-hero"
             className="inline-flex items-center gap-2 rounded-xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.03] hover:bg-slate-50 dark:hover:bg-white/[0.06] px-3.5 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 transition cursor-pointer"
           >

@@ -52,11 +52,11 @@ Definir os fluxos desejados para compromissos independentes e documentos, inclui
 
 ### 4. Validação autenticada
 
-Ainda faltam testes dos fluxos de clientes, processos, prazos, financeiro, usuários, DataJud e IA com uma conta de teste autorizada. Alterações persistentes devem usar dados de teste identificáveis em um ambiente apropriado.
+A navegação autenticada foi conferida em painel, clientes, processos, prazos, financeiro e equipe. Foram abertos e fechados os formulários de cadastro, sem salvar registros. A tela DataJud carregou, mas nenhuma consulta a um processo real foi executada. O resumo de documentos com IA respondeu a um texto inteiramente fictício. Ainda faltam testes de gravação, edição, exclusão e permissões por perfil com dados descartáveis em ambiente de teste. Alterações persistentes devem usar dados de teste identificáveis em um ambiente apropriado.
 
 ### 5. Verificações automatizadas
 
-Os testes anteriores do backend cobrem apenas dois casos básicos. Este conjunto adiciona testes de regressão para autenticação e destino da API. Persistem dez avisos de lint preexistentes no frontend, principalmente imports não usados e uma dependência de efeito em processos.
+Os testes anteriores do backend cobrem apenas dois casos básicos. Este conjunto adiciona testes de regressão para autenticação e destino da API. Persistem nove avisos de lint preexistentes no frontend, principalmente imports não usados e variáveis não usadas.
 
 ## Como conferir este conjunto
 
@@ -64,9 +64,20 @@ Usar Node.js 24 e instalar dependências com `npm ci` na raiz. Em seguida:
 
 ```sh
 npm run test:session
+npm run test:ui
 npm run build
 npm run test --workspace=backend
 npm run lint
 ```
 
 Essas verificações não exigem as credenciais do banco real. Testes de ponta a ponta e inicialização completa do servidor exigem um banco de teste configurado separadamente.
+
+
+## Correções após a navegação autenticada
+
+- Os botões de novo processo e prazo no topo do painel agora indicam a ação de cadastro na URL.
+- Clientes e prazos passam a reconhecer `novo=true`. Os três cadastros compartilham um hook que consome o parâmetro depois de abrir o formulário, preserva os demais filtros e evita reabertura durante atualização dos dados.
+- As telas de processos usam o dia civil de distribuição, sem deslocá-lo pelo fuso do navegador. Testes renderizam a tabela em quatro fusos, incluindo São Paulo e Manaus.
+- As datas iniciais dos formulários de processo e prazo usam o dia local.
+
+A compilação do frontend nesta etapa passou com `npm run build --workspace=frontend -- --webpack`. O compilador padrão Turbopack não conseguiu abrir uma porta interna no ambiente restrito de execução; a configuração de build do projeto foi preservada. Os novos atalhos ainda precisam de uma conferência visual após publicar uma versão de teste. Nenhum conteúdo privado das telas foi copiado para este relatório ou para os testes.

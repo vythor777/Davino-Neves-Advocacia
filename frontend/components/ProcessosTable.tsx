@@ -1,5 +1,7 @@
 'use client';
 
+import { formatPrazoDateBR } from '@/utils/dateUtils';
+
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { Processo } from '@/services/processoService';
@@ -147,7 +149,7 @@ export function ProcessosTable({
             {displayedItems.map((proc, index) => {
               const countPrazos = proc._count?.prazos ?? proc.prazos?.length ?? 0;
               const formattedDate = proc.data_abertura
-                ? new Date(proc.data_abertura).toLocaleDateString('pt-BR')
+                ? formatPrazoDateBR(proc.data_abertura)
                 : '—';
 
               return (
@@ -281,7 +283,7 @@ export function ProcessosTable({
         {displayedItems.map((proc, index) => {
           const countPrazos = proc._count?.prazos ?? proc.prazos?.length ?? 0;
           const formattedDate = proc.data_abertura
-            ? new Date(proc.data_abertura).toLocaleDateString('pt-BR')
+            ? formatPrazoDateBR(proc.data_abertura)
             : '—';
 
           return (
