@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import AuthGuard from '@/components/AuthGuard';
+import { useCreateFromQuery } from '@/hooks/useCreateFromQuery';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { EmptyState } from '@/components/EmptyState';
 import { TableSkeleton, MetricCardSkeleton } from '@/components/Skeleton';
@@ -99,7 +100,9 @@ function formatarDataHora(dataStr?: string | null): string {
 export default function ClientesPage() {
   return (
     <AuthGuard>
-      <ClientesContent />
+      <Suspense fallback={<TableSkeleton />}>
+        <ClientesContent />
+      </Suspense>
     </AuthGuard>
   );
 }
@@ -166,7 +169,7 @@ function ClientesContent() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const openCreateModal = () => {
+  const openCreateModal = useCallback(() => {
     setEditingClient(null);
     setFormTipo('pf');
     setNome('');
@@ -177,7 +180,9 @@ function ClientesContent() {
     setDataNascimento('');
     setFormErrors({});
     setModalOpen(true);
-  };
+  }, []);
+
+  useCreateFromQuery(openCreateModal);
 
   const openEditModal = (client: Cliente) => {
     setEditingClient(client);

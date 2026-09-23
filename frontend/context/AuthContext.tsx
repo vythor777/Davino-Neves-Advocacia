@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
 import authService, { Usuario, LoginCredentials } from '@/services/authService';
+import { SESSION_CLEARED_EVENT, TOKEN_KEY } from '@/services/session';
 
 interface AuthContextType {
   user: Usuario | null;
@@ -27,24 +28,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     let isMounted = true;
+    const handleSessionCleared = () => {
+      setToken(null);
+      setUser(null);
+    };
+    const handleStorage = (event: StorageEvent) => {
+      if ((event.key === TOKEN_KEY || event.key === null) && !authService.getToken()) {
+        handleSessionCleared();
+      }
+    };
+    window.addEventListener(SESSION_CLEARED_EVENT, handleSessionCleared);
+    window.addEventListener('storage', handleStorage);
 
     async function initializeAuth() {
       try {
         const storedToken = authService.getToken();
         const storedUser = authService.getStoredUser();
 
-        if (storedToken && storedUser && isMounted) {
+        if (storedToken && isMounted) {
           setToken(storedToken);
           setUser(storedUser);
 
           try {
             const profile = await authService.getProfile();
-            if (isMounted) {
+            if (isMounted && authService.getToken() === storedToken) {
               setUser(profile);
               authService.setSession(storedToken, profile);
             }
           } catch {
-            // Token pode estar expirado
+            // O interceptor limpa sessões rejeitadas; falhas temporárias preservam a sessão.
+            if (isMounted && !authService.getToken()) handleSessionCleared();
           }
         }
       } catch {
@@ -60,6 +73,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     return () => {
       isMounted = false;
+      window.removeEventListener(SESSION_CLEARED_EVENT, handleSessionCleared);
+      window.removeEventListener('storage', handleStorage);
     };
   }, []);
 
@@ -78,15 +93,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     authService.clearSession();
     setToken(null);
     setUser(null);
-    router.push('/login');
+    router.replace('/login');
   };
 
   const refreshProfile = useCallback(async () => {
+    const currentToken = authService.getToken();
+    if (!currentToken) return;
     try {
       const profile = await authService.getProfile();
-      setUser(profile);
-      const currentToken = authService.getToken();
-      if (currentToken) {
+      if (authService.getToken() === currentToken) {
+        setUser(profile);
         authService.setSession(currentToken, profile);
       }
     } catch {

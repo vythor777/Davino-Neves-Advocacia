@@ -38,13 +38,8 @@ export function proxy(request: NextRequest) {
     return NextResponse.redirect(loginUrl);
   }
 
-  // Se já autenticado e tentando acessar /login: redirecionar para o dashboard '/'
-  if (token && isPublicPath) {
-    const redirectParam = request.nextUrl.searchParams.get('redirect');
-    const redirectUrl = redirectParam && redirectParam !== '/login' ? redirectParam : '/';
-    return NextResponse.redirect(new URL(redirectUrl, request.url));
-  }
-
+  // A presença de um cookie não comprova uma sessão válida. A tela de login
+  // consulta /auth/me antes de decidir o retorno ao painel.
   return NextResponse.next();
 }
 

@@ -1,4 +1,5 @@
 import api from './api';
+import { TOKEN_KEY, USER_KEY, clearSession, getSessionToken } from './session';
 
 export type Role = 'ADMINISTRADOR' | 'ADVOGADO' | 'ESTAGIARIO';
 
@@ -23,9 +24,6 @@ export interface LoginResponse {
   user: Usuario;
 }
 
-const TOKEN_KEY = 'davino_auth_token';
-const USER_KEY = 'davino_auth_user';
-
 export const authService = {
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     const response = await api.post<LoginResponse>('/auth/login', credentials);
@@ -44,31 +42,15 @@ export const authService = {
       localStorage.setItem(TOKEN_KEY, token);
       localStorage.setItem(USER_KEY, JSON.stringify(user));
       // Configura cookies para verificação imediata pelo Middleware do Next.js
-      document.cookie = `davino_token=${token}; path=/; max-age=604800; SameSite=Lax`;
-      document.cookie = `davino_auth_token=${token}; path=/; max-age=604800; SameSite=Lax`;
+      const secure = window.location.protocol === 'https:' ? '; Secure' : '';
+      document.cookie = `davino_token=${encodeURIComponent(token)}; path=/; max-age=604800; SameSite=Lax${secure}`;
+      document.cookie = `davino_auth_token=${encodeURIComponent(token)}; path=/; max-age=604800; SameSite=Lax${secure}`;
     }
   },
 
-  clearSession(): void {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem(TOKEN_KEY);
-      localStorage.removeItem(USER_KEY);
-      document.cookie = 'davino_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
-      document.cookie = 'davino_auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax';
-    }
-  },
+  clearSession,
 
-  getToken(): string | null {
-    if (typeof window !== 'undefined') {
-      const token = localStorage.getItem(TOKEN_KEY);
-      if (token) return token;
-
-      // Fallback para cookie caso localStorage não esteja populado
-      const match = document.cookie.match(/(?:^|;\s*)(?:davino_token|davino_auth_token)=([^;]*)/);
-      return match ? decodeURIComponent(match[1]) : null;
-    }
-    return null;
-  },
+  getToken: getSessionToken,
 
   getStoredUser(): Usuario | null {
     if (typeof window !== 'undefined') {

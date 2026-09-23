@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
 import AuthGuard from '@/components/AuthGuard';
+import { useCreateFromQuery } from '@/hooks/useCreateFromQuery';
 import { processoService, Processo, CreateProcessoInput } from '@/services/processoService';
 import { clienteService, Cliente } from '@/services/clienteService';
 import { ProcessosTable, formatarNumeroCNJ, getStatusBadgeStyle } from '@/components/ProcessosTable';
@@ -15,6 +15,7 @@ import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { ConfirmModal } from '@/components/ConfirmModal';
 import { AuditTrail } from '@/components/AuditTrail';
 import { toast } from 'sonner';
+import { formatDateForInput } from '@/utils/dateUtils';
 import {
   Briefcase,
   PlusCircle,
@@ -48,7 +49,6 @@ export default function ProcessosPage() {
 }
 
 function ProcessosContent() {
-  const searchParams = useSearchParams();
   const [processos, setProcessos] = useState<Processo[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -122,12 +122,12 @@ function ProcessosContent() {
     fetchProcessos();
   }, [fetchProcessos]);
 
-  const openCreateModal = () => {
+  const openCreateModal = useCallback(() => {
     setEditingProcesso(null);
     setNumeroProcesso('');
     setTitulo('');
     setDescricao('');
-    const today = new Date().toISOString().split('T')[0];
+    const today = formatDateForInput('');
     setDataAbertura(today);
     setStatus('Em Andamento');
     setIdCliente(clientes.length > 0 ? String(clientes[0].id_cliente) : '');
@@ -136,13 +136,9 @@ function ProcessosContent() {
     if (clientes.length === 0) {
       fetchClientesList();
     }
-  };
+  }, [clientes, fetchClientesList]);
 
-  useEffect(() => {
-    if (searchParams.get('novo') === 'true') {
-      openCreateModal();
-    }
-  }, [searchParams]);
+  useCreateFromQuery(openCreateModal, !loading);
 
   const openEditModal = (proc: Processo) => {
     setEditingProcesso(proc);

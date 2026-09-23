@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import AuthGuard from '@/components/AuthGuard';
+import { useCreateFromQuery } from '@/hooks/useCreateFromQuery';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { EmptyState } from '@/components/EmptyState';
 import { TableSkeleton, MetricCardSkeleton, CardGridSkeleton } from '@/components/Skeleton';
@@ -40,7 +41,9 @@ type FilterType = 'todos' | 'urgentes' | 'vencidos' | 'cumpridos' | 'pendentes' 
 export default function PrazosPage() {
   return (
     <AuthGuard>
-      <PrazosContent />
+      <Suspense fallback={<TableSkeleton />}>
+        <PrazosContent />
+      </Suspense>
     </AuthGuard>
   );
 }
@@ -125,12 +128,12 @@ function PrazosContent() {
     fetchResponsaveis();
   }, [fetchPrazos, fetchResponsaveis]);
 
-  const openCreateModal = () => {
+  const openCreateModal = useCallback(() => {
     setEditingPrazo(null);
     setDescricao('');
     const target = new Date();
     target.setDate(target.getDate() + 5);
-    const suggestedDate = target.toISOString().split('T')[0];
+    const suggestedDate = `${target.getFullYear()}-${String(target.getMonth() + 1).padStart(2, '0')}-${String(target.getDate()).padStart(2, '0')}`;
     setDataVencimento(suggestedDate);
     setHora('09:00');
     setTipoCompromisso('Prazo Fatal');
@@ -145,7 +148,9 @@ function PrazosContent() {
     if (responsaveis.length === 0) {
       fetchResponsaveis();
     }
-  };
+  }, [processos, responsaveis.length, fetchPrazos, fetchResponsaveis]);
+
+  useCreateFromQuery(openCreateModal, !loading);
 
   const handleSelectPrazoFromCalendar = (prazo: Prazo) => {
     setSelectedPrazoDetails(prazo);

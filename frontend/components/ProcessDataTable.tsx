@@ -1,5 +1,7 @@
 'use client';
 
+import { formatPrazoDateBR } from '@/utils/dateUtils';
+
 import React, { useState } from 'react';
 import {
   Eye,
@@ -137,6 +139,8 @@ function getDataFormatada(item: ProcessoItem): string {
   const data = item.data_abertura || item.dataAjuizamento || item.data_criacao;
   if (!data) return '—';
   try {
+    // Datas civis de distribuição não representam um instante UTC.
+    if (item.data_abertura) return formatPrazoDateBR(item.data_abertura);
     return new Date(data).toLocaleDateString('pt-BR');
   } catch {
     return String(data);

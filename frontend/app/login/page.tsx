@@ -3,6 +3,7 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { getLoginRedirect } from '@/utils/loginRedirect';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import {
   Scale,
@@ -37,7 +38,7 @@ function LoginFallback() {
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirectPath = searchParams.get('redirect') || '/';
+  const redirectPath = getLoginRedirect(searchParams.get('redirect'));
 
   const { login, isAuthenticated, isLoading: authLoading } = useAuth();
 
