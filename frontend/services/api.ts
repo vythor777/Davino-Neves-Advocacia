@@ -1,9 +1,11 @@
 import axios from 'axios';
+import { clearSession, getSessionToken } from './session';
+import { getBackendApiUrl } from '../utils/backendUrl';
 
 // URL base da API configurável via variável de ambiente NEXT_PUBLIC_API_URL
 const baseURL =
   process.env.NEXT_PUBLIC_API_URL ||
-  (typeof window !== 'undefined' ? '/api' : (process.env.BACKEND_URL || 'http://127.0.0.1:10000/api'));
+  (typeof window !== 'undefined' ? '/api' : getBackendApiUrl(process.env));
 
 export const api = axios.create({
   baseURL,
@@ -17,7 +19,7 @@ export const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
-      const token = localStorage.getItem('davino_auth_token');
+      const token = getSessionToken();
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -30,12 +32,12 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    // Se receber 401 Unauthorized e não estiver na página de login, pode limpar a sessão
+    // Uma resposta antiga não deve encerrar uma sessão aberta após a requisição.
     if (error.response?.status === 401 && typeof window !== 'undefined') {
-      const isLoginPage = window.location.pathname === '/login';
-      if (!isLoginPage && localStorage.getItem('davino_auth_token')) {
-        localStorage.removeItem('davino_auth_token');
-        localStorage.removeItem('davino_auth_user');
+      const currentToken = getSessionToken();
+      const sentAuthorization = error.config?.headers?.Authorization;
+      if (currentToken && sentAuthorization === `Bearer ${currentToken}` && error.config?.url !== '/auth/login') {
+        clearSession();
       }
     }
 

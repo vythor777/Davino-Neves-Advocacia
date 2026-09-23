@@ -1,9 +1,8 @@
 import type { NextConfig } from "next";
 
-const backendUrl =
-  process.env.BACKEND_INTERNAL_URL ||
-  process.env.BACKEND_URL ||
-  "http://127.0.0.1:10000";
+import { getBackendApiUrl } from './utils/backendUrl';
+
+const backendApiUrl = getBackendApiUrl(process.env);
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: [
@@ -27,13 +26,10 @@ const nextConfig: NextConfig = {
     ];
   },
   async rewrites() {
-    if (!backendUrl) {
-      return [];
-    }
     return [
       {
         source: '/api/:path*',
-        destination: `${backendUrl}/api/:path*`,
+        destination: `${backendApiUrl}/:path*`,
       },
     ];
   },
