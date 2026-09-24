@@ -3,12 +3,14 @@ import type { ReactNode } from "react";
 import { ArrowUpRight } from "lucide-react";
 
 export function DashboardSection({
+  className = "",
   title,
   href,
   children,
   loading,
   unavailable,
 }: {
+  className?: string;
   title: string;
   href: string;
   children: ReactNode;
@@ -16,11 +18,13 @@ export function DashboardSection({
   unavailable: boolean;
 }) {
   return (
-    <section className="min-w-0 rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+    <section
+      className={`dashboard-section min-w-0 rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 ${className}`}
+    >
       <header className="flex items-center justify-between gap-4 border-b border-slate-200 p-5 dark:border-slate-800">
         <h2 className="font-semibold">{title}</h2>
         <Link
-          className="dashboard-link text-sm"
+          className="dashboard-link shrink-0 text-xs font-medium"
           href={href}
           aria-label={`Ver todos: ${title}`}
         >

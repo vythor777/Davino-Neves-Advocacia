@@ -4,15 +4,11 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { OfficeNavigation } from '@/components/OfficeNavigation';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import {
-  LayoutDashboard,
-  Briefcase,
-  CalendarClock,
-  Users,
+  CircleDollarSign,
   Search,
-  Sparkles,
-  Shield,
   Scale,
   Bell,
   ChevronDown,
@@ -22,7 +18,6 @@ import {
   CheckCircle2,
   Clock,
   Settings,
-  CircleDollarSign,
   AlertCircle,
   CheckCheck,
   RefreshCw,
@@ -149,17 +144,6 @@ export function AppLayout({ children }: AppLayoutProps) {
     }
   }, [pathname]);
 
-  const navLinks = [
-    { label: 'Painel', href: '/', icon: LayoutDashboard, exact: true },
-    { label: 'Processos', href: '/processos', icon: Briefcase },
-    { label: 'Prazos', href: '/prazos', icon: CalendarClock },
-    { label: 'Clientes', href: '/clientes', icon: Users },
-    { label: 'Financeiro', href: '/financeiro', icon: CircleDollarSign },
-    { label: 'Consultar CNJ', href: '/datajud', icon: Scale },
-    { label: 'Assistente IA', href: '/gemini', icon: Sparkles },
-    { label: 'Equipe', href: '/usuarios', icon: Shield },
-  ];
-
   const handleGlobalSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
@@ -174,7 +158,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       ? 'Advogado'
       : user?.role === 'ESTAGIARIO'
       ? 'Estagiário'
-      : 'Administrador';
+      : 'Equipe';
 
   // Ocultar Sidebar e Header na tela de autenticação
   if (pathname === '/login') {
@@ -182,57 +166,28 @@ export function AppLayout({ children }: AppLayoutProps) {
   }
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#f7f9fc] dark:bg-[#070e1a] text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors duration-200">
+    <div className="office-shell flex h-dvh overflow-hidden bg-[#f7f9fc] dark:bg-[#070e1a] text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors duration-200">
       {/* Sidebar Esquerda (Fixa, w-64 border-r border-[#0c1f3d]/[0.08] dark:border-white/[0.06] bg-white dark:bg-[#091322] flex flex-col justify-between p-5) */}
       <aside className="hidden lg:flex w-64 shrink-0 flex-col justify-between border-r border-[#0c1f3d]/[0.08] dark:border-white/[0.06] bg-white dark:bg-[#091322] p-5 select-none z-30 transition-colors">
         {/* Topo da Sidebar */}
         <div className="flex flex-col">
           {/* Logotipo estilizado do escritório 'Davino Neves Advocacia' */}
           <Link href="/" className="group flex items-center gap-3 transition-opacity hover:opacity-95">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0c1f3d] dark:bg-[#10203a] text-[#dfcaa0] border border-[#c5a059]/30 dark:border-[#c5a059]/25 shadow-xs transition-transform group-hover:scale-105">
-              <Scale className="h-5 w-5 stroke-[1.25] text-[#dfcaa0]" />
+            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0c1f3d] dark:bg-[#10203a] text-blue-200 border border-blue-500/30 dark:border-blue-500/25 shadow-xs transition-transform group-hover:scale-105">
+              <Scale className="h-5 w-5 stroke-[1.25] text-blue-200" />
             </div>
             <div className="min-w-0 flex-1">
               <span className="font-semibold text-sm tracking-tight text-[#0c1f3d] dark:text-white block truncate">
                 Davino Neves
               </span>
-              <span className="text-[10px] font-semibold tracking-widest uppercase text-[#c5a059] dark:text-[#dfcaa0] block">
+              <span className="text-[10px] font-semibold tracking-widest uppercase text-blue-700 dark:text-blue-200 block">
                 Advocacia
               </span>
             </div>
           </Link>
 
           {/* Centro (Navegação): Links verticais em lista com design limpo e moderno */}
-          <nav className="mt-8 space-y-1" aria-label="Navegação Lateral Principal">
-            <div className="px-3 pb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
-              Menu Principal
-            </div>
-            {navLinks.map((item) => {
-              const Icon = item.icon;
-              const isActive = item.exact
-                ? pathname === item.href
-                : pathname === item.href || pathname.startsWith(`${item.href}/`);
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`group flex items-center gap-3 px-3 py-2.5 text-xs transition-all duration-150 rounded-lg ${
-                    isActive
-                      ? 'bg-[#0c1f3d]/[0.06] dark:bg-[#dfcaa0]/[0.1] text-[#0c1f3d] dark:text-[#dfcaa0] font-medium border-l-2 border-[#c5a059] pl-2.5'
-                      : 'text-slate-600 dark:text-slate-400 hover:text-[#0c1f3d] dark:hover:text-slate-200 hover:bg-[#0c1f3d]/[0.03] dark:hover:bg-white/[0.03] font-normal'
-                  }`}
-                >
-                  <Icon
-                    className={`h-4 w-4 shrink-0 stroke-[1.25] transition-colors ${
-                      isActive ? 'text-[#c5a059] dark:text-[#dfcaa0]' : 'text-slate-400 dark:text-slate-500 group-hover:text-[#0c1f3d] dark:group-hover:text-slate-300'
-                    }`}
-                  />
-                  <span className="truncate">{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
+          <OfficeNavigation pathname={pathname} />
         </div>
 
         {/* Rodapé da Sidebar */}
@@ -247,7 +202,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               aria-haspopup="true"
             >
               <div className="flex items-center gap-2.5 min-w-0">
-                <div className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-lg bg-[#0c1f3d] dark:bg-white/[0.08] text-xs font-semibold text-[#dfcaa0] border border-[#c5a059]/20">
+                <div className="flex h-7.5 w-7.5 shrink-0 items-center justify-center rounded-lg bg-[#0c1f3d] dark:bg-white/[0.08] text-xs font-semibold text-blue-200 border border-blue-500/20">
                   {displayName.charAt(0).toUpperCase()}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -261,7 +216,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               </div>
               <ChevronDown
                 className={`h-3.5 w-3.5 stroke-[1.25] text-slate-400 transition-transform duration-150 shrink-0 ${
-                  userDropdownOpen ? 'rotate-180 text-[#c5a059]' : ''
+                  userDropdownOpen ? 'rotate-180 text-blue-700' : ''
                 }`}
               />
             </button>
@@ -286,7 +241,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                     onClick={() => setUserDropdownOpen(false)}
                     className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-[#f7f9fc] dark:hover:bg-white/[0.05] hover:text-[#0c1f3d] dark:hover:text-white transition"
                   >
-                    <Scale className="h-3.5 w-3.5 stroke-[1.25] text-[#c5a059]" />
+                    <Scale className="h-3.5 w-3.5 stroke-[1.25] text-blue-700" />
                     <span>Status de Conexão CNJ</span>
                   </Link>
                   <div className="border-t border-slate-100 dark:border-white/[0.06] my-1" />
@@ -324,12 +279,12 @@ export function AppLayout({ children }: AppLayoutProps) {
             <div>
               <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.06]">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0c1f3d] text-[#dfcaa0] border border-[#c5a059]/30">
-                    <Scale className="h-4.5 w-4.5 stroke-[1.25] text-[#dfcaa0]" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0c1f3d] text-blue-200 border border-blue-500/30">
+                    <Scale className="h-4.5 w-4.5 stroke-[1.25] text-blue-200" />
                   </div>
                   <div>
                     <span className="text-sm font-semibold text-[#0c1f3d] dark:text-white block">Davino Neves</span>
-                    <span className="text-[10px] font-semibold tracking-widest text-[#c5a059] dark:text-[#dfcaa0] uppercase">Advocacia</span>
+                    <span className="text-[10px] font-semibold tracking-widest text-blue-700 dark:text-blue-200 uppercase">Advocacia</span>
                   </div>
                 </div>
                 <button
@@ -342,28 +297,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 </button>
               </div>
 
-              <nav className="mt-6 space-y-1">
-                {navLinks.map((item) => {
-                  const Icon = item.icon;
-                  const isActive = item.exact
-                    ? pathname === item.href
-                    : pathname === item.href || pathname.startsWith(`${item.href}/`);
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`flex items-center gap-3 px-3 py-2 text-xs rounded-lg transition ${
-                        isActive
-                          ? 'bg-[#0c1f3d]/[0.06] dark:bg-[#dfcaa0]/[0.1] text-[#0c1f3d] dark:text-[#dfcaa0] font-medium border-l-2 border-[#c5a059]'
-                          : 'text-slate-600 dark:text-slate-400 hover:text-[#0c1f3d] dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-white/[0.03]'
-                      }`}
-                    >
-                      <Icon className={`h-4 w-4 stroke-[1.25] ${isActive ? 'text-[#c5a059] dark:text-[#dfcaa0]' : 'text-slate-400 dark:text-slate-500'}`} />
-                      <span>{item.label}</span>
-                    </Link>
-                  );
-                })}
-              </nav>
+              <OfficeNavigation pathname={pathname} onNavigate={() => setMobileDrawerOpen(false)} />
             </div>
 
             <div className="pt-4 space-y-3">
@@ -373,7 +307,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               </div>
 
               <div className="flex items-center gap-2.5 p-2 rounded-lg bg-[#f7f9fc] dark:bg-white/[0.04]">
-                <div className="flex h-7.5 w-7.5 items-center justify-center rounded-lg bg-[#0c1f3d] font-semibold text-xs text-[#dfcaa0]">
+                <div className="flex h-7.5 w-7.5 items-center justify-center rounded-lg bg-[#0c1f3d] font-semibold text-xs text-blue-200">
                   {displayName.charAt(0).toUpperCase()}
                 </div>
                 <div className="min-w-0 flex-1">
@@ -421,8 +355,9 @@ export function AppLayout({ children }: AppLayoutProps) {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                aria-label="Buscar processos"
                 placeholder="Buscar processos..."
-                className="w-full rounded-lg border border-[#0c1f3d]/[0.08] dark:border-white/[0.08] bg-[#f7f9fc] dark:bg-white/[0.04] pl-9 pr-12 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-[#c5a059] dark:focus:border-[#c5a059] focus:bg-white dark:focus:bg-[#0d192e] focus:outline-hidden transition"
+                className="w-full rounded-lg border border-[#0c1f3d]/[0.08] dark:border-white/[0.08] bg-[#f7f9fc] dark:bg-white/[0.04] pl-9 pr-12 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-blue-500 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-[#0d192e] focus:outline-hidden transition"
               />
             </form>
           </div>
@@ -447,7 +382,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               >
                 <Bell className="h-4 w-4 stroke-[1.25]" />
                 {notificacoesData.totalNaoLidas > 0 && (
-                  <span className="absolute top-1.5 right-1.5 flex h-2 w-2 rounded-full bg-[#c5a059]" />
+                  <span className="absolute top-1.5 right-1.5 flex h-2 w-2 rounded-full bg-blue-500" />
                 )}
               </button>
 
@@ -458,7 +393,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-semibold text-[#0c1f3d] dark:text-white">Alertas do Escritório</span>
                       {notificacoesData.totalNaoLidas > 0 ? (
-                        <span className="text-[10px] font-medium text-[#c5a059] dark:text-[#dfcaa0] bg-[#c5a059]/10 dark:bg-[#c5a059]/20 px-1.5 py-0.5 rounded-md tabular-nums border border-[#c5a059]/20">
+                        <span className="text-[10px] font-medium text-blue-700 dark:text-blue-200 bg-blue-500/10 dark:bg-blue-500/20 px-1.5 py-0.5 rounded-md tabular-nums border border-blue-500/20">
                           {notificacoesData.totalNaoLidas} pendente{notificacoesData.totalNaoLidas > 1 ? 's' : ''}
                         </span>
                       ) : (
@@ -486,7 +421,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                         className="p-1 text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.06] rounded transition cursor-pointer"
                         title="Atualizar alertas"
                       >
-                        <RefreshCw className={`h-3 w-3 stroke-[1.5] ${loadingNotificacoes ? 'animate-spin text-[#c5a059]' : ''}`} />
+                        <RefreshCw className={`h-3 w-3 stroke-[1.5] ${loadingNotificacoes ? 'animate-spin text-blue-700' : ''}`} />
                       </button>
                     </div>
                   </div>
@@ -550,7 +485,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                                   <PartyPopper className="h-3.5 w-3.5 text-purple-600 dark:text-purple-400 stroke-[1.5]" />
                                 )}
                                 {(item.tipo === 'sistema' || item.tipo === 'processo') && (
-                                  <CheckCircle2 className="h-3.5 w-3.5 text-[#dfcaa0] stroke-[1.5]" />
+                                  <CheckCircle2 className="h-3.5 w-3.5 text-blue-200 stroke-[1.5]" />
                                 )}
                               </div>
                               <div className="flex-1 min-w-0">
@@ -565,7 +500,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                                     {item.titulo}
                                   </span>
                                   {!item.lida && (
-                                    <span className="h-1.5 w-1.5 rounded-full bg-[#c5a059] shrink-0" />
+                                    <span className="h-1.5 w-1.5 rounded-full bg-blue-500 shrink-0" />
                                   )}
                                 </div>
                                 <p className="mt-0.5 text-[11px] text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
@@ -583,7 +518,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                     <Link
                       href="/prazos"
                       onClick={() => setNotificationsOpen(false)}
-                      className="font-medium text-[#c5a059] dark:text-[#dfcaa0] hover:underline transition"
+                      className="font-medium text-blue-700 dark:text-blue-200 hover:underline transition"
                     >
                       Prazos & Agenda &rarr;
                     </Link>
@@ -602,7 +537,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         </header>
 
         {/* Conteúdo Rolável da Página */}
-        <main className="flex-1 overflow-y-auto min-w-0 bg-[#f6f8fa] dark:bg-[#0d1117] transition-colors duration-200">
+        <main className="flex-1 overflow-y-auto min-h-0 min-w-0 bg-slate-50 dark:bg-slate-950 transition-colors duration-200">
           {children}
         </main>
       </div>
