@@ -66,11 +66,12 @@ export function AppLayout({ children }: AppLayoutProps) {
   };
 
   useEffect(() => {
+    if (!isAuthenticated) return;
     carregarNotificacoes();
     // Atualizar a cada 45 segundos para refletir prazos e eventos reais
     const interval = setInterval(carregarNotificacoes, 45000);
     return () => clearInterval(interval);
-  }, []);
+  }, [isAuthenticated]);
 
   const handleMarcarComoLida = (item: ItemNotificacao) => {
     notificacaoService.marcarComoLida(item.id);
@@ -165,7 +166,7 @@ export function AppLayout({ children }: AppLayoutProps) {
     router.push(`/processos?q=${encodeURIComponent(searchQuery.trim())}`);
   };
 
-  const displayName = user?.nome || 'Vythor';
+  const displayName = user?.nome || 'Usuário';
   const displayRole =
     user?.role === 'ADMINISTRADOR'
       ? 'Administrador'
@@ -420,7 +421,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Buscar processos, clientes, prazos..."
+                placeholder="Buscar processos..."
                 className="w-full rounded-lg border border-[#0c1f3d]/[0.08] dark:border-white/[0.08] bg-[#f7f9fc] dark:bg-white/[0.04] pl-9 pr-12 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-[#c5a059] dark:focus:border-[#c5a059] focus:bg-white dark:focus:bg-[#0d192e] focus:outline-hidden transition"
               />
             </form>
