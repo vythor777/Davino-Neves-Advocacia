@@ -411,6 +411,8 @@ function ProcessosContent() {
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div className="flex-1 max-w-md">
             <SearchInput
+              key={query}
+              initialValue={query}
               placeholder="Buscar por CNJ, cliente, ação ou vara..."
               onSearch={setSearchTerm}
               delay={400}
