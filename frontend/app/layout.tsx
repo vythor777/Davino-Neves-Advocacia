@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 
-const plusJakartaSans = Plus_Jakarta_Sans({
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-inter",
   display: "swap",
   weight: ["300", "400", "500", "600", "700", "800"],
 });
@@ -28,7 +28,7 @@ export default function RootLayout({
     <html
       lang="pt-BR"
       suppressHydrationWarning
-      className={`h-full antialiased ${plusJakartaSans.variable}`}
+      className={`h-full antialiased ${inter.variable}`}
     >
       <body className="h-full font-sans bg-[#f6f8fa] dark:bg-[#0d1117] text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-200">
         <Providers>{children}</Providers>

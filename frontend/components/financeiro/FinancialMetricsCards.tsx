@@ -6,7 +6,6 @@ import {
   ArrowDownRight,
   Clock,
   Wallet,
-  AlertCircle,
 } from 'lucide-react';
 import { ResumoFinanceiroResponse } from '@/services/financeiroService';
 

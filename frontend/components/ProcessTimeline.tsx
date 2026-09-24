@@ -8,8 +8,6 @@ import {
   Search,
   ChevronDown,
   ChevronUp,
-  Tag,
-  AlertCircle,
   Sparkles,
 } from 'lucide-react';
 import { Skeleton } from '@/components/Skeleton';

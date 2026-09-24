@@ -1,15 +1,16 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import AuthGuard from '@/components/AuthGuard';
 import { useCreateFromQuery } from '@/hooks/useCreateFromQuery';
 import { processoService, Processo, CreateProcessoInput } from '@/services/processoService';
 import { clienteService, Cliente } from '@/services/clienteService';
-import { ProcessosTable, formatarNumeroCNJ, getStatusBadgeStyle } from '@/components/ProcessosTable';
+import { formatarNumeroCNJ, getStatusBadgeStyle } from '@/components/ProcessosTable';
 import { ProcessDataTable } from '@/components/ProcessDataTable';
 import { NumberProcessInput } from '@/components/NumberProcessInput';
 import { SearchInput } from '@/components/SearchInput';
-import { TableSkeleton, MetricCardSkeleton } from '@/components/Skeleton';
+import { MetricCardSkeleton } from '@/components/Skeleton';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { ConfirmModal } from '@/components/ConfirmModal';
@@ -52,16 +53,17 @@ function ProcessosContent() {
   const [processos, setProcessos] = useState<Processo[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [loadingClientes, setLoadingClientes] = useState<boolean>(false);
 
   // Filtros e Busca com Debounce
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const query = useSearchParams().get('q') || '';
+  const [searchTerm, setSearchTerm] = useState(query);
+  useEffect(() => { setSearchTerm(query); }, [query]);
   const [selectedStatus, setSelectedStatus] = useState<string>('todos');
   const [selectedClienteFilter, setSelectedClienteFilter] = useState<string>('todos');
 
   // Paginação
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [pageSize, setPageSize] = useState<number>(10);
+  const pageSize = 10;
 
   // Modais de Criação / Edição
   const [modalOpen, setModalOpen] = useState<boolean>(false);
@@ -88,14 +90,11 @@ function ProcessosContent() {
 
   // Carregar Clientes para o Select
   const fetchClientesList = useCallback(async () => {
-    setLoadingClientes(true);
     try {
       const data = await clienteService.getAll();
       setClientes(Array.isArray(data) ? data : []);
     } catch {
       setClientes([]);
-    } finally {
-      setLoadingClientes(false);
     }
   }, []);
 

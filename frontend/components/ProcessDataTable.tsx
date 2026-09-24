@@ -11,10 +11,8 @@ import {
   Calendar,
   User,
   Scale,
-  ExternalLink,
   ChevronLeft,
   ChevronRight,
-  Clock,
   Edit2,
   Trash2,
 } from 'lucide-react';
