@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { PageHeader } from '@/components/ui/PageHeader';
 import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
@@ -228,42 +229,24 @@ function DataJudContent() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 animate-fade-in-up space-y-6">
+    <div className="app-page">
       {/* Breadcrumb de Navegação */}
       <div>
-        <Breadcrumbs items={[{ label: 'Consulta DataJud (CNJ)', icon: Scale }]} />
+        <Breadcrumbs
+          items={[{ label: 'Consulta DataJud (CNJ)', icon: Scale }]}
+        />
       </div>
 
       {/* Cabeçalho da Página */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-200/60 dark:border-white/[0.05] pb-6">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide uppercase bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-[#d4af37]/90 border border-slate-200 dark:border-white/[0.08]">
-            <Scale className="h-3.5 w-3.5 text-[#c5a059]" />
-            Base Nacional CNJ
-          </div>
-          <div className="flex items-center gap-2.5 mt-2">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
-              <Scale className="h-4 w-4" />
-            </span>
-            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-              Consultar CNJ
-            </h1>
-          </div>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Consulte andamentos, decisões e movimentações oficiais em tribunais de todo o país.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <Link
-            href="/processos"
-            className="inline-flex items-center gap-2 rounded-xl border border-slate-200/80 bg-white/60 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100/80 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] backdrop-blur-sm transition-colors cursor-pointer"
-          >
-            <Briefcase className="h-4 w-4 text-[#c5a059]" />
-            Ver processos
-          </Link>
-        </div>
-      </div>
+      <PageHeader
+        title="Consultar CNJ"
+        description="Consulte andamentos e movimentações nas bases públicas dos tribunais."
+      >
+        <Link href="/processos" className="ui-button ui-button-secondary">
+          <Briefcase className="h-4 w-4 text-current" />
+          Ver processos
+        </Link>
+      </PageHeader>
 
       {/* Formulário de Busca */}
       <div className="legal-glass-card fio-de-luz p-6">
@@ -296,243 +279,259 @@ function DataJudContent() {
           </div>
 
           <div className="flex items-center justify-end gap-3 pt-2">
-              {(resultado || naoEncontrado || erroConexao) && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setResultado(null);
-                    setNumeroProcesso('');
-                    setErroValidacao(null);
-                    setErroConexao(null);
-                    setNaoEncontrado(false);
-                  }}
-                  className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white/60 px-4 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-100/80 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 cursor-pointer"
-                >
-                  <RotateCcw className="h-3.5 w-3.5" />
-                  Limpar Consulta
-                </button>
-              )}
-
+            {(resultado || naoEncontrado || erroConexao) && (
               <button
-                type="submit"
-                disabled={loading || !numeroProcesso.trim()}
-                className="inline-flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-5 py-2 text-xs shadow-xs hover:shadow-md transition-all active:scale-98 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+                type="button"
+                onClick={() => {
+                  setResultado(null);
+                  setNumeroProcesso('');
+                  setErroValidacao(null);
+                  setErroConexao(null);
+                  setNaoEncontrado(false);
+                }}
+                className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white/60 px-4 py-2 text-xs font-medium text-slate-600 transition hover:bg-slate-100/80 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 cursor-pointer"
               >
-                {loading ? (
-                  <>
-                    <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-slate-950 border-t-transparent" />
-                    <span>Buscando no DataJud...</span>
-                  </>
-                ) : (
-                  <>
-                    <Search className="h-3.5 w-3.5" />
-                    <span>Consultar</span>
-                  </>
-                )}
+                <RotateCcw className="h-3.5 w-3.5" />
+                Limpar Consulta
               </button>
-            </div>
-          </form>
+            )}
+
+            <button
+              type="submit"
+              disabled={loading || !numeroProcesso.trim()}
+              className="inline-flex items-center gap-2 rounded-xl bg-action hover:bg-action-hover text-white font-semibold px-5 py-2 text-xs shadow-xs hover:shadow-md transition-all active:scale-98 disabled:cursor-not-allowed disabled:opacity-50 cursor-pointer"
+            >
+              {loading ? (
+                <>
+                  <div className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-slate-950 border-t-transparent" />
+                  <span>Buscando no DataJud...</span>
+                </>
+              ) : (
+                <>
+                  <Search className="h-3.5 w-3.5" />
+                  <span>Consultar</span>
+                </>
+              )}
+            </button>
+          </div>
+        </form>
+      </div>
+
+      {/* Validação de campo incompleto */}
+      {erroValidacao && (
+        <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50/80 p-4 text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-300">
+          <div className="flex items-center gap-3">
+            <ShieldAlert className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
+            <p className="text-xs sm:text-sm font-medium">{erroValidacao}</p>
+          </div>
         </div>
+      )}
 
-        {/* Validação de campo incompleto */}
-        {erroValidacao && (
-          <div className="mt-6 rounded-2xl border border-amber-200 bg-amber-50/80 p-4 text-amber-900 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-300">
+      {/* ErrorBoundaryView: Exibido quando a API do DataJud falhar (HTTP 401, 500, timeout, conexão) */}
+      {erroConexao && (
+        <div className="mt-6">
+          <ErrorBoundaryView
+            title={erroConexao.mensagem}
+            statusCode={erroConexao.statusCode}
+            errorDetails={erroConexao.detalhes}
+            onRetry={() => handleConsultar()}
+            isRetrying={loading}
+          />
+        </div>
+      )}
+
+      {/* NoProcessFoundView: Exibido quando a consulta retornar vazia ou sem registros */}
+      {naoEncontrado && (
+        <div className="mt-6">
+          <NoProcessFoundView
+            numeroProcesso={numeroProcesso}
+            tribunal={tribunalSelecionado}
+            onResetSearch={() => {
+              setNumeroProcesso('');
+              setNaoEncontrado(false);
+            }}
+          />
+        </div>
+      )}
+
+      {/* Feedback de Vínculo com Sucesso */}
+      {sucessoVinculo && (
+        <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-emerald-900 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-200">
+          <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <ShieldAlert className="h-5 w-5 shrink-0 text-amber-600 dark:text-amber-400" />
-              <p className="text-xs sm:text-sm font-medium">{erroValidacao}</p>
-            </div>
-          </div>
-        )}
-
-        {/* ErrorBoundaryView: Exibido quando a API do DataJud falhar (HTTP 401, 500, timeout, conexão) */}
-        {erroConexao && (
-          <div className="mt-6">
-            <ErrorBoundaryView
-              title={erroConexao.mensagem}
-              statusCode={erroConexao.statusCode}
-              errorDetails={erroConexao.detalhes}
-              onRetry={() => handleConsultar()}
-              isRetrying={loading}
-            />
-          </div>
-        )}
-
-        {/* NoProcessFoundView: Exibido quando a consulta retornar vazia ou sem registros */}
-        {naoEncontrado && (
-          <div className="mt-6">
-            <NoProcessFoundView
-              numeroProcesso={numeroProcesso}
-              tribunal={tribunalSelecionado}
-              onResetSearch={() => {
-                setNumeroProcesso('');
-                setNaoEncontrado(false);
-              }}
-            />
-          </div>
-        )}
-
-        {/* Feedback de Vínculo com Sucesso */}
-        {sucessoVinculo && (
-          <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-5 text-emerald-900 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-200">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
-                <div>
-                  <h4 className="font-bold text-sm">Processo vinculado com sucesso ao escritório!</h4>
-                  <p className="text-xs text-emerald-800 dark:text-emerald-300">
-                    &quot;{sucessoVinculo.titulo}&quot; já está salvo na base de dados de Processos.
-                  </p>
-                </div>
+              <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400" />
+              <div>
+                <h4 className="font-bold text-sm">
+                  Processo vinculado com sucesso ao escritório!
+                </h4>
+                <p className="text-xs text-emerald-800 dark:text-emerald-300">
+                  &quot;{sucessoVinculo.titulo}&quot; já está salvo na base de
+                  dados de Processos.
+                </p>
               </div>
-              <Link
-                href="/processos"
-                className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-emerald-500"
-              >
-                <span>Acessar Módulo Processos</span>
-                <ChevronRight className="h-3.5 w-3.5" />
-              </Link>
             </div>
+            <Link
+              href="/processos"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-1.5 text-xs font-semibold text-white shadow-xs hover:bg-emerald-500"
+            >
+              <span>Acessar Módulo Processos</span>
+              <ChevronRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
-        )}
+        </div>
+      )}
 
-        {/* Resultados da Consulta */}
-        {resultado && (
-          <div className="mt-8 space-y-6">
-            {/* Bloco Superior: Dados Gerais do Processo */}
-            <div className="legal-glass-card fio-de-luz p-6">
-              <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 border-b border-slate-200/60 dark:border-white/[0.06] pb-6">
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="rounded-full bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25 px-3 py-1 text-xs font-semibold uppercase tracking-wider">
-                      Tribunal {resultado.tribunal}
+      {/* Resultados da Consulta */}
+      {resultado && (
+        <div className="mt-8 space-y-6">
+          {/* Bloco Superior: Dados Gerais do Processo */}
+          <div className="legal-glass-card fio-de-luz p-6">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6 border-b border-slate-200/60 dark:border-white/[0.06] pb-6">
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="rounded-full bg-brand/15 text-brand border border-brand/25 px-3 py-1 text-xs font-semibold uppercase tracking-wider">
+                    Tribunal {resultado.tribunal}
+                  </span>
+                  {resultado.grau && (
+                    <span className="rounded-full bg-slate-100 dark:bg-white/[0.04] px-3 py-1 text-xs font-medium text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-white/[0.08]">
+                      {resultado.grau === 'G1'
+                        ? '1ª Instância (Vara)'
+                        : resultado.grau === 'G2'
+                          ? '2ª Instância (Tribunal)'
+                          : resultado.grau}
                     </span>
-                    {resultado.grau && (
-                      <span className="rounded-full bg-slate-100 dark:bg-white/[0.04] px-3 py-1 text-xs font-medium text-slate-700 dark:text-slate-300 border border-slate-200/60 dark:border-white/[0.08]">
-                        {resultado.grau === 'G1' ? '1ª Instância (Vara)' : resultado.grau === 'G2' ? '2ª Instância (Tribunal)' : resultado.grau}
-                      </span>
-                    )}
-                    <span className="rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-3 py-1 text-xs font-semibold">
-                      Sincronizado via DataJud
-                    </span>
-                  </div>
-
-                  <div className="mt-3 flex items-center gap-3">
-                    <h2 className="font-mono text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-                      {formatarCNJ(resultado.numeroProcesso)}
-                    </h2>
-                    <button
-                      onClick={handleCopiarNumero}
-                      title="Copiar número do processo"
-                      className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04] hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer transition"
-                    >
-                      {copiado ? <Check className="h-4 w-4 text-emerald-600" /> : <Copy className="h-4 w-4" />}
-                    </button>
-                  </div>
-
-                  <p className="mt-1 text-xs font-medium text-slate-600 dark:text-slate-300">
-                    {resultado.classe || 'Classe processual não informada'}
-                  </p>
+                  )}
+                  <span className="rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 px-3 py-1 text-xs font-semibold">
+                    Sincronizado via DataJud
+                  </span>
                 </div>
 
-                {/* Botões de Ação Imediata */}
-                <div className="flex flex-wrap items-center gap-2.5">
+                <div className="mt-3 flex items-center gap-3">
+                  <h2 className="font-mono text-xl sm:text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+                    {formatarCNJ(resultado.numeroProcesso)}
+                  </h2>
                   <button
-                    onClick={abrirModalVinculacao}
-                    className="inline-flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition active:scale-95 cursor-pointer"
+                    onClick={handleCopiarNumero}
+                    title="Copiar número do processo"
+                    className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04] hover:text-slate-700 dark:hover:text-slate-200 cursor-pointer transition"
                   >
-                    <BookmarkPlus className="h-4 w-4 text-slate-950" />
-                    <span>Vincular ao Sistema com 1 Clique</span>
+                    {copiado ? (
+                      <Check className="h-4 w-4 text-emerald-600" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
                   </button>
-
-                  <Link
-                    href={`/gemini?processo=${encodeURIComponent(formatarCNJ(resultado.numeroProcesso))}&tribunal=${encodeURIComponent(resultado.tribunal)}`}
-                    className="inline-flex items-center gap-2 rounded-xl border border-slate-200/80 bg-white/60 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100/80 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] backdrop-blur-sm transition-colors cursor-pointer"
-                  >
-                    <Sparkles className="h-4 w-4 text-[#c5a059]" />
-                    <span>Analisar com IA Gemini</span>
-                  </Link>
                 </div>
+
+                <p className="mt-1 text-xs font-medium text-slate-600 dark:text-slate-300">
+                  {resultado.classe || 'Classe processual não informada'}
+                </p>
               </div>
 
-              {/* Grid com detalhes do processo */}
-              <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.02] p-4">
-                  <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-                    <Building2 className="h-4 w-4 text-[#c5a059]" />
-                    <span>Órgão Julgador / Vara</span>
-                  </div>
-                  <p className="mt-2 text-xs font-semibold text-slate-800 dark:text-slate-200">
-                    {resultado.orgaoJulgador || 'Não especificado'}
-                  </p>
-                </div>
+              {/* Botões de Ação Imediata */}
+              <div className="flex flex-wrap items-center gap-2.5">
+                <button
+                  onClick={abrirModalVinculacao}
+                  className="inline-flex items-center gap-2 rounded-xl bg-action hover:bg-action-hover text-white font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition active:scale-95 cursor-pointer"
+                >
+                  <BookmarkPlus className="h-4 w-4 text-white" />
+                  <span>Vincular ao Sistema com 1 Clique</span>
+                </button>
 
-                <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.02] p-4">
-                  <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-                    <Calendar className="h-4 w-4 text-[#c5a059]" />
-                    <span>Data de Distribuição / Ajuizamento</span>
-                  </div>
-                  <p className="mt-2 text-xs font-semibold text-slate-800 dark:text-slate-200">
-                    {resultado.dataAjuizamento
-                      ? new Date(resultado.dataAjuizamento).toLocaleDateString('pt-BR', {
+                <Link
+                  href={`/gemini?processo=${encodeURIComponent(formatarCNJ(resultado.numeroProcesso))}&tribunal=${encodeURIComponent(resultado.tribunal)}`}
+                  className="inline-flex items-center gap-2 rounded-xl border border-slate-200/80 bg-white/60 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100/80 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] backdrop-blur-sm transition-colors cursor-pointer"
+                >
+                  <Sparkles className="h-4 w-4 text-brand" />
+                  <span>Analisar com IA Gemini</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Grid com detalhes do processo */}
+            <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.02] p-4">
+                <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                  <Building2 className="h-4 w-4 text-brand" />
+                  <span>Órgão Julgador / Vara</span>
+                </div>
+                <p className="mt-2 text-xs font-semibold text-slate-800 dark:text-slate-200">
+                  {resultado.orgaoJulgador || 'Não especificado'}
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.02] p-4">
+                <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                  <Calendar className="h-4 w-4 text-brand" />
+                  <span>Data de Distribuição / Ajuizamento</span>
+                </div>
+                <p className="mt-2 text-xs font-semibold text-slate-800 dark:text-slate-200">
+                  {resultado.dataAjuizamento
+                    ? new Date(resultado.dataAjuizamento).toLocaleDateString(
+                        'pt-BR',
+                        {
                           day: '2-digit',
                           month: '2-digit',
                           year: 'numeric',
                           hour: '2-digit',
                           minute: '2-digit',
-                        })
-                      : 'Não informada'}
-                  </p>
-                </div>
-
-                <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.02] p-4">
-                  <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-                    <Layers className="h-4 w-4 text-[#c5a059]" />
-                    <span>Total de Andamentos</span>
-                  </div>
-                  <p className="mt-2 text-xs font-semibold text-slate-800 dark:text-slate-200">
-                    {resultado.movimentos?.length || 0} movimentações
-                  </p>
-                </div>
-
-                <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.02] p-4">
-                  <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
-                    <Scale className="h-4 w-4 text-[#c5a059]" />
-                    <span>Nível de Sigilo</span>
-                  </div>
-                  <p className="mt-2 text-xs font-semibold text-slate-800 dark:text-slate-200">
-                    {resultado.nivelSigilo === 0 ? 'Público (Nível 0)' : `Sigiloso (Nível ${resultado.nivelSigilo})`}
-                  </p>
-                </div>
+                        },
+                      )
+                    : 'Não informada'}
+                </p>
               </div>
 
-              {/* Assuntos Processuais */}
-              {resultado.assuntos && resultado.assuntos.length > 0 && (
-                <div className="mt-6 pt-5 border-t border-slate-200/60 dark:border-white/[0.06]">
-                  <h3 className="text-[11px] font-semibold uppercase tracking-wider text-[#c5a059]">
-                    Assuntos / Matérias Vinculadas
-                  </h3>
-                  <div className="mt-2.5 flex flex-wrap gap-2">
-                    {resultado.assuntos.map((assunto, idx) => (
-                      <span
-                        key={idx}
-                        className="inline-flex items-center rounded-lg bg-white/60 dark:bg-white/[0.02] px-3 py-1 text-xs font-medium text-slate-800 dark:text-slate-200 border border-slate-200/60 dark:border-white/[0.06]"
-                      >
-                        {assunto}
-                      </span>
-                    ))}
-                  </div>
+              <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.02] p-4">
+                <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                  <Layers className="h-4 w-4 text-brand" />
+                  <span>Total de Andamentos</span>
                 </div>
-              )}
+                <p className="mt-2 text-xs font-semibold text-slate-800 dark:text-slate-200">
+                  {resultado.movimentos?.length || 0} movimentações
+                </p>
+              </div>
+
+              <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.02] p-4">
+                <div className="flex items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400">
+                  <Scale className="h-4 w-4 text-brand" />
+                  <span>Nível de Sigilo</span>
+                </div>
+                <p className="mt-2 text-xs font-semibold text-slate-800 dark:text-slate-200">
+                  {resultado.nivelSigilo === 0
+                    ? 'Público (Nível 0)'
+                    : `Sigiloso (Nível ${resultado.nivelSigilo})`}
+                </p>
+              </div>
             </div>
 
-            {/* Linha do Tempo de Movimentações */}
-            <ProcessTimeline
-              movimentacoes={resultado.movimentos}
-              emptyMessage="Nenhuma movimentação detalhada"
-              emptyDescription="Não foram retornados atos processuais ou movimentações para este processo no DataJud do CNJ."
-            />
+            {/* Assuntos Processuais */}
+            {resultado.assuntos && resultado.assuntos.length > 0 && (
+              <div className="mt-6 pt-5 border-t border-slate-200/60 dark:border-white/[0.06]">
+                <h3 className="text-[11px] font-semibold uppercase tracking-wider text-brand">
+                  Assuntos / Matérias Vinculadas
+                </h3>
+                <div className="mt-2.5 flex flex-wrap gap-2">
+                  {resultado.assuntos.map((assunto, idx) => (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center rounded-lg bg-white/60 dark:bg-white/[0.02] px-3 py-1 text-xs font-medium text-slate-800 dark:text-slate-200 border border-slate-200/60 dark:border-white/[0.06]"
+                    >
+                      {assunto}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
-        )}
+
+          {/* Linha do Tempo de Movimentações */}
+          <ProcessTimeline
+            movimentacoes={resultado.movimentos}
+            emptyMessage="Nenhuma movimentação detalhada"
+            emptyDescription="Não foram retornados atos processuais ou movimentações para este processo no DataJud do CNJ."
+          />
+        </div>
+      )}
 
       {/* Modal para Vincular Processo ao Sistema */}
       {modalVincularAberto && resultado && (
@@ -540,10 +539,10 @@ function DataJudContent() {
           <div className="w-full max-w-lg legal-glass-card fio-de-luz p-6 shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] pb-4">
               <div className="flex items-center gap-2.5">
-                <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
+                <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand/15 text-brand border border-brand/25">
                   <BookmarkPlus className="h-4 w-4" />
                 </span>
-                <h3 className="text-base font-semibold text-slate-900 dark:text-[#f8fafc]">
+                <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
                   Vincular Processo ao Escritório
                 </h3>
               </div>
@@ -555,7 +554,10 @@ function DataJudContent() {
               </button>
             </div>
 
-            <form onSubmit={handleSalvarVinculo} className="mt-4 space-y-4 text-xs">
+            <form
+              onSubmit={handleSalvarVinculo}
+              className="mt-4 space-y-4 text-xs"
+            >
               <div>
                 <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Número do Processo (CNJ)
@@ -576,18 +578,25 @@ function DataJudContent() {
                   <select
                     required
                     value={clienteSelecionadoId}
-                    onChange={(e) => setClienteSelecionadoId(Number(e.target.value))}
-                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
+                    onChange={(e) =>
+                      setClienteSelecionadoId(Number(e.target.value))
+                    }
+                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
                   >
                     {clientes.map((c) => (
-                      <option key={c.id_cliente} value={c.id_cliente} className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">
+                      <option
+                        key={c.id_cliente}
+                        value={c.id_cliente}
+                        className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+                      >
                         {c.nome} ({c.cpf_cnpj || 'Sem documento'})
                       </option>
                     ))}
                   </select>
                 ) : (
                   <div className="rounded-xl bg-amber-500/10 p-2.5 text-xs text-amber-600 dark:text-amber-400 border border-amber-500/20">
-                    Nenhum cliente cadastrado. Cadastre um cliente primeiro no módulo de Clientes.
+                    Nenhum cliente cadastrado. Cadastre um cliente primeiro no
+                    módulo de Clientes.
                   </div>
                 )}
               </div>
@@ -602,7 +611,7 @@ function DataJudContent() {
                   value={tituloProcesso}
                   onChange={(e) => setTituloProcesso(e.target.value)}
                   placeholder="Título do processo"
-                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-[#c5a059] focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-brand focus:outline-hidden"
                 />
               </div>
 
@@ -613,13 +622,38 @@ function DataJudContent() {
                 <select
                   value={statusProcesso}
                   onChange={(e) => setStatusProcesso(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
                 >
-                  <option value="Em Andamento" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Em Andamento</option>
-                  <option value="Aguardando Sentença" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Aguardando Sentença</option>
-                  <option value="Fase Recursal" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Fase Recursal</option>
-                  <option value="Cumprimento de Sentença" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Cumprimento de Sentença</option>
-                  <option value="Arquivado" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Arquivado</option>
+                  <option
+                    value="Em Andamento"
+                    className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+                  >
+                    Em Andamento
+                  </option>
+                  <option
+                    value="Aguardando Sentença"
+                    className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+                  >
+                    Aguardando Sentença
+                  </option>
+                  <option
+                    value="Fase Recursal"
+                    className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+                  >
+                    Fase Recursal
+                  </option>
+                  <option
+                    value="Cumprimento de Sentença"
+                    className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+                  >
+                    Cumprimento de Sentença
+                  </option>
+                  <option
+                    value="Arquivado"
+                    className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+                  >
+                    Arquivado
+                  </option>
                 </select>
               </div>
 
@@ -632,7 +666,7 @@ function DataJudContent() {
                   value={descricaoProcesso}
                   onChange={(e) => setDescricaoProcesso(e.target.value)}
                   placeholder="Descrição..."
-                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] p-3 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-[#c5a059] focus:outline-hidden"
+                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface p-3 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-brand focus:outline-hidden"
                 />
               </div>
 
@@ -647,7 +681,7 @@ function DataJudContent() {
                 <button
                   type="submit"
                   disabled={salvandoVinculo || clientes.length === 0}
-                  className="inline-flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-5 py-2 text-xs shadow-xs hover:shadow-md transition active:scale-98 disabled:opacity-50 cursor-pointer"
+                  className="inline-flex items-center gap-2 rounded-xl bg-action hover:bg-action-hover text-white font-semibold px-5 py-2 text-xs shadow-xs hover:shadow-md transition active:scale-98 disabled:opacity-50 cursor-pointer"
                 >
                   {salvandoVinculo ? 'Salvando...' : 'Salvar no Escritório'}
                 </button>

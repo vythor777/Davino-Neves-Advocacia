@@ -176,7 +176,7 @@ function LancamentoModalForm({
               <DollarSign className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
+              <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
                 {initialData ? 'Editar Lançamento Financeiro' : 'Novo Lançamento Financeiro'}
               </h3>
               <p className="text-xs text-slate-500 dark:text-slate-400">
@@ -246,7 +246,7 @@ function LancamentoModalForm({
               value={descricao}
               onChange={(e) => setDescricao(e.target.value)}
               placeholder="Ex: Honorários Contratuais Mensais - Parcela 01/12"
-              className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3.5 py-2.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-[#c5a059] focus:outline-hidden transition"
+              className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface px-3.5 py-2.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-brand focus:outline-hidden transition"
             />
           </div>
 
@@ -259,7 +259,7 @@ function LancamentoModalForm({
               <select
                 value={categoria}
                 onChange={(e) => setCategoria(e.target.value as CategoriaLancamento)}
-                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden transition"
+                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden transition"
               >
                 {tipo === 'RECEITA' ? (
                   <>
@@ -295,7 +295,7 @@ function LancamentoModalForm({
                   value={valor}
                   onChange={(e) => setValor(e.target.value)}
                   placeholder="0,00"
-                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] pl-10 pr-3.5 py-2.5 text-xs font-semibold text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-[#c5a059] focus:outline-hidden transition"
+                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface pl-10 pr-3.5 py-2.5 text-xs font-semibold text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-brand focus:outline-hidden transition"
                 />
               </div>
             </div>
@@ -312,7 +312,7 @@ function LancamentoModalForm({
                 required
                 value={dataVencimento}
                 onChange={(e) => setDataVencimento(e.target.value)}
-                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden transition"
+                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface px-3 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden transition"
               />
             </div>
 
@@ -329,7 +329,7 @@ function LancamentoModalForm({
                     setDataPagamento(new Date().toISOString().split('T')[0]);
                   }
                 }}
-                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden transition"
+                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface px-3 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden transition"
               >
                 <option value="PENDENTE" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Pendente</option>
                 <option value="PAGO" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Liquidado / Pago</option>
@@ -348,7 +348,7 @@ function LancamentoModalForm({
                 value={dataPagamento}
                 onChange={(e) => setDataPagamento(e.target.value)}
                 placeholder="Opcional"
-                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2 text-xs text-slate-900 dark:text-slate-100 disabled:opacity-40 disabled:cursor-not-allowed focus:border-[#c5a059] focus:outline-hidden transition"
+                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface px-3 py-2 text-xs text-slate-900 dark:text-slate-100 disabled:opacity-40 disabled:cursor-not-allowed focus:border-brand focus:outline-hidden transition"
               />
             </div>
           </div>
@@ -361,7 +361,7 @@ function LancamentoModalForm({
             <select
               value={formaPagamento}
               onChange={(e) => setFormaPagamento(e.target.value)}
-              className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden transition"
+              className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden transition"
             >
               <option value="PIX Bancário" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">PIX Bancário</option>
               <option value="Boleto Bancário" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Boleto Bancário</option>
@@ -382,7 +382,7 @@ function LancamentoModalForm({
               <select
                 value={clienteId}
                 onChange={(e) => setClienteId(e.target.value)}
-                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden transition"
+                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden transition"
               >
                 <option value="" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Nenhum cliente específico</option>
                 {clientes.map((c) => (
@@ -400,7 +400,7 @@ function LancamentoModalForm({
               <select
                 value={processoId}
                 onChange={(e) => setProcessoId(e.target.value)}
-                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden transition"
+                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden transition"
               >
                 <option value="" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Nenhum processo específico</option>
                 {processos.map((p) => (
@@ -422,7 +422,7 @@ function LancamentoModalForm({
               value={observacoes}
               onChange={(e) => setObservacoes(e.target.value)}
               placeholder="Ex: Nota fiscal 1042 emitida; referente ao acordo judicial homologado na 3ª Vara."
-              className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-[#c5a059] focus:outline-hidden transition resize-none"
+              className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-brand focus:outline-hidden transition resize-none"
             />
           </div>
         </form>
@@ -440,7 +440,7 @@ function LancamentoModalForm({
             type="submit"
             form="lancamento-form"
             disabled={submitting}
-            className="flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] px-5 py-2.5 text-xs font-semibold text-slate-950 transition disabled:opacity-50 cursor-pointer"
+            className="flex items-center gap-2 rounded-xl bg-action hover:bg-action-hover px-5 py-2.5 text-xs font-semibold text-white transition disabled:opacity-50 cursor-pointer"
           >
             {submitting ? (
               <span>Salvando...</span>

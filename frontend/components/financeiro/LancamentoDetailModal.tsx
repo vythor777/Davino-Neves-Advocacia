@@ -82,14 +82,14 @@ export function LancamentoDetailModal({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[11px] font-medium uppercase tracking-wider text-[#c5a059]">
+                <span className="text-[11px] font-medium uppercase tracking-wider text-brand">
                   Comprovante Financeiro
                 </span>
                 <span className="text-[11px] font-mono text-slate-400">
                   #{lancamento.id.slice(-6)}
                 </span>
               </div>
-              <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc] line-clamp-1">
+              <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100 line-clamp-1">
                 {lancamento.descricao}
               </h3>
             </div>
@@ -144,7 +144,7 @@ export function LancamentoDetailModal({
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] p-3.5 space-y-1">
               <span className="text-slate-400 flex items-center gap-1.5 font-medium">
-                <Tag className="h-3.5 w-3.5 text-[#c5a059]" /> Categoria
+                <Tag className="h-3.5 w-3.5 text-brand" /> Categoria
               </span>
               <p className="font-semibold text-slate-800 dark:text-slate-200">
                 {categoriaInfo.label}
@@ -153,7 +153,7 @@ export function LancamentoDetailModal({
 
             <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] p-3.5 space-y-1">
               <span className="text-slate-400 flex items-center gap-1.5 font-medium">
-                <CreditCard className="h-3.5 w-3.5 text-[#c5a059]" /> Meio de Pagamento
+                <CreditCard className="h-3.5 w-3.5 text-brand" /> Meio de Pagamento
               </span>
               <p className="font-semibold text-slate-800 dark:text-slate-200">
                 {lancamento.formaPagamento || 'Não especificado'}
@@ -162,7 +162,7 @@ export function LancamentoDetailModal({
 
             <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] p-3.5 space-y-1">
               <span className="text-slate-400 flex items-center gap-1.5 font-medium">
-                <Calendar className="h-3.5 w-3.5 text-[#c5a059]" /> Data de Vencimento
+                <Calendar className="h-3.5 w-3.5 text-brand" /> Data de Vencimento
               </span>
               <p className="font-semibold text-slate-800 dark:text-slate-200">
                 {formatData(lancamento.dataVencimento)}
@@ -171,7 +171,7 @@ export function LancamentoDetailModal({
 
             <div className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] p-3.5 space-y-1">
               <span className="text-slate-400 flex items-center gap-1.5 font-medium">
-                <CheckCircle2 className="h-3.5 w-3.5 text-[#c5a059]" /> Data da Baixa / Pagamento
+                <CheckCircle2 className="h-3.5 w-3.5 text-brand" /> Data da Baixa / Pagamento
               </span>
               <p className="font-semibold text-slate-800 dark:text-slate-200">
                 {formatData(lancamento.dataPagamento)}
@@ -182,12 +182,12 @@ export function LancamentoDetailModal({
           {/* Vínculo Cliente & Processo */}
           {(lancamento.cliente || lancamento.processo) && (
             <div className="rounded-2xl border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] p-4 space-y-3">
-              <span className="text-xs font-semibold uppercase tracking-wider text-[#c5a059] block">
+              <span className="text-xs font-semibold uppercase tracking-wider text-brand block">
                 Auditoria e Vinculação Jurídica
               </span>
               {lancamento.cliente && (
                 <div className="flex items-center gap-2.5 text-xs">
-                  <User className="h-4 w-4 text-[#c5a059] shrink-0" />
+                  <User className="h-4 w-4 text-brand shrink-0" />
                   <span className="text-slate-500 dark:text-slate-400">Cliente:</span>
                   <span className="font-semibold text-slate-900 dark:text-slate-100">
                     {lancamento.cliente.nome} ({lancamento.cliente.cpf_cnpj})
@@ -196,7 +196,7 @@ export function LancamentoDetailModal({
               )}
               {lancamento.processo && (
                 <div className="flex items-center gap-2.5 text-xs">
-                  <Scale className="h-4 w-4 text-[#c5a059] shrink-0" />
+                  <Scale className="h-4 w-4 text-brand shrink-0" />
                   <span className="text-slate-500 dark:text-slate-400">Processo:</span>
                   <span className="font-semibold text-slate-900 dark:text-slate-100 font-mono">
                     {lancamento.processo.numero_processo} - {lancamento.processo.titulo}

@@ -29,12 +29,12 @@ export function ThemeToggle({ variant = 'dropdown', className = '' }: ThemeToggl
       <button
         type="button"
         onClick={toggleTheme}
-        className={`relative flex h-9 w-9 items-center justify-center rounded-xl border border-[0.75px] border-slate-200 dark:border-white/[0.08] bg-white/80 dark:bg-[#161b22]/70 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1f2631] hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer shadow-2xs ${className}`}
+        className={`relative flex h-9 w-9 items-center justify-center rounded-xl border border-[0.75px] border-slate-200 dark:border-white/[0.08] bg-white/80 dark:bg-surface/70 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1f2631] hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer shadow-2xs ${className}`}
         title={`Tema atual: ${resolvedTheme === 'dark' ? 'Escuro' : 'Claro'}. Clique para alternar.`}
         aria-label="Alternar tema de cor"
       >
         {resolvedTheme === 'dark' ? (
-          <Moon className="h-4 w-4 stroke-[1.25] text-[#dfcaa0] transition-transform hover:rotate-12" />
+          <Moon className="h-4 w-4 stroke-[1.25] text-brand transition-transform hover:rotate-12" />
         ) : (
           <Sun className="h-4 w-4 stroke-[1.25] text-amber-500 transition-transform hover:rotate-45" />
         )}
@@ -51,7 +51,7 @@ export function ThemeToggle({ variant = 'dropdown', className = '' }: ThemeToggl
 
     return (
       <div
-        className={`flex items-center rounded-xl border border-[0.75px] border-slate-200 dark:border-white/[0.08] bg-slate-100/80 dark:bg-[#161b22]/70 p-1 ${className}`}
+        className={`flex items-center rounded-xl border border-[0.75px] border-slate-200 dark:border-white/[0.08] bg-slate-100/80 dark:bg-surface/70 p-1 ${className}`}
         role="group"
         aria-label="Seleção de tema"
       >
@@ -65,7 +65,7 @@ export function ThemeToggle({ variant = 'dropdown', className = '' }: ThemeToggl
               onClick={() => setTheme(opt.id)}
               className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-all cursor-pointer ${
                 isActive
-                  ? 'bg-white dark:bg-[#0d1117] text-slate-950 dark:text-[#dfcaa0] border border-[0.75px] border-slate-200 dark:border-white/[0.08] shadow-2xs'
+                  ? 'bg-white dark:bg-[#0d1117] text-slate-950 dark:text-brand border border-[0.75px] border-slate-200 dark:border-white/[0.08] shadow-2xs'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
@@ -84,21 +84,21 @@ export function ThemeToggle({ variant = 'dropdown', className = '' }: ThemeToggl
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex h-9 w-9 items-center justify-center rounded-xl border border-[0.75px] border-slate-200 dark:border-white/[0.08] bg-white/80 dark:bg-[#161b22]/70 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1f2631] hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer shadow-2xs"
+        className="flex h-9 w-9 items-center justify-center rounded-xl border border-[0.75px] border-slate-200 dark:border-white/[0.08] bg-white/80 dark:bg-surface/70 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-[#1f2631] hover:text-slate-900 dark:hover:text-white transition-all cursor-pointer shadow-2xs"
         aria-label="Configurar tema (Claro, Escuro ou Sistema)"
         aria-expanded={isOpen}
         aria-haspopup="true"
         title="Alterar tema de exibição"
       >
         {resolvedTheme === 'dark' ? (
-          <Moon className="h-4 w-4 stroke-[1.25] text-[#dfcaa0]" />
+          <Moon className="h-4 w-4 stroke-[1.25] text-brand" />
         ) : (
           <Sun className="h-4 w-4 stroke-[1.25] text-amber-500" />
         )}
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-44 rounded-2xl border border-[0.75px] border-slate-200 dark:border-white/[0.1] bg-white/95 dark:bg-[#161b22]/95 backdrop-blur-xl p-1.5 shadow-xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+        <div className="absolute right-0 mt-2 w-44 rounded-2xl border border-[0.75px] border-slate-200 dark:border-white/[0.1] bg-white/95 dark:bg-surface/95 backdrop-blur-xl p-1.5 shadow-xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
           <div className="px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 border-b border-[0.75px] border-slate-100 dark:border-white/[0.08]">
             Aparência
           </div>
@@ -111,7 +111,7 @@ export function ThemeToggle({ variant = 'dropdown', className = '' }: ThemeToggl
               }}
               className={`flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-xs font-medium transition cursor-pointer ${
                 theme === 'light'
-                  ? 'bg-slate-100 dark:bg-white/[0.08] text-slate-900 dark:text-[#dfcaa0]'
+                  ? 'bg-slate-100 dark:bg-white/[0.08] text-slate-900 dark:text-brand'
                   : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.04] hover:text-slate-900 dark:hover:text-white'
               }`}
             >
@@ -119,7 +119,7 @@ export function ThemeToggle({ variant = 'dropdown', className = '' }: ThemeToggl
                 <Sun className="h-3.5 w-3.5 stroke-[1.25] text-amber-500" />
                 <span>Claro</span>
               </div>
-              {theme === 'light' && <Check className="h-3.5 w-3.5 stroke-[1.5] text-[#c5a059]" />}
+              {theme === 'light' && <Check className="h-3.5 w-3.5 stroke-[1.5] text-brand" />}
             </button>
 
             <button
@@ -130,15 +130,15 @@ export function ThemeToggle({ variant = 'dropdown', className = '' }: ThemeToggl
               }}
               className={`flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-xs font-medium transition cursor-pointer ${
                 theme === 'dark'
-                  ? 'bg-slate-100 dark:bg-white/[0.08] text-slate-900 dark:text-[#dfcaa0]'
+                  ? 'bg-slate-100 dark:bg-white/[0.08] text-slate-900 dark:text-brand'
                   : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.04] hover:text-slate-900 dark:hover:text-white'
               }`}
             >
               <div className="flex items-center gap-2">
-                <Moon className="h-3.5 w-3.5 stroke-[1.25] text-[#dfcaa0]" />
+                <Moon className="h-3.5 w-3.5 stroke-[1.25] text-brand" />
                 <span>Escuro</span>
               </div>
-              {theme === 'dark' && <Check className="h-3.5 w-3.5 stroke-[1.5] text-[#dfcaa0]" />}
+              {theme === 'dark' && <Check className="h-3.5 w-3.5 stroke-[1.5] text-brand" />}
             </button>
 
             <button
@@ -149,7 +149,7 @@ export function ThemeToggle({ variant = 'dropdown', className = '' }: ThemeToggl
               }}
               className={`flex w-full items-center justify-between rounded-xl px-2.5 py-2 text-xs font-medium transition cursor-pointer ${
                 theme === 'system'
-                  ? 'bg-slate-100 dark:bg-white/[0.08] text-slate-900 dark:text-[#dfcaa0]'
+                  ? 'bg-slate-100 dark:bg-white/[0.08] text-slate-900 dark:text-brand'
                   : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.04] hover:text-slate-900 dark:hover:text-white'
               }`}
             >
@@ -157,7 +157,7 @@ export function ThemeToggle({ variant = 'dropdown', className = '' }: ThemeToggl
                 <Laptop className="h-3.5 w-3.5 stroke-[1.25] text-slate-400" />
                 <span>Automático (SO)</span>
               </div>
-              {theme === 'system' && <Check className="h-3.5 w-3.5 stroke-[1.5] text-[#dfcaa0]" />}
+              {theme === 'system' && <Check className="h-3.5 w-3.5 stroke-[1.5] text-brand" />}
             </button>
           </div>
         </div>

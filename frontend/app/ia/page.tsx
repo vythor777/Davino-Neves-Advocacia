@@ -13,7 +13,7 @@ export default function IARedirect() {
   return (
     <div className="min-h-screen bg-slate-50 flex items-center justify-center dark:bg-slate-950">
       <div className="flex flex-col items-center gap-3">
-        <div className="h-8 w-8 animate-spin rounded-full border-3 border-[#c5a059] border-t-transparent dark:border-[#d4b36f]" />
+        <div className="h-8 w-8 animate-spin rounded-full border-3 border-brand border-t-transparent dark:border-brand" />
         <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
           Redirecionando para IA Jurídica...
         </p>

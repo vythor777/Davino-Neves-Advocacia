@@ -302,10 +302,10 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
       <div
         className={`legal-glass-card flex flex-col items-center justify-center p-12 text-center ${className}`}
       >
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand/15 text-brand border border-brand/25">
           <Scale className="h-6 w-6" aria-hidden="true" />
         </div>
-        <h3 className="mt-4 text-sm font-semibold text-slate-900 dark:text-[#f8fafc] tracking-tight">
+        <h3 className="mt-4 text-sm font-semibold text-slate-900 dark:text-slate-100 tracking-tight">
           {emptyMessage}
         </h3>
         <p className="mx-auto mt-1 max-w-md text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
@@ -315,7 +315,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
           <button
             type="button"
             onClick={onEmptyAction}
-            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] px-4 py-2 text-xs font-semibold text-slate-950 shadow-xs hover:shadow-md transition-all active:scale-98 cursor-pointer"
+            className="mt-5 inline-flex items-center gap-2 rounded-xl bg-action hover:bg-action-hover px-4 py-2 text-xs font-semibold text-white shadow-xs hover:shadow-md transition-all active:scale-98 cursor-pointer"
           >
             <span>{emptyActionLabel}</span>
           </button>
@@ -336,7 +336,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
           <caption className="sr-only">{caption}</caption>
 
           {/* Cabeçalhos Fixos (Sticky Top) */}
-          <thead className="sticky top-0 z-10 border-b border-[0.5px] border-slate-200/70 bg-slate-50/80 dark:bg-[#12161f]/80 dark:border-white/[0.04] backdrop-blur-md font-semibold text-slate-600 dark:text-slate-300">
+          <thead className="sticky top-0 z-10 border-b border-[0.5px] border-slate-200/70 bg-slate-50/80 dark:bg-surface/80 dark:border-white/[0.04] backdrop-blur-md font-semibold text-slate-600 dark:text-slate-300">
             <tr>
               <th scope="col" className="py-3.5 pl-6 pr-4 font-medium tracking-tight">
                 Processo (CNJ) / Ação
@@ -406,7 +406,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                           <button
                             type="button"
                             onClick={(e) => handleCopyCNJ(e, rawCNJ, String(rowKey))}
-                            className="rounded-md p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#c5a059] transition-colors"
+                            className="rounded-md p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand transition-colors"
                             title="Copiar número CNJ completo"
                             aria-label={`Copiar CNJ do processo ${formattedCNJ}`}
                           >
@@ -421,7 +421,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
 
                       {/* Título com Truncagem e Reticências */}
                       <p
-                        className="truncate text-xs font-medium text-slate-700 group-hover:text-[#c5a059] dark:text-slate-300 dark:group-hover:text-[#dfcaa0] transition-colors"
+                        className="truncate text-xs font-medium text-slate-700 group-hover:text-brand dark:text-slate-300 dark:group-hover:text-brand transition-colors"
                         title={titulo}
                       >
                         {titulo}
@@ -442,7 +442,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                   {/* Coluna 2: Cliente Vinculado com Truncagem */}
                   <td className="px-4 py-3.5">
                     <div className="flex items-center gap-2 max-w-[180px] sm:max-w-[220px]">
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-[#c5a059]/10 text-[#c5a059] border border-[#c5a059]/20">
+                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-brand/10 text-brand border border-brand/20">
                         <User className="h-3.5 w-3.5" aria-hidden="true" />
                       </div>
                       <div className="flex flex-col truncate">
@@ -465,7 +465,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                   <td className="px-4 py-3.5">
                     <div className="flex flex-col gap-0.5 max-w-[160px] sm:max-w-[200px]">
                       {tribunal ? (
-                        <span className="inline-flex w-fit items-center gap-1 rounded-md bg-[#c5a059]/10 px-2 py-0.5 font-mono text-[10px] font-bold text-[#c5a059] dark:bg-[#c5a059]/15 dark:text-[#dfcaa0] border border-[#c5a059]/25">
+                        <span className="inline-flex w-fit items-center gap-1 rounded-md bg-brand/10 px-2 py-0.5 font-mono text-[10px] font-bold text-brand dark:bg-brand/15 dark:text-brand border border-brand/25">
                           <Landmark className="h-3 w-3" aria-hidden="true" />
                           <span>{tribunal}</span>
                         </span>
@@ -511,11 +511,11 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                           e.stopPropagation();
                           onViewDetails?.(proc);
                         }}
-                        className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white/60 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs hover:border-[#c5a059]/40 hover:text-[#c5a059] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#c5a059] active:scale-98 transition-all dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-200 dark:hover:border-[#c5a059]/40 dark:hover:bg-white/[0.06] dark:hover:text-[#c5a059] cursor-pointer"
+                        className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white/60 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-2xs hover:border-brand/40 hover:text-brand focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand active:scale-98 transition-all dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-200 dark:hover:border-brand/40 dark:hover:bg-white/[0.06] dark:hover:text-brand cursor-pointer"
                         title="Ver detalhes completos do processo"
                         aria-label={`Ver detalhes do processo ${formattedCNJ || titulo}`}
                       >
-                        <Eye className="h-3.5 w-3.5 text-[#c5a059]" aria-hidden="true" />
+                        <Eye className="h-3.5 w-3.5 text-brand" aria-hidden="true" />
                         <span>Ver Detalhes</span>
                       </button>
 
@@ -526,7 +526,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                             e.stopPropagation();
                             onEdit(proc);
                           }}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-white/[0.06] dark:hover:text-slate-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#c5a059] transition-colors cursor-pointer"
+                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-white/[0.06] dark:hover:text-slate-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand transition-colors cursor-pointer"
                           title="Editar processo"
                           aria-label={`Editar processo ${formattedCNJ || titulo}`}
                         >

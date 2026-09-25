@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { PageHeader } from '@/components/ui/PageHeader';
 import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { EmptyState } from '@/components/EmptyState';
@@ -301,282 +302,293 @@ function UsuariosContent() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 animate-fade-in-up space-y-6">
+    <div className="app-page">
       {/* Breadcrumb de Navegação */}
       <div>
         <Breadcrumbs items={[{ label: 'Equipe', icon: Shield }]} />
       </div>
 
-        {/* Cabeçalho da Página */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-slate-200/60 dark:border-white/[0.05] pb-6">
-          <div>
-            <div className="inline-flex items-center gap-2 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide uppercase bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-[#d4af37]/90 border border-slate-200 dark:border-white/[0.08]">
-              <Shield className="h-3.5 w-3.5 text-[#c5a059]" />
-              Controle de Acessos
-            </div>
-            <div className="flex items-center gap-2.5 mt-2">
-              <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
-                <Users className="h-4 w-4" />
-              </span>
-              <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-                Equipe
-              </h1>
-            </div>
-            <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-              Acessos, advogados, colaboradores e permissões do escritório Davino Neves.
-            </p>
-          </div>
+      {/* Cabeçalho da Página */}
+      <PageHeader
+        title="Equipe"
+        description="Gerencie integrantes, acessos e permissões do escritório."
+      >
+        <button
+          onClick={carregarUsuarios}
+          disabled={loading}
+          className="ui-button ui-button-secondary"
+          title="Atualizar lista"
+        >
+          <RefreshCw
+            className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`}
+          />
+          Atualizar
+        </button>
+        <button
+          onClick={handleOpenCreate}
+          className="ui-button ui-button-primary"
+        >
+          <UserPlus className="h-4 w-4" />
+          Novo membro
+        </button>
+      </PageHeader>
 
-          <div className="flex items-center gap-2.5">
-            <button
-              onClick={carregarUsuarios}
-              disabled={loading}
-              className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white/60 px-3.5 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100/80 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] backdrop-blur-sm transition-colors cursor-pointer"
-              title="Atualizar lista"
-            >
-              <RefreshCw className={`h-3.5 w-3.5 ${loading ? 'animate-spin' : ''}`} />
-              Atualizar
-            </button>
-
-            <button
-              onClick={handleOpenCreate}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition active:scale-95 cursor-pointer"
-            >
-              <UserPlus className="h-4 w-4" />
-              Novo membro
-            </button>
+      {/* Mensagens de Feedback */}
+      {successMsg && (
+        <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3.5 text-xs text-emerald-700 dark:text-emerald-300 flex items-center justify-between shadow-2xs">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
+            <span>{successMsg}</span>
           </div>
+          <button
+            onClick={() => setSuccessMsg(null)}
+            className="cursor-pointer"
+          >
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
+
+      {errorMsg && (
+        <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 p-3.5 text-xs text-rose-700 dark:text-rose-300 flex items-center justify-between shadow-2xs">
+          <div className="flex items-center gap-2">
+            <AlertCircle className="h-4 w-4 text-rose-500 shrink-0" />
+            <span>{errorMsg}</span>
+          </div>
+          <button onClick={() => setErrorMsg(null)} className="cursor-pointer">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
+
+      {/* Cards de Métricas */}
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+        {loading ? (
+          <>
+            <MetricCardSkeleton />
+            <MetricCardSkeleton />
+            <MetricCardSkeleton />
+            <MetricCardSkeleton />
+          </>
+        ) : (
+          <>
+            <div className="legal-glass-card fio-de-luz p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                  Total Equipe
+                </span>
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-500 dark:text-slate-400">
+                  <Users className="h-3.5 w-3.5" />
+                </div>
+              </div>
+              <p className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+                {stats.total}
+              </p>
+              <p className="text-[11px] text-slate-400 mt-0.5">
+                {stats.ativos} ativos no sistema
+              </p>
+            </div>
+
+            <div className="legal-glass-card fio-de-luz p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                  Administradores
+                </span>
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-500/10 text-purple-500">
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                </div>
+              </div>
+              <p className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+                {stats.administradores}
+              </p>
+              <p className="text-[11px] text-purple-500/80 mt-0.5">
+                Acesso administrativo integral
+              </p>
+            </div>
+
+            <div className="legal-glass-card fio-de-luz p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                  Advogados
+                </span>
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-brand/15 text-brand">
+                  <Briefcase className="h-3.5 w-3.5" />
+                </div>
+              </div>
+              <p className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+                {stats.advogados}
+              </p>
+              <p className="text-[11px] text-brand/80 mt-0.5">
+                Operação e gestão jurídica
+              </p>
+            </div>
+
+            <div className="legal-glass-card fio-de-luz p-4">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                  Estagiários
+                </span>
+                <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                  <GraduationCap className="h-3.5 w-3.5" />
+                </div>
+              </div>
+              <p className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+                {stats.estagiarios}
+              </p>
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                Apoio jurídico e prazos
+              </p>
+            </div>
+          </>
+        )}
+      </div>
+
+      {/* Filtros e Busca */}
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="relative flex-1 max-w-md">
+          <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Buscar por nome ou e-mail corporativo..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface pl-9 pr-4 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-brand focus:outline-hidden"
+          />
         </div>
 
-        {/* Mensagens de Feedback */}
-        {successMsg && (
-          <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-3.5 text-xs text-emerald-700 dark:text-emerald-300 flex items-center justify-between shadow-2xs">
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="h-4 w-4 text-emerald-500 shrink-0" />
-              <span>{successMsg}</span>
-            </div>
-            <button onClick={() => setSuccessMsg(null)} className="cursor-pointer">
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-        )}
-
-        {errorMsg && (
-          <div className="rounded-xl border border-rose-500/20 bg-rose-500/10 p-3.5 text-xs text-rose-700 dark:text-rose-300 flex items-center justify-between shadow-2xs">
-            <div className="flex items-center gap-2">
-              <AlertCircle className="h-4 w-4 text-rose-500 shrink-0" />
-              <span>{errorMsg}</span>
-            </div>
-            <button onClick={() => setErrorMsg(null)} className="cursor-pointer">
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-        )}
-
-        {/* Cards de Métricas */}
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
-          {loading ? (
-            <>
-              <MetricCardSkeleton />
-              <MetricCardSkeleton />
-              <MetricCardSkeleton />
-              <MetricCardSkeleton />
-            </>
-          ) : (
-            <>
-              <div className="legal-glass-card fio-de-luz p-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Total Equipe</span>
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 dark:bg-white/[0.04] text-slate-500 dark:text-slate-400">
-                    <Users className="h-3.5 w-3.5" />
-                  </div>
-                </div>
-                <p className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-                  {stats.total}
-                </p>
-                <p className="text-[11px] text-slate-400 mt-0.5">{stats.ativos} ativos no sistema</p>
-              </div>
-
-              <div className="legal-glass-card fio-de-luz p-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Administradores</span>
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-500/10 text-purple-500">
-                    <ShieldCheck className="h-3.5 w-3.5" />
-                  </div>
-                </div>
-                <p className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-                  {stats.administradores}
-                </p>
-                <p className="text-[11px] text-purple-500/80 mt-0.5">Acesso administrativo integral</p>
-              </div>
-
-              <div className="legal-glass-card fio-de-luz p-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Advogados</span>
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#c5a059]/15 text-[#c5a059]">
-                    <Briefcase className="h-3.5 w-3.5" />
-                  </div>
-                </div>
-                <p className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-                  {stats.advogados}
-                </p>
-                <p className="text-[11px] text-[#c5a059]/80 mt-0.5">Operação e gestão jurídica</p>
-              </div>
-
-              <div className="legal-glass-card fio-de-luz p-4">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">Estagiários</span>
-                  <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                    <GraduationCap className="h-3.5 w-3.5" />
-                  </div>
-                </div>
-                <p className="mt-2 text-2xl font-bold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-                  {stats.estagiarios}
-                </p>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">Apoio jurídico e prazos</p>
-              </div>
-            </>
-          )}
-        </div>
-
-        {/* Filtros e Busca */}
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <div className="relative flex-1 max-w-md">
-            <Search className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Buscar por nome ou e-mail corporativo..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] pl-9 pr-4 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-[#c5a059] focus:outline-hidden"
-            />
-          </div>
-
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
-            {['TODOS', 'ADMINISTRADOR', 'ADVOGADO', 'ESTAGIARIO'].map((role) => (
-              <button
-                key={role}
-                onClick={() => setSelectedRole(role)}
-                className={`rounded-lg px-3 py-1.5 text-xs font-medium whitespace-nowrap transition cursor-pointer ${
-                  selectedRole === role
-                    ? 'bg-[#c5a059] text-slate-950 font-semibold shadow-xs'
-                    : 'border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.03] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-                }`}
-              >
-                {role === 'TODOS'
-                  ? 'Todos'
-                  : role === 'ADMINISTRADOR'
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0">
+          {['TODOS', 'ADMINISTRADOR', 'ADVOGADO', 'ESTAGIARIO'].map((role) => (
+            <button
+              key={role}
+              onClick={() => setSelectedRole(role)}
+              className={`rounded-lg px-3 py-1.5 text-xs font-medium whitespace-nowrap transition cursor-pointer ${
+                selectedRole === role
+                  ? 'bg-action text-white font-semibold shadow-xs'
+                  : 'border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.03] text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+              }`}
+            >
+              {role === 'TODOS'
+                ? 'Todos'
+                : role === 'ADMINISTRADOR'
                   ? 'Administradores'
                   : role === 'ADVOGADO'
-                  ? 'Advogados'
-                  : 'Estagiários'}
-              </button>
-            ))}
-          </div>
+                    ? 'Advogados'
+                    : 'Estagiários'}
+            </button>
+          ))}
         </div>
+      </div>
 
-        {/* Tabela de Usuários */}
-        <div className="legal-glass-card fio-de-luz overflow-hidden">
-          {loading ? (
-            <TableSkeleton rows={5} columns={6} />
-          ) : filteredUsuarios.length === 0 ? (
-            <EmptyState
-              icon={Users}
-              title={searchTerm || selectedRole !== 'TODOS' ? "Nenhum colaborador localizado" : "Nenhum colaborador cadastrado"}
-              description={
-                searchTerm || selectedRole !== 'TODOS'
-                  ? "Tente ajustar o perfil de acesso ou a busca por nome/e-mail."
-                  : "Cadastre novos advogados, administradores ou estagiários na equipe."
-              }
-              action={
-                !searchTerm && selectedRole === 'TODOS'
-                  ? {
-                      label: "Cadastrar Colaborador",
-                      onClick: handleOpenCreate,
-                      icon: UserPlus,
-                    }
-                  : undefined
-              }
-            />
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="border-b border-slate-200/60 dark:border-white/[0.06] bg-slate-50/50 dark:bg-white/[0.02] font-semibold text-slate-700 dark:text-slate-300">
-                  <tr>
-                    <th className="py-3.5 pl-6 pr-3 font-medium">Colaborador</th>
-                    <th className="px-3 py-3.5 font-medium">E-mail Corporativo</th>
-                    <th className="px-3 py-3.5 font-medium">Perfil de Acesso</th>
-                    <th className="px-3 py-3.5 font-medium">Status</th>
-                    <th className="px-3 py-3.5 font-medium">Data de Criação</th>
-                    <th className="py-3.5 pl-3 pr-6 text-right font-medium">Ações</th>
+      {/* Tabela de Usuários */}
+      <div className="legal-glass-card fio-de-luz overflow-hidden">
+        {loading ? (
+          <TableSkeleton rows={5} columns={6} />
+        ) : filteredUsuarios.length === 0 ? (
+          <EmptyState
+            icon={Users}
+            title={
+              searchTerm || selectedRole !== 'TODOS'
+                ? 'Nenhum colaborador localizado'
+                : 'Nenhum colaborador cadastrado'
+            }
+            description={
+              searchTerm || selectedRole !== 'TODOS'
+                ? 'Tente ajustar o perfil de acesso ou a busca por nome/e-mail.'
+                : 'Cadastre novos advogados, administradores ou estagiários na equipe.'
+            }
+            action={
+              !searchTerm && selectedRole === 'TODOS'
+                ? {
+                    label: 'Cadastrar Colaborador',
+                    onClick: handleOpenCreate,
+                    icon: UserPlus,
+                  }
+                : undefined
+            }
+          />
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="border-b border-slate-200/60 dark:border-white/[0.06] bg-slate-50/50 dark:bg-white/[0.02] font-semibold text-slate-700 dark:text-slate-300">
+                <tr>
+                  <th className="py-3.5 pl-6 pr-3 font-medium">Colaborador</th>
+                  <th className="px-3 py-3.5 font-medium">
+                    E-mail Corporativo
+                  </th>
+                  <th className="px-3 py-3.5 font-medium">Perfil de Acesso</th>
+                  <th className="px-3 py-3.5 font-medium">Status</th>
+                  <th className="px-3 py-3.5 font-medium">Data de Criação</th>
+                  <th className="py-3.5 pl-3 pr-6 text-right font-medium">
+                    Ações
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-200/40 dark:divide-white/[0.04]">
+                {filteredUsuarios.map((u) => (
+                  <tr
+                    key={u.id_usuario}
+                    className="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition"
+                  >
+                    <td className="py-3.5 pl-6 pr-3">
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand/15 border border-brand/25 font-bold text-brand shrink-0 text-xs">
+                          {u.nome.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                          <span className="font-semibold text-slate-900 dark:text-slate-100">
+                            {u.nome}
+                          </span>
+                          <p className="text-[11px] text-slate-400">
+                            ID #{u.id_usuario}
+                          </p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-3 py-3.5 text-slate-600 dark:text-slate-300 font-mono text-[11px]">
+                      {u.email}
+                    </td>
+                    <td className="px-3 py-3.5">{getRoleBadge(u.role)}</td>
+                    <td className="px-3 py-3.5">
+                      {u.ativo !== false ? (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                          Ativo
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-slate-200/60 dark:bg-white/[0.04] border border-slate-300 dark:border-white/[0.08] px-2 py-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
+                          <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                          Inativo
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-3 py-3.5 text-slate-500 dark:text-slate-400">
+                      {new Date(u.data_criacao).toLocaleDateString('pt-BR')}
+                    </td>
+                    <td className="py-3.5 pl-3 pr-6 text-right">
+                      <div className="flex items-center justify-end gap-1.5">
+                        <button
+                          onClick={() => handleOpenEdit(u)}
+                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-brand dark:hover:bg-white/[0.04] dark:hover:text-brand transition cursor-pointer"
+                          title="Editar usuário"
+                        >
+                          <Edit2 className="h-3.5 w-3.5" />
+                        </button>
+                        <button
+                          onClick={() => handleOpenDelete(u)}
+                          className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 transition cursor-pointer"
+                          title="Excluir usuário"
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </td>
                   </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200/40 dark:divide-white/[0.04]">
-                  {filteredUsuarios.map((u) => (
-                    <tr
-                      key={u.id_usuario}
-                      className="hover:bg-slate-50/50 dark:hover:bg-white/[0.02] transition"
-                    >
-                      <td className="py-3.5 pl-6 pr-3">
-                        <div className="flex items-center gap-3">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 border border-[#c5a059]/25 font-bold text-[#c5a059] shrink-0 text-xs">
-                            {u.nome.charAt(0).toUpperCase()}
-                          </div>
-                          <div>
-                            <span className="font-semibold text-slate-900 dark:text-[#f8fafc]">
-                              {u.nome}
-                            </span>
-                            <p className="text-[11px] text-slate-400">
-                              ID #{u.id_usuario}
-                            </p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-3 py-3.5 text-slate-600 dark:text-slate-300 font-mono text-[11px]">
-                        {u.email}
-                      </td>
-                      <td className="px-3 py-3.5">{getRoleBadge(u.role)}</td>
-                      <td className="px-3 py-3.5">
-                        {u.ativo !== false ? (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
-                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                            Ativo
-                          </span>
-                        ) : (
-                          <span className="inline-flex items-center gap-1 rounded-full bg-slate-200/60 dark:bg-white/[0.04] border border-slate-300 dark:border-white/[0.08] px-2 py-0.5 text-[11px] font-medium text-slate-500 dark:text-slate-400">
-                            <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
-                            Inativo
-                          </span>
-                        )}
-                      </td>
-                      <td className="px-3 py-3.5 text-slate-500 dark:text-slate-400">
-                        {new Date(u.data_criacao).toLocaleDateString('pt-BR')}
-                      </td>
-                      <td className="py-3.5 pl-3 pr-6 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
-                          <button
-                            onClick={() => handleOpenEdit(u)}
-                            className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-[#c5a059] dark:hover:bg-white/[0.04] dark:hover:text-[#c5a059] transition cursor-pointer"
-                            title="Editar usuário"
-                          >
-                            <Edit2 className="h-3.5 w-3.5" />
-                          </button>
-                          <button
-                            onClick={() => handleOpenDelete(u)}
-                            className="rounded-lg p-1.5 text-slate-400 hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 transition cursor-pointer"
-                            title="Excluir usuário"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
 
       {/* Modal de Criação */}
       {isCreateModalOpen && (
@@ -584,10 +596,10 @@ function UsuariosContent() {
           <div className="w-full max-w-lg legal-glass-card fio-de-luz p-6 shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] pb-4">
               <div className="flex items-center gap-2.5">
-                <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
+                <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand/15 text-brand border border-brand/25">
                   <UserPlus className="h-4 w-4" />
                 </span>
-                <h3 className="text-base font-semibold text-slate-900 dark:text-[#f8fafc]">
+                <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
                   Adicionar membro da equipe
                 </h3>
               </div>
@@ -599,7 +611,10 @@ function UsuariosContent() {
               </button>
             </div>
 
-            <form onSubmit={handleCreateSubmit} className="mt-4 space-y-4 text-xs">
+            <form
+              onSubmit={handleCreateSubmit}
+              className="mt-4 space-y-4 text-xs"
+            >
               <div>
                 <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Nome Completo *
@@ -610,9 +625,11 @@ function UsuariosContent() {
                     type="text"
                     required
                     value={formData.nome}
-                    onChange={(e) => setFormData({ ...formData, nome: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, nome: e.target.value })
+                    }
                     placeholder="Ex: Dra. Juliana Neves"
-                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] pl-9 pr-3 py-2 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-[#c5a059] focus:outline-hidden"
+                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface pl-9 pr-3 py-2 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-brand focus:outline-hidden"
                   />
                 </div>
               </div>
@@ -627,9 +644,11 @@ function UsuariosContent() {
                     type="email"
                     required
                     value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
                     placeholder="juliana.neves@davinoeneves.adv.br"
-                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] pl-9 pr-3 py-2 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-[#c5a059] focus:outline-hidden"
+                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface pl-9 pr-3 py-2 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-brand focus:outline-hidden"
                   />
                 </div>
               </div>
@@ -643,8 +662,13 @@ function UsuariosContent() {
                   <input
                     type="date"
                     value={formData.data_nascimento || ''}
-                    onChange={(e) => setFormData({ ...formData, data_nascimento: e.target.value })}
-                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] pl-9 pr-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        data_nascimento: e.target.value,
+                      })
+                    }
+                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface pl-9 pr-3 py-2 text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
                   />
                 </div>
               </div>
@@ -660,16 +684,22 @@ function UsuariosContent() {
                     required
                     minLength={6}
                     value={formData.senha}
-                    onChange={(e) => setFormData({ ...formData, senha: e.target.value })}
+                    onChange={(e) =>
+                      setFormData({ ...formData, senha: e.target.value })
+                    }
                     placeholder="••••••••"
-                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] pl-9 pr-10 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
+                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface pl-9 pr-10 py-2 text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                   >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -681,7 +711,9 @@ function UsuariosContent() {
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
-                    onClick={() => setFormData({ ...formData, role: 'ADMINISTRADOR' })}
+                    onClick={() =>
+                      setFormData({ ...formData, role: 'ADMINISTRADOR' })
+                    }
                     className={`rounded-xl border p-3 text-center transition cursor-pointer ${
                       formData.role === 'ADMINISTRADOR'
                         ? 'border-purple-500/40 bg-purple-500/10 text-purple-600 dark:text-purple-300'
@@ -690,35 +722,45 @@ function UsuariosContent() {
                   >
                     <ShieldCheck className="mx-auto h-4 w-4 mb-1 text-purple-500" />
                     <span className="font-semibold block">Administrador</span>
-                    <span className="text-[10px] text-slate-400">Acesso Total</span>
+                    <span className="text-[10px] text-slate-400">
+                      Acesso Total
+                    </span>
                   </button>
 
                   <button
                     type="button"
-                    onClick={() => setFormData({ ...formData, role: 'ADVOGADO' })}
+                    onClick={() =>
+                      setFormData({ ...formData, role: 'ADVOGADO' })
+                    }
                     className={`rounded-xl border p-3 text-center transition cursor-pointer ${
                       formData.role === 'ADVOGADO'
-                        ? 'border-[#c5a059]/50 bg-[#c5a059]/15 text-[#c5a059]'
+                        ? 'border-brand/50 bg-brand/15 text-brand'
                         : 'border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
                     }`}
                   >
-                    <Briefcase className="mx-auto h-4 w-4 mb-1 text-[#c5a059]" />
+                    <Briefcase className="mx-auto h-4 w-4 mb-1 text-brand" />
                     <span className="font-semibold block">Advogado</span>
-                    <span className="text-[10px] text-slate-400">Gestão Jurídica</span>
+                    <span className="text-[10px] text-slate-400">
+                      Gestão Jurídica
+                    </span>
                   </button>
 
                   <button
                     type="button"
-                    onClick={() => setFormData({ ...formData, role: 'ESTAGIARIO' })}
+                    onClick={() =>
+                      setFormData({ ...formData, role: 'ESTAGIARIO' })
+                    }
                     className={`rounded-xl border p-3 text-center transition cursor-pointer ${
                       formData.role === 'ESTAGIARIO'
-                        ? 'border-[#c5a059]/50 bg-[#c5a059]/15 text-slate-900 dark:text-[#dfcaa0]'
+                        ? 'border-brand/50 bg-brand/15 text-slate-900 dark:text-brand'
                         : 'border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
                     }`}
                   >
-                    <GraduationCap className="mx-auto h-4 w-4 mb-1 text-[#c5a059]" />
+                    <GraduationCap className="mx-auto h-4 w-4 mb-1 text-brand" />
                     <span className="font-semibold block">Estagiário</span>
-                    <span className="text-[10px] text-slate-400">Apoio & Prazos</span>
+                    <span className="text-[10px] text-slate-400">
+                      Apoio & Prazos
+                    </span>
                   </button>
                 </div>
               </div>
@@ -728,10 +770,15 @@ function UsuariosContent() {
                   type="checkbox"
                   id="ativoCreate"
                   checked={formData.ativo}
-                  onChange={(e) => setFormData({ ...formData, ativo: e.target.checked })}
-                  className="rounded text-[#c5a059] focus:ring-[#c5a059]"
+                  onChange={(e) =>
+                    setFormData({ ...formData, ativo: e.target.checked })
+                  }
+                  className="rounded text-brand focus:ring-brand"
                 />
-                <label htmlFor="ativoCreate" className="font-medium text-slate-700 dark:text-slate-300">
+                <label
+                  htmlFor="ativoCreate"
+                  className="font-medium text-slate-700 dark:text-slate-300"
+                >
                   Usuário ativo no sistema (liberar acesso imediatamente)
                 </label>
               </div>
@@ -747,7 +794,7 @@ function UsuariosContent() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition active:scale-98 disabled:opacity-50 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-action hover:bg-action-hover text-white font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition active:scale-98 disabled:opacity-50 cursor-pointer"
                 >
                   {submitting ? 'Salvando...' : 'Cadastrar Colaborador'}
                 </button>
@@ -763,10 +810,10 @@ function UsuariosContent() {
           <div className="w-full max-w-lg legal-glass-card fio-de-luz p-6 shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] pb-4">
               <div className="flex items-center gap-2.5">
-                <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
+                <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand/15 text-brand border border-brand/25">
                   <Edit2 className="h-4 w-4" />
                 </span>
-                <h3 className="text-base font-semibold text-slate-900 dark:text-[#f8fafc]">
+                <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
                   Editar membro da equipe
                 </h3>
               </div>
@@ -778,7 +825,10 @@ function UsuariosContent() {
               </button>
             </div>
 
-            <form onSubmit={handleEditSubmit} className="mt-4 space-y-4 text-xs">
+            <form
+              onSubmit={handleEditSubmit}
+              className="mt-4 space-y-4 text-xs"
+            >
               <div>
                 <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Nome Completo
@@ -787,8 +837,10 @@ function UsuariosContent() {
                   type="text"
                   required
                   value={editFormData.nome}
-                  onChange={(e) => setEditFormData({ ...editFormData, nome: e.target.value })}
-                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] px-3.5 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
+                  onChange={(e) =>
+                    setEditFormData({ ...editFormData, nome: e.target.value })
+                  }
+                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface px-3.5 py-2 text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
                 />
               </div>
 
@@ -800,8 +852,10 @@ function UsuariosContent() {
                   type="email"
                   required
                   value={editFormData.email}
-                  onChange={(e) => setEditFormData({ ...editFormData, email: e.target.value })}
-                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] px-3.5 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
+                  onChange={(e) =>
+                    setEditFormData({ ...editFormData, email: e.target.value })
+                  }
+                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface px-3.5 py-2 text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
                 />
               </div>
 
@@ -814,8 +868,13 @@ function UsuariosContent() {
                   <input
                     type="date"
                     value={editFormData.data_nascimento || ''}
-                    onChange={(e) => setEditFormData({ ...editFormData, data_nascimento: e.target.value })}
-                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] pl-9 pr-3 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        data_nascimento: e.target.value,
+                      })
+                    }
+                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface pl-9 pr-3 py-2 text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
                   />
                 </div>
               </div>
@@ -830,16 +889,25 @@ function UsuariosContent() {
                     type={showPassword ? 'text' : 'password'}
                     minLength={6}
                     value={editFormData.senha || ''}
-                    onChange={(e) => setEditFormData({ ...editFormData, senha: e.target.value })}
+                    onChange={(e) =>
+                      setEditFormData({
+                        ...editFormData,
+                        senha: e.target.value,
+                      })
+                    }
                     placeholder="Nova senha (opcional)"
-                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-[#12161f] pl-9 pr-10 py-2 text-slate-900 dark:text-slate-100 focus:border-[#c5a059] focus:outline-hidden"
+                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface pl-9 pr-10 py-2 text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
                   >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    {showPassword ? (
+                      <EyeOff className="h-4 w-4" />
+                    ) : (
+                      <Eye className="h-4 w-4" />
+                    )}
                   </button>
                 </div>
               </div>
@@ -851,7 +919,12 @@ function UsuariosContent() {
                 <div className="grid grid-cols-3 gap-2">
                   <button
                     type="button"
-                    onClick={() => setEditFormData({ ...editFormData, role: 'ADMINISTRADOR' })}
+                    onClick={() =>
+                      setEditFormData({
+                        ...editFormData,
+                        role: 'ADMINISTRADOR',
+                      })
+                    }
                     className={`rounded-xl border p-3 text-center transition cursor-pointer ${
                       editFormData.role === 'ADMINISTRADOR'
                         ? 'border-purple-500/40 bg-purple-500/10 text-purple-600 dark:text-purple-300'
@@ -864,27 +937,31 @@ function UsuariosContent() {
 
                   <button
                     type="button"
-                    onClick={() => setEditFormData({ ...editFormData, role: 'ADVOGADO' })}
+                    onClick={() =>
+                      setEditFormData({ ...editFormData, role: 'ADVOGADO' })
+                    }
                     className={`rounded-xl border p-3 text-center transition cursor-pointer ${
                       editFormData.role === 'ADVOGADO'
-                        ? 'border-[#c5a059]/50 bg-[#c5a059]/15 text-[#c5a059]'
+                        ? 'border-brand/50 bg-brand/15 text-brand'
                         : 'border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
                     }`}
                   >
-                    <Briefcase className="mx-auto h-4 w-4 mb-1 text-[#c5a059]" />
+                    <Briefcase className="mx-auto h-4 w-4 mb-1 text-brand" />
                     <span className="font-semibold block">Advogado</span>
                   </button>
 
                   <button
                     type="button"
-                    onClick={() => setEditFormData({ ...editFormData, role: 'ESTAGIARIO' })}
+                    onClick={() =>
+                      setEditFormData({ ...editFormData, role: 'ESTAGIARIO' })
+                    }
                     className={`rounded-xl border p-3 text-center transition cursor-pointer ${
                       editFormData.role === 'ESTAGIARIO'
-                        ? 'border-[#c5a059]/50 bg-[#c5a059]/15 text-slate-900 dark:text-[#dfcaa0]'
+                        ? 'border-brand/50 bg-brand/15 text-slate-900 dark:text-brand'
                         : 'border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
                     }`}
                   >
-                    <GraduationCap className="mx-auto h-4 w-4 mb-1 text-[#c5a059]" />
+                    <GraduationCap className="mx-auto h-4 w-4 mb-1 text-brand" />
                     <span className="font-semibold block">Estagiário</span>
                   </button>
                 </div>
@@ -895,10 +972,18 @@ function UsuariosContent() {
                   type="checkbox"
                   id="ativoEdit"
                   checked={editFormData.ativo}
-                  onChange={(e) => setEditFormData({ ...editFormData, ativo: e.target.checked })}
-                  className="rounded text-[#c5a059] focus:ring-[#c5a059]"
+                  onChange={(e) =>
+                    setEditFormData({
+                      ...editFormData,
+                      ativo: e.target.checked,
+                    })
+                  }
+                  className="rounded text-brand focus:ring-brand"
                 />
-                <label htmlFor="ativoEdit" className="font-medium text-slate-700 dark:text-slate-300">
+                <label
+                  htmlFor="ativoEdit"
+                  className="font-medium text-slate-700 dark:text-slate-300"
+                >
                   Status ativo (desmarque para bloquear o acesso deste usuário)
                 </label>
               </div>
@@ -914,7 +999,7 @@ function UsuariosContent() {
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition active:scale-98 disabled:opacity-50 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-action hover:bg-action-hover text-white font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition active:scale-98 disabled:opacity-50 cursor-pointer"
                 >
                   {submitting ? 'Salvando...' : 'Salvar Alterações'}
                 </button>

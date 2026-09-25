@@ -30,7 +30,7 @@ export function TableSkeleton({
   columns?: number;
 }) {
   return (
-    <div className="w-full overflow-hidden rounded-2xl border border-[0.75px] border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#161b22]/70 backdrop-blur-md shadow-xs">
+    <div className="w-full overflow-hidden rounded-2xl border border-[0.75px] border-slate-200 dark:border-white/[0.08] bg-white dark:bg-surface/70 backdrop-blur-md shadow-xs">
       {/* Header Skeleton */}
       <div className="border-b border-[0.75px] border-slate-200 bg-slate-50/80 p-4 dark:border-white/[0.08] dark:bg-[#0d1117]/50 flex items-center justify-between gap-4">
         {Array.from({ length: columns }).map((_, i) => (
@@ -77,7 +77,7 @@ export function TableSkeleton({
  */
 export function MetricCardSkeleton() {
   return (
-    <div className="rounded-2xl border border-[0.75px] border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#161b22]/70 backdrop-blur-md p-5 shadow-xs">
+    <div className="rounded-2xl border border-[0.75px] border-slate-200 dark:border-white/[0.08] bg-white dark:bg-surface/70 backdrop-blur-md p-5 shadow-xs">
       <div className="flex items-center justify-between">
         <Skeleton className="h-3.5 w-28" />
         <Skeleton className="h-8 w-8 rounded-xl" />
@@ -97,7 +97,7 @@ export function CardGridSkeleton({ count = 6 }: { count?: number }) {
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={`card-skel-${i}`}
-          className="rounded-2xl border border-[0.75px] border-slate-200 dark:border-white/[0.08] bg-white dark:bg-[#161b22]/70 backdrop-blur-md p-5 shadow-xs space-y-4"
+          className="rounded-2xl border border-[0.75px] border-slate-200 dark:border-white/[0.08] bg-white dark:bg-surface/70 backdrop-blur-md p-5 shadow-xs space-y-4"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
