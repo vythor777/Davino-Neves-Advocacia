@@ -122,7 +122,7 @@ export function Navbar() {
             onClick={() => setMobileDrawerOpen(true)}
             aria-label="Abrir menu de navegação"
             aria-expanded={mobileDrawerOpen}
-            className="flex lg:hidden h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:bg-slate-700 transition focus-visible:ring-2 focus-visible:ring-[#c5a059] focus-visible:outline-hidden shrink-0"
+            className="flex lg:hidden h-10 w-10 sm:h-11 sm:w-11 items-center justify-center rounded-xl border border-slate-200 bg-slate-50 text-slate-700 hover:bg-slate-100 hover:text-slate-900 dark:border-slate-800 dark:bg-slate-800/80 dark:text-slate-300 dark:hover:bg-slate-700 transition focus-visible:ring-2 focus-visible:ring-brand focus-visible:outline-hidden shrink-0"
           >
             <Menu className="h-5 w-5" />
           </button>
@@ -132,7 +132,7 @@ export function Navbar() {
             href="/"
             className="flex items-center gap-2 sm:gap-2.5 transition-all hover:opacity-95 shrink-0 group"
           >
-            <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-slate-900 dark:bg-slate-800 text-[#dfcaa0] border border-[0.75px] border-[#c5a059]/40 shadow-xs group-hover:scale-105 transition-transform shrink-0">
+            <div className="relative flex h-9 w-9 sm:h-10 sm:w-10 items-center justify-center rounded-xl bg-slate-900 dark:bg-slate-800 text-brand border border-[0.75px] border-brand/40 shadow-xs group-hover:scale-105 transition-transform shrink-0">
               <Scale className="h-4 w-4 sm:h-5 sm:w-5 stroke-[1.5]" />
             </div>
             <div className="min-w-0">
@@ -185,7 +185,7 @@ export function Navbar() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar processo..."
-              className="w-full rounded-xl border border-slate-200/80 bg-slate-50 pl-8 pr-7 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#0047ab] focus:outline-hidden dark:border-white/[0.08] dark:bg-[#161b22] dark:text-slate-100 dark:placeholder:text-slate-500 transition-all"
+              className="w-full rounded-xl border border-slate-200/80 bg-slate-50 pl-8 pr-7 py-1.5 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:border-[#0047ab] focus:outline-hidden dark:border-white/[0.08] dark:bg-surface dark:text-slate-100 dark:placeholder:text-slate-500 transition-all"
             />
             {searchQuery && (
               <button
@@ -263,7 +263,7 @@ export function Navbar() {
                     onClick={() => setQuickMenuOpen(false)}
                     className="flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-white/[0.05] transition group"
                   >
-                    <Sparkles className="h-4 w-4 text-[#c5a059]" />
+                    <Sparkles className="h-4 w-4 text-brand" />
                     <span className="font-semibold text-slate-900 dark:text-white">Assistente IA Gemini</span>
                   </Link>
                 </div>
@@ -391,7 +391,7 @@ export function Navbar() {
             {/* Header do Drawer */}
             <div className="flex h-16 items-center justify-between border-b border-slate-100 px-4 dark:border-slate-800">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 dark:bg-slate-800 text-[#dfcaa0] border border-[0.75px] border-[#c5a059]/40 shadow-xs">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-900 dark:bg-slate-800 text-brand border border-[0.75px] border-brand/40 shadow-xs">
                   <Scale className="h-4 w-4 stroke-[1.5]" />
                 </div>
                 <div>

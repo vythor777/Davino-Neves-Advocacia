@@ -50,7 +50,7 @@ export function getStatusBadgeStyle(status: string) {
     return 'bg-amber-50 text-amber-800 border-amber-200/80 dark:bg-amber-950/40 dark:border-amber-900/60 dark:text-amber-300';
   }
   if (s.includes('distribuído') || s.includes('distribuido')) {
-    return 'bg-[#c5a059]/10 text-slate-800 border-[#c5a059]/30 dark:bg-[#c5a059]/15 dark:border-[#c5a059]/30 dark:text-[#dfcaa0]';
+    return 'bg-brand/10 text-slate-800 border-brand/30 dark:bg-brand/15 dark:border-brand/30 dark:text-brand';
   }
   if (s.includes('concluso') || s.includes('decisão') || s.includes('despacho')) {
     return 'bg-purple-50 text-purple-800 border-purple-200/80 dark:bg-purple-950/40 dark:border-purple-900/60 dark:text-purple-300';
@@ -105,7 +105,7 @@ export function ProcessosTable({
   if (processos.length === 0 && !loading) {
     return (
       <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#c5a059]/10 text-[#c5a059] border border-[#c5a059]/25 dark:bg-[#c5a059]/15 dark:text-[#d4b36f]">
+        <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand/10 text-brand border border-brand/25 dark:bg-brand/15 dark:text-brand">
           <Scale className="h-6 w-6" />
         </div>
         <h3 className="mt-3 text-sm font-semibold text-slate-900 dark:text-white">
@@ -118,7 +118,7 @@ export function ProcessosTable({
           <button
             type="button"
             onClick={onCreateNew}
-            className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] px-3.5 py-2 text-xs font-semibold text-slate-950 shadow-xs hover:bg-[#d4b36f] transition-colors"
+            className="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-action px-3.5 py-2 text-xs font-semibold text-white shadow-xs hover:bg-action-hover transition-colors"
           >
             <PlusCircle className="h-4 w-4" />
             Cadastrar Processo
@@ -170,7 +170,7 @@ export function ProcessosTable({
                           onClick={() =>
                             handleCopy(proc.numero_processo, `cnj-${proc.id_processo}`)
                           }
-                          className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:ring-2 focus-visible:ring-[#c5a059]"
+                          className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors p-1 rounded hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:ring-2 focus-visible:ring-brand"
                           title="Copiar número CNJ"
                           aria-label="Copiar número CNJ"
                         >
@@ -184,7 +184,7 @@ export function ProcessosTable({
                       <button
                         type="button"
                         onClick={() => onViewDetails(proc)}
-                        className="text-left font-medium text-slate-800 hover:text-[#c5a059] dark:text-slate-200 dark:hover:text-[#d4b36f] truncate transition-colors focus-visible:outline-hidden"
+                        className="text-left font-medium text-slate-800 hover:text-brand dark:text-slate-200 dark:hover:text-brand truncate transition-colors focus-visible:outline-hidden"
                         title={proc.titulo}
                       >
                         {proc.titulo}
@@ -254,7 +254,7 @@ export function ProcessosTable({
                       <button
                         type="button"
                         onClick={() => onEdit(proc)}
-                        className="rounded-lg p-2 text-slate-400 hover:bg-[#c5a059]/10 hover:text-[#c5a059] dark:hover:bg-[#c5a059]/20 dark:hover:text-[#d4b36f] transition-colors"
+                        className="rounded-lg p-2 text-slate-400 hover:bg-brand/10 hover:text-brand dark:hover:bg-brand/20 dark:hover:text-brand transition-colors"
                         title="Editar"
                         aria-label="Editar processo"
                       >
@@ -314,7 +314,7 @@ export function ProcessosTable({
                   </div>
                   <h3
                     onClick={() => onViewDetails(proc)}
-                    className="font-semibold text-slate-900 dark:text-slate-100 text-sm cursor-pointer hover:text-[#c5a059] dark:hover:text-[#d4b36f]"
+                    className="font-semibold text-slate-900 dark:text-slate-100 text-sm cursor-pointer hover:text-brand dark:hover:text-brand"
                   >
                     {proc.titulo}
                   </h3>
@@ -369,7 +369,7 @@ export function ProcessosTable({
                   <button
                     type="button"
                     onClick={() => onEdit(proc)}
-                    className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-[#c5a059]/10 text-[#c5a059] hover:bg-[#c5a059]/20 dark:bg-[#c5a059]/15 dark:text-[#d4b36f]"
+                    className="flex min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-brand/10 text-brand hover:bg-brand/20 dark:bg-brand/15 dark:text-brand"
                     aria-label="Editar processo"
                   >
                     <Edit2 className="h-4 w-4" />

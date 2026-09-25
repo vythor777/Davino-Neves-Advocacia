@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { useSearchParams } from 'next/navigation';
 import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
@@ -53,7 +54,7 @@ export default function FinanceiroPage() {
       <Suspense
         fallback={
           <div className="flex h-96 items-center justify-center">
-            <div className="h-8 w-8 animate-spin rounded-full border-3 border-[#c5a059] border-t-transparent" />
+            <div className="h-8 w-8 animate-spin rounded-full border-3 border-brand border-t-transparent" />
           </div>
         }
       >
@@ -279,85 +280,92 @@ function FinanceiroContent() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6 animate-fade-in-up">
+    <div className="app-page">
       {/* Breadcrumbs */}
       <div>
         <Breadcrumbs items={[{ label: 'Financeiro', icon: DollarSign }]} />
       </div>
 
       {/* Header Principal da Página */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-slate-200/60 dark:border-white/[0.05]">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-medium tracking-wide uppercase bg-slate-100 dark:bg-white/[0.06] text-slate-700 dark:text-[#dfcaa0] border border-slate-200 dark:border-white/[0.08]">
-              Controle Financeiro
-            </span>
-          </div>
-          <div className="flex items-center gap-2.5">
-            <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
-              <DollarSign className="h-4 w-4" />
-            </span>
-            <h1 className="text-xl sm:text-2xl font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
-              Financeiro
-            </h1>
-          </div>
-          <p className="mt-1 text-xs text-slate-500 dark:text-slate-400">
-            Acompanhe honorários, entradas, saídas e previsões de recebimento.
-          </p>
-        </div>
-
-        {/* Botões de Ação do Topo */}
-        <div className="flex flex-wrap items-center gap-2.5">
-          {/* Seletor de Período / Mês */}
-          <div className="flex items-center gap-2 rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2 text-xs text-slate-700 dark:text-slate-300">
-            <Calendar className="h-3.5 w-3.5 text-slate-400" />
-            <select
-              value={mesFiltro}
-              onChange={(e) => setMesFiltro(e.target.value)}
-              className="bg-transparent font-medium text-slate-800 dark:text-slate-200 focus:outline-hidden cursor-pointer"
+      <PageHeader
+        title="Financeiro"
+        description="Acompanhe honorários, entradas, saídas e previsões de recebimento."
+      >
+        {' '}
+        {/* Seletor de Período / Mês */}
+        <div className="flex items-center gap-2 rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface px-3 py-2 text-xs text-slate-700 dark:text-slate-300">
+          <Calendar className="h-3.5 w-3.5 text-slate-400" />
+          <select
+            aria-label="Período financeiro"
+            value={mesFiltro}
+            onChange={(e) => setMesFiltro(e.target.value)}
+            className="bg-transparent font-medium text-slate-800 dark:text-slate-200 focus:outline-hidden cursor-pointer"
+          >
+            <option
+              value="2026-09"
+              className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
             >
-              <option value="2026-09" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Setembro / 2026 (Mês Atual)</option>
-              <option value="2026-08" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Agosto / 2026</option>
-              <option value="2026-07" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Julho / 2026</option>
-              <option value="2026" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Ano 2026 Completo</option>
-              <option value="TODOS" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Todo o Histórico</option>
-            </select>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => loadData(false)}
-            disabled={refreshing || loading}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white/60 px-3.5 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100/80 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] backdrop-blur-sm transition-colors cursor-pointer"
-            title="Atualizar dados financeiros"
-          >
-            <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? 'animate-spin' : ''}`} />
-            Atualizar
-          </button>
-
-          <button
-            type="button"
-            onClick={handleExportCSV}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.03] px-3.5 py-2 text-xs font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-white/[0.06] transition cursor-pointer"
-          >
-            <Download className="h-3.5 w-3.5 text-slate-500" />
-            <span className="hidden sm:inline">Exportar CSV</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              setEditingLancamento(null);
-              setModalDefaultTipo(activeTab === 'PAGAR' ? 'DESPESA' : 'RECEITA');
-              setIsModalOpen(true);
-            }}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition-all active:scale-98 cursor-pointer"
-          >
-            <PlusCircle className="h-4 w-4 text-slate-950" />
-            Novo lançamento
-          </button>
+              Setembro / 2026 (Mês Atual)
+            </option>
+            <option
+              value="2026-08"
+              className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+            >
+              Agosto / 2026
+            </option>
+            <option
+              value="2026-07"
+              className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+            >
+              Julho / 2026
+            </option>
+            <option
+              value="2026"
+              className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+            >
+              Ano 2026 Completo
+            </option>
+            <option
+              value="TODOS"
+              className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+            >
+              Todo o Histórico
+            </option>
+          </select>
         </div>
-      </div>
+        <button
+          type="button"
+          onClick={() => loadData(false)}
+          disabled={refreshing || loading}
+          className="ui-button ui-button-secondary"
+          title="Atualizar dados financeiros"
+        >
+          <RefreshCw
+            className={`h-3.5 w-3.5 ${refreshing ? 'animate-spin' : ''}`}
+          />
+          Atualizar
+        </button>
+        <button
+          type="button"
+          onClick={handleExportCSV}
+          className="ui-button ui-button-secondary"
+        >
+          <Download className="h-3.5 w-3.5 text-current" />
+          <span className="hidden sm:inline">Exportar CSV</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            setEditingLancamento(null);
+            setModalDefaultTipo(activeTab === 'PAGAR' ? 'DESPESA' : 'RECEITA');
+            setIsModalOpen(true);
+          }}
+          className="ui-button ui-button-primary"
+        >
+          <PlusCircle className="h-4 w-4 text-current" />
+          Novo lançamento
+        </button>
+      </PageHeader>
 
       {/* Grid de Métricas em Cards */}
       <FinancialMetricsCards data={resumoData} loading={loading} />
@@ -370,7 +378,7 @@ function FinanceiroContent() {
             onClick={() => setActiveTab('EXTRATO')}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
               activeTab === 'EXTRATO'
-                ? 'bg-[#c5a059] text-slate-950 shadow-xs'
+                ? 'bg-action text-white shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
@@ -386,7 +394,7 @@ function FinanceiroContent() {
             onClick={() => setActiveTab('RECEBER')}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
               activeTab === 'RECEBER'
-                ? 'bg-[#c5a059] text-slate-950 shadow-xs'
+                ? 'bg-action text-white shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
@@ -402,7 +410,7 @@ function FinanceiroContent() {
             onClick={() => setActiveTab('PAGAR')}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
               activeTab === 'PAGAR'
-                ? 'bg-[#c5a059] text-slate-950 shadow-xs'
+                ? 'bg-action text-white shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
@@ -418,7 +426,7 @@ function FinanceiroContent() {
             onClick={() => setActiveTab('DRE')}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
               activeTab === 'DRE'
-                ? 'bg-[#c5a059] text-slate-950 shadow-xs'
+                ? 'bg-action text-white shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
@@ -452,7 +460,7 @@ function FinanceiroContent() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Buscar por descrição, cliente, processo ou nota..."
-                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] pl-9 pr-8 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-[#c5a059] focus:outline-hidden transition"
+                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface pl-9 pr-8 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-brand focus:outline-hidden transition"
               />
               {searchQuery && (
                 <button
@@ -471,27 +479,82 @@ function FinanceiroContent() {
               <select
                 value={statusFiltro}
                 onChange={(e) => setStatusFiltro(e.target.value)}
-                className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2 text-xs text-slate-700 dark:text-slate-300 focus:border-[#c5a059] focus:outline-hidden transition cursor-pointer"
+                className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface px-3 py-2 text-xs text-slate-700 dark:text-slate-300 focus:border-brand focus:outline-hidden transition cursor-pointer"
               >
-                <option value="TODOS" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Todos os Status</option>
-                <option value="PENDENTE" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Apenas Pendentes</option>
-                <option value="PAGO" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Apenas Pagos</option>
-                <option value="ATRASADO" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Apenas em Atraso</option>
+                <option
+                  value="TODOS"
+                  className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+                >
+                  Todos os Status
+                </option>
+                <option
+                  value="PENDENTE"
+                  className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+                >
+                  Apenas Pendentes
+                </option>
+                <option
+                  value="PAGO"
+                  className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+                >
+                  Apenas Pagos
+                </option>
+                <option
+                  value="ATRASADO"
+                  className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+                >
+                  Apenas em Atraso
+                </option>
               </select>
 
               {/* Filtro Categoria */}
               <select
                 value={categoriaFiltro}
                 onChange={(e) => setCategoriaFiltro(e.target.value)}
-                className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-[#12161f] px-3 py-2 text-xs text-slate-700 dark:text-slate-300 focus:border-[#c5a059] focus:outline-hidden transition cursor-pointer"
+                className="rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface px-3 py-2 text-xs text-slate-700 dark:text-slate-300 focus:border-brand focus:outline-hidden transition cursor-pointer"
               >
-                <option value="TODAS" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Todas as Categorias</option>
-                <option value="HONORARIO_CONTRATUAL" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Honorário Contratual</option>
-                <option value="HONORARIO_EXITO" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Honorário de Êxito</option>
-                <option value="CONSULTIVO" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Consultivo & Pareceres</option>
-                <option value="CUSTAS_PROCESSUAIS" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Custas & Diligências</option>
-                <option value="OPERACIONAL" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Operacional & Software</option>
-                <option value="IMPOSTOS" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Impostos & Tributos</option>
+                <option
+                  value="TODAS"
+                  className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+                >
+                  Todas as Categorias
+                </option>
+                <option
+                  value="HONORARIO_CONTRATUAL"
+                  className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+                >
+                  Honorário Contratual
+                </option>
+                <option
+                  value="HONORARIO_EXITO"
+                  className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+                >
+                  Honorário de Êxito
+                </option>
+                <option
+                  value="CONSULTIVO"
+                  className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+                >
+                  Consultivo & Pareceres
+                </option>
+                <option
+                  value="CUSTAS_PROCESSUAIS"
+                  className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+                >
+                  Custas & Diligências
+                </option>
+                <option
+                  value="OPERACIONAL"
+                  className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+                >
+                  Operacional & Software
+                </option>
+                <option
+                  value="IMPOSTOS"
+                  className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
+                >
+                  Impostos & Tributos
+                </option>
               </select>
             </div>
           </div>
@@ -512,7 +575,9 @@ function FinanceiroContent() {
                 icon={DollarSign}
                 title="Nenhum lançamento financeiro encontrado"
                 description={
-                  searchQuery || statusFiltro !== 'TODOS' || categoriaFiltro !== 'TODAS'
+                  searchQuery ||
+                  statusFiltro !== 'TODOS' ||
+                  categoriaFiltro !== 'TODAS'
                     ? 'Nenhum resultado corresponde aos filtros selecionados. Tente ajustar os termos de busca.'
                     : 'Não há movimentações financeiras registradas neste período.'
                 }
@@ -521,7 +586,9 @@ function FinanceiroContent() {
                   label: 'Novo Lançamento',
                   onClick: () => {
                     setEditingLancamento(null);
-                    setModalDefaultTipo(activeTab === 'PAGAR' ? 'DESPESA' : 'RECEITA');
+                    setModalDefaultTipo(
+                      activeTab === 'PAGAR' ? 'DESPESA' : 'RECEITA',
+                    );
                     setIsModalOpen(true);
                   },
                   icon: Plus,
@@ -544,7 +611,9 @@ function FinanceiroContent() {
                   <tbody className="divide-y divide-slate-100 dark:divide-white/[0.04] text-xs">
                     {filteredLancamentos.map((item) => {
                       const isReceita = item.tipo === 'RECEITA';
-                      const categoriaInfo = CATEGORIAS_LABELS[item.categoria] || {
+                      const categoriaInfo = CATEGORIAS_LABELS[
+                        item.categoria
+                      ] || {
                         label: item.categoria,
                         badgeClass: 'bg-slate-100 text-slate-800',
                       };
@@ -556,7 +625,7 @@ function FinanceiroContent() {
                         >
                           {/* Data de Vencimento */}
                           <td className="py-3.5 px-4 whitespace-nowrap">
-                            <div className="font-medium text-slate-900 dark:text-[#f8fafc]">
+                            <div className="font-medium text-slate-900 dark:text-slate-100">
                               {formatData(item.dataVencimento)}
                             </div>
                             <div className="text-[10px] text-slate-400 font-mono">
@@ -571,12 +640,14 @@ function FinanceiroContent() {
                                 setSelectedLancamento(item);
                                 setIsDetailOpen(true);
                               }}
-                              className="font-semibold text-slate-900 dark:text-[#f8fafc] hover:text-[#c5a059] dark:hover:text-[#c5a059] cursor-pointer line-clamp-1 transition-colors"
+                              className="font-semibold text-slate-900 dark:text-slate-100 hover:text-brand dark:hover:text-brand cursor-pointer line-clamp-1 transition-colors"
                             >
                               {item.descricao}
                             </div>
                             <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-2 mt-0.5">
-                              <span>{item.formaPagamento || 'Não informado'}</span>
+                              <span>
+                                {item.formaPagamento || 'Não informado'}
+                              </span>
                               {item.observacoes && (
                                 <>
                                   <span>•</span>
@@ -601,16 +672,22 @@ function FinanceiroContent() {
                           <td className="py-3.5 px-4">
                             {item.cliente ? (
                               <div className="flex items-center gap-1.5 text-[11px] text-slate-700 dark:text-slate-300 font-medium truncate max-w-[180px]">
-                                <User className="h-3 w-3 text-[#c5a059] shrink-0" />
-                                <span className="truncate">{item.cliente.nome}</span>
+                                <User className="h-3 w-3 text-brand shrink-0" />
+                                <span className="truncate">
+                                  {item.cliente.nome}
+                                </span>
                               </div>
                             ) : item.processo ? (
                               <div className="flex items-center gap-1.5 text-[11px] text-slate-700 dark:text-slate-300 font-mono truncate max-w-[180px]">
-                                <Scale className="h-3 w-3 text-[#c5a059] shrink-0" />
-                                <span className="truncate">{item.processo.numero_processo}</span>
+                                <Scale className="h-3 w-3 text-brand shrink-0" />
+                                <span className="truncate">
+                                  {item.processo.numero_processo}
+                                </span>
                               </div>
                             ) : (
-                              <span className="text-[11px] text-slate-400 italic">Geral / Sem vínculo</span>
+                              <span className="text-[11px] text-slate-400 italic">
+                                Geral / Sem vínculo
+                              </span>
                             )}
                           </td>
 
@@ -619,7 +696,9 @@ function FinanceiroContent() {
                             {item.status === 'PAGO' ? (
                               <button
                                 type="button"
-                                onClick={() => handleToggleStatus(item.id, 'PENDENTE')}
+                                onClick={() =>
+                                  handleToggleStatus(item.id, 'PENDENTE')
+                                }
                                 title="Clique para reverter para pendente"
                                 className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 px-2.5 py-1 text-[10px] font-semibold border border-emerald-500/20 hover:bg-emerald-500/20 transition cursor-pointer"
                               >
@@ -628,7 +707,9 @@ function FinanceiroContent() {
                             ) : item.status === 'ATRASADO' ? (
                               <button
                                 type="button"
-                                onClick={() => handleToggleStatus(item.id, 'PAGO')}
+                                onClick={() =>
+                                  handleToggleStatus(item.id, 'PAGO')
+                                }
                                 title="Clique para liquidar / marcar como pago"
                                 className="inline-flex items-center gap-1.5 rounded-full bg-rose-500/10 text-rose-600 dark:text-rose-400 px-2.5 py-1 text-[10px] font-semibold border border-rose-500/20 hover:bg-rose-500/20 transition cursor-pointer"
                               >
@@ -637,7 +718,9 @@ function FinanceiroContent() {
                             ) : (
                               <button
                                 type="button"
-                                onClick={() => handleToggleStatus(item.id, 'PAGO')}
+                                onClick={() =>
+                                  handleToggleStatus(item.id, 'PAGO')
+                                }
                                 title="Clique para liquidar / marcar como pago"
                                 className="inline-flex items-center gap-1.5 rounded-full bg-amber-500/10 text-amber-600 dark:text-amber-400 px-2.5 py-1 text-[10px] font-semibold border border-amber-500/20 hover:bg-amber-500/20 transition cursor-pointer"
                               >
@@ -669,7 +752,7 @@ function FinanceiroContent() {
                                   setSelectedLancamento(item);
                                   setIsDetailOpen(true);
                                 }}
-                                className="p-1.5 rounded-lg text-slate-400 hover:text-[#c5a059] hover:bg-slate-100 dark:hover:bg-white/[0.04] transition cursor-pointer"
+                                className="p-1.5 rounded-lg text-slate-400 hover:text-brand hover:bg-slate-100 dark:hover:bg-white/[0.04] transition cursor-pointer"
                                 title="Ver comprovante detalhado"
                               >
                                 <Eye className="h-4 w-4" />
@@ -680,7 +763,7 @@ function FinanceiroContent() {
                                   setEditingLancamento(item);
                                   setIsModalOpen(true);
                                 }}
-                                className="p-1.5 rounded-lg text-slate-400 hover:text-[#c5a059] hover:bg-slate-100 dark:hover:bg-white/[0.04] transition cursor-pointer"
+                                className="p-1.5 rounded-lg text-slate-400 hover:text-brand hover:bg-slate-100 dark:hover:bg-white/[0.04] transition cursor-pointer"
                                 title="Editar lançamento"
                               >
                                 <Edit className="h-4 w-4" />

@@ -54,8 +54,8 @@ export function ConfirmModal({
     },
     info: {
       icon: Info,
-      iconBg: 'bg-[#c5a059]/10 text-[#c5a059] dark:text-[#d4b36f] border border-[#c5a059]/25',
-      button: 'bg-[#c5a059] hover:bg-[#d4b36f] text-slate-950 font-semibold focus-visible:ring-[#c5a059]',
+      iconBg: 'bg-brand/10 text-brand dark:text-brand border border-brand/25',
+      button: 'bg-action hover:bg-action-hover text-white font-semibold focus-visible:ring-brand',
     },
   };
 
@@ -81,7 +81,7 @@ export function ConfirmModal({
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
-              <h3 id="confirm-modal-title" className="text-base font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc]">
+              <h3 id="confirm-modal-title" className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
                 {title}
               </h3>
               <button

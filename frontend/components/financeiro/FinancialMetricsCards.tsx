@@ -68,7 +68,7 @@ export function FinancialMetricsCards({ data, loading }: FinancialMetricsCardsPr
           <div className={`mt-3 text-3xl font-semibold tabular-nums ${
             metricas.entradasRealizadas > 0
               ? 'text-emerald-600 dark:text-emerald-400'
-              : 'text-slate-900 dark:text-[#f8fafc]'
+              : 'text-slate-900 dark:text-slate-100'
           }`}>
             {formatBRL(metricas.entradasRealizadas)}
           </div>
@@ -92,11 +92,11 @@ export function FinancialMetricsCards({ data, loading }: FinancialMetricsCardsPr
             <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
               Honorários a Receber
             </span>
-            <div className="p-1.5 rounded-lg bg-[#c5a059]/15 text-[#c5a059] dark:text-[#dfcaa0]">
+            <div className="p-1.5 rounded-lg bg-brand/15 text-brand dark:text-brand">
               <Clock className="h-3.5 w-3.5" />
             </div>
           </div>
-          <div className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-[#f8fafc]">
+          <div className="mt-3 text-3xl font-semibold tabular-nums text-slate-900 dark:text-slate-100">
             {formatBRL(metricas.honorariosAReceber)}
           </div>
         </div>
@@ -126,7 +126,7 @@ export function FinancialMetricsCards({ data, loading }: FinancialMetricsCardsPr
           <div className={`mt-3 text-3xl font-semibold tabular-nums ${
             metricas.despesasPagas > 0
               ? 'text-rose-600 dark:text-rose-400'
-              : 'text-slate-900 dark:text-[#f8fafc]'
+              : 'text-slate-900 dark:text-slate-100'
           }`}>
             {formatBRL(metricas.despesasPagas)}
           </div>
@@ -144,7 +144,7 @@ export function FinancialMetricsCards({ data, loading }: FinancialMetricsCardsPr
             <span className="text-[11px] font-medium tracking-wide uppercase text-slate-500 dark:text-slate-400">
               Saldo Líquido
             </span>
-            <div className="p-1.5 rounded-lg bg-[#c5a059]/15 text-[#c5a059] dark:text-[#dfcaa0]">
+            <div className="p-1.5 rounded-lg bg-brand/15 text-brand dark:text-brand">
               <Wallet className="h-3.5 w-3.5" />
             </div>
           </div>
@@ -153,7 +153,7 @@ export function FinancialMetricsCards({ data, loading }: FinancialMetricsCardsPr
               ? 'text-emerald-500 dark:text-emerald-400'
               : metricas.saldoLiquido < 0
               ? 'text-rose-500 dark:text-rose-400'
-              : 'text-slate-900 dark:text-[#f8fafc]'
+              : 'text-slate-900 dark:text-slate-100'
           }`}>
             {formatBRL(metricas.saldoLiquido)}
           </div>

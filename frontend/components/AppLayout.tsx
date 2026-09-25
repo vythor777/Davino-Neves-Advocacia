@@ -223,7 +223,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
             {/* Dropdown de Configurações do Usuário */}
             {userDropdownOpen && (
-              <div className="absolute bottom-full left-0 mb-2 w-full rounded-xl border border-[#0c1f3d]/[0.1] dark:border-white/[0.08] bg-white dark:bg-[#0d192e] p-1.5 shadow-lg z-50 animate-in fade-in slide-in-from-bottom-2 duration-150">
+              <div className="absolute bottom-full left-0 mb-2 w-full rounded-xl border border-[#0c1f3d]/[0.1] dark:border-white/[0.08] bg-white dark:bg-surface p-1.5 shadow-lg z-50 animate-in fade-in slide-in-from-bottom-2 duration-150">
                 <div className="px-2.5 py-1.5 border-b border-slate-100 dark:border-white/[0.06] text-[10px] text-slate-500 dark:text-slate-400">
                   Conectado como <strong className="text-[#0c1f3d] dark:text-slate-200">{displayName}</strong>
                 </div>
@@ -357,7 +357,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 aria-label="Buscar processos"
                 placeholder="Buscar processos..."
-                className="w-full rounded-lg border border-[#0c1f3d]/[0.08] dark:border-white/[0.08] bg-[#f7f9fc] dark:bg-white/[0.04] pl-9 pr-12 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-blue-500 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-[#0d192e] focus:outline-hidden transition"
+                className="w-full rounded-lg border border-[#0c1f3d]/[0.08] dark:border-white/[0.08] bg-[#f7f9fc] dark:bg-white/[0.04] pl-9 pr-12 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-blue-500 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-surface focus:outline-hidden transition"
               />
             </form>
           </div>
@@ -388,7 +388,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
               {/* Popover de Notificações com Dados Reais */}
               {notificationsOpen && (
-                <div className="absolute right-0 mt-2 w-80 sm:w-92 rounded-xl border border-[#0c1f3d]/[0.1] dark:border-white/[0.08] bg-white dark:bg-[#0d192e] p-3 shadow-xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                <div className="absolute right-0 mt-2 w-80 sm:w-92 rounded-xl border border-[#0c1f3d]/[0.1] dark:border-white/[0.08] bg-white dark:bg-surface p-3 shadow-xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-white/[0.06]">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-semibold text-[#0c1f3d] dark:text-white">Alertas do Escritório</span>

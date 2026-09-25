@@ -101,7 +101,7 @@ export const CATEGORIAS_LABELS: Record<CategoriaLancamento, { label: string; tip
   HONORARIO_CONTRATUAL: {
     label: 'Honorário Contratual',
     tipo: 'RECEITA',
-    badgeClass: 'bg-[#c5a059]/15 text-slate-900 border-[#c5a059]/30 dark:bg-[#c5a059]/20 dark:text-[#dfcaa0] dark:border-[#c5a059]/40',
+    badgeClass: 'bg-brand/15 text-slate-900 border-brand/30 dark:bg-brand/20 dark:text-brand dark:border-brand/40',
   },
   HONORARIO_EXITO: {
     label: 'Honorário de Êxito',

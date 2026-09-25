@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, Suspense } from 'react';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { useSearchParams } from 'next/navigation';
 import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
@@ -55,7 +56,7 @@ const ACOES_IA: AcaoConfig[] = [
     tagline: 'Autos, riscos e probabilidade de êxito',
     descricao: 'Identifique teses adversas, pontos vulneráveis, riscos processuais e estratégia de defesa/ataque.',
     icone: FileSearch,
-    cor: 'text-[#0047ab] dark:text-[#c5a059]',
+    cor: 'text-[#0047ab] dark:text-brand',
     badge: 'Estratégico',
   },
   {
@@ -448,51 +449,32 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
   };
 
   return (
-    <div className="mx-auto w-full max-w-7xl px-3 sm:px-6 lg:px-8 py-6 space-y-6">
+    <div className="app-page">
       {/* Breadcrumb */}
-      <Breadcrumbs items={[{ label: 'Assistente Jurídico IA', icon: Sparkles }]} />
+      <Breadcrumbs
+        items={[{ label: 'Assistente Jurídico IA', icon: Sparkles }]}
+      />
 
       {/* ========================================================================= */}
       {/* HERO PROTAGONISTA: ASSISTENTE JURÍDICO IA */}
       {/* ========================================================================= */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-slate-900 via-slate-800 to-[#161b22] text-white border border-[#c5a059]/30 p-6 sm:p-8 shadow-md">
-        {/* Elemento gráfico de fundo */}
-        <div className="absolute top-0 right-0 -mt-8 -mr-8 h-64 w-64 rounded-full bg-[#c5a059]/10 blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/3 -mb-10 h-48 w-48 rounded-full bg-blue-500/10 blur-2xl pointer-events-none" />
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div className="max-w-2xl space-y-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.08] border border-[#c5a059]/40 text-[#dfcaa0] text-xs font-semibold tracking-wide">
-              <Sparkles className="h-3.5 w-3.5 text-[#c5a059]" />
-              <span>Inteligência Artificial Nativa • Davino Neves Advocacia</span>
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-white">
-              Assistente Jurídico IA
-            </h1>
-            <p className="text-sm sm:text-base text-slate-300 font-normal leading-relaxed">
-              Analise processos, documentos e decisões em segundos. Aumente a precisão das suas teses, economize horas de redação e antecipe riscos processuais com IA jurídica de alta fidelidade.
-            </p>
-          </div>
-
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
-            <button
-              type="button"
-              onClick={() => carregarExemplo(acaoAtiva)}
-              className="inline-flex items-center gap-2 rounded-xl bg-white/[0.08] hover:bg-white/[0.15] text-[#dfcaa0] border border-[#c5a059]/40 px-4 py-2.5 text-xs font-medium transition cursor-pointer"
-            >
-              <Lightbulb className="h-4 w-4 text-[#c5a059]" />
-              <span>Carregar caso de exemplo</span>
-            </button>
-            <Link
-              href="/prazos"
-              className="inline-flex items-center gap-2 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 text-white border border-white/[0.1] px-4 py-2.5 text-xs font-medium transition"
-            >
-              <Clock className="h-4 w-4 text-slate-400" />
-              <span>Ver agenda do escritório</span>
-            </Link>
-          </div>
-        </div>
-      </div>
+      <PageHeader
+        title="Assistente jurídico IA"
+        description="Prepare resumos, analise documentos e elabore minutas para revisão profissional."
+      >
+        <button
+          type="button"
+          onClick={() => carregarExemplo(acaoAtiva)}
+          className="ui-button ui-button-secondary"
+        >
+          <Lightbulb className="h-4 w-4 text-current" />
+          <span>Carregar caso de exemplo</span>
+        </button>
+        <Link href="/prazos" className="ui-button ui-button-secondary">
+          <Clock className="h-4 w-4 text-slate-400" />
+          <span>Ver agenda do escritório</span>
+        </Link>
+      </PageHeader>
 
       {/* ========================================================================= */}
       {/* “O QUE VOCÊ QUER FAZER?” - 5 AÇÕES CENTRAIS */}
@@ -520,8 +502,8 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                 onClick={() => setAcaoAtiva(acao.id)}
                 className={`group relative flex flex-col justify-between text-left p-4 rounded-xl border transition-all cursor-pointer ${
                   isAtiva
-                    ? 'bg-white dark:bg-slate-900 border-[#0047ab] dark:border-[#c5a059] shadow-sm ring-1 ring-[#0047ab]/20 dark:ring-[#c5a059]/20'
-                    : 'bg-white dark:bg-[#161b22] border-slate-200/80 dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/[0.15]'
+                    ? 'bg-white dark:bg-slate-900 border-[#0047ab] dark:border-brand shadow-sm ring-1 ring-[#0047ab]/20 dark:ring-brand/20'
+                    : 'bg-white dark:bg-surface border-slate-200/80 dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/[0.15]'
                 }`}
               >
                 <div>
@@ -529,7 +511,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                     <div
                       className={`flex h-9 w-9 items-center justify-center rounded-lg ${
                         isAtiva
-                          ? 'bg-[#0047ab]/10 text-[#0047ab] dark:bg-[#c5a059]/15 dark:text-[#c5a059]'
+                          ? 'bg-[#0047ab]/10 text-[#0047ab] dark:bg-brand/15 dark:text-brand'
                           : 'bg-slate-100 text-slate-600 dark:bg-white/[0.05] dark:text-slate-400'
                       }`}
                     >
@@ -538,7 +520,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                     <span
                       className={`text-[10px] font-semibold uppercase px-2 py-0.5 rounded-full ${
                         isAtiva
-                          ? 'bg-[#0047ab]/10 text-[#0047ab] dark:bg-[#c5a059]/20 dark:text-[#dfcaa0]'
+                          ? 'bg-[#0047ab]/10 text-[#0047ab] dark:bg-brand/20 dark:text-brand'
                           : 'bg-slate-100 text-slate-500 dark:bg-white/[0.05] dark:text-slate-400'
                       }`}
                     >
@@ -558,7 +540,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                   <span
                     className={`font-medium ${
                       isAtiva
-                        ? 'text-[#0047ab] dark:text-[#c5a059]'
+                        ? 'text-[#0047ab] dark:text-brand'
                         : 'text-slate-400 group-hover:text-slate-700 dark:group-hover:text-slate-200'
                     }`}
                   >
@@ -567,7 +549,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                   <ArrowRight
                     className={`h-3.5 w-3.5 transition-transform ${
                       isAtiva
-                        ? 'translate-x-0.5 text-[#0047ab] dark:text-[#c5a059]'
+                        ? 'translate-x-0.5 text-[#0047ab] dark:text-brand'
                         : 'text-slate-400 group-hover:translate-x-0.5'
                     }`}
                   />
@@ -592,7 +574,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
               <div>
                 <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.06]">
                   <div className="flex items-center gap-2.5">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0047ab]/10 text-[#0047ab] dark:bg-[#c5a059]/15 dark:text-[#c5a059]">
+                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0047ab]/10 text-[#0047ab] dark:bg-brand/15 dark:text-brand">
                       <FileSearch className="h-4 w-4" />
                     </div>
                     <div>
@@ -600,7 +582,8 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                         Analisar processo
                       </h3>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
-                        Identifique riscos, teses adversas e probabilidade de êxito.
+                        Identifique riscos, teses adversas e probabilidade de
+                        êxito.
                       </p>
                     </div>
                   </div>
@@ -628,21 +611,29 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                     </label>
                     <select
                       id="procExistenteSelect"
-                      onChange={(e) => handleSelecionarProcessoExistente(e.target.value)}
+                      onChange={(e) =>
+                        handleSelecionarProcessoExistente(e.target.value)
+                      }
                       defaultValue=""
                       className="w-full rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-slate-900 px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-1 focus:ring-[#0047ab]"
                     >
-                      <option value="">Selecione um processo do escritório...</option>
+                      <option value="">
+                        Selecione um processo do escritório...
+                      </option>
                       {processosEscritorio.map((p) => (
                         <option key={p.id_processo} value={p.id_processo}>
-                          {p.numero_processo} - {p.titulo} ({p.cliente?.nome || 'Sem cliente'})
+                          {p.numero_processo} - {p.titulo} (
+                          {p.cliente?.nome || 'Sem cliente'})
                         </option>
                       ))}
                     </select>
                   </div>
                 )}
 
-                <form onSubmit={handleExecutarAnalisarProcesso} className="mt-4 space-y-4">
+                <form
+                  onSubmit={handleExecutarAnalisarProcesso}
+                  className="mt-4 space-y-4"
+                >
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <NumberProcessInput
@@ -665,13 +656,18 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                         id="procPoloSelect"
                         value={procPolo}
                         onChange={(e) =>
-                          setProcPolo(e.target.value as 'Autor' | 'Réu' | 'Terceiro Interessado')
+                          setProcPolo(
+                            e.target.value as
+                              'Autor' | 'Réu' | 'Terceiro Interessado',
+                          )
                         }
                         className="w-full rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-slate-900 px-3.5 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-1 focus:ring-[#0047ab]"
                       >
                         <option value="Autor">Autor / Requerente</option>
                         <option value="Réu">Réu / Requerido</option>
-                        <option value="Terceiro Interessado">Terceiro Interessado / Assistente</option>
+                        <option value="Terceiro Interessado">
+                          Terceiro Interessado / Assistente
+                        </option>
                       </select>
                     </div>
                   </div>
@@ -744,7 +740,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                     <button
                       type="submit"
                       disabled={procLoading || !procConteudo.trim()}
-                      className="inline-flex items-center gap-2 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-[#c5a059] dark:hover:bg-[#d4b36f] text-white dark:text-slate-950 font-semibold px-5 py-2 text-xs shadow-xs active:scale-98 disabled:opacity-50 transition cursor-pointer"
+                      className="inline-flex items-center gap-2 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-action dark:hover:bg-action-hover text-white dark:text-white font-semibold px-5 py-2 text-xs shadow-xs active:scale-98 disabled:opacity-50 transition cursor-pointer"
                     >
                       {procLoading ? (
                         <>
@@ -776,7 +772,8 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                         Resumir documento
                       </h3>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
-                        Converta decisões e contratos em resumos executivos ou para clientes.
+                        Converta decisões e contratos em resumos executivos ou
+                        para clientes.
                       </p>
                     </div>
                   </div>
@@ -793,7 +790,10 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                   </label>
                 </div>
 
-                <form onSubmit={handleExecutarResumirDocumento} className="mt-4 space-y-4">
+                <form
+                  onSubmit={handleExecutarResumirDocumento}
+                  className="mt-4 space-y-4"
+                >
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label
@@ -808,12 +808,24 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                         onChange={(e) => setDocTipo(e.target.value)}
                         className="w-full rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-slate-900 px-3.5 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-1 focus:ring-[#0047ab]"
                       >
-                        <option value="Sentença / Decisão">Sentença / Decisão Monocrática</option>
-                        <option value="Acórdão / Recurso">Acórdão / Julgamento Colegiado</option>
-                        <option value="Petição Inicial / Contestação">Petição Inicial / Contestação</option>
-                        <option value="Contrato Comercial / Imobiliário">Contrato Comercial / Imobiliário</option>
-                        <option value="Notificação Extrajudicial">Notificação Extrajudicial</option>
-                        <option value="Parecer Técnico">Parecer Técnico / Laudo Pericial</option>
+                        <option value="Sentença / Decisão">
+                          Sentença / Decisão Monocrática
+                        </option>
+                        <option value="Acórdão / Recurso">
+                          Acórdão / Julgamento Colegiado
+                        </option>
+                        <option value="Petição Inicial / Contestação">
+                          Petição Inicial / Contestação
+                        </option>
+                        <option value="Contrato Comercial / Imobiliário">
+                          Contrato Comercial / Imobiliário
+                        </option>
+                        <option value="Notificação Extrajudicial">
+                          Notificação Extrajudicial
+                        </option>
+                        <option value="Parecer Técnico">
+                          Parecer Técnico / Laudo Pericial
+                        </option>
                       </select>
                     </div>
 
@@ -829,14 +841,23 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                         value={docFormato}
                         onChange={(e) =>
                           setDocFormato(
-                            e.target.value as 'executivo' | 'cliente_simples' | 'topicos_estrategicos',
+                            e.target.value as
+                              | 'executivo'
+                              | 'cliente_simples'
+                              | 'topicos_estrategicos',
                           )
                         }
                         className="w-full rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-slate-900 px-3.5 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-1 focus:ring-[#0047ab]"
                       >
-                        <option value="executivo">Resumo Executivo (Técnico para Advogados)</option>
-                        <option value="cliente_simples">Linguagem Simples (Visual Law para Cliente)</option>
-                        <option value="topicos_estrategicos">Tópicos e Ações Imediatas (Bullet Points)</option>
+                        <option value="executivo">
+                          Resumo Executivo (Técnico para Advogados)
+                        </option>
+                        <option value="cliente_simples">
+                          Linguagem Simples (Visual Law para Cliente)
+                        </option>
+                        <option value="topicos_estrategicos">
+                          Tópicos e Ações Imediatas (Bullet Points)
+                        </option>
                       </select>
                     </div>
                   </div>
@@ -873,7 +894,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                     <button
                       type="submit"
                       disabled={docLoading || !docTexto.trim()}
-                      className="inline-flex items-center gap-2 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-[#c5a059] dark:hover:bg-[#d4b36f] text-white dark:text-slate-950 font-semibold px-5 py-2 text-xs shadow-xs active:scale-98 disabled:opacity-50 transition cursor-pointer"
+                      className="inline-flex items-center gap-2 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-action dark:hover:bg-action-hover text-white dark:text-white font-semibold px-5 py-2 text-xs shadow-xs active:scale-98 disabled:opacity-50 transition cursor-pointer"
                     >
                       {docLoading ? (
                         <>
@@ -905,13 +926,17 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                         Encontrar jurisprudência
                       </h3>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
-                        Pesquise precedentes consolidados, súmulas e teses repetitivas.
+                        Pesquise precedentes consolidados, súmulas e teses
+                        repetitivas.
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <form onSubmit={handleExecutarEncontrarJurisprudencia} className="mt-4 space-y-4">
+                <form
+                  onSubmit={handleExecutarEncontrarJurisprudencia}
+                  className="mt-4 space-y-4"
+                >
                   <div>
                     <label
                       htmlFor="jurisTemaInput"
@@ -998,7 +1023,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                     <button
                       type="submit"
                       disabled={jurisLoading || !jurisTema.trim()}
-                      className="inline-flex items-center gap-2 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-[#c5a059] dark:hover:bg-[#d4b36f] text-white dark:text-slate-950 font-semibold px-5 py-2 text-xs shadow-xs active:scale-98 disabled:opacity-50 transition cursor-pointer"
+                      className="inline-flex items-center gap-2 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-action dark:hover:bg-action-hover text-white dark:text-white font-semibold px-5 py-2 text-xs shadow-xs active:scale-98 disabled:opacity-50 transition cursor-pointer"
                     >
                       {jurisLoading ? (
                         <>
@@ -1030,13 +1055,17 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                         Criar peça jurídica
                       </h3>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
-                        Redija minutas estruturadas com fundamentação legal e pedidos.
+                        Redija minutas estruturadas com fundamentação legal e
+                        pedidos.
                       </p>
                     </div>
                   </div>
                 </div>
 
-                <form onSubmit={handleExecutarCriarPeca} className="mt-4 space-y-4">
+                <form
+                  onSubmit={handleExecutarCriarPeca}
+                  className="mt-4 space-y-4"
+                >
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label
@@ -1052,12 +1081,24 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                         className="w-full rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-slate-900 px-3.5 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-1 focus:ring-[#0047ab]"
                       >
                         <option value="Petição Inicial">Petição Inicial</option>
-                        <option value="Contestação">Contestação com Preliminares</option>
-                        <option value="Réplica à Contestação">Réplica à Contestação</option>
-                        <option value="Recurso de Apelação">Recurso de Apelação</option>
-                        <option value="Agravo de Instrumento com Pedido de Efeito Suspensivo">Agravo de Instrumento</option>
-                        <option value="Embargos de Declaração">Embargos de Declaração</option>
-                        <option value="Notificação Extrajudicial">Notificação Extrajudicial</option>
+                        <option value="Contestação">
+                          Contestação com Preliminares
+                        </option>
+                        <option value="Réplica à Contestação">
+                          Réplica à Contestação
+                        </option>
+                        <option value="Recurso de Apelação">
+                          Recurso de Apelação
+                        </option>
+                        <option value="Agravo de Instrumento com Pedido de Efeito Suspensivo">
+                          Agravo de Instrumento
+                        </option>
+                        <option value="Embargos de Declaração">
+                          Embargos de Declaração
+                        </option>
+                        <option value="Notificação Extrajudicial">
+                          Notificação Extrajudicial
+                        </option>
                       </select>
                     </div>
 
@@ -1164,7 +1205,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                     <button
                       type="submit"
                       disabled={pecaLoading || !pecaFatos.trim()}
-                      className="inline-flex items-center gap-2 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-[#c5a059] dark:hover:bg-[#d4b36f] text-white dark:text-slate-950 font-semibold px-5 py-2 text-xs shadow-xs active:scale-98 disabled:opacity-50 transition cursor-pointer"
+                      className="inline-flex items-center gap-2 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-action dark:hover:bg-action-hover text-white dark:text-white font-semibold px-5 py-2 text-xs shadow-xs active:scale-98 disabled:opacity-50 transition cursor-pointer"
                     >
                       {pecaLoading ? (
                         <>
@@ -1196,7 +1237,8 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                         Identificar prazos
                       </h3>
                       <p className="text-xs text-slate-500 dark:text-slate-400">
-                        Extraia termos fatais de intimações do DJE e agende no calendário.
+                        Extraia termos fatais de intimações do DJE e agende no
+                        calendário.
                       </p>
                     </div>
                   </div>
@@ -1213,7 +1255,10 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                   </label>
                 </div>
 
-                <form onSubmit={handleExecutarIdentificarPrazos} className="mt-4 space-y-4">
+                <form
+                  onSubmit={handleExecutarIdentificarPrazos}
+                  className="mt-4 space-y-4"
+                >
                   <div>
                     <label
                       htmlFor="prazoDataPubInput"
@@ -1262,7 +1307,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                     <button
                       type="submit"
                       disabled={prazoLoading || !prazoTexto.trim()}
-                      className="inline-flex items-center gap-2 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-[#c5a059] dark:hover:bg-[#d4b36f] text-white dark:text-slate-950 font-semibold px-5 py-2 text-xs shadow-xs active:scale-98 disabled:opacity-50 transition cursor-pointer"
+                      className="inline-flex items-center gap-2 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-action dark:hover:bg-action-hover text-white dark:text-white font-semibold px-5 py-2 text-xs shadow-xs active:scale-98 disabled:opacity-50 transition cursor-pointer"
                     >
                       {prazoLoading ? (
                         <>
@@ -1292,7 +1337,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
               {/* Header do resultado */}
               <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.06]">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-[#0047ab] dark:text-[#c5a059]" />
+                  <Sparkles className="h-4 w-4 text-[#0047ab] dark:text-brand" />
                   <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
                     Parecer & Resultado da Inteligência Artificial
                   </h3>
@@ -1301,7 +1346,8 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                 {/* Ações de cópia e exportação */}
                 {((acaoAtiva === 'analisar_processo' && procResultado) ||
                   (acaoAtiva === 'resumir_documento' && docResultado) ||
-                  (acaoAtiva === 'encontrar_jurisprudencia' && jurisResultado) ||
+                  (acaoAtiva === 'encontrar_jurisprudencia' &&
+                    jurisResultado) ||
                   (acaoAtiva === 'criar_peca' && pecaResultado)) && (
                   <button
                     type="button"
@@ -1310,15 +1356,19 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                         acaoAtiva === 'analisar_processo'
                           ? procResultado
                           : acaoAtiva === 'resumir_documento'
-                          ? docResultado
-                          : acaoAtiva === 'encontrar_jurisprudencia'
-                          ? jurisResultado
-                          : pecaResultado;
+                            ? docResultado
+                            : acaoAtiva === 'encontrar_jurisprudencia'
+                              ? jurisResultado
+                              : pecaResultado;
                       if (txt) handleCopiar(txt);
                     }}
                     className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 cursor-pointer transition"
                   >
-                    {copiado ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+                    {copiado ? (
+                      <Check className="h-3.5 w-3.5 text-emerald-500" />
+                    ) : (
+                      <Copy className="h-3.5 w-3.5" />
+                    )}
                     <span>{copiado ? 'Copiado!' : 'Copiar Texto'}</span>
                   </button>
                 )}
@@ -1327,114 +1377,147 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
               {/* Corpo do resultado */}
               <div className="mt-4">
                 {/* 1. Loading State */}
-                {(procLoading || docLoading || jurisLoading || pecaLoading || prazoLoading) && (
+                {(procLoading ||
+                  docLoading ||
+                  jurisLoading ||
+                  pecaLoading ||
+                  prazoLoading) && (
                   <div className="py-20 text-center space-y-4">
-                    <div className="mx-auto h-9 w-9 animate-spin rounded-full border-3 border-[#0047ab] dark:border-[#c5a059] border-t-transparent" />
+                    <div className="mx-auto h-9 w-9 animate-spin rounded-full border-3 border-[#0047ab] dark:border-brand border-t-transparent" />
                     <div>
                       <p className="text-xs font-semibold text-slate-900 dark:text-white">
                         O Gemini está processando a solicitação jurídica...
                       </p>
                       <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                        Estruturando teses, analisando riscos e formatando o documento.
+                        Estruturando teses, analisando riscos e formatando o
+                        documento.
                       </p>
                     </div>
                   </div>
                 )}
 
                 {/* 2. Resultados: Texto corrido estruturado */}
-                {!procLoading && acaoAtiva === 'analisar_processo' && procResultado && (
-                  <div className="rounded-xl bg-slate-50 dark:bg-white/[0.02] p-5 text-xs leading-relaxed text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-white/[0.04] whitespace-pre-wrap font-sans">
-                    {procResultado}
-                  </div>
-                )}
+                {!procLoading &&
+                  acaoAtiva === 'analisar_processo' &&
+                  procResultado && (
+                    <div className="rounded-xl bg-slate-50 dark:bg-white/[0.02] p-5 text-xs leading-relaxed text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-white/[0.04] whitespace-pre-wrap font-sans">
+                      {procResultado}
+                    </div>
+                  )}
 
-                {!docLoading && acaoAtiva === 'resumir_documento' && docResultado && (
-                  <div className="rounded-xl bg-slate-50 dark:bg-white/[0.02] p-5 text-xs leading-relaxed text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-white/[0.04] whitespace-pre-wrap font-sans">
-                    {docResultado}
-                  </div>
-                )}
+                {!docLoading &&
+                  acaoAtiva === 'resumir_documento' &&
+                  docResultado && (
+                    <div className="rounded-xl bg-slate-50 dark:bg-white/[0.02] p-5 text-xs leading-relaxed text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-white/[0.04] whitespace-pre-wrap font-sans">
+                      {docResultado}
+                    </div>
+                  )}
 
-                {!jurisLoading && acaoAtiva === 'encontrar_jurisprudencia' && jurisResultado && (
-                  <div className="rounded-xl bg-slate-50 dark:bg-white/[0.02] p-5 text-xs leading-relaxed text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-white/[0.04] whitespace-pre-wrap font-sans">
-                    {jurisResultado}
-                  </div>
-                )}
+                {!jurisLoading &&
+                  acaoAtiva === 'encontrar_jurisprudencia' &&
+                  jurisResultado && (
+                    <div className="rounded-xl bg-slate-50 dark:bg-white/[0.02] p-5 text-xs leading-relaxed text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-white/[0.04] whitespace-pre-wrap font-sans">
+                      {jurisResultado}
+                    </div>
+                  )}
 
-                {!pecaLoading && acaoAtiva === 'criar_peca' && pecaResultado && (
-                  <div className="rounded-xl bg-slate-50 dark:bg-white/[0.02] p-5 text-xs leading-relaxed text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-white/[0.04] whitespace-pre-wrap font-serif">
-                    {pecaResultado}
-                  </div>
-                )}
+                {!pecaLoading &&
+                  acaoAtiva === 'criar_peca' &&
+                  pecaResultado && (
+                    <div className="rounded-xl bg-slate-50 dark:bg-white/[0.02] p-5 text-xs leading-relaxed text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-white/[0.04] whitespace-pre-wrap font-serif">
+                      {pecaResultado}
+                    </div>
+                  )}
 
                 {/* 3. Resultado: Identificar Prazos (Card Estruturado) */}
-                {!prazoLoading && acaoAtiva === 'identificar_prazos' && prazoResultado && (
-                  <div className="space-y-4">
-                    <div
-                      className={`p-4 rounded-xl border ${
-                        prazoResultado.urgencia?.toLowerCase().includes('fatal') ||
-                        prazoResultado.urgencia?.toLowerCase().includes('alta')
-                          ? 'bg-rose-50/70 border-rose-200 dark:bg-rose-950/20 dark:border-rose-900/40 text-rose-950 dark:text-rose-200'
-                          : 'bg-slate-50 border-slate-200 dark:bg-white/[0.02] dark:border-white/[0.06] text-slate-900 dark:text-slate-100'
-                      }`}
-                    >
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-2">
-                          <AlertTriangle className="h-4 w-4 text-rose-600 dark:text-rose-400" />
-                          <span className="text-xs font-semibold uppercase tracking-wider">
-                            Urgência: {prazoResultado.urgencia || 'Média'}
-                          </span>
+                {!prazoLoading &&
+                  acaoAtiva === 'identificar_prazos' &&
+                  prazoResultado && (
+                    <div className="space-y-4">
+                      <div
+                        className={`p-4 rounded-xl border ${
+                          prazoResultado.urgencia
+                            ?.toLowerCase()
+                            .includes('fatal') ||
+                          prazoResultado.urgencia
+                            ?.toLowerCase()
+                            .includes('alta')
+                            ? 'bg-rose-50/70 border-rose-200 dark:bg-rose-950/20 dark:border-rose-900/40 text-rose-950 dark:text-rose-200'
+                            : 'bg-slate-50 border-slate-200 dark:bg-white/[0.02] dark:border-white/[0.06] text-slate-900 dark:text-slate-100'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <AlertTriangle className="h-4 w-4 text-rose-600 dark:text-rose-400" />
+                            <span className="text-xs font-semibold uppercase tracking-wider">
+                              Urgência: {prazoResultado.urgencia || 'Média'}
+                            </span>
+                          </div>
+                          {prazoResultado.tem_prazo && (
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-600 text-white dark:bg-rose-500">
+                              Prazo Processual Exigido
+                            </span>
+                          )}
                         </div>
-                        {prazoResultado.tem_prazo && (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-600 text-white dark:bg-rose-500">
-                            Prazo Processual Exigido
-                          </span>
+
+                        <div className="mt-3">
+                          <h4 className="text-sm font-semibold">
+                            {prazoResultado.descricao_providencia ||
+                              'Cumprimento de Prazo'}
+                          </h4>
+                        </div>
+
+                        <div className="mt-3 grid grid-cols-2 gap-2 text-xs border-t border-slate-200/60 dark:border-white/[0.08] pt-3">
+                          <div>
+                            <span className="text-slate-500 dark:text-slate-400 text-[11px]">
+                              Contagem estipulada:
+                            </span>
+                            <p className="font-semibold mt-0.5">
+                              {prazoResultado.quantidade_dias
+                                ? `${prazoResultado.quantidade_dias} dias`
+                                : 'Não especificado'}{' '}
+                              {prazoResultado.tipo_contagem
+                                ? `(${prazoResultado.tipo_contagem})`
+                                : ''}
+                            </p>
+                          </div>
+                          <div>
+                            <span className="text-slate-500 dark:text-slate-400 text-[11px]">
+                              Data limite sugerida:
+                            </span>
+                            <p className="font-semibold text-rose-600 dark:text-rose-400 mt-0.5">
+                              {prazoResultado.data_limite_estimada
+                                ? new Date(
+                                    prazoResultado.data_limite_estimada +
+                                      'T00:00:00',
+                                  ).toLocaleDateString('pt-BR')
+                                : 'Conferir termo'}
+                            </p>
+                          </div>
+                        </div>
+
+                        {prazoResultado.observacoes && (
+                          <div className="mt-3 text-[11px] text-slate-600 dark:text-slate-400 bg-white/60 dark:bg-black/20 p-2.5 rounded-lg">
+                            <span className="font-medium text-slate-800 dark:text-slate-200">
+                              Atenção:
+                            </span>{' '}
+                            {prazoResultado.observacoes}
+                          </div>
                         )}
                       </div>
 
-                      <div className="mt-3">
-                        <h4 className="text-sm font-semibold">
-                          {prazoResultado.descricao_providencia || 'Cumprimento de Prazo'}
-                        </h4>
+                      <div className="flex items-center justify-end gap-2 pt-2">
+                        <button
+                          type="button"
+                          onClick={abrirModalSalvarPrazo}
+                          className="inline-flex items-center gap-2 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-action dark:hover:bg-action-hover text-white dark:text-white font-semibold px-4 py-2 text-xs shadow-xs transition cursor-pointer"
+                        >
+                          <BookmarkPlus className="h-4 w-4" />
+                          <span>Agendar no Calendário de Prazos</span>
+                        </button>
                       </div>
-
-                      <div className="mt-3 grid grid-cols-2 gap-2 text-xs border-t border-slate-200/60 dark:border-white/[0.08] pt-3">
-                        <div>
-                          <span className="text-slate-500 dark:text-slate-400 text-[11px]">Contagem estipulada:</span>
-                          <p className="font-semibold mt-0.5">
-                            {prazoResultado.quantidade_dias ? `${prazoResultado.quantidade_dias} dias` : 'Não especificado'}{' '}
-                            {prazoResultado.tipo_contagem ? `(${prazoResultado.tipo_contagem})` : ''}
-                          </p>
-                        </div>
-                        <div>
-                          <span className="text-slate-500 dark:text-slate-400 text-[11px]">Data limite sugerida:</span>
-                          <p className="font-semibold text-rose-600 dark:text-rose-400 mt-0.5">
-                            {prazoResultado.data_limite_estimada
-                              ? new Date(prazoResultado.data_limite_estimada + 'T00:00:00').toLocaleDateString('pt-BR')
-                              : 'Conferir termo'}
-                          </p>
-                        </div>
-                      </div>
-
-                      {prazoResultado.observacoes && (
-                        <div className="mt-3 text-[11px] text-slate-600 dark:text-slate-400 bg-white/60 dark:bg-black/20 p-2.5 rounded-lg">
-                          <span className="font-medium text-slate-800 dark:text-slate-200">Atenção:</span>{' '}
-                          {prazoResultado.observacoes}
-                        </div>
-                      )}
                     </div>
-
-                    <div className="flex items-center justify-end gap-2 pt-2">
-                      <button
-                        type="button"
-                        onClick={abrirModalSalvarPrazo}
-                        className="inline-flex items-center gap-2 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-[#c5a059] dark:hover:bg-[#d4b36f] text-white dark:text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs transition cursor-pointer"
-                      >
-                        <BookmarkPlus className="h-4 w-4" />
-                        <span>Agendar no Calendário de Prazos</span>
-                      </button>
-                    </div>
-                  </div>
-                )}
+                  )}
 
                 {/* 4. Estado Vazio / Inicial */}
                 {!procLoading &&
@@ -1456,7 +1539,9 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                           Nenhuma análise processada ainda
                         </p>
                         <p className="text-[11px] text-slate-400 max-w-sm mx-auto mt-1">
-                          Preencha as informações no formulário ao lado ou clique em &quot;Carregar caso de exemplo&quot; para testar imediatamente.
+                          Preencha as informações no formulário ao lado ou
+                          clique em &quot;Carregar caso de exemplo&quot; para
+                          testar imediatamente.
                         </p>
                       </div>
                     </div>
@@ -1470,7 +1555,10 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                 <Shield className="h-3 w-3 text-slate-400" />
                 <span>Privacidade & Sigilo Profissional OAB</span>
               </span>
-              <Link href="/prazos" className="hover:text-slate-700 dark:hover:text-slate-200">
+              <Link
+                href="/prazos"
+                className="hover:text-slate-700 dark:hover:text-slate-200"
+              >
                 Prazos do Escritório &rarr;
               </Link>
             </div>
@@ -1486,7 +1574,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
           <div className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/[0.1] p-6 shadow-xl space-y-4 animate-fade-in-up">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/[0.06] pb-3">
               <div className="flex items-center gap-2">
-                <CalendarClock className="h-4 w-4 text-[#0047ab] dark:text-[#c5a059]" />
+                <CalendarClock className="h-4 w-4 text-[#0047ab] dark:text-brand" />
                 <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
                   Agendar Prazo no Calendário
                 </h3>
@@ -1511,7 +1599,9 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                 <select
                   id="modalProcessoSelect"
                   value={processoSelecionadoId}
-                  onChange={(e) => setProcessoSelecionadoId(Number(e.target.value))}
+                  onChange={(e) =>
+                    setProcessoSelecionadoId(Number(e.target.value))
+                  }
                   required
                   className="w-full rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-1 focus:ring-[#0047ab]"
                 >
@@ -1569,7 +1659,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                 <button
                   type="submit"
                   disabled={salvandoPrazo || !processoSelecionadoId}
-                  className="inline-flex items-center gap-2 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-[#c5a059] dark:hover:bg-[#d4b36f] text-white dark:text-slate-950 font-semibold px-4 py-2 text-xs shadow-xs transition disabled:opacity-50"
+                  className="inline-flex items-center gap-2 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-action dark:hover:bg-action-hover text-white dark:text-white font-semibold px-4 py-2 text-xs shadow-xs transition disabled:opacity-50"
                 >
                   {salvandoPrazo ? 'Salvando...' : 'Confirmar e Agendar'}
                 </button>
@@ -1592,7 +1682,7 @@ export default function GeminiPage() {
         fallback={
           <div className="flex min-h-[60vh] items-center justify-center">
             <div className="flex flex-col items-center gap-3">
-              <div className="h-8 w-8 animate-spin rounded-full border-3 border-[#0047ab] dark:border-[#c5a059] border-t-transparent" />
+              <div className="h-8 w-8 animate-spin rounded-full border-3 border-[#0047ab] dark:border-brand border-t-transparent" />
               <p className="text-xs font-medium text-slate-600 dark:text-slate-400">
                 Carregando Assistente Jurídico IA...
               </p>

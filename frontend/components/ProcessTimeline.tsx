@@ -322,7 +322,7 @@ export function ProcessTimeline<T extends MovimentacaoDataJud = MovimentacaoData
       <div
         className={`flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white p-10 text-center shadow-2xs dark:border-slate-800 dark:bg-slate-900 ${className}`}
       >
-        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#c5a059]/10 text-[#c5a059] dark:bg-[#c5a059]/15 dark:text-[#d4b36f] border border-[#c5a059]/25 dark:border-[#c5a059]/30">
+        <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand/10 text-brand dark:bg-brand/15 dark:text-brand border border-brand/25 dark:border-brand/30">
           <Clock className="h-6 w-6" aria-hidden="true" />
         </div>
         <h3 className="mt-4 text-sm font-bold text-slate-900 dark:text-white tracking-tight">
@@ -345,7 +345,7 @@ export function ProcessTimeline<T extends MovimentacaoDataJud = MovimentacaoData
       {/* Cabeçalho da Linha do Tempo */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4 dark:border-slate-800">
         <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#c5a059]/10 text-[#c5a059] dark:bg-[#c5a059]/15 dark:text-[#d4b36f] border border-[#c5a059]/25 dark:border-[#c5a059]/30">
+          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-brand/10 text-brand dark:bg-brand/15 dark:text-brand border border-brand/25 dark:border-brand/30">
             <Clock className="h-4 w-4" aria-hidden="true" />
           </div>
           <div>
@@ -380,7 +380,7 @@ export function ProcessTimeline<T extends MovimentacaoDataJud = MovimentacaoData
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Buscar por termo, tipo de despacho ou complemento..."
-              className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-2 pl-9 pr-4 text-xs text-slate-800 placeholder:text-slate-400 transition focus:border-[#c5a059] focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-[#c5a059]/15 dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-100 dark:focus:border-[#c5a059] dark:focus:ring-[#c5a059]/20"
+              className="w-full rounded-xl border border-slate-200 bg-slate-50/70 py-2 pl-9 pr-4 text-xs text-slate-800 placeholder:text-slate-400 transition focus:border-brand focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-brand/15 dark:border-slate-800 dark:bg-slate-950/60 dark:text-slate-100 dark:focus:border-brand dark:focus:ring-brand/20"
             />
             {searchQuery && (
               <button
@@ -424,8 +424,8 @@ export function ProcessTimeline<T extends MovimentacaoDataJud = MovimentacaoData
                 <div
                   className={`absolute -left-[23px] top-1.5 flex h-4 w-4 items-center justify-center rounded-full border-2 border-white dark:border-slate-900 transition-transform duration-150 group-hover:scale-110 ${
                     isMaisRecente
-                      ? 'bg-[#c5a059] ring-4 ring-[#c5a059]/20 dark:bg-[#c5a059] dark:ring-[#c5a059]/25 shadow-xs'
-                      : 'bg-[#c5a059] dark:bg-[#c5a059] shadow-2xs'
+                      ? 'bg-action ring-4 ring-brand/20 dark:bg-action dark:ring-brand/25 shadow-xs'
+                      : 'bg-action dark:bg-action shadow-2xs'
                   }`}
                   aria-hidden="true"
                 >
@@ -441,7 +441,7 @@ export function ProcessTimeline<T extends MovimentacaoDataJud = MovimentacaoData
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div className="flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-300">
                       <Calendar
-                        className="h-3.5 w-3.5 text-[#c5a059] dark:text-[#d4b36f] shrink-0"
+                        className="h-3.5 w-3.5 text-brand dark:text-brand shrink-0"
                         aria-hidden="true"
                       />
                       <time
@@ -459,7 +459,7 @@ export function ProcessTimeline<T extends MovimentacaoDataJud = MovimentacaoData
 
                     <div className="flex items-center gap-2">
                       {isMaisRecente && (
-                        <span className="inline-flex items-center gap-1 rounded-md bg-[#c5a059]/15 px-2 py-0.5 text-[10px] font-bold text-[#c5a059] dark:bg-[#c5a059]/20 dark:text-[#d4b36f] border border-[#c5a059]/25 dark:border-[#c5a059]/30">
+                        <span className="inline-flex items-center gap-1 rounded-md bg-brand/15 px-2 py-0.5 text-[10px] font-bold text-brand dark:bg-brand/20 dark:text-brand border border-brand/25 dark:border-brand/30">
                           <Sparkles className="h-2.5 w-2.5" />
                           <span>Mais Recente</span>
                         </span>
@@ -516,7 +516,7 @@ export function ProcessTimeline<T extends MovimentacaoDataJud = MovimentacaoData
           <button
             type="button"
             onClick={() => setShowAll((prev) => !prev)}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 hover:text-[#c5a059] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[#c5a059] active:scale-98 transition-all dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700/80 dark:hover:text-[#d4b36f]"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 shadow-2xs hover:bg-slate-50 hover:text-brand focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-brand active:scale-98 transition-all dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700/80 dark:hover:text-brand"
           >
             {showAll ? (
               <>

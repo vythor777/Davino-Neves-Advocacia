@@ -98,8 +98,8 @@ export function ProcessCalendar({
     // 🟢 Cumpridos (Verde - emerald)
     // 🟡 Em Aberto / Padrão (Dourado / Gold)
     let pillStyle =
-      'bg-[#c5a059]/15 border-[#c5a059]/40 text-slate-900 dark:text-[#dfcaa0] dark:bg-[#c5a059]/20 dark:border-[#c5a059]/50 hover:bg-[#c5a059]/25';
-    let dotStyle = 'bg-[#c5a059] dark:bg-[#d4b36f]';
+      'bg-brand/15 border-brand/40 text-slate-900 dark:text-brand dark:bg-brand/20 dark:border-brand/50 hover:bg-brand/25';
+    let dotStyle = 'bg-action dark:bg-brand';
 
     if (statusCategory === 'urgente') {
       pillStyle =
@@ -154,7 +154,7 @@ export function ProcessCalendar({
         <span
           className={
             arg.isToday
-              ? 'w-7 h-7 rounded-full bg-[#c5a059] text-slate-950 flex items-center justify-center text-xs font-bold shadow-xs'
+              ? 'w-7 h-7 rounded-full bg-action text-white flex items-center justify-center text-xs font-bold shadow-xs'
               : `text-xs font-semibold px-1 py-0.5 ${
                   arg.isOther
                     ? 'text-slate-400 dark:text-slate-600'
@@ -171,7 +171,7 @@ export function ProcessCalendar({
             e.stopPropagation();
             onDateClick?.(dateStr);
           }}
-          className="fc-day-add-btn h-6 w-6 rounded-md flex items-center justify-center text-slate-400 hover:text-[#c5a059] hover:bg-[#c5a059]/10 dark:hover:bg-[#c5a059]/20 dark:hover:text-[#d4b36f] transition cursor-pointer"
+          className="fc-day-add-btn h-6 w-6 rounded-md flex items-center justify-center text-slate-400 hover:text-brand hover:bg-brand/10 dark:hover:bg-brand/20 dark:hover:text-brand transition cursor-pointer"
           title={`Cadastrar novo prazo para o dia ${dayNumber}`}
           aria-label={`Novo prazo em ${dateStr}`}
         >
@@ -229,7 +229,7 @@ export function ProcessCalendar({
             </button>
           </div>
 
-          <h2 className="text-base sm:text-lg font-semibold tracking-tight text-slate-900 dark:text-[#f8fafc] ml-1">
+          <h2 className="text-base sm:text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100 ml-1">
             {currentTitle || 'Agenda de Prazos'}
           </h2>
         </div>
@@ -251,7 +251,7 @@ export function ProcessCalendar({
               <span>Cumpridos</span>
             </div>
             <div className="flex items-center gap-2" title="Prazo regular em aberto">
-              <span className="h-2 w-2 rounded-full bg-[#c5a059] shrink-0" />
+              <span className="h-2 w-2 rounded-full bg-action shrink-0" />
               <span>Em Aberto / Padrão</span>
             </div>
           </div>
@@ -263,7 +263,7 @@ export function ProcessCalendar({
               onClick={() => handleChangeView('dayGridMonth')}
               className={`rounded-lg px-3 py-1 text-xs font-semibold transition cursor-pointer ${
                 currentView === 'dayGridMonth'
-                  ? 'bg-[#c5a059] text-slate-950 shadow-xs'
+                  ? 'bg-action text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
               }`}
             >
@@ -274,7 +274,7 @@ export function ProcessCalendar({
               onClick={() => handleChangeView('timeGridWeek')}
               className={`rounded-lg px-3 py-1 text-xs font-semibold transition cursor-pointer ${
                 currentView === 'timeGridWeek'
-                  ? 'bg-[#c5a059] text-slate-950 shadow-xs'
+                  ? 'bg-action text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
               }`}
             >
@@ -285,7 +285,7 @@ export function ProcessCalendar({
               onClick={() => handleChangeView('timeGridDay')}
               className={`rounded-lg px-3 py-1 text-xs font-semibold transition cursor-pointer ${
                 currentView === 'timeGridDay'
-                  ? 'bg-[#c5a059] text-slate-950 shadow-xs'
+                  ? 'bg-action text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200'
               }`}
             >

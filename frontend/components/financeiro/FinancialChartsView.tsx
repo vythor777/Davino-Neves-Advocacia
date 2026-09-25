@@ -57,10 +57,10 @@ export function FinancialChartsView({ data }: FinancialChartsViewProps) {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-4 border-b border-slate-200/60 dark:border-white/[0.06]">
           <div>
             <div className="flex items-center gap-2">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#c5a059]/15 text-[#c5a059] border border-[#c5a059]/25">
+              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-brand/15 text-brand border border-brand/25">
                 <BarChart3 className="h-4 w-4" />
               </span>
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-[#f8fafc]">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                 Fluxo de Caixa Mensal (Receitas vs Despesas)
               </h3>
             </div>
@@ -135,7 +135,7 @@ export function FinancialChartsView({ data }: FinancialChartsViewProps) {
               <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-500 border border-emerald-500/25">
                 <PieIcon className="h-4 w-4" />
               </span>
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-[#f8fafc]">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                 Composição das Receitas de Honorários
               </h3>
             </div>
@@ -210,7 +210,7 @@ export function FinancialChartsView({ data }: FinancialChartsViewProps) {
               <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-rose-500/15 text-rose-500 border border-rose-500/25">
                 <PieIcon className="h-4 w-4" />
               </span>
-              <h3 className="text-sm font-semibold text-slate-900 dark:text-[#f8fafc]">
+              <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100">
                 Distribuição de Custos & Despesas
               </h3>
             </div>
