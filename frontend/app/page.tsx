@@ -147,6 +147,7 @@ function Dashboard() {
         ))}
       </div>
       <div className="dashboard-grid">
+        <div className="dashboard-column">
         <DashboardSection
           className="dashboard-agenda"
           title="Agenda e prazos"
@@ -195,65 +196,6 @@ function Dashboard() {
             </ul>
           )}
         </DashboardSection>
-        <section className="dashboard-shortcuts min-w-0 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
-          <h2 className="mb-3 text-sm font-semibold tracking-tight">Acesso rápido</h2>
-          <nav aria-label="Ações do escritório" className="-mx-3 space-y-1">
-            {shortcuts.slice(0, 2).map(([href, label, Icon]) => (
-              <Link key={href} href={href} className="dashboard-link flex items-center gap-3 rounded-lg px-3 py-3 text-sm transition hover:bg-slate-50 dark:hover:bg-slate-800">
-                <Icon aria-hidden className="h-4 w-4 shrink-0 text-slate-500" />
-                <span className="flex-1">{label}</span>
-                <ArrowUpRight aria-hidden className="h-4 w-4 shrink-0" />
-              </Link>
-            ))}
-            <details className="group rounded-lg">
-              <summary className="cursor-pointer rounded-lg px-3 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-brand dark:text-slate-200 dark:hover:bg-slate-800">Assistente IA <span className="ml-2 text-xs font-normal text-slate-500">3 ações</span></summary>
-              <div className="ml-3 border-l border-line pl-2">
-                {shortcuts.slice(2).map(([href, label, Icon]) => (
-                  <Link key={href} href={href} className="dashboard-link flex items-center gap-3 rounded-lg px-3 py-3 text-sm transition hover:bg-slate-50 dark:hover:bg-slate-800">
-                    <Icon aria-hidden className="h-4 w-4 shrink-0 text-slate-500" />
-                    {label}
-                  </Link>
-                ))}
-              </div>
-            </details>
-          </nav>
-        </section>
-        <DashboardSection
-          className="dashboard-finance"
-          title="Financeiro"
-          href="/financeiro"
-          loading={loading}
-          unavailable={!financeiro}
-        >
-          {financeiro && (
-            <>
-              <CashFlowPreview history={financeiro.historicoMensal} />
-            <dl className="space-y-4">
-              {[
-                ["Entradas realizadas", financeiro.metricas.entradasRealizadas],
-                ["Despesas pagas", financeiro.metricas.despesasPagas],
-                ["Saldo líquido", financeiro.metricas.saldoLiquido],
-              ].map(([label, value]) => (
-                <div
-                  key={label}
-                  className="flex flex-wrap justify-between gap-2 text-sm"
-                >
-                  <dt className="text-slate-500 dark:text-slate-400">
-                    {label}
-                  </dt>
-                  <dd className="font-medium tabular-nums">
-                    {money(Number(value))}
-                  </dd>
-                </div>
-              ))}
-              <div className="border-t border-slate-200 pt-3 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
-                Período: {financeiro.periodo.mes}/{financeiro.periodo.ano}
-              </div>
-            </dl>
-            </>
-          )}
-        </DashboardSection>
-
         <DashboardSection
           className="dashboard-team"
           title="Equipe"
@@ -289,6 +231,66 @@ function Dashboard() {
             </ul>
           )}
         </DashboardSection>
+        </div>
+        <div className="dashboard-column">
+        <DashboardSection
+          className="dashboard-finance"
+          title="Financeiro"
+          href="/financeiro"
+          loading={loading}
+          unavailable={!financeiro}
+        >
+          {financeiro && (
+            <>
+              <CashFlowPreview history={financeiro.historicoMensal} />
+            <dl className="space-y-4">
+              {[
+                ["Entradas realizadas", financeiro.metricas.entradasRealizadas],
+                ["Despesas pagas", financeiro.metricas.despesasPagas],
+                ["Saldo líquido", financeiro.metricas.saldoLiquido],
+              ].map(([label, value]) => (
+                <div
+                  key={label}
+                  className="flex flex-wrap justify-between gap-2 text-sm"
+                >
+                  <dt className="text-slate-500 dark:text-slate-400">
+                    {label}
+                  </dt>
+                  <dd className="font-medium tabular-nums">
+                    {money(Number(value))}
+                  </dd>
+                </div>
+              ))}
+              <div className="border-t border-slate-200 pt-3 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
+                Período: {financeiro.periodo.mes}/{financeiro.periodo.ano}
+              </div>
+            </dl>
+            </>
+          )}
+        </DashboardSection>
+        <section className="dashboard-shortcuts min-w-0 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
+          <h2 className="mb-3 text-sm font-semibold tracking-tight">Acesso rápido</h2>
+          <nav aria-label="Ações do escritório" className="-mx-3 space-y-1">
+            {shortcuts.slice(0, 2).map(([href, label, Icon]) => (
+              <Link key={href} href={href} className="dashboard-link flex items-center gap-3 rounded-lg px-3 py-3 text-sm transition hover:bg-slate-50 dark:hover:bg-slate-800">
+                <Icon aria-hidden className="h-4 w-4 shrink-0 text-slate-500" />
+                <span className="flex-1">{label}</span>
+                <ArrowUpRight aria-hidden className="h-4 w-4 shrink-0" />
+              </Link>
+            ))}
+            <details className="group rounded-lg">
+              <summary className="cursor-pointer rounded-lg px-3 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-brand dark:text-slate-200 dark:hover:bg-slate-800">Assistente IA <span className="ml-2 text-xs font-normal text-slate-500">3 ações</span></summary>
+              <div className="ml-3 border-l border-line pl-2">
+                {shortcuts.slice(2).map(([href, label, Icon]) => (
+                  <Link key={href} href={href} className="dashboard-link flex items-center gap-3 rounded-lg px-3 py-3 text-sm transition hover:bg-slate-50 dark:hover:bg-slate-800">
+                    <Icon aria-hidden className="h-4 w-4 shrink-0 text-slate-500" />
+                    {label}
+                  </Link>
+                ))}
+              </div>
+            </details>
+          </nav>
+        </section>
         <DashboardSection
           className="dashboard-birthdays"
           title={`Aniversariantes${aniversariantes ? ` de ${aniversariantes.nomeMes}` : ""}`}
@@ -341,6 +343,7 @@ function Dashboard() {
             </ul>
           )}
         </DashboardSection>
+        </div>
       </div>
       <InstitutionalFooter />
     </div>

@@ -410,6 +410,9 @@ select option {
   gap: 1.25rem;
   grid-template-columns: minmax(0, 1fr);
 }
+.dashboard-column {
+  display: contents;
+}
 .dashboard-section {
   display: flex;
   flex-direction: column;
@@ -442,8 +445,14 @@ select option {
 @container (min-width: 60rem) {
   .dashboard-grid {
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-    grid-template-areas: "agenda finance" "processes shortcuts" "team birthdays";
+    grid-template-areas: none;
     align-items: start;
+  }
+  .dashboard-column {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 1.25rem;
   }
 }
 .office-shell :is(a, button, input):focus-visible {
