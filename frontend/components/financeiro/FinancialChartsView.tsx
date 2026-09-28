@@ -20,8 +20,8 @@ interface FinancialChartsViewProps {
   data: ResumoFinanceiroResponse | null;
 }
 
-const COLORS_RECEITAS = ['#0284c7', '#10b981', '#6366f1', '#94a3b8'];
-const COLORS_DESPESAS = ['#f59e0b', '#64748b', '#ef4444', '#a855f7'];
+const COLORS_RECEITAS = ['#0047ab', '#3976c2', '#6e9dd5', '#94a3b8'];
+const COLORS_DESPESAS = ['#64748b', '#94a3b8', '#b45309', '#cbd5e1'];
 
 export function FinancialChartsView({ data }: FinancialChartsViewProps) {
   const historico = data?.historicoMensal || [];
@@ -97,10 +97,10 @@ export function FinancialChartsView({ data }: FinancialChartsViewProps) {
               <Tooltip
                 formatter={(value: unknown) => [formatBRL(Number(value) || 0), '']}
                 contentStyle={{
-                  backgroundColor: '#12161f',
-                  borderColor: 'rgba(255,255,255,0.08)',
+                  backgroundColor: 'var(--surface)',
+                  borderColor: 'var(--line)',
                   borderRadius: '12px',
-                  color: '#fff',
+                  color: 'var(--foreground)',
                   fontSize: '12px',
                 }}
               />
@@ -112,13 +112,13 @@ export function FinancialChartsView({ data }: FinancialChartsViewProps) {
               <Bar
                 name="Entradas (R$)"
                 dataKey="receitas"
-                fill="#10b981"
+                fill="#0047ab"
                 radius={[6, 6, 0, 0]}
               />
               <Bar
                 name="Despesas (R$)"
                 dataKey="despesas"
-                fill="#f43f5e"
+                fill="#94a3b8"
                 radius={[6, 6, 0, 0]}
               />
             </BarChart>
@@ -163,10 +163,10 @@ export function FinancialChartsView({ data }: FinancialChartsViewProps) {
                     <Tooltip
                       formatter={(val: unknown) => [formatBRL(Number(val) || 0), '']}
                       contentStyle={{
-                        backgroundColor: '#12161f',
-                        borderColor: 'rgba(255,255,255,0.08)',
+                        backgroundColor: 'var(--surface)',
+                        borderColor: 'var(--line)',
                         borderRadius: '12px',
-                        color: '#fff',
+                        color: 'var(--foreground)',
                         fontSize: '12px',
                       }}
                     />
@@ -238,10 +238,10 @@ export function FinancialChartsView({ data }: FinancialChartsViewProps) {
                     <Tooltip
                       formatter={(val: unknown) => [formatBRL(Number(val) || 0), '']}
                       contentStyle={{
-                        backgroundColor: '#12161f',
-                        borderColor: 'rgba(255,255,255,0.08)',
+                        backgroundColor: 'var(--surface)',
+                        borderColor: 'var(--line)',
                         borderRadius: '12px',
-                        color: '#fff',
+                        color: 'var(--foreground)',
                         fontSize: '12px',
                       }}
                     />

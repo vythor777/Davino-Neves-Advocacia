@@ -35,8 +35,7 @@ export function EmptyState({
     <div
       className={`relative overflow-hidden rounded-2xl border border-slate-200/90 bg-white p-8 sm:p-12 text-center shadow-2xs dark:border-slate-800/90 dark:bg-slate-900 ${className}`}
     >
-      {/* Background glow */}
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-50/50 via-transparent to-transparent dark:from-slate-800/10 pointer-events-none" />
+
 
       <div className="relative z-10 flex flex-col items-center max-w-md mx-auto">
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-brand/10 text-brand border border-brand/25 dark:bg-brand/15 dark:text-brand dark:border-brand/30 shadow-xs mb-4">
@@ -53,7 +52,7 @@ export function EmptyState({
           {title}
         </h3>
 
-        <p className="mt-1.5 text-xs text-slate-500 dark:text-slate-400 leading-relaxed text-balance">
+        <p className="mt-1.5 text-sm text-slate-500 dark:text-slate-400 leading-relaxed text-balance">
           {description}
         </p>
 

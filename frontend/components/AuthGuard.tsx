@@ -3,8 +3,9 @@
 import React, { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
-import { ShieldAlert, Loader2, ArrowLeft } from 'lucide-react';
+import { ShieldAlert, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import { WorkspaceSkeleton } from '@/components/ui/WorkspaceSkeleton';
 
 interface AuthGuardProps {
   children: React.ReactNode;
@@ -23,16 +24,7 @@ export default function AuthGuard({ children, requireAdmin = false }: AuthGuardP
   }, [isLoading, token, router, pathname]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
-        <div className="flex flex-col items-center gap-3">
-          <Loader2 className="h-8 w-8 animate-spin text-amber-700 dark:text-amber-500" />
-          <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-            Verificando autenticação e permissões...
-          </p>
-        </div>
-      </div>
-    );
+    return <WorkspaceSkeleton />;
   }
 
   if (!token) {

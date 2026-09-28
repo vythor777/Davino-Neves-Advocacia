@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useSyncExternalStore, useCallback } from 'react';
 
 export type ThemeMode = 'system' | 'light' | 'dark';
 export type ResolvedTheme = 'light' | 'dark';
@@ -52,41 +52,44 @@ function applyHtmlTheme(targetTheme: ResolvedTheme) {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeMode>(getStoredTheme);
-  const [systemTheme, setSystemTheme] = useState<ResolvedTheme>(getSystemPreference);
+const THEME_EVENT = 'davino-theme-change';
+let memoryTheme: ThemeMode | undefined;
+function readTheme(): ThemeMode { return memoryTheme ?? getStoredTheme(); }
+function subscribeTheme(listener: () => void) {
+  const onStorage = (event: StorageEvent) => {
+    if (event.key === STORAGE_KEY || event.key === null) {
+      memoryTheme = undefined;
+      listener();
+    }
+  };
+  window.addEventListener(THEME_EVENT, listener);
+  window.addEventListener('storage', onStorage);
+  return () => {
+    window.removeEventListener(THEME_EVENT, listener);
+    window.removeEventListener('storage', onStorage);
+  };
+}
+function subscribeSystem(listener: () => void) {
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+  media.addEventListener('change', listener);
+  return () => media.removeEventListener('change', listener);
+}
+const serverTheme = (): ThemeMode => 'system';
+const serverSystemTheme = (): ResolvedTheme => 'light';
 
+export function ThemeProvider({ children }: { children: React.ReactNode }) {
+  // The server and the first client render share snapshots; preferences apply
+  // after hydration, avoiding different Sun/Moon markup in the initial HTML.
+  const theme = useSyncExternalStore(subscribeTheme, readTheme, serverTheme);
+  const systemTheme = useSyncExternalStore(subscribeSystem, getSystemPreference, serverSystemTheme);
   const resolvedTheme: ResolvedTheme = theme === 'system' ? systemTheme : theme;
 
-  // Sincroniza classes no DOM sempre que resolvedTheme mudar
-  useEffect(() => {
-    applyHtmlTheme(resolvedTheme);
-  }, [resolvedTheme]);
+  useEffect(() => { applyHtmlTheme(resolvedTheme); }, [resolvedTheme]);
 
-  // Listener reativo em tempo real para mudanças de preferência no SO/navegador
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const updateSystemPreference = () => {
-      setSystemTheme(mediaQuery.matches ? 'dark' : 'light');
-    };
-
-    mediaQuery.addEventListener('change', updateSystemPreference);
-
-    return () => {
-      mediaQuery.removeEventListener('change', updateSystemPreference);
-    };
-  }, []);
-
-  // Função para alterar tema manualmente
   const setTheme = useCallback((newTheme: ThemeMode) => {
-    setThemeState(newTheme);
-    try {
-      localStorage.setItem(STORAGE_KEY, newTheme);
-    } catch (err) {
-      console.warn('Não foi possível salvar preferência de tema no localStorage:', err);
-    }
+    memoryTheme = newTheme;
+    try { localStorage.setItem(STORAGE_KEY, newTheme); } catch { /* In-memory preference still works. */ }
+    window.dispatchEvent(new Event(THEME_EVENT));
   }, []);
 
   // Toggle rápido entre Claro e Escuro

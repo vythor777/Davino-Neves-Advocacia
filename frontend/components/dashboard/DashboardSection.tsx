@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Inbox, type LucideIcon } from "lucide-react";
 
 export function DashboardSection({
   className = "",
@@ -19,10 +19,10 @@ export function DashboardSection({
 }) {
   return (
     <section
-      className={`dashboard-section min-w-0 rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900 ${className}`}
+      className={`dashboard-section legal-card min-w-0 ${className}`}
     >
       <header className="flex items-center justify-between gap-4 border-b border-slate-200 p-5 dark:border-slate-800">
-        <h2 className="font-semibold">{title}</h2>
+        <h2 className="text-sm font-semibold tracking-tight">{title}</h2>
         <Link
           className="dashboard-link shrink-0 text-xs font-medium"
           href={href}
@@ -57,10 +57,16 @@ export function DashboardSection({
   );
 }
 
-export function EmptyState({ children }: { children: ReactNode }) {
+export function EmptyState({ children, icon: Icon = Inbox, action }: {
+  children: ReactNode;
+  icon?: LucideIcon;
+  action?: { href: string; label: string };
+}) {
   return (
-    <p className="py-6 text-center text-sm text-slate-500 dark:text-slate-400">
-      {children}
-    </p>
+    <div className="flex flex-col items-center justify-center gap-3 py-8 text-center">
+      <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-line bg-background text-slate-500"><Icon aria-hidden className="h-5 w-5" /></span>
+      <p className="max-w-xs text-sm leading-relaxed text-slate-500 dark:text-slate-400">{children}</p>
+      {action && <Link href={action.href} className="ui-button ui-button-secondary mt-1">{action.label}</Link>}
+    </div>
   );
 }

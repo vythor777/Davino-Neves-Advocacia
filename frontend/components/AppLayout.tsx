@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
 import { OfficeNavigation } from '@/components/OfficeNavigation';
@@ -167,8 +168,9 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   return (
     <div className="office-shell flex h-dvh overflow-hidden bg-[#f7f9fc] dark:bg-[#070e1a] text-slate-900 dark:text-slate-100 font-sans antialiased transition-colors duration-200">
+      <a href="#main-content" className="skip-link">Ir para o conteúdo</a>
       {/* Sidebar Esquerda (Fixa, w-64 border-r border-[#0c1f3d]/[0.08] dark:border-white/[0.06] bg-white dark:bg-[#091322] flex flex-col justify-between p-5) */}
-      <aside className="hidden lg:flex w-64 shrink-0 flex-col justify-between border-r border-[#0c1f3d]/[0.08] dark:border-white/[0.06] bg-white dark:bg-[#091322] p-5 select-none z-30 transition-colors">
+      <aside className="overflow-y-auto hidden lg:flex w-64 shrink-0 flex-col justify-between border-r border-[#0c1f3d]/[0.08] dark:border-white/[0.06] bg-white dark:bg-[#091322] p-5 select-none z-30 transition-colors">
         {/* Topo da Sidebar */}
         <div className="flex flex-col">
           {/* Logotipo estilizado do escritório 'Davino Neves Advocacia' */}
@@ -269,13 +271,10 @@ export function AppLayout({ children }: AppLayoutProps) {
 
       {/* Drawer Mobile (quando tela < lg) */}
       {mobileDrawerOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div
-            className="fixed inset-0 bg-black/50 backdrop-blur-xs transition-opacity"
-            onClick={() => setMobileDrawerOpen(false)}
-            aria-hidden="true"
-          />
-          <div className="fixed inset-y-0 left-0 w-72 bg-white dark:bg-[#091322] border-r border-[#0c1f3d]/[0.08] dark:border-white/[0.08] p-5 flex flex-col justify-between z-50 shadow-2xl animate-in slide-in-from-left duration-200">
+        <Dialog open={mobileDrawerOpen} onClose={setMobileDrawerOpen} className="relative z-50 lg:hidden">
+          <DialogBackdrop className="fixed inset-0 bg-slate-950/40 backdrop-blur-xs" />
+          <DialogPanel className="fixed inset-y-0 left-0 w-72 max-w-full overflow-y-auto bg-white dark:bg-[#091322] border-r border-[#0c1f3d]/[0.08] dark:border-white/[0.08] p-5 flex flex-col justify-between z-50 shadow-2xl animate-in slide-in-from-left duration-200">
+            <DialogTitle className="sr-only">Navegação do escritório</DialogTitle>
             <div>
               <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.06]">
                 <div className="flex items-center gap-2.5">
@@ -327,14 +326,14 @@ export function AppLayout({ children }: AppLayoutProps) {
                 <span>Sair</span>
               </button>
             </div>
-          </div>
-        </div>
+          </DialogPanel>
+        </Dialog>
       )}
 
       {/* Área Principal de Conteúdo */}
       <div className="flex flex-1 flex-col min-w-0 h-full overflow-hidden">
         {/* Header Superior Responsivo */}
-        <header className="h-14 shrink-0 border-b border-[#0c1f3d]/[0.08] dark:border-white/[0.06] bg-white/95 dark:bg-[#091322]/95 backdrop-blur-xs px-4 sm:px-6 flex items-center justify-between gap-4 z-20 transition-colors">
+        <header className="h-16 shrink-0 border-b border-[#0c1f3d]/[0.08] dark:border-white/[0.06] bg-white/95 dark:bg-[#091322]/95 backdrop-blur-xs px-4 sm:px-6 flex items-center justify-between gap-4 z-20 transition-colors">
           {/* Lado Esquerdo: Botão Mobile + Busca Global Expansível */}
           <div className="flex items-center gap-3 flex-1 max-w-xl">
             {/* Hambúrguer Mobile */}
@@ -357,8 +356,9 @@ export function AppLayout({ children }: AppLayoutProps) {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 aria-label="Buscar processos"
                 placeholder="Buscar processos..."
-                className="w-full rounded-lg border border-[#0c1f3d]/[0.08] dark:border-white/[0.08] bg-[#f7f9fc] dark:bg-white/[0.04] pl-9 pr-12 py-1.5 text-xs text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-blue-500 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-surface focus:outline-hidden transition"
+                className="w-full rounded-lg border border-[#0c1f3d]/[0.08] dark:border-white/[0.08] bg-[#f7f9fc] dark:bg-white/[0.04] pl-9 pr-16 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-blue-500 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-surface focus:outline-hidden transition"
               />
+              <kbd aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 rounded border border-line px-1.5 py-0.5 text-xs text-slate-500 sm:block">Ctrl K</kbd>
             </form>
           </div>
 
@@ -388,7 +388,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
               {/* Popover de Notificações com Dados Reais */}
               {notificationsOpen && (
-                <div className="absolute right-0 mt-2 w-80 sm:w-92 rounded-xl border border-[#0c1f3d]/[0.1] dark:border-white/[0.08] bg-white dark:bg-surface p-3 shadow-xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
+                <div className="absolute right-0 mt-2 w-72 max-w-[calc(100vw-2rem)] sm:w-92 rounded-xl border border-[#0c1f3d]/[0.1] dark:border-white/[0.08] bg-white dark:bg-surface p-3 shadow-xl z-50 animate-in fade-in slide-in-from-top-2 duration-150">
                   <div className="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-white/[0.06]">
                     <div className="flex items-center gap-2">
                       <span className="text-xs font-semibold text-[#0c1f3d] dark:text-white">Alertas do Escritório</span>
@@ -537,7 +537,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         </header>
 
         {/* Conteúdo Rolável da Página */}
-        <main className="flex-1 overflow-y-auto min-h-0 min-w-0 bg-slate-50 dark:bg-slate-950 transition-colors duration-200">
+        <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto min-h-0 min-w-0 bg-slate-50 dark:bg-slate-950 transition-colors duration-200">
           {children}
         </main>
       </div>

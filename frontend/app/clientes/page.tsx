@@ -551,7 +551,7 @@ function ClientesContent() {
           <div>
             {/* Desktop Table View */}
             <div className="hidden md:block overflow-x-auto">
-              <table className="w-full text-left text-xs">
+              <table className="data-table w-full text-left text-xs">
                 <thead className="border-b border-slate-200/60 bg-slate-50/50 font-semibold text-slate-600 dark:border-white/[0.06] dark:bg-white/[0.02] dark:text-slate-300">
                   <tr>
                     <th className="py-3.5 pl-6 pr-3">Cliente / Razão Social</th>
@@ -840,7 +840,7 @@ function ClientesContent() {
 
       {/* Modal de Criação / Edição */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto animate-in fade-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/40 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-150">
           <div className="relative w-full max-w-lg legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-[90vh] my-auto animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-200/60 p-5 dark:border-white/[0.06] shrink-0 bg-slate-50/80 dark:bg-surface">
               <div className="flex items-center gap-2.5">
@@ -1084,7 +1084,7 @@ function ClientesContent() {
                     ? 'Salvando...'
                     : editingClient
                       ? 'Atualizar Cliente'
-                      : 'Salvar no Banco'}
+                      : 'Salvar alterações'}
                 </button>
               </div>
             </form>
@@ -1110,7 +1110,7 @@ function ClientesContent() {
 
       {/* Modal / Ficha Detalhada */}
       {detailsModalOpen && selectedClient && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm overflow-y-auto">
           <div className="legal-modal-card fio-de-luz w-full max-w-xl p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150 my-8">
             <div className="flex items-center justify-between border-b border-slate-200/60 pb-4 dark:border-white/[0.06]">
               <div className="flex items-center gap-2.5">

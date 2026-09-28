@@ -508,7 +508,7 @@ function UsuariosContent() {
           />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
+            <table className="data-table w-full text-left text-xs">
               <thead className="border-b border-slate-200/60 dark:border-white/[0.06] bg-slate-50/50 dark:bg-white/[0.02] font-semibold text-slate-700 dark:text-slate-300">
                 <tr>
                   <th className="py-3.5 pl-6 pr-3 font-medium">Colaborador</th>
@@ -592,7 +592,7 @@ function UsuariosContent() {
 
       {/* Modal de Criação */}
       {isCreateModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 p-4 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm">
           <div className="w-full max-w-lg legal-glass-card fio-de-luz p-6 shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] pb-4">
               <div className="flex items-center gap-2.5">
@@ -806,7 +806,7 @@ function UsuariosContent() {
 
       {/* Modal de Edição */}
       {isEditModalOpen && selectedUsuario && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/75 p-4 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm">
           <div className="w-full max-w-lg legal-glass-card fio-de-luz p-6 shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] pb-4">
               <div className="flex items-center gap-2.5">
