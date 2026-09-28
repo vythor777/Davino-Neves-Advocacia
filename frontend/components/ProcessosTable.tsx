@@ -132,7 +132,7 @@ export function ProcessosTable({
     <div className="flex flex-col rounded-2xl border border-slate-200/90 bg-white shadow-2xs dark:border-slate-800/90 dark:bg-slate-900 overflow-hidden">
       {/* Visualização em Tabela para Desktop e Tablets Médios */}
       <div className="hidden md:block relative max-h-[620px] overflow-auto">
-        <table className="w-full text-left text-xs border-collapse">
+        <table className="data-table w-full text-left text-xs border-collapse">
           {/* Sticky Header com backdrop blur */}
           <thead className="sticky top-0 z-10 border-b border-slate-200/90 bg-slate-50/95 backdrop-blur-xs font-semibold text-slate-600 dark:border-slate-800 dark:bg-slate-900/95 dark:text-slate-300">
             <tr>

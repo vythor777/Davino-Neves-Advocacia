@@ -535,7 +535,7 @@ function DataJudContent() {
 
       {/* Modal para Vincular Processo ao Sistema */}
       {modalVincularAberto && resultado && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm">
           <div className="w-full max-w-lg legal-glass-card fio-de-luz p-6 shadow-2xl">
             <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] pb-4">
               <div className="flex items-center gap-2.5">

@@ -83,6 +83,9 @@ function LoginForm() {
       } else if (err instanceof Error) {
         msg = err.message;
       }
+      if (err instanceof Error && /timeout|network error/i.test(err.message)) {
+        msg = "A conexão está demorando mais que o esperado. Aguarde alguns instantes e tente entrar novamente.";
+      }
       setErrorMsg(msg);
     } finally {
       setSubmitting(false);
@@ -182,6 +185,7 @@ function LoginForm() {
             </>
           )}
         </button>
+        {submitting && <p role="status" className="text-center text-sm leading-relaxed text-slate-500 dark:text-slate-400">Conectando ao escritório. O primeiro acesso pode levar alguns instantes.</p>}
       </form>
     </LoginShell>
   );

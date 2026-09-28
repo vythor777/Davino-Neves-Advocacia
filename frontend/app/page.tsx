@@ -4,6 +4,10 @@ import { useState } from "react";
 import Link from "next/link";
 import {
   ArrowUpRight,
+  Search,
+  FileText,
+  Sparkles,
+  UserPlus,
   Plus,
   RefreshCw,
   Copy,
@@ -19,19 +23,22 @@ import {
   DashboardSection,
   EmptyState,
 } from "@/components/dashboard/DashboardSection";
+import { CashFlowPreview } from "@/components/dashboard/CashFlowPreview";
 import { DeadlineAgenda } from "@/components/dashboard/DeadlineAgenda";
 import { useDashboardData } from "@/hooks/useDashboardData";
+import { PageHeader } from "@/components/ui/PageHeader";
+import { MetricCard } from "@/components/ui/MetricCard";
 import { formatPrazoDateBR } from "@/utils/dateUtils";
 
 const money = (value: number) =>
   value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const shortcuts = [
-  ["/clientes?novo=true", "Cadastrar cliente"],
-  ["/datajud", "Consultar processo no CNJ"],
-  ["/gemini?acao=resumir_documento", "Resumir documento"],
-  ["/gemini?acao=criar_peca", "Preparar peça com IA"],
-  ["/gemini?acao=identificar_prazos", "Identificar prazos com IA"],
-];
+  ["/clientes?novo=true", "Cadastrar cliente", UserPlus],
+  ["/datajud", "Consultar processo no CNJ", Search],
+  ["/gemini?acao=resumir_documento", "Resumir documento", FileText],
+  ["/gemini?acao=criar_peca", "Preparar peça com IA", Sparkles],
+  ["/gemini?acao=identificar_prazos", "Identificar prazos com IA", CalendarClock],
+] as const;
 
 export default function HomePage() {
   return (
@@ -101,19 +108,8 @@ function Dashboard() {
   }
 
   return (
-    <div className="dashboard w-full min-w-0 space-y-5 p-4 text-slate-900 sm:p-6 2xl:p-8 dark:text-slate-100">
-      <header className="dashboard-intro flex flex-wrap items-center justify-between gap-4 rounded-xl bg-[#0c1f3d] p-5 text-white sm:p-6">
-        <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-widest text-blue-200">
-            Gestão do escritório
-          </p>
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Visão geral do escritório
-          </h1>
-          <p className="mt-2 text-sm text-slate-300">
-            Prazos, processos e informações para organizar o dia.
-          </p>
-        </div>
+    <div className="dashboard app-page">
+      <PageHeader title="Visão geral do escritório" description="O que precisa da sua atenção, em um só lugar.">
         <div className="flex flex-wrap gap-2">
           <button
             onClick={reload}
@@ -135,7 +131,7 @@ function Dashboard() {
             Novo processo
           </Link>
         </div>
-      </header>
+      </PageHeader>
       {!loading && errors.length > 0 && (
         <div
           role="alert"
@@ -147,37 +143,7 @@ function Dashboard() {
       )}
       <div className="grid grid-cols-2 gap-3 xl:grid-cols-4 sm:gap-4">
         {metrics.map((metric) => (
-          <Link
-            key={metric.label}
-            href={metric.href}
-            className="min-w-0 rounded-xl border border-slate-200 bg-white p-4 transition sm:p-5 hover:border-blue-400 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-blue-500"
-          >
-            <div className="flex items-center justify-between gap-2 text-sm text-slate-600 dark:text-slate-300">
-              <span className="flex min-w-0 items-center gap-2">
-                <metric.icon
-                  aria-hidden
-                  className="hidden h-4 w-4 shrink-0 text-blue-600 sm:block dark:text-blue-300"
-                />
-                {metric.label}
-              </span>
-              <ArrowUpRight className="h-4 w-4" aria-hidden />
-            </div>
-            {loading ? (
-              <div
-                className="my-3 h-8 w-24 animate-pulse rounded bg-slate-100 dark:bg-slate-800"
-                aria-label="Carregando"
-              />
-            ) : (
-              <p className="my-3 break-words text-xl font-semibold tabular-nums sm:text-2xl">
-                {metric.value ?? "—"}
-              </p>
-            )}
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              {!loading && metric.value === undefined
-                ? "Informação indisponível"
-                : metric.detail}
-            </p>
-          </Link>
+          <MetricCard key={metric.label} {...metric} loading={loading} />
         ))}
       </div>
       <div className="dashboard-grid">
@@ -192,7 +158,7 @@ function Dashboard() {
         </DashboardSection>
         <DashboardSection
           className="dashboard-processes"
-          title="Processos recentes"
+          title="Últimos processos cadastrados"
           href="/processos"
           loading={loading}
           unavailable={!processos}
@@ -230,18 +196,26 @@ function Dashboard() {
           )}
         </DashboardSection>
         <section className="dashboard-shortcuts min-w-0 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
-          <h2 className="mb-3 font-semibold">Acesso rápido</h2>
-          <nav aria-label="Ações do escritório" className="space-y-1">
-            {shortcuts.map(([href, label]) => (
-              <Link
-                key={href}
-                href={href}
-                className="dashboard-link flex items-center justify-between gap-2 rounded-lg py-3 text-sm"
-              >
-                {label}
+          <h2 className="mb-3 text-sm font-semibold tracking-tight">Acesso rápido</h2>
+          <nav aria-label="Ações do escritório" className="-mx-3 space-y-1">
+            {shortcuts.slice(0, 2).map(([href, label, Icon]) => (
+              <Link key={href} href={href} className="dashboard-link flex items-center gap-3 rounded-lg px-3 py-3 text-sm transition hover:bg-slate-50 dark:hover:bg-slate-800">
+                <Icon aria-hidden className="h-4 w-4 shrink-0 text-slate-500" />
+                <span className="flex-1">{label}</span>
                 <ArrowUpRight aria-hidden className="h-4 w-4 shrink-0" />
               </Link>
             ))}
+            <details className="group rounded-lg">
+              <summary className="cursor-pointer rounded-lg px-3 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-brand dark:text-slate-200 dark:hover:bg-slate-800">Assistente IA <span className="ml-2 text-xs font-normal text-slate-500">3 ações</span></summary>
+              <div className="ml-3 border-l border-line pl-2">
+                {shortcuts.slice(2).map(([href, label, Icon]) => (
+                  <Link key={href} href={href} className="dashboard-link flex items-center gap-3 rounded-lg px-3 py-3 text-sm transition hover:bg-slate-50 dark:hover:bg-slate-800">
+                    <Icon aria-hidden className="h-4 w-4 shrink-0 text-slate-500" />
+                    {label}
+                  </Link>
+                ))}
+              </div>
+            </details>
           </nav>
         </section>
         <DashboardSection
@@ -252,6 +226,8 @@ function Dashboard() {
           unavailable={!financeiro}
         >
           {financeiro && (
+            <>
+              <CashFlowPreview history={financeiro.historicoMensal} />
             <dl className="space-y-4">
               {[
                 ["Entradas realizadas", financeiro.metricas.entradasRealizadas],
@@ -274,6 +250,7 @@ function Dashboard() {
                 Período: {financeiro.periodo.mes}/{financeiro.periodo.ano}
               </div>
             </dl>
+            </>
           )}
         </DashboardSection>
 
@@ -288,7 +265,7 @@ function Dashboard() {
             <EmptyState>Nenhum integrante cadastrado.</EmptyState>
           ) : (
             <ul className="divide-y divide-slate-100 dark:divide-slate-800">
-              {equipe.map((person) => (
+              {equipe.slice(0, 4).map((person) => (
                 <li
                   key={person.id_usuario}
                   className="flex items-center justify-between gap-3 py-3 text-sm"

@@ -372,11 +372,11 @@ function FinanceiroContent() {
 
       {/* Navegação por Abas Segmentadas */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/60 dark:border-white/[0.06] pb-2">
-        <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-200/60 dark:border-white/[0.06] w-fit overflow-x-auto">
+        <div className="flex items-center gap-1 p-1 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-200/60 dark:border-white/[0.06] w-fit max-w-full overflow-x-auto">
           <button
             type="button"
             onClick={() => setActiveTab('EXTRATO')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
+            className={`flex shrink-0 items-center gap-2 whitespace-nowrap px-3.5 py-2.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
               activeTab === 'EXTRATO'
                 ? 'bg-action text-white shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -392,14 +392,14 @@ function FinanceiroContent() {
           <button
             type="button"
             onClick={() => setActiveTab('RECEBER')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
+            className={`flex shrink-0 items-center gap-2 whitespace-nowrap px-3.5 py-2.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
               activeTab === 'RECEBER'
                 ? 'bg-action text-white shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <ArrowUpRight className="h-3.5 w-3.5 text-emerald-500" />
-            <span>Contas a Receber</span>
+            <span>Receitas</span>
             <span className="rounded-full bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 px-1.5 py-0.2 text-[10px] font-bold">
               {lancamentos.filter((l) => l.tipo === 'RECEITA').length}
             </span>
@@ -408,14 +408,14 @@ function FinanceiroContent() {
           <button
             type="button"
             onClick={() => setActiveTab('PAGAR')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
+            className={`flex shrink-0 items-center gap-2 whitespace-nowrap px-3.5 py-2.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
               activeTab === 'PAGAR'
                 ? 'bg-action text-white shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             <ArrowDownRight className="h-3.5 w-3.5 text-rose-500" />
-            <span>Contas a Pagar</span>
+            <span>Despesas</span>
             <span className="rounded-full bg-rose-500/15 text-rose-600 dark:text-rose-400 px-1.5 py-0.2 text-[10px] font-bold">
               {lancamentos.filter((l) => l.tipo === 'DESPESA').length}
             </span>
@@ -424,7 +424,7 @@ function FinanceiroContent() {
           <button
             type="button"
             onClick={() => setActiveTab('DRE')}
-            className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
+            className={`flex shrink-0 items-center gap-2 whitespace-nowrap px-3.5 py-2.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
               activeTab === 'DRE'
                 ? 'bg-action text-white shadow-xs'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
@@ -596,7 +596,7 @@ function FinanceiroContent() {
               />
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                <table className="data-table w-full text-left border-collapse">
                   <thead>
                     <tr className="border-b border-slate-200/60 dark:border-white/[0.06] bg-slate-50/70 dark:bg-white/[0.02] text-[11px] font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                       <th className="py-3 px-4">Vencimento</th>

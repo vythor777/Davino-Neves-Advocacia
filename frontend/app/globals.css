@@ -53,11 +53,11 @@ body {
   font-variant-numeric: tabular-nums;
 }
 .app-page {
-  @apply w-full min-w-0 space-y-5 p-4 sm:p-6 2xl:p-8;
+  @apply mx-auto w-full min-w-0 max-w-screen-2xl space-y-6 p-4 sm:p-6 xl:p-8;
   animation: fadeInUp 0.22s ease-out;
 }
 .page-header {
-  @apply flex flex-wrap items-center justify-between gap-5 rounded-xl bg-[#0c1f3d] p-5 sm:p-6;
+  @apply flex flex-wrap items-center justify-between gap-5 border-b border-line pb-6 pt-2;
 }
 .ui-button {
   @apply inline-flex items-center justify-center gap-2 rounded-lg px-4 py-2.5 text-sm font-medium;
@@ -72,14 +72,6 @@ body {
 }
 .ui-button-secondary {
   @apply border border-line bg-surface text-foreground hover:bg-slate-100 dark:hover:bg-slate-800;
-}
-.page-header .ui-button-secondary {
-  background: transparent;
-  border-color: #52647c;
-  color: white;
-}
-.page-header .ui-button-secondary:hover {
-  background: #1e3a5f;
 }
 .ui-input {
   @apply w-full rounded-lg border border-line bg-surface px-3 py-3 text-sm text-foreground;
@@ -450,17 +442,9 @@ select option {
 @container (min-width: 60rem) {
   .dashboard-grid {
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
-    grid-template-areas: "agenda shortcuts" "processes finance" "team birthdays";
-    align-items: stretch;
+    grid-template-areas: "agenda finance" "processes shortcuts" "team birthdays";
+    align-items: start;
   }
-}
-.dashboard-intro .dashboard-button:not(.dashboard-primary) {
-  background: transparent;
-  border-color: #52647c;
-  color: #fff;
-}
-.dashboard-intro .dashboard-button:not(.dashboard-primary):hover {
-  background: #1e3a5f;
 }
 .office-shell :is(a, button, input):focus-visible {
   outline: 2px solid #3b82f6;
@@ -468,6 +452,44 @@ select option {
 }
 .office-shell :is(a, button):active {
   opacity: 0.85;
+}
+
+/* Shared operational surfaces: restrained contrast and comfortable hit areas. */
+.skip-link {
+  @apply fixed left-4 top-4 z-50 -translate-y-24 rounded-lg bg-action px-4 py-3 text-sm font-medium text-white focus:translate-y-0;
+}
+.data-table {
+  @apply min-w-full text-sm;
+}
+.data-table th {
+  @apply whitespace-nowrap bg-background py-4 text-xs font-semibold text-slate-500 dark:text-slate-400;
+}
+.data-table td {
+  @apply py-4;
+}
+.data-table tbody tr {
+  transition: background-color 150ms ease;
+}
+.data-table tbody tr:hover {
+  background: color-mix(in srgb, var(--primary-light) 55%, var(--surface));
+}
+.legal-modal-card :is(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+  min-height: 2.75rem;
+}
+.legal-modal-card :is(input, select, textarea):focus-visible {
+  outline-offset: 1px;
+}
+.fc-daygrid-day:focus-within .fc-day-add-btn {
+  opacity: 1;
+}
+@media (hover: none) {
+  .fc-daygrid-day .fc-day-add-btn { opacity: 1; }
+}
+@media (max-width: 40rem) {
+  .page-actions { width: 100%; }
+  .page-actions > .ui-button-primary { flex: 1; }
+  .legal-modal-card :is(input, select, textarea) { font-size: 1rem; }
+  .data-table { min-width: 40rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

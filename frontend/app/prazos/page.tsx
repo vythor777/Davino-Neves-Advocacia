@@ -784,8 +784,8 @@ function PrazosContent() {
       ) : viewMode === 'table' ? (
         <div className="mt-6 legal-glass-card overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="border-b border-[0.5px] border-slate-200/70 bg-slate-50/80 font-semibold text-slate-700 dark:border-white/[0.04] dark:bg-surface/80 dark:text-slate-300 backdrop-blur-md">
+            <table className="data-table w-full text-left text-xs">
+              <thead className="border-b border-[0.5px] border-slate-200/70 bg-slate-50/80 font-semibold text-slate-700 dark:border-white/[0.04] dark:bg-surface/80 dark:text-slate-300 backdrop-blur-sm">
                 <tr>
                   <th className="py-3.5 pl-6 pr-3 w-12 text-center">Status</th>
                   <th className="px-3 py-3.5">Descrição do Ato / Prazo</th>
@@ -1047,7 +1047,7 @@ function PrazosContent() {
 
       {/* Modal de Criação / Edição */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto animate-in fade-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/40 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-150">
           <div className="relative w-full max-w-lg legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-[90vh] my-auto text-slate-900 dark:text-slate-100 transition-colors animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] p-5 shrink-0 bg-slate-50/80 dark:bg-surface">
               <div className="flex items-center gap-2.5">
@@ -1302,7 +1302,7 @@ function PrazosContent() {
                     ? 'Salvando...'
                     : editingPrazo
                       ? 'Atualizar Prazo'
-                      : 'Salvar no Banco'}
+                      : 'Salvar alterações'}
                 </button>
               </div>
             </form>

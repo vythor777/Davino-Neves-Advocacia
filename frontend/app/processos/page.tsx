@@ -488,7 +488,7 @@ function ProcessosContent() {
 
       {/* Modal de Criação / Edição */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/80 backdrop-blur-md overflow-y-auto animate-in fade-in duration-150">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/40 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-150">
           <div className="relative w-full max-w-lg legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-[90vh] my-auto animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-200/60 p-5 dark:border-white/[0.06] shrink-0 bg-slate-50/80 dark:bg-surface">
               <div className="flex items-center gap-2.5">
@@ -680,7 +680,7 @@ function ProcessosContent() {
 
       {/* Modal / Drawer de Detalhes */}
       {detailsModalOpen && selectedProcesso && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm">
           <div className="legal-modal-card fio-de-luz w-full max-w-lg p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-200/60 pb-4 dark:border-white/[0.06]">
               <div className="flex items-center gap-2.5">
