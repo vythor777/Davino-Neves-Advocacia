@@ -446,13 +446,17 @@ select option {
   .dashboard-grid {
     grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
     grid-template-areas: none;
-    align-items: start;
+    align-items: stretch;
   }
   .dashboard-column {
     display: flex;
     min-width: 0;
     flex-direction: column;
     gap: 1.25rem;
+  }
+  /* Keep the final cards aligned while earlier cards retain natural heights. */
+  .dashboard-column > :last-child {
+    flex: 1;
   }
 }
 .office-shell :is(a, button, input):focus-visible {
