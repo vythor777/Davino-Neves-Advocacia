@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/context/AuthContext';
+import { useOfficeIdentity } from '@/hooks/useOfficeIdentity';
 import { OfficeNavigation } from '@/components/OfficeNavigation';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import {
@@ -35,6 +36,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   const pathname = usePathname();
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuth();
+  const officeName = useOfficeIdentity(isAuthenticated);
 
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
@@ -180,7 +182,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             </div>
             <div className="min-w-0 flex-1">
               <span className="font-semibold text-sm tracking-tight text-[#0c1f3d] dark:text-white block truncate">
-                Davino Neves
+                {officeName}
               </span>
               <span className="text-[10px] font-semibold tracking-widest uppercase text-blue-700 dark:text-blue-200 block">
                 Advocacia
@@ -230,14 +232,14 @@ export function AppLayout({ children }: AppLayoutProps) {
                   Conectado como <strong className="text-[#0c1f3d] dark:text-slate-200">{displayName}</strong>
                 </div>
                 <div className="mt-1 space-y-0.5">
-                  <Link
+                  {user?.role === 'ADMINISTRADOR' && (<Link
                     href="/usuarios"
                     onClick={() => setUserDropdownOpen(false)}
                     className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-[#f7f9fc] dark:hover:bg-white/[0.05] hover:text-[#0c1f3d] dark:hover:text-white transition"
                   >
                     <Settings className="h-3.5 w-3.5 stroke-[1.25] text-slate-400" />
                     <span>Configurações & Equipe</span>
-                  </Link>
+                  </Link>)}
                   <Link
                     href="/datajud"
                     onClick={() => setUserDropdownOpen(false)}

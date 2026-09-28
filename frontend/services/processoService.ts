@@ -3,6 +3,9 @@ import { Cliente } from './clienteService';
 
 export interface Processo {
   id_processo: number;
+  id_responsavel?: number | null;
+  responsavel?: { id_usuario: number; nome: string } | null;
+  participantes?: { id_usuario: number; usuario: { nome: string; role: string } }[];
   numero_processo: string;
   titulo: string;
   descricao: string;
@@ -42,6 +45,15 @@ export interface CreateProcessoInput {
 export type UpdateProcessoInput = Partial<CreateProcessoInput>;
 
 export const processoService = {
+  async setAccess(id: number, data: { id_responsavel: number | null; participantes: number[] }): Promise<Processo> {
+    return (await api.patch<Processo>(`/processos/${id}/acessos`, data)).data;
+  },
+  async archive(id: number): Promise<Processo> {
+    return (await api.post<Processo>(`/processos/${id}/arquivar`)).data;
+  },
+  async restore(id: number): Promise<Processo> {
+    return (await api.post<Processo>(`/processos/${id}/restaurar`)).data;
+  },
   async getAll(): Promise<Processo[]> {
     const response = await api.get<Processo[]>('/processos');
     return response.data;

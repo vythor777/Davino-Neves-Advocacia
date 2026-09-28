@@ -1,5 +1,6 @@
 "use client";
 
+import { usePermissions } from '@/hooks/usePermissions';
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -49,6 +50,7 @@ export default function HomePage() {
 }
 
 function Dashboard() {
+  const { admin, canCreateProcess } = usePermissions();
   const { data, loading, errors, reload } = useDashboardData();
   const [birthdayFilter, setBirthdayFilter] = useState("TODOS");
   const { processos, prazos, clientes, financeiro, equipe, aniversariantes } =
@@ -120,16 +122,16 @@ function Dashboard() {
           >
             <RefreshCw className={`h-4 w-4 ${loading ? "animate-spin" : ""}`} />
           </button>
-          <Link href="/prazos?novo=true" className="dashboard-button">
+          {canCreateProcess && (<Link href="/prazos?novo=true" className="dashboard-button">
             Novo prazo
-          </Link>
-          <Link
+          </Link>)}
+          {canCreateProcess && (<Link
             href="/processos?novo=true"
             className="dashboard-button dashboard-primary"
           >
             <Plus className="h-4 w-4" />
             Novo processo
-          </Link>
+          </Link>)}
         </div>
       </PageHeader>
       {!loading && errors.length > 0 && (
@@ -199,7 +201,7 @@ function Dashboard() {
         <DashboardSection
           className="dashboard-team"
           title="Equipe"
-          href="/usuarios"
+          href={admin ? "/usuarios" : undefined}
           loading={loading}
           unavailable={!equipe}
         >
@@ -207,18 +209,13 @@ function Dashboard() {
             <EmptyState>Nenhum integrante cadastrado.</EmptyState>
           ) : (
             <ul className="divide-y divide-slate-100 dark:divide-slate-800">
-              {equipe.slice(0, 4).map((person) => (
+              {equipe.slice(0, admin ? 4 : equipe.length).map((person) => (
                 <li
                   key={person.id_usuario}
                   className="flex items-center justify-between gap-3 py-3 text-sm"
                 >
                   <div className="min-w-0">
-                    <Link
-                      href="/usuarios"
-                      className="dashboard-link font-medium"
-                    >
-                      {person.nome}
-                    </Link>
+                    <span className="font-medium">{person.nome}</span>
                     <p className="truncate text-xs text-slate-500 dark:text-slate-400">
                       {person.email}
                     </p>

@@ -1,3 +1,4 @@
+import { Public } from './decorators/public.decorator.js';
 import {
   Controller,
   Post,
@@ -16,6 +17,7 @@ import { CurrentUser } from './decorators/current-user.decorator.js';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('login')
   @HttpCode(HttpStatus.OK)
   async login(@Body() loginDto: LoginDto) {

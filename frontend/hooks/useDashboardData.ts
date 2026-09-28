@@ -14,7 +14,7 @@ const loaders = {
   clientes: clienteService.getAll,
   aniversariantes: aniversarianteService.getAniversariantesDoMes,
   financeiro: financeiroService.getResumo,
-  equipe: usuarioService.getAll,
+  equipe: usuarioService.getEquipe,
 };
 type Module = keyof typeof loaders;
 type DashboardData = {

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { PageHeader } from '@/components/ui/PageHeader';
 import AuthGuard from '@/components/AuthGuard';
+import { usePermissions } from '@/hooks/usePermissions';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { NumberProcessInput } from '@/components/NumberProcessInput';
@@ -63,6 +64,7 @@ export default function DataJudPage() {
 }
 
 function DataJudContent() {
+  const { canCreateProcess } = usePermissions();
   const [numeroProcesso, setNumeroProcesso] = useState('');
   const [tribunalSelecionado, setTribunalSelecionado] = useState('');
   const [loading, setLoading] = useState(false);
@@ -164,6 +166,7 @@ function DataJudContent() {
   };
 
   const abrirModalVinculacao = async () => {
+    if (!canCreateProcess) return;
     if (!resultado) return;
 
     try {
@@ -430,13 +433,13 @@ function DataJudContent() {
 
               {/* Botões de Ação Imediata */}
               <div className="flex flex-wrap items-center gap-2.5">
-                <button
+                {canCreateProcess && (<button
                   onClick={abrirModalVinculacao}
                   className="inline-flex items-center gap-2 rounded-xl bg-action hover:bg-action-hover text-white font-semibold px-4 py-2 text-xs shadow-xs hover:shadow-md transition active:scale-95 cursor-pointer"
                 >
                   <BookmarkPlus className="h-4 w-4 text-white" />
                   <span>Vincular ao Sistema com 1 Clique</span>
-                </button>
+                </button>)}
 
                 <Link
                   href={`/gemini?processo=${encodeURIComponent(formatarCNJ(resultado.numeroProcesso))}&tribunal=${encodeURIComponent(resultado.tribunal)}`}

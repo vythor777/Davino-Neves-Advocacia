@@ -741,7 +741,7 @@ function UsuariosContent() {
                     <Briefcase className="mx-auto h-4 w-4 mb-1 text-brand" />
                     <span className="font-semibold block">Advogado</span>
                     <span className="text-[10px] text-slate-400">
-                      Gestão Jurídica
+                      Processos vinculados
                     </span>
                   </button>
 
@@ -759,7 +759,7 @@ function UsuariosContent() {
                     <GraduationCap className="mx-auto h-4 w-4 mb-1 text-brand" />
                     <span className="font-semibold block">Estagiário</span>
                     <span className="text-[10px] text-slate-400">
-                      Apoio & Prazos
+                      Consulta e apoio
                     </span>
                   </button>
                 </div>

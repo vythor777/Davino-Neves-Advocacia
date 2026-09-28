@@ -87,7 +87,7 @@ export function AuditTrail({
           </h4>
         </div>
         <span className="inline-flex items-center gap-1 text-[10px] text-slate-400 font-mono">
-          <Clock className="h-3 w-3" /> Imutável
+          <Clock className="h-3 w-3" /> Histórico
         </span>
       </div>
 
@@ -98,7 +98,7 @@ export function AuditTrail({
             {emptyMessage}
           </p>
           <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-1 max-w-sm mx-auto">
-            A trilha de auditoria e segurança registrará novas ações e acessos automaticamente quando executados no sistema.
+            As alterações realizadas após a ativação da auditoria serão exibidas aqui.
           </p>
         </div>
       ) : (

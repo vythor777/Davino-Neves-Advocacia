@@ -1,154 +1,97 @@
-import {
-  Injectable,
-  NotFoundException,
-  ConflictException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { AccessService, isClosed, type Actor } from '../access/access.service.js';
 import { CreateProcessoDto } from './dto/create-processo.dto.js';
 import { UpdateProcessoDto } from './dto/update-processo.dto.js';
+import { AccessProcessoDto } from './dto/access-processo.dto.js';
+
+const include = {
+  cliente: true,
+  responsavel: { select: { id_usuario: true, nome: true } },
+  participantes: { select: { id_usuario: true, usuario: { select: { nome: true, role: true } } } },
+  _count: { select: { prazos: true, documentos: true } },
+} satisfies Prisma.ProcessoInclude;
 
 @Injectable()
 export class ProcessosService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private readonly access: AccessService) {}
 
-  async create(createProcessoDto: CreateProcessoDto) {
+  async create(dto: CreateProcessoDto, user: Actor) {
+    this.access.requireRole(user, 'ADMINISTRADOR', 'ADVOGADO');
     try {
       return await this.prisma.processo.create({
-        data: {
-          numero_processo: createProcessoDto.numero_processo,
-          titulo: createProcessoDto.titulo,
-          descricao: createProcessoDto.descricao,
-          data_abertura: new Date(createProcessoDto.data_abertura),
-          status: createProcessoDto.status,
-          id_cliente: createProcessoDto.id_cliente,
-        },
-        include: {
-          cliente: true,
-        },
+        data: { ...dto, data_abertura: new Date(dto.data_abertura),
+          id_responsavel: user.role === 'ADVOGADO' ? user.id_usuario : null }, include,
       });
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2002') {
-          throw new ConflictException('Já existe um processo com este número.');
-        }
-        if (error.code === 'P2003') {
-          throw new NotFoundException(
-            `Cliente com ID ${createProcessoDto.id_cliente} não encontrado.`,
-          );
-        }
-      }
-      throw new InternalServerErrorException(
-        'Erro inesperado ao cadastrar o processo.',
-      );
-    }
+    } catch (error) { this.rethrow(error); }
   }
 
-  async findAll() {
-    return this.prisma.processo.findMany({
-      orderBy: {
-        data_criacao: 'desc',
-      },
-      include: {
-        cliente: true,
-        _count: {
-          select: {
-            prazos: true,
-            documentos: true,
-          },
-        },
-      },
+  findAll(user: Actor) {
+    return this.prisma.processo.findMany({ where: this.access.processScope(user), include, orderBy: { data_criacao: 'desc' } });
+  }
+
+  async findOne(id: number, user: Actor) {
+    const result = await this.prisma.processo.findFirst({
+      where: { id_processo: id, ...this.access.processScope(user) },
+      include: { ...include, prazos: true, documentos: { select: {
+        id_documento: true, nome_arquivo: true, tipo: true, data_upload: true, tamanho: true,
+      } } },
     });
+    if (!result) throw new NotFoundException('Processo não encontrado ou não liberado para seu acesso.');
+    return result;
   }
 
-  async findOne(id: number) {
-    const processo = await this.prisma.processo.findUnique({
-      where: { id_processo: id },
-      include: {
-        cliente: true,
-        prazos: true,
-        documentos: true,
-      },
-    });
-
-    if (!processo) {
-      throw new NotFoundException(`Processo com ID ${id} não encontrado.`);
+  async update(id: number, dto: UpdateProcessoDto, user: Actor) {
+    const current = await this.access.process(user, id, 'edit');
+    if (dto.status && isClosed(current.status) && !isClosed(dto.status) && user.role !== 'ADMINISTRADOR') {
+      throw new ForbiddenException('Somente o administrador pode restaurar processos encerrados.');
     }
-
-    return processo;
-  }
-
-  async update(id: number, updateProcessoDto: UpdateProcessoDto) {
-    // Garante que o processo existe antes de atualizar
-    await this.findOne(id);
-
     try {
-      const dataToUpdate: Prisma.ProcessoUpdateInput = {};
-
-      if (updateProcessoDto.numero_processo !== undefined) {
-        dataToUpdate.numero_processo = updateProcessoDto.numero_processo;
-      }
-      if (updateProcessoDto.titulo !== undefined) {
-        dataToUpdate.titulo = updateProcessoDto.titulo;
-      }
-      if (updateProcessoDto.descricao !== undefined) {
-        dataToUpdate.descricao = updateProcessoDto.descricao;
-      }
-      if (updateProcessoDto.data_abertura !== undefined) {
-        dataToUpdate.data_abertura = new Date(updateProcessoDto.data_abertura);
-      }
-      if (updateProcessoDto.status !== undefined) {
-        dataToUpdate.status = updateProcessoDto.status;
-      }
-      if (updateProcessoDto.id_cliente !== undefined) {
-        dataToUpdate.cliente = {
-          connect: { id_cliente: updateProcessoDto.id_cliente },
-        };
-      }
-
-      return await this.prisma.processo.update({
-        where: { id_processo: id },
-        data: dataToUpdate,
-        include: {
-          cliente: true,
-        },
-      });
-    } catch (error) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        if (error.code === 'P2002') {
-          throw new ConflictException('Já existe um processo com este número.');
-        }
-        if (error.code === 'P2003' || error.code === 'P2025') {
-          throw new NotFoundException('Cliente informado não encontrado.');
-        }
-      }
-      throw new InternalServerErrorException(
-        'Erro inesperado ao atualizar o processo.',
-      );
-    }
+      return await this.prisma.processo.update({ where: { id_processo: id },
+        data: { ...dto, ...(dto.data_abertura !== undefined ? { data_abertura: new Date(dto.data_abertura) } : {}) }, include });
+    } catch (error) { this.rethrow(error); }
   }
 
-  async remove(id: number) {
-    // Garante que o processo existe antes de remover
-    await this.findOne(id);
+  async archive(id: number, user: Actor) {
+    await this.access.process(user, id, 'archive');
+    return this.prisma.processo.update({ where: { id_processo: id }, data: { status: 'Arquivado' }, include });
+  }
 
-    try {
-      return await this.prisma.processo.delete({
-        where: { id_processo: id },
-      });
-    } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2003'
-      ) {
-        throw new ConflictException(
-          'Não é possível remover o processo pois ele possui prazos ou documentos vinculados.',
-        );
-      }
-      throw new InternalServerErrorException(
-        'Erro inesperado ao remover o processo.',
-      );
+  async restore(id: number, user: Actor) {
+    this.access.requireRole(user, 'ADMINISTRADOR');
+    await this.access.process(user, id);
+    return this.prisma.processo.update({ where: { id_processo: id }, data: { status: 'Em Andamento' }, include });
+  }
+
+  async setAccess(id: number, dto: AccessProcessoDto, user: Actor) {
+    this.access.requireRole(user, 'ADMINISTRADOR');
+    await this.access.process(user, id);
+    const ids = [...new Set([...(dto.id_responsavel ? [dto.id_responsavel] : []), ...dto.participantes])];
+    const users = await this.prisma.usuario.findMany({ where: { id_usuario: { in: ids }, ativo: true }, select: { id_usuario: true, role: true } });
+    if (users.length !== ids.length) throw new BadRequestException('Selecione somente usuários ativos.');
+    if (dto.id_responsavel && !users.some(u => u.id_usuario === dto.id_responsavel && u.role === 'ADVOGADO')) {
+      throw new BadRequestException('O responsável deve possuir cargo de advogado.');
     }
+    return this.prisma.processo.update({ where: { id_processo: id }, data: {
+      id_responsavel: dto.id_responsavel,
+      participantes: { deleteMany: {}, create: dto.participantes.map(id_usuario => ({ id_usuario })) },
+    }, include });
+  }
+
+  async remove(id: number, user: Actor) {
+    this.access.requireRole(user, 'ADMINISTRADOR');
+    await this.access.process(user, id);
+    try { return await this.prisma.processo.delete({ where: { id_processo: id } }); }
+    catch (error) { this.rethrow(error); }
+  }
+
+  private rethrow(error: unknown): never {
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === 'P2002') throw new ConflictException('Já existe um processo com este número.');
+      if (error.code === 'P2003') throw new ConflictException('Verifique o cliente informado e os registros vinculados ao processo.');
+      if (error.code === 'P2025') throw new NotFoundException('Processo não encontrado.');
+    }
+    throw error;
   }
 }

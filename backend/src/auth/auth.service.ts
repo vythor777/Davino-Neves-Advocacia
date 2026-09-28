@@ -24,8 +24,12 @@ export class AuthService implements OnModuleInit {
     try {
       const count = await this.prisma.usuario.count();
       if (count === 0) {
-        const defaultEmail = 'admin@davinoneves.com.br';
-        const defaultPassword = 'admin123';
+        const defaultEmail = process.env.INITIAL_ADMIN_EMAIL;
+        const defaultPassword = process.env.INITIAL_ADMIN_PASSWORD;
+        if (!defaultEmail || !defaultPassword || defaultPassword.length < 12) {
+          this.logger.warn('Banco sem usuários: configure INITIAL_ADMIN_EMAIL e INITIAL_ADMIN_PASSWORD (mínimo 12 caracteres) para criar o primeiro administrador.');
+          return;
+        }
         const salt = await bcrypt.genSalt(10);
         const senha_hash = await bcrypt.hash(defaultPassword, salt);
 

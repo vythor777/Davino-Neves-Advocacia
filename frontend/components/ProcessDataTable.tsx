@@ -72,6 +72,7 @@ export interface ProcessDataTableProps<T extends ProcessoItem = ProcessoItem> {
   onViewDetails?: (processo: T) => void;
   /** Ação opcional para edição */
   onEdit?: (processo: T) => void;
+  canEdit?: (processo: T) => boolean;
   /** Ação opcional para exclusão */
   onDelete?: (processo: T) => void;
   /** Mensagem customizada de estado vazio */
@@ -160,6 +161,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
   skeletonRows = 5,
   onViewDetails,
   onEdit,
+  canEdit,
   onDelete,
   emptyMessage = 'Nenhum processo localizado',
   emptyDescription = 'Não foram encontrados registros para os parâmetros pesquisados.',
@@ -519,7 +521,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                         <span>Ver Detalhes</span>
                       </button>
 
-                      {onEdit && (
+                      {onEdit && (!canEdit || canEdit(proc)) && (
                         <button
                           type="button"
                           onClick={(e) => {

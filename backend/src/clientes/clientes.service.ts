@@ -5,6 +5,7 @@ import {
   BadRequestException,
   InternalServerErrorException,
 } from '@nestjs/common';
+import { AccessService, type Actor } from '../access/access.service.js';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateClienteDto } from './dto/create-cliente.dto.js';
@@ -12,9 +13,9 @@ import { UpdateClienteDto } from './dto/update-cliente.dto.js';
 
 @Injectable()
 export class ClientesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private readonly access: AccessService) {}
 
-  async create(createClienteDto: CreateClienteDto) {
+  async create(createClienteDto: CreateClienteDto, user: Actor) {
     if (createClienteDto.data_nascimento) {
       const birthDate = new Date(createClienteDto.data_nascimento);
       const hoje = new Date();
@@ -50,7 +51,7 @@ export class ClientesService {
     }
   }
 
-  async findAll() {
+  async findAll(user: Actor) {
     return this.prisma.cliente.findMany({
       orderBy: {
         nome: 'asc',
@@ -58,18 +59,18 @@ export class ClientesService {
       include: {
         _count: {
           select: {
-            processos: true,
+            processos: { where: this.access.processScope(user) },
           },
         },
       },
     });
   }
 
-  async findOne(id: number) {
+  async findOne(id: number, user: Actor) {
     const cliente = await this.prisma.cliente.findUnique({
       where: { id_cliente: id },
       include: {
-        processos: true,
+        processos: { where: this.access.processScope(user) },
       },
     });
 
@@ -80,9 +81,10 @@ export class ClientesService {
     return cliente;
   }
 
-  async update(id: number, updateClienteDto: UpdateClienteDto) {
+  async update(id: number, updateClienteDto: UpdateClienteDto, user: Actor) {
+    this.access.clientUpdate(user, updateClienteDto);
     // Garante que o cliente existe antes de atualizar
-    await this.findOne(id);
+    await this.findOne(id, user);
 
     if (updateClienteDto.data_nascimento) {
       const birthDate = new Date(updateClienteDto.data_nascimento);
@@ -120,9 +122,10 @@ export class ClientesService {
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number, user: Actor) {
+    this.access.requireRole(user, 'ADMINISTRADOR');
     // Garante que o cliente existe antes de remover
-    await this.findOne(id);
+    await this.findOne(id, user);
 
     try {
       return await this.prisma.cliente.delete({

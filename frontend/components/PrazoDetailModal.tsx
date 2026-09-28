@@ -24,9 +24,9 @@ interface PrazoDetailModalProps {
   prazo: Prazo | null;
   isOpen: boolean;
   onClose: () => void;
-  onToggleStatus: (prazo: Prazo) => void;
-  onEdit: (prazo: Prazo) => void;
-  onDelete: (prazo: Prazo) => void;
+  onToggleStatus?: (prazo: Prazo) => void;
+  onEdit?: (prazo: Prazo) => void;
+  onDelete?: (prazo: Prazo) => void;
 }
 
 export function PrazoDetailModal({
@@ -212,9 +212,9 @@ export function PrazoDetailModal({
         {/* Rodapé de Ações */}
         <div className="border-t border-slate-200/60 dark:border-white/[0.06] p-4 bg-slate-50/80 dark:bg-surface flex flex-wrap items-center justify-between gap-2">
           {/* Alternar Cumprimento */}
-          <button
+          {onToggleStatus && (<button
             onClick={() => {
-              onToggleStatus(prazo);
+              onToggleStatus?.(prazo);
               onClose();
             }}
             className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold transition active:scale-95 cursor-pointer ${
@@ -234,33 +234,33 @@ export function PrazoDetailModal({
                 <span>Marcar como Cumprido</span>
               </>
             )}
-          </button>
+          </button>)}
 
           <div className="flex items-center gap-2">
             {/* Editar */}
-            <button
+            {onEdit && (<button
               onClick={() => {
                 onClose();
-                onEdit(prazo);
+                onEdit?.(prazo);
               }}
               className="inline-flex items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white/60 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] transition cursor-pointer"
               title="Editar Prazo"
             >
               <Edit2 className="h-3.5 w-3.5 text-slate-500" />
               <span>Editar</span>
-            </button>
+            </button>)}
 
             {/* Excluir */}
-            <button
+            {onDelete && (<button
               onClick={() => {
                 onClose();
-                onDelete(prazo);
+                onDelete?.(prazo);
               }}
               className="inline-flex items-center gap-1.5 rounded-xl border border-rose-500/20 bg-rose-500/10 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-500/20 dark:border-rose-500/30 dark:text-rose-400 transition cursor-pointer"
               title="Excluir Prazo"
             >
               <Trash2 className="h-3.5 w-3.5" />
-            </button>
+            </button>)}
 
             {/* Fechar */}
             <button

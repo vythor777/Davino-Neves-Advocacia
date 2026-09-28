@@ -15,7 +15,11 @@ import { MetricCardSkeleton } from '@/components/Skeleton';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { ConfirmModal } from '@/components/ConfirmModal';
-import { AuditTrail } from '@/components/AuditTrail';
+import { RemoteAuditTrail } from '@/components/RemoteAuditTrail';
+import { ProcessAccessPanel } from '@/components/ProcessAccessPanel';
+import { ProcessDocuments } from '@/components/ProcessDocuments';
+import { usePermissions } from '@/hooks/usePermissions';
+import { isClosedProcess } from '@/utils/permissions';
 import { toast } from 'sonner';
 import { formatDateForInput } from '@/utils/dateUtils';
 import {
@@ -51,6 +55,7 @@ export default function ProcessosPage() {
 }
 
 function ProcessosContent() {
+  const { admin, canCreateProcess, canEditProcess } = usePermissions();
   const [processos, setProcessos] = useState<Processo[]>([]);
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -123,6 +128,7 @@ function ProcessosContent() {
   }, [fetchProcessos]);
 
   const openCreateModal = useCallback(() => {
+    if (!canCreateProcess) return;
     setEditingProcesso(null);
     setNumeroProcesso('');
     setTitulo('');
@@ -136,11 +142,12 @@ function ProcessosContent() {
     if (clientes.length === 0) {
       fetchClientesList();
     }
-  }, [clientes, fetchClientesList]);
+  }, [clientes, fetchClientesList, canCreateProcess]);
 
   useCreateFromQuery(openCreateModal, !loading);
 
   const openEditModal = (proc: Processo) => {
+    if (!canEditProcess(proc)) return;
     setEditingProcesso(proc);
     setNumeroProcesso(proc.numero_processo);
     setTitulo(proc.titulo);
@@ -219,7 +226,7 @@ function ProcessosContent() {
   };
 
   const handleDeleteProcesso = async () => {
-    if (!processoToDelete) return;
+    if (!admin || !processoToDelete) return;
     setDeleting(true);
     try {
       await processoService.delete(processoToDelete.id_processo);
@@ -322,13 +329,13 @@ function ProcessosContent() {
           />
           Atualizar
         </button>
-        <button
+        {canCreateProcess && (<button
           onClick={openCreateModal}
           className="ui-button ui-button-primary"
         >
           <PlusCircle className="h-4 w-4 stroke-[2]" />
           Novo processo
-        </button>
+        </button>)}
       </PageHeader>
 
       {/* Grid de Métricas Corporativas */}
@@ -471,14 +478,15 @@ function ProcessosContent() {
           setSelectedProcesso(proc);
           setDetailsModalOpen(true);
         }}
+        canEdit={canEditProcess}
         onEdit={(proc) => {
           openEditModal(proc);
         }}
-        onDelete={(proc) => {
+        onDelete={admin ? (proc) => {
           setProcessoToDelete(proc);
           setDeleteModalOpen(true);
-        }}
-        onEmptyAction={openCreateModal}
+        } : undefined}
+        onEmptyAction={canCreateProcess ? openCreateModal : undefined}
         emptyActionLabel="Novo processo"
         currentPage={currentPage}
         pageSize={pageSize}
@@ -605,6 +613,7 @@ function ProcessosContent() {
                   </label>
                   <select
                     value={status}
+                    disabled={!!editingProcesso && !admin && isClosedProcess(editingProcesso.status)}
                     onChange={(e) => setStatus(e.target.value)}
                     className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 focus:border-brand focus:outline-hidden dark:border-white/[0.08] dark:bg-surface dark:text-slate-100"
                   >
@@ -750,11 +759,11 @@ function ProcessosContent() {
 
               {/* Trilha de Auditoria dos Autos */}
               <div className="pt-2">
-                <AuditTrail
-                  title="Auditoria & Histórico dos Autos"
-                  logs={[]}
-                  emptyMessage="Nenhum registro de auditoria disponível para este processo."
-                />
+                <div className="space-y-4">
+                  <ProcessAccessPanel key={selectedProcesso.id_processo} process={selectedProcesso} onUpdated={p => { setSelectedProcesso(p); void fetchProcessos(); }} />
+                  <ProcessDocuments key={`docs-${selectedProcesso.id_processo}`} processId={selectedProcesso.id_processo} />
+                  <RemoteAuditTrail key={selectedProcesso.data_atualizacao} entity="processos" record={selectedProcesso.id_processo} />
+                </div>
               </div>
             </div>
 
