@@ -28,6 +28,8 @@ model Usuario {
   data_atualizacao DateTime    @updatedAt
 
   // Relacionamentos
+  processosResponsavel Processo[] @relation("ResponsavelProcesso")
+  participacoes ProcessoParticipante[]
   agendas          Agenda[]
   documentos       Documento[]
 }
@@ -57,6 +59,11 @@ model Processo {
   status           String      @db.VarChar(50)
   data_criacao     DateTime    @default(now())
   data_atualizacao DateTime    @updatedAt
+
+  id_responsavel Int?
+  responsavel Usuario? @relation("ResponsavelProcesso", fields: [id_responsavel], references: [id_usuario], onDelete: SetNull)
+  participantes ProcessoParticipante[]
+  @@index([id_responsavel])
 
   // Chave Estrangeira
   id_cliente       Int
@@ -153,4 +160,31 @@ model LancamentoFinanceiro {
 
   clienteId        Int?
   cliente          Cliente?            @relation(fields: [clienteId], references: [id_cliente], onDelete: SetNull)
+}
+model ProcessoParticipante {
+  id_processo Int
+  id_usuario Int
+  processo Processo @relation(fields: [id_processo], references: [id_processo], onDelete: Cascade)
+  usuario Usuario @relation(fields: [id_usuario], references: [id_usuario], onDelete: Cascade)
+  @@id([id_processo, id_usuario])
+  @@index([id_usuario])
+}
+
+model AuditLog {
+  id String @id @default(uuid())
+  id_usuario Int
+  usuario String
+  cargo String
+  acao String
+  entidade String
+  registro String?
+  descricao String
+  timestamp DateTime @default(now())
+  @@index([entidade, registro, timestamp])
+}
+
+model Configuracao {
+  id Int @id @default(1)
+  nome_escritorio String @default("Davino Neves Advocacia") @db.VarChar(100)
+  email_contato String? @db.VarChar(100)
 }

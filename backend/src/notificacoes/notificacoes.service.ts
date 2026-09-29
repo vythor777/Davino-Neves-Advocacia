@@ -1,3 +1,4 @@
+import { AccessService, type Actor } from '../access/access.service.js';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 
@@ -20,9 +21,9 @@ export interface ResumoNotificacoes {
 
 @Injectable()
 export class NotificacoesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private readonly access: AccessService) {}
 
-  async getNotificacoes(): Promise<ResumoNotificacoes> {
+  async getNotificacoes(user: Actor): Promise<ResumoNotificacoes> {
     const agora = new Date();
     const notificacoes: ItemNotificacao[] = [];
 
@@ -35,6 +36,7 @@ export class NotificacoesService {
       // 1. Buscar Prazos Processuais Reais (pendentes, atrasados ou a vencer nos próximos dias)
       const prazos = await this.prisma.prazo.findMany({
         where: {
+          processo: this.access.processScope(user),
           status: {
             notIn: ['Concluído', 'Cumprido', 'Cancelado', 'Arquivado'],
           },
@@ -121,12 +123,7 @@ export class NotificacoesService {
           },
         },
         include: {
-          cliente: {
-            select: { nome: true },
-          },
-          processo: {
-            select: { numero_processo: true },
-          },
+          cliente: { select: { nome: true } },
         },
         orderBy: {
           dataVencimento: 'asc',
@@ -184,6 +181,7 @@ export class NotificacoesService {
       // 3. Buscar Compromissos de Agenda (hoje ou amanhã)
       const compromissos = await this.prisma.agenda.findMany({
         where: {
+          ...(user.role === 'ADMINISTRADOR' ? {} : { id_usuario: user.id_usuario }),
           data_evento: {
             gte: inicioHoje,
             lte: new Date(agora.getTime() + 2 * 24 * 60 * 60 * 1000),
@@ -269,7 +267,7 @@ export class NotificacoesService {
 
     // 5. Se não houver nenhuma notificação de urgência, adicionar confirmação de sincronização DataJud
     try {
-      const totalProcessos = await this.prisma.processo.count();
+      const totalProcessos = await this.prisma.processo.count({ where: this.access.processScope(user) });
       if (totalProcessos > 0) {
         notificacoes.push({
           id: 'datajud-sync-status',

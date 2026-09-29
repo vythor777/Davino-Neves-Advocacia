@@ -3,6 +3,7 @@ import {
   NotFoundException,
   InternalServerErrorException,
 } from '@nestjs/common';
+import { AccessService, type Actor } from '../access/access.service.js';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreatePrazoDto } from './dto/create-prazo.dto.js';
@@ -10,9 +11,11 @@ import { UpdatePrazoDto } from './dto/update-prazo.dto.js';
 
 @Injectable()
 export class PrazosService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService, private readonly access: AccessService) {}
 
-  async create(createPrazoDto: CreatePrazoDto) {
+  async create(createPrazoDto: CreatePrazoDto, user: Actor) {
+    this.access.requireRole(user, 'ADMINISTRADOR', 'ADVOGADO');
+    await this.access.process(user, createPrazoDto.id_processo);
     try {
       return await this.prisma.prazo.create({
         data: {
@@ -47,8 +50,9 @@ export class PrazosService {
     }
   }
 
-  async findAll() {
+  async findAll(user: Actor) {
     return this.prisma.prazo.findMany({
+      where: { processo: this.access.processScope(user) },
       orderBy: {
         data_vencimento: 'asc',
       },
@@ -62,9 +66,9 @@ export class PrazosService {
     });
   }
 
-  async findOne(id: number) {
-    const prazo = await this.prisma.prazo.findUnique({
-      where: { id_prazo: id },
+  async findOne(id: number, user: Actor) {
+    const prazo = await this.prisma.prazo.findFirst({
+      where: { id_prazo: id, processo: this.access.processScope(user) },
       include: {
         processo: {
           include: {
@@ -81,9 +85,11 @@ export class PrazosService {
     return prazo;
   }
 
-  async update(id: number, updatePrazoDto: UpdatePrazoDto) {
+  async update(id: number, updatePrazoDto: UpdatePrazoDto, user: Actor) {
+    this.access.requireRole(user, 'ADMINISTRADOR', 'ADVOGADO');
+    if (updatePrazoDto.id_processo !== undefined) await this.access.process(user, updatePrazoDto.id_processo);
     // Garante que o prazo existe antes de atualizar
-    await this.findOne(id);
+    await this.findOne(id, user);
 
     try {
       const dataToUpdate: Prisma.PrazoUpdateInput = {};
@@ -136,9 +142,10 @@ export class PrazosService {
     }
   }
 
-  async remove(id: number) {
+  async remove(id: number, user: Actor) {
+    this.access.requireRole(user, 'ADMINISTRADOR');
     // Garante que o prazo existe antes de remover
-    await this.findOne(id);
+    await this.findOne(id, user);
 
     try {
       return await this.prisma.prazo.delete({

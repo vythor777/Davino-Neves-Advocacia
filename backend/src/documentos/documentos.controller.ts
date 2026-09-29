@@ -1,34 +1,18 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
+import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
+import type { Actor } from '../access/access.service.js';
 import { DocumentosService } from './documentos.service.js';
-import { CreateDocumentoDto } from './dto/create-documento.dto.js';
-import { UpdateDocumentoDto } from './dto/update-documento.dto.js';
 
+// Upload/download serão implementados com Storage privado em etapa posterior.
 @Controller('documentos')
 export class DocumentosController {
-  constructor(private readonly documentosService: DocumentosService) {}
-
-  @Post()
-  create(@Body() createDocumentoDto: CreateDocumentoDto) {
-    return this.documentosService.create(createDocumentoDto);
-  }
-
+  constructor(private readonly service: DocumentosService) {}
   @Get()
-  findAll() {
-    return this.documentosService.findAll();
+  list(@CurrentUser() user: Actor, @Query('id_processo', new ParseIntPipe({ optional: true })) id?: number) {
+    return this.service.findAll(user, id);
   }
-
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.documentosService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDocumentoDto: UpdateDocumentoDto) {
-    return this.documentosService.update(+id, updateDocumentoDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.documentosService.remove(+id);
+  get(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: Actor) {
+    return this.service.findOne(id, user);
   }
 }

@@ -1,3 +1,6 @@
+import { AccessModule } from './access/access.module.js';
+import { AuditoriaModule } from './auditoria/auditoria.module.js';
+import { ConfiguracoesModule } from './configuracoes/configuracoes.module.js';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller.js';
 import { AppService } from './app.service.js';
@@ -18,6 +21,9 @@ import { NotificacoesModule } from './notificacoes/notificacoes.module.js';
 @Module({
   imports: [
     PrismaModule,
+    AccessModule,
+    AuditoriaModule,
+    ConfiguracoesModule,
     AuthModule,
     UsuariosModule,
     ClientesModule,

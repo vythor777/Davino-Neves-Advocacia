@@ -1,3 +1,6 @@
+import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
+import type { Actor } from '../access/access.service.js';
+import { Roles } from '../auth/decorators/roles.decorator.js';
 import {
   Controller,
   Get,
@@ -20,31 +23,33 @@ export class ClientesController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  create(@Body() createClienteDto: CreateClienteDto) {
-    return this.clientesService.create(createClienteDto);
+  create(@CurrentUser() user: Actor, @Body() createClienteDto: CreateClienteDto) {
+    return this.clientesService.create(createClienteDto, user);
   }
 
   @Get()
-  findAll() {
-    return this.clientesService.findAll();
+  findAll(@CurrentUser() user: Actor) {
+    return this.clientesService.findAll(user);
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.clientesService.findOne(id);
+  findOne(@CurrentUser() user: Actor, @Param('id', ParseIntPipe) id: number) {
+    return this.clientesService.findOne(id, user);
   }
 
   @Patch(':id')
   update(
+    @CurrentUser() user: Actor,
     @Param('id', ParseIntPipe) id: number,
     @Body() updateClienteDto: UpdateClienteDto,
   ) {
-    return this.clientesService.update(id, updateClienteDto);
+    return this.clientesService.update(id, updateClienteDto, user);
   }
 
+  @Roles('ADMINISTRADOR')
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.clientesService.remove(id);
+  remove(@CurrentUser() user: Actor, @Param('id', ParseIntPipe) id: number) {
+    return this.clientesService.remove(id, user);
   }
 }
