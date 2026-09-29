@@ -56,6 +56,11 @@ export class UsuariosService {
     }
   }
 
+  async findEquipe() {
+    return this.prisma.usuario.findMany({ where: { ativo: true },
+      select: { id_usuario: true, nome: true, email: true, role: true, ativo: true }, orderBy: { nome: 'asc' } });
+  }
+
   async findAll() {
     return this.prisma.usuario.findMany({
       select: {

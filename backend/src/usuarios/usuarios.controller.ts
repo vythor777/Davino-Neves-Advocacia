@@ -31,6 +31,7 @@ export class UsuariosController {
     return this.usuariosService.create(createUsuarioDto);
   }
 
+  @Roles('ADMINISTRADOR')
   @Get()
   findAll() {
     return this.usuariosService.findAll();
@@ -43,9 +44,10 @@ export class UsuariosController {
 
   @Get('equipe')
   findEquipe() {
-    return this.usuariosService.findResponsaveis();
+    return this.usuariosService.findEquipe();
   }
 
+  @Roles('ADMINISTRADOR')
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.usuariosService.findOne(id);
