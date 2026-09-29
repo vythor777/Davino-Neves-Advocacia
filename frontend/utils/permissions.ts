@@ -11,7 +11,6 @@ export function permissionsFor(user: Usuario | null) {
     canCreateProcess: admin || lawyer,
     canManageDeadline: admin || lawyer,
     canDelete: admin,
-    canDownloadDocument: admin || lawyer,
     canEditProcess: (process: { id_responsavel?: number | null }) =>
       admin ||
       (lawyer && process.id_responsavel === (user?.id_usuario ?? user?.id)),

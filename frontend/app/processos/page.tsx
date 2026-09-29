@@ -17,7 +17,6 @@ import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { ConfirmModal } from '@/components/ConfirmModal';
 import { RemoteAuditTrail } from '@/components/RemoteAuditTrail';
 import { ProcessAccessPanel } from '@/components/ProcessAccessPanel';
-import { ProcessDocuments } from '@/components/ProcessDocuments';
 import { usePermissions } from '@/hooks/usePermissions';
 import { isClosedProcess } from '@/utils/permissions';
 import { toast } from 'sonner';
@@ -761,7 +760,6 @@ function ProcessosContent() {
               <div className="pt-2">
                 <div className="space-y-4">
                   <ProcessAccessPanel key={selectedProcesso.id_processo} process={selectedProcesso} onUpdated={p => { setSelectedProcesso(p); void fetchProcessos(); }} />
-                  <ProcessDocuments key={`docs-${selectedProcesso.id_processo}`} processId={selectedProcesso.id_processo} />
                   <RemoteAuditTrail key={selectedProcesso.data_atualizacao} entity="processos" record={selectedProcesso.id_processo} />
                 </div>
               </div>

@@ -95,9 +95,7 @@ model Documento {
   id_documento     Int         @id @default(autoincrement())
   nome_arquivo     String      @db.VarChar(255)
   tipo             String      @db.VarChar(50)
-  caminho_arquivo  String      @default("") @db.Text
-  conteudo Bytes?
-  tamanho Int @default(0)
+  caminho_arquivo  String      @db.Text
   data_upload      DateTime    @default(now())
 
   // Chaves Estrangeiras

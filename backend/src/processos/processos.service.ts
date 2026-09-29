@@ -35,7 +35,7 @@ export class ProcessosService {
     const result = await this.prisma.processo.findFirst({
       where: { id_processo: id, ...this.access.processScope(user) },
       include: { ...include, prazos: true, documentos: { select: {
-        id_documento: true, nome_arquivo: true, tipo: true, data_upload: true, tamanho: true,
+        id_documento: true, nome_arquivo: true, tipo: true, data_upload: true,
       } } },
     });
     if (!result) throw new NotFoundException('Processo não encontrado ou não liberado para seu acesso.');

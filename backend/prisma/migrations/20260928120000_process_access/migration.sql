@@ -4,11 +4,6 @@ BEGIN;
 -- AlterTable
 ALTER TABLE "Processo" ADD COLUMN     "id_responsavel" INTEGER;
 
--- AlterTable
-ALTER TABLE "Documento" ADD COLUMN     "conteudo" BYTEA,
-ADD COLUMN     "tamanho" INTEGER NOT NULL DEFAULT 0,
-ALTER COLUMN "caminho_arquivo" SET DEFAULT '';
-
 -- CreateTable
 CREATE TABLE "ProcessoParticipante" (
     "id_processo" INTEGER NOT NULL,

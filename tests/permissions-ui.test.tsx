@@ -34,16 +34,14 @@ test('administrador possui ações administrativas; advogado não exclui nem edi
   assert.equal(lawyer.canDelete, false);
   assert.equal(lawyer.canEditProcess(rows[0]), true);
   assert.equal(lawyer.canEditProcess(rows[1]), false);
-  assert.equal(lawyer.canDownloadDocument, true);
 });
-test('estagiário e sessão ausente não recebem ações de processo, prazo, exclusão ou download', () => {
+test('estagiário e sessão ausente não recebem ações de processo, prazo ou exclusão', () => {
   for (const user of [actor('ESTAGIARIO'), null]) {
     const p = permissionsFor(user);
     for (const key of [
       'canCreateProcess',
       'canManageDeadline',
       'canDelete',
-      'canDownloadDocument',
     ] as const)
       assert.equal(p[key], false);
     assert.equal(p.canEditProcess(rows[0]), false);

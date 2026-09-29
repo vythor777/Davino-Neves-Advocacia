@@ -521,40 +521,18 @@ test('prazos: advogado cria em processo vinculado; estagiário somente consulta'
     .send({ id_processo: 102 })
     .expect(404);
 });
-test('documentos: upload vinculado, download por advogado/admin e metadados sem bytes', async () => {
-  await api
-    .post('/api/documentos')
-    .set(auth(5))
-    .field('id_processo', '101')
-    .attach('arquivo', Buffer.from('texto'), 'teste.txt')
-    .expect(201);
-  assert.equal(db.docs.at(-1).id_usuario, 5);
-  await api
-    .post('/api/documentos')
-    .set(auth(5))
-    .field('id_processo', '102')
-    .attach('arquivo', Buffer.from('texto'), 'teste.txt')
-    .expect(404);
-  await api
-    .post('/api/documentos')
-    .set(auth(5))
-    .field('id_processo', '101')
-    .field('id_usuario', '1')
-    .attach('arquivo', Buffer.from('texto'), 'teste.txt')
-    .expect(400);
-  await api.get('/api/documentos/401/download').set(auth(5)).expect(403);
-  await api.get('/api/documentos/402/download').set(auth(2)).expect(404);
-  const res = await api
-    .get('/api/documentos/401/download')
-    .set(auth(2))
-    .expect(200);
-  assert.equal(res.body.toString(), 'teste');
+test('documentos adiados: metadados privados e nenhuma operação de arquivo disponível', async () => {
+  const before = db.docs.length;
+  for (const id of [1, 2, 5]) {
+    await api.post('/api/documentos').set(auth(id))
+      .field('id_processo', '101')
+      .attach('arquivo', Buffer.from('texto'), 'teste.txt').expect(404);
+    await api.get('/api/documentos/401/download').set(auth(id)).expect(404);
+    await api.delete('/api/documentos/401').set(auth(id)).expect(404);
+  }
+  assert.equal(db.docs.length, before);
   const list = await api.get('/api/documentos').set(auth(5)).expect(200);
-  assert.ok(
-    list.body.every(
-      (d) => d.conteudo === undefined && d.caminho_arquivo === undefined,
-    ),
-  );
+  assert.ok(list.body.every(d => d.conteudo === undefined && d.caminho_arquivo === undefined));
 });
 test('usuários, auditoria e configurações administrativas protegidos', async () => {
   for (const id of [2, 5]) {

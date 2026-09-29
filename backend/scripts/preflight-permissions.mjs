@@ -73,7 +73,6 @@ try {
   const applied = [
     'Processo.id_responsavel',
     'ProcessoParticipante.id_usuario',
-    'Documento.conteudo',
     'AuditLog.id',
     'Configuracao.id',
   ].every((c) => present.has(c));
