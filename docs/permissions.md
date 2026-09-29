@@ -55,6 +55,41 @@ Não foi executada migração nem alteração de dados em produção durante o d
 7. Como administrador, atribuir responsáveis e participantes aos processos existentes. Até essa atribuição eles ficam visíveis somente ao administrador.
 8. Conferir no preview os três cargos, desativação/revogação de acesso, upload/download e auditoria, além do layout desktop/mobile. Só então promover a versão publicada.
 
+### Proteção do acesso direto ao Supabase
+
+A conferência do banco em 29/09/2026 identificou concessões a `anon` e
+`authenticated` sem RLS nas tabelas da aplicação. A migração
+`20260929170000_private_api_tables` ativa RLS e remove essas concessões em
+usuários, clientes, processos, prazos, documentos, agenda, participantes,
+auditoria e configurações. Não cria políticas de Supabase Auth: a autorização
+continua centralizada no Nest, que utiliza Prisma.
+
+Antes de aplicar, confirmar que a conexão Prisma utiliza o proprietário das
+tabelas ou um papel com `BYPASSRLS`; uma conexão comum sem políticas seria
+bloqueada. Não conceder acesso adicional a um papel para contornar esse teste.
+Verificar também a ausência de políticas públicas preexistentes.
+
+`LancamentoFinanceiro` não é alterada por essa migração. Sua exposição direta
+por concessões sem RLS continua uma pendência de segurança da revisão financeira;
+não declarar que todo o banco ficou protegido. As regras financeiras do Nest e
+do frontend também permanecem como antes.
+
+### Conferência de 29/09/2026
+
+- Os três checksums de migrações anteriores conferem com `_prisma_migrations`;
+  existe um administrador ativo e as novas estruturas ainda não existem.
+- O Render usa a branch `main`, deploy automático e `prisma migrate deploy`
+  no comando de build. Publicar a branch principal dispara a migração.
+- Ensaio isolado em PostgreSQL 18.3 via PGlite 0.5.8, usando somente metadados
+  da estrutura publicada e registros fictícios: migrações aprovadas, legados
+  preservados, FK de participantes validada, bytes de documento persistidos,
+  operações do proprietário funcionais e leitura/exclusão negadas aos papéis
+  `anon` e `authenticated` nas nove tabelas. Dados e privilégios do financeiro
+  permaneceram idênticos. Esse ensaio não substitui validação no PostgreSQL
+  17.6 da produção nem os testes autenticados da interface.
+- Nenhuma migração aplicada em produção nesta conferência. Backup recuperável,
+  configuração efetiva de JWT e publicação seguem pendentes.
+
 ## Validação automatizada
 
 `npm run test:permissions` compila o backend e executa a matriz HTTP no pipeline real do Nest (JWT, guards, validação, controllers e serviços), com Prisma substituído por dados isolados em memória. Também renderiza a tabela de processos para conferir botões por cargo/registro. Não substitui validação da migração e dos relacionamentos em PostgreSQL real nem conferência visual no preview.
