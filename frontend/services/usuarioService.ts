@@ -40,6 +40,9 @@ export interface UpdateUsuarioInput {
 }
 
 export const usuarioService = {
+  async getEquipe(): Promise<Pick<UsuarioItem, 'id_usuario' | 'nome' | 'email' | 'role' | 'ativo'>[]> {
+    return (await api.get('/usuarios/equipe')).data;
+  },
   async getAll(): Promise<UsuarioItem[]> {
     const response = await api.get<UsuarioItem[]>('/usuarios');
     return response.data;

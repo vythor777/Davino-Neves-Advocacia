@@ -9,7 +9,8 @@ import { EmptyState } from '@/components/EmptyState';
 import { TableSkeleton, MetricCardSkeleton } from '@/components/Skeleton';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { ConfirmModal } from '@/components/ConfirmModal';
-import { AuditTrail } from '@/components/AuditTrail';
+import { RemoteAuditTrail } from '@/components/RemoteAuditTrail';
+import { usePermissions } from '@/hooks/usePermissions';
 import { clienteService, Cliente, CreateClienteInput } from '@/services/clienteService';
 import {
   Users,
@@ -109,6 +110,7 @@ export default function ClientesPage() {
 }
 
 function ClientesContent() {
+  const { admin, intern } = usePermissions();
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
@@ -201,7 +203,7 @@ function ClientesContent() {
   };
 
   const handleTrocarTipoPessoa = (novoTipo: 'pf' | 'pj') => {
-    if (formTipo === novoTipo) return;
+    if ((intern && editingClient) || formTipo === novoTipo) return;
     setFormTipo(novoTipo);
     // Limpeza de estado estrita para evitar resquícios de dígitos e conflito de formatação
     setCpfCnpj('');
@@ -273,7 +275,7 @@ function ClientesContent() {
 
     try {
       if (editingClient) {
-        await clienteService.update(editingClient.id_cliente, clientPayload);
+        await clienteService.update(editingClient.id_cliente, intern ? { email: clientPayload.email, telefone: clientPayload.telefone, endereco: clientPayload.endereco } : clientPayload);
         setSuccessMsg(`Cliente "${nome}" atualizado com sucesso no banco de dados!`);
       } else {
         await clienteService.create(clientPayload);
@@ -291,7 +293,7 @@ function ClientesContent() {
   };
 
   const handleDeleteClient = async () => {
-    if (!clientToDelete) return;
+    if (!admin || !clientToDelete) return;
     setDeleting(true);
     setErrorMsg(null);
     try {
@@ -699,7 +701,7 @@ function ClientesContent() {
                               <Edit2 className="h-4 w-4" />
                             </button>
 
-                            <button
+                            {admin && (<button
                               onClick={() => {
                                 setClientToDelete(client);
                                 setDeleteModalOpen(true);
@@ -709,7 +711,7 @@ function ClientesContent() {
                               aria-label="Excluir cliente"
                             >
                               <Trash2 className="h-4 w-4" />
-                            </button>
+                            </button>)}
                           </div>
                         </td>
                       </tr>
@@ -818,7 +820,7 @@ function ClientesContent() {
                         <span>Editar</span>
                       </button>
 
-                      <button
+                      {admin && (<button
                         onClick={() => {
                           setClientToDelete(client);
                           setDeleteModalOpen(true);
@@ -828,7 +830,7 @@ function ClientesContent() {
                         aria-label="Excluir cadastro"
                       >
                         <Trash2 className="h-3.5 w-3.5" />
-                      </button>
+                      </button>)}
                     </div>
                   </div>
                 );
@@ -884,6 +886,7 @@ function ClientesContent() {
                     type="button"
                     role="tab"
                     id="tab-pf"
+                    disabled={intern && !!editingClient}
                     aria-selected={formTipo === 'pf'}
                     onClick={() => handleTrocarTipoPessoa('pf')}
                     className={`rounded-xl border p-2.5 text-center font-semibold transition cursor-pointer ${
@@ -898,6 +901,7 @@ function ClientesContent() {
                     type="button"
                     role="tab"
                     id="tab-pj"
+                    disabled={intern && !!editingClient}
                     aria-selected={formTipo === 'pj'}
                     onClick={() => handleTrocarTipoPessoa('pj')}
                     className={`rounded-xl border p-2.5 text-center font-semibold transition cursor-pointer ${
@@ -920,7 +924,9 @@ function ClientesContent() {
                       : 'Razão Social / Nome Fantasia *'}
                   </label>
                   <input
+                    aria-describedby={intern && editingClient ? "client-permission-note" : undefined}
                     id="input-nome-cliente"
+                    disabled={intern && !!editingClient}
                     type="text"
                     value={nome}
                     onChange={(e) => setNome(e.target.value)}
@@ -936,6 +942,7 @@ function ClientesContent() {
                   )}
                 </div>
 
+                {intern && editingClient && <p id="client-permission-note" className="text-sm text-slate-500">Seu cargo permite editar e-mail, telefone e endereço. Dados de identificação são atualizados pelo advogado ou administrador.</p>}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label
@@ -946,6 +953,7 @@ function ClientesContent() {
                     </label>
                     <input
                       id="input-cpf-cnpj"
+                      disabled={intern && !!editingClient}
                       type="text"
                       inputMode="numeric"
                       maxLength={formTipo === 'pf' ? 14 : 18}
@@ -1036,6 +1044,7 @@ function ClientesContent() {
                   <div className="relative rounded-xl">
                     <input
                       id="input-data-nascimento"
+                      disabled={intern && !!editingClient}
                       type="date"
                       max={new Date().toISOString().split('T')[0]}
                       value={dataNascimento}
@@ -1206,11 +1215,7 @@ function ClientesContent() {
 
               {/* Trilha de Auditoria do Cliente - Real / Empty State sem dados mockados */}
               <div className="pt-2">
-                <AuditTrail
-                  title="Histórico de Auditoria & Segurança"
-                  logs={[]}
-                  emptyMessage="Nenhum registro de auditoria disponível para este cliente."
-                />
+                <RemoteAuditTrail entity="clientes" record={selectedClient.id_cliente} />
               </div>
             </div>
 

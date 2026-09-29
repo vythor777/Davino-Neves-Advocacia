@@ -1,5 +1,6 @@
 "use client";
 
+import { usePermissions } from '@/hooks/usePermissions';
 import { useState } from "react";
 import Link from "next/link";
 import { Check, Loader2, CalendarDays } from "lucide-react";
@@ -20,6 +21,7 @@ export function DeadlineAgenda({
   prazos: Prazo[];
   onUpdate: () => Promise<void>;
 }) {
+  const { canManageDeadline } = usePermissions();
   const [filter, setFilter] = useState<keyof typeof filters>("prioridade");
   const [saving, setSaving] = useState<number | null>(null);
   const items = prazos
@@ -47,6 +49,7 @@ export function DeadlineAgenda({
     );
 
   async function complete(id: number) {
+    if (!canManageDeadline) return;
     setSaving(id);
     try {
       await prazoService.update(id, { status: "Cumprido" });
@@ -78,7 +81,7 @@ export function DeadlineAgenda({
         ))}
       </div>
       {!items.length ? (
-        <EmptyState icon={CalendarDays} action={{ href: "/prazos?novo=true", label: "Agendar compromisso" }}>Nenhum prazo pendente neste período.</EmptyState>
+        <EmptyState icon={CalendarDays} action={canManageDeadline ? { href: "/prazos?novo=true", label: "Agendar compromisso" } : undefined}>Nenhum prazo pendente neste período.</EmptyState>
       ) : (
         <ul className="divide-y divide-slate-100 dark:divide-slate-800">
           {items.slice(0, 6).map(({ prazo, timing }) => (
@@ -106,7 +109,7 @@ export function DeadlineAgenda({
                   <span className={`ml-2 inline-flex rounded-md px-2 py-0.5 font-medium ${timing.isVencido ? "bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-300" : timing.isHoje || timing.isUrgente ? "bg-amber-50 text-amber-800 dark:bg-amber-950 dark:text-amber-200" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300"}`}>{timing.label}</span>
                 </p>
               </div>
-              <button
+              {canManageDeadline && (<button
                 disabled={saving !== null}
                 onClick={() => complete(prazo.id_prazo)}
                 aria-label={`Marcar como cumprido: ${prazo.descricao}`}
@@ -114,7 +117,7 @@ export function DeadlineAgenda({
                 className="rounded-lg border border-slate-200 p-2 text-slate-500 hover:bg-green-50 hover:text-green-700 disabled:opacity-40 dark:border-slate-700 dark:hover:bg-green-950 dark:hover:text-green-300"
               >
                 {saving === prazo.id_prazo ? <Loader2 aria-hidden className="h-4 w-4 animate-spin" /> : <Check aria-hidden className="h-4 w-4" />}
-              </button>
+              </button>)}
             </li>
           ))}
         </ul>

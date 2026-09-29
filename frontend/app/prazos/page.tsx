@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { PageHeader } from '@/components/ui/PageHeader';
 import AuthGuard from '@/components/AuthGuard';
+import { usePermissions } from '@/hooks/usePermissions';
 import { useCreateFromQuery } from '@/hooks/useCreateFromQuery';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { EmptyState } from '@/components/EmptyState';
@@ -50,6 +51,7 @@ export default function PrazosPage() {
 }
 
 function PrazosContent() {
+  const { admin, canManageDeadline } = usePermissions();
   const [prazos, setPrazos] = useState<Prazo[]>([]);
   const [processos, setProcessos] = useState<Processo[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -130,6 +132,7 @@ function PrazosContent() {
   }, [fetchPrazos, fetchResponsaveis]);
 
   const openCreateModal = useCallback(() => {
+    if (!canManageDeadline) return;
     setEditingPrazo(null);
     setDescricao('');
     const target = new Date();
@@ -149,7 +152,7 @@ function PrazosContent() {
     if (responsaveis.length === 0) {
       fetchResponsaveis();
     }
-  }, [processos, responsaveis.length, fetchPrazos, fetchResponsaveis]);
+  }, [processos, responsaveis.length, fetchPrazos, fetchResponsaveis, canManageDeadline]);
 
   useCreateFromQuery(openCreateModal, !loading);
 
@@ -159,6 +162,7 @@ function PrazosContent() {
   };
 
   const handleDateClickFromCalendar = (dateStr: string) => {
+    if (!canManageDeadline) return;
     setEditingPrazo(null);
     setDescricao('');
     setDataVencimento(dateStr);
@@ -178,6 +182,7 @@ function PrazosContent() {
   };
 
   const openEditModal = (prazo: Prazo) => {
+    if (!canManageDeadline) return;
     setEditingPrazo(prazo);
     setDescricao(prazo.descricao);
     const dateFormatted = formatDateForInput(prazo.data_vencimento);
@@ -258,6 +263,7 @@ function PrazosContent() {
   };
 
   const handleToggleStatus = async (prazo: Prazo) => {
+    if (!canManageDeadline) return;
     const isCurrentlyCumprido = prazo.status.toLowerCase() === 'cumprido';
     const newStatus = isCurrentlyCumprido ? 'Pendente' : 'Cumprido';
 
@@ -279,7 +285,7 @@ function PrazosContent() {
   };
 
   const handleDeletePrazo = async () => {
-    if (!prazoToDelete) return;
+    if (!admin || !prazoToDelete) return;
     setDeleting(true);
     setErrorMsg(null);
     try {
@@ -417,13 +423,13 @@ function PrazosContent() {
           />
           Atualizar
         </button>
-        <button
+        {canManageDeadline && (<button
           onClick={openCreateModal}
           className="ui-button ui-button-primary"
         >
           <PlusCircle className="h-4 w-4 stroke-[2]" />
           Novo prazo
-        </button>
+        </button>)}
       </PageHeader>
 
       {/* Métricas e Painéis de Urgência Interativos (Filtro por Clique) */}
@@ -748,7 +754,7 @@ function PrazosContent() {
           <ProcessCalendar
             prazos={filteredPrazos}
             onSelectPrazo={handleSelectPrazoFromCalendar}
-            onDateClick={handleDateClickFromCalendar}
+            onDateClick={canManageDeadline ? handleDateClickFromCalendar : undefined}
             loading={loading}
           />
         </div>
@@ -770,7 +776,7 @@ function PrazosContent() {
               : 'Cadastre prazos e intimações para manter a agenda do escritório sob controle rigoroso.'
           }
           action={
-            !searchTerm &&
+            canManageDeadline && !searchTerm &&
             selectedFilter === 'todos' &&
             selectedProcessoFilter === 'todos'
               ? {
@@ -817,7 +823,7 @@ function PrazosContent() {
                       }`}
                     >
                       <td className="py-4 pl-6 pr-3 text-center">
-                        <button
+                        <button disabled={!canManageDeadline}
                           onClick={() => handleToggleStatus(prazo)}
                           className={`flex min-h-[36px] min-w-[36px] mx-auto items-center justify-center rounded-xl border transition cursor-pointer ${
                             isCumprido
@@ -901,16 +907,16 @@ function PrazosContent() {
 
                       <td className="py-4 pl-3 pr-6 text-right">
                         <div className="flex items-center justify-end gap-1.5">
-                          <button
+                          {canManageDeadline && (<button
                             onClick={() => openEditModal(prazo)}
                             className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-brand dark:text-slate-400 dark:hover:text-brand cursor-pointer transition-colors"
                             title="Editar prazo"
                             aria-label="Editar prazo"
                           >
                             <Edit2 className="h-4 w-4" />
-                          </button>
+                          </button>)}
 
-                          <button
+                          {admin && (<button
                             onClick={() => {
                               setPrazoToDelete(prazo);
                               setDeleteModalOpen(true);
@@ -920,7 +926,7 @@ function PrazosContent() {
                             aria-label="Excluir prazo"
                           >
                             <Trash2 className="h-4 w-4" />
-                          </button>
+                          </button>)}
                         </div>
                       </td>
                     </tr>
@@ -964,7 +970,7 @@ function PrazosContent() {
                       {calc.badgeText}
                     </span>
 
-                    <button
+                    <button disabled={!canManageDeadline}
                       onClick={() => handleToggleStatus(prazo)}
                       className={`flex min-h-[36px] min-w-[36px] items-center justify-center rounded-xl border transition cursor-pointer ${
                         isCumprido
@@ -1018,15 +1024,15 @@ function PrazosContent() {
                   </span>
 
                   <div className="flex items-center gap-1">
-                    <button
+                    {canManageDeadline && (<button
                       onClick={() => openEditModal(prazo)}
                       className="flex min-h-[40px] min-w-[40px] items-center justify-center rounded-xl text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-brand transition-colors cursor-pointer"
                       title="Editar"
                       aria-label="Editar prazo"
                     >
                       <Edit2 className="h-4 w-4" />
-                    </button>
-                    <button
+                    </button>)}
+                    {admin && (<button
                       onClick={() => {
                         setPrazoToDelete(prazo);
                         setDeleteModalOpen(true);
@@ -1036,7 +1042,7 @@ function PrazosContent() {
                       aria-label="Excluir prazo"
                     >
                       <Trash2 className="h-4 w-4" />
-                    </button>
+                    </button>)}
                   </div>
                 </div>
               </div>
@@ -1331,14 +1337,14 @@ function PrazosContent() {
         prazo={selectedPrazoDetails}
         isOpen={detailsModalOpen}
         onClose={() => setDetailsModalOpen(false)}
-        onToggleStatus={handleToggleStatus}
-        onEdit={(prazo) => {
+        onToggleStatus={canManageDeadline ? handleToggleStatus : undefined}
+        onEdit={canManageDeadline ? (prazo) => {
           openEditModal(prazo);
-        }}
-        onDelete={(prazo) => {
+        } : undefined}
+        onDelete={admin ? (prazo) => {
           setPrazoToDelete(prazo);
           setDeleteModalOpen(true);
-        }}
+        } : undefined}
       />
 
       {/* Rodapé Institucional */}

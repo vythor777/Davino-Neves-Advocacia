@@ -165,7 +165,7 @@ export function ProcessCalendar({
           {dayNumber}
         </span>
 
-        <button
+        {onDateClick && (<button
           type="button"
           onClick={(e) => {
             e.stopPropagation();
@@ -176,7 +176,7 @@ export function ProcessCalendar({
           aria-label={`Novo prazo em ${dateStr}`}
         >
           <Plus className="h-3.5 w-3.5" />
-        </button>
+        </button>)}
       </div>
     );
   };

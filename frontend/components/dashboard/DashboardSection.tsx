@@ -12,7 +12,7 @@ export function DashboardSection({
 }: {
   className?: string;
   title: string;
-  href: string;
+  href?: string;
   children: ReactNode;
   loading: boolean;
   unavailable: boolean;
@@ -23,13 +23,13 @@ export function DashboardSection({
     >
       <header className="flex items-center justify-between gap-4 border-b border-slate-200 p-5 dark:border-slate-800">
         <h2 className="text-sm font-semibold tracking-tight">{title}</h2>
-        <Link
+        {href && (<Link
           className="dashboard-link shrink-0 text-xs font-medium"
           href={href}
           aria-label={`Ver todos: ${title}`}
         >
           Ver todos <ArrowUpRight aria-hidden className="inline h-4 w-4" />
-        </Link>
+        </Link>)}
       </header>
       <div className="p-5">
         {loading ? (
