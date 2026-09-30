@@ -91,6 +91,7 @@ export interface ResumoProcessoResponse {
 export interface ExtrairPrazosParams {
   texto_publicacao: string;
   data_publicacao?: string;
+  tipo_contagem?: 'uteis' | 'corridos';
 }
 
 export interface DadosPrazoExtraido {

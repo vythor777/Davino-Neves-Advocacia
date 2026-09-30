@@ -77,6 +77,7 @@ const prisma = {
       db.users.filter((u) => matches(u, where)).map((u) => project(u, select)),
   },
   processo: {
+    findUnique: async ({ where, select }) => project(db.processos.find(p => matches(p, where)), select),
     findMany: async ({ where, select } = {}) =>
       db.processos
         .filter((p) => matches(p, where))
@@ -149,6 +150,7 @@ const prisma = {
       )[0],
   },
   prazo: {
+    findUnique: async ({ where, select }) => project(db.prazos.find(p => matches(p, where)), select),
     findMany: async ({ where } = {}) =>
       db.prazos
         .filter((p) => matches(p, where))
@@ -324,6 +326,7 @@ const processInput = {
 };
 const prazoInput = {
   descricao: 'Novo prazo',
+  responsavel: 'Pessoa 3',
   data_vencimento: '2026-10-01',
   hora: '09:00',
   tipoCompromisso: 'Prazo Fatal',
@@ -521,15 +524,16 @@ test('prazos: advogado cria em processo vinculado; estagiário somente consulta'
     .send({ id_processo: 102 })
     .expect(404);
 });
-test('documentos adiados: metadados privados e nenhuma operação de arquivo disponível', async () => {
+test('documentos: validação de PDF e controle das operações', async () => {
   const before = db.docs.length;
-  for (const id of [1, 2, 5]) {
-    await api.post('/api/documentos').set(auth(id))
-      .field('id_processo', '101')
-      .attach('arquivo', Buffer.from('texto'), 'teste.txt').expect(404);
-    await api.get('/api/documentos/401/download').set(auth(id)).expect(404);
-    await api.delete('/api/documentos/401').set(auth(id)).expect(404);
+  for (const id of [1, 2]) {
+    await api.post('/api/documentos').set(auth(id)).field('id_processo', '101')
+      .attach('arquivo', Buffer.from('texto'), 'teste.txt').expect(400);
   }
+  await api.post('/api/documentos').set(auth(5)).field('id_processo', '101')
+    .attach('arquivo', Buffer.from('texto'), 'teste.txt').expect(403);
+  await api.post('/api/documentos/backup').set(auth(2)).send({ ids: [401] }).expect(403);
+  await api.post('/api/documentos/401/arquivar').set(auth(2)).send({ backup_conferido: true, sha256: 'a'.repeat(64) }).expect(403);
   assert.equal(db.docs.length, before);
   const list = await api.get('/api/documentos').set(auth(5)).expect(200);
   assert.ok(list.body.every(d => d.conteudo === undefined && d.caminho_arquivo === undefined));

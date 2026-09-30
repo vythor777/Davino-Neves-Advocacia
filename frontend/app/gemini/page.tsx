@@ -167,13 +167,15 @@ function GeminiContent() {
 
   // 5. Estados: Identificar Prazos
   const [prazoTexto, setPrazoTexto] = useState('');
-  const [prazoDataPub, setPrazoDataPub] = useState(new Date().toISOString().slice(0, 10));
+  const [prazoContagem, setPrazoContagem] = useState<'' | 'uteis' | 'corridos'>('');
+  const [prazoDataPub, setPrazoDataPub] = useState('');
   const [prazoLoading, setPrazoLoading] = useState(false);
   const [prazoResultado, setPrazoResultado] = useState<DadosPrazoExtraido | null>(null);
 
   // Modal para agendar prazo extraído
   const [modalPrazoAberto, setModalPrazoAberto] = useState(false);
   const [processoSelecionadoId, setProcessoSelecionadoId] = useState<number | ''>('');
+  const [responsavelPrazoModal, setResponsavelPrazoModal] = useState('');
   const [descricaoPrazoModal, setDescricaoPrazoModal] = useState('');
   const [dataVencimentoModal, setDataVencimentoModal] = useState('');
   const [salvandoPrazo, setSalvandoPrazo] = useState(false);
@@ -381,9 +383,11 @@ Fica a parte autora intimada para, no prazo impreterível de 15 (quinze) dias ú
       const res = await geminiService.identificarPrazos({
         texto_publicacao: prazoTexto,
         data_publicacao: prazoDataPub || undefined,
+        tipo_contagem: prazoContagem || undefined,
       });
       setPrazoResultado(res.dados_prazo);
-      toast.success('Prazos e providências identificados com sucesso!');
+      if (res.dados_prazo.data_limite_estimada) toast.success('Data sugerida gerada. Revise a contagem antes de agendar.');
+      else toast.warning('Confira as informações solicitadas pela IA antes de agendar.');
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Falha ao identificar prazos.';
       toast.error('Erro nos prazos', { description: msg });
@@ -394,12 +398,15 @@ Fica a parte autora intimada para, no prazo impreterível de 15 (quinze) dias ú
 
   // Modal para vincular e agendar prazo extraído
   const abrirModalSalvarPrazo = () => {
-    if (!prazoResultado) return;
+    if (!prazoResultado?.data_limite_estimada) {
+      toast.warning('Confirme as informações necessárias antes de agendar.');
+      return;
+    }
     if (processosEscritorio.length > 0 && !processoSelecionadoId) {
       setProcessoSelecionadoId(processosEscritorio[0].id_processo);
     }
     setDescricaoPrazoModal(prazoResultado.descricao_providencia || 'Cumprimento de Prazo Processual');
-    setDataVencimentoModal(prazoResultado.data_limite_estimada || new Date().toISOString().slice(0, 10));
+    setDataVencimentoModal(prazoResultado.data_limite_estimada);
     setModalPrazoAberto(true);
   };
 
@@ -413,6 +420,7 @@ Fica a parte autora intimada para, no prazo impreterível de 15 (quinze) dias ú
     try {
       await prazoService.create({
         descricao: descricaoPrazoModal.trim(),
+        responsavel: responsavelPrazoModal.trim(),
         data_vencimento: dataVencimentoModal,
         hora: '18:00',
         tipoCompromisso: 'Prazo Fatal',
@@ -1270,9 +1278,18 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                       id="prazoDataPubInput"
                       type="date"
                       value={prazoDataPub}
-                      onChange={(e) => setPrazoDataPub(e.target.value)}
+                      onChange={(e) => { setPrazoDataPub(e.target.value); setPrazoResultado(null); }}
                       className="w-full sm:w-64 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-slate-900 px-3.5 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-1 focus:ring-[#0047ab]"
                     />
+                  </div>
+
+                  <div>
+                    <label htmlFor="prazoContagem" className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Regra de contagem</label>
+                    <select id="prazoContagem" value={prazoContagem} onChange={(e) => { setPrazoContagem(e.target.value as '' | 'uteis' | 'corridos'); setPrazoResultado(null); }} className="w-full rounded-lg border border-slate-200 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-blue-700">
+                      <option value="">Usar o texto; pedir confirmação se faltar</option>
+                      <option value="uteis">Dias úteis</option>
+                      <option value="corridos">Dias corridos</option>
+                    </select>
                   </div>
 
                   <div>
@@ -1287,7 +1304,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                       rows={8}
                       required
                       value={prazoTexto}
-                      onChange={(e) => setPrazoTexto(e.target.value)}
+                      onChange={(e) => { setPrazoTexto(e.target.value); setPrazoResultado(null); }}
                       placeholder="Cole aqui o recorte do Diário da Justiça Eletrônico ou teor da intimação..."
                       className="w-full rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-slate-900 p-3 font-mono text-xs leading-relaxed text-slate-800 dark:text-slate-200 placeholder:text-slate-400 focus:outline-hidden focus:ring-1 focus:ring-[#0047ab]"
                     />
@@ -1344,6 +1361,16 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                 </div>
 
                 {/* Ações de cópia e exportação */}
+                {(procResultado || docResultado || jurisResultado || pecaResultado || prazoResultado) && (
+                  <button type="button" onClick={async () => {
+                    const text = acaoAtiva === 'analisar_processo' ? procResultado : acaoAtiva === 'resumir_documento' ? docResultado : acaoAtiva === 'encontrar_jurisprudencia' ? jurisResultado : acaoAtiva === 'criar_peca' ? pecaResultado : prazoResultado ? [prazoResultado.descricao_providencia, `Quantidade: ${prazoResultado.quantidade_dias ?? 'Não confirmada'}`, `Contagem: ${prazoResultado.tipo_contagem ?? 'Não confirmada'}`, `Data sugerida: ${prazoResultado.data_limite_estimada ?? 'Aguardando confirmação'}`, prazoResultado.observacoes].filter(Boolean).join('\n') : null;
+                    if (!text) return;
+                    try {
+                      const { downloadInstitutionalPdf } = await import('@/utils/institutionalPdf');
+                      await downloadInstitutionalPdf('Resultado do Assistente de IA', text);
+                    } catch { toast.error('Não foi possível gerar o PDF. Tente novamente.'); }
+                  }} className="rounded-lg border border-slate-200 bg-white dark:bg-slate-900 px-3 py-2 text-xs hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:ring-2 focus-visible:ring-blue-700 active:scale-95">Baixar PDF institucional</button>
+                )}
                 {((acaoAtiva === 'analisar_processo' && procResultado) ||
                   (acaoAtiva === 'resumir_documento' && docResultado) ||
                   (acaoAtiva === 'encontrar_jurisprudencia' &&
@@ -1510,6 +1537,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                         <button
                           type="button"
                           onClick={abrirModalSalvarPrazo}
+                          disabled={!prazoResultado.data_limite_estimada}
                           className="inline-flex items-center gap-2 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-action dark:hover:bg-action-hover text-white dark:text-white font-semibold px-4 py-2 text-xs shadow-xs transition cursor-pointer"
                         >
                           <BookmarkPlus className="h-4 w-4" />
@@ -1589,6 +1617,10 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
             </div>
 
             <form onSubmit={handleSalvarPrazoModal} className="space-y-3">
+              <div>
+                <label htmlFor="responsavelPrazoModal" className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Responsável pelo cumprimento *</label>
+                <input id="responsavelPrazoModal" required maxLength={100} value={responsavelPrazoModal} onChange={(e) => setResponsavelPrazoModal(e.target.value)} className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-blue-700" />
+              </div>
               <div>
                 <label
                   htmlFor="modalProcessoSelect"

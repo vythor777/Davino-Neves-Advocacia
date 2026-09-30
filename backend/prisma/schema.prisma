@@ -48,6 +48,8 @@ model Cliente {
   // Relacionamentos
   processos             Processo[]
   lancamentosFinanceiros LancamentoFinanceiro[]
+  documentos Documento[]
+
 }
 
 model Processo {
@@ -99,8 +101,15 @@ model Documento {
   data_upload      DateTime    @default(now())
 
   // Chaves Estrangeiras
-  id_processo      Int
-  processo         Processo    @relation(fields: [id_processo], references: [id_processo])
+  id_processo      Int?
+  processo         Processo?   @relation(fields: [id_processo], references: [id_processo], onDelete: Restrict)
+  id_cliente       Int?
+  cliente          Cliente?    @relation(fields: [id_cliente], references: [id_cliente], onDelete: Restrict)
+  tamanho_bytes    Int         @default(0)
+  sha256           String?     @db.VarChar(64)
+  situacao         String      @default("DISPONIVEL") @db.VarChar(20)
+  arquivado_em     DateTime?
+  @@index([id_cliente])
   id_usuario       Int
   usuario          Usuario     @relation(fields: [id_usuario], references: [id_usuario])
 }

@@ -120,7 +120,7 @@ export function AuditTrail({
                     </span>
 
                     <span className="text-[10px] text-slate-400 font-mono">
-                      {log.timestamp}
+                      {new Date(log.timestamp).toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' })}
                     </span>
                   </div>
 

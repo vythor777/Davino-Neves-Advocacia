@@ -1,5 +1,6 @@
 import {
   Injectable,
+  BadRequestException,
   NotFoundException,
   InternalServerErrorException,
 } from '@nestjs/common';
@@ -16,6 +17,9 @@ export class PrazosService {
   async create(createPrazoDto: CreatePrazoDto, user: Actor) {
     this.access.requireRole(user, 'ADMINISTRADOR', 'ADVOGADO');
     await this.access.process(user, createPrazoDto.id_processo);
+    if ((createPrazoDto.tipoCompromisso || 'Prazo Fatal').toLowerCase().includes('fatal') && !createPrazoDto.responsavel?.trim()) {
+      throw new BadRequestException('Defina um responsável pelo cumprimento do prazo fatal.');
+    }
     try {
       return await this.prisma.prazo.create({
         data: {
@@ -89,7 +93,10 @@ export class PrazosService {
     this.access.requireRole(user, 'ADMINISTRADOR', 'ADVOGADO');
     if (updatePrazoDto.id_processo !== undefined) await this.access.process(user, updatePrazoDto.id_processo);
     // Garante que o prazo existe antes de atualizar
-    await this.findOne(id, user);
+    const existing = await this.findOne(id, user);
+    if ((updatePrazoDto.tipoCompromisso ?? existing.tipoCompromisso).toLowerCase().includes('fatal') && !(updatePrazoDto.responsavel ?? existing.responsavel)?.trim()) {
+      throw new BadRequestException('Defina um responsável pelo cumprimento do prazo fatal.');
+    }
 
     try {
       const dataToUpdate: Prisma.PrazoUpdateInput = {};

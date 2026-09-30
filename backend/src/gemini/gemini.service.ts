@@ -347,7 +347,7 @@ Elabore um resumo conciso contendo:
    */
   async extrairPrazos(dto: ExtrairPrazosDto) {
     const ai = this.getClient();
-    const { texto_publicacao, data_publicacao } = dto;
+    const { texto_publicacao, data_publicacao, tipo_contagem } = dto;
 
     if (!texto_publicacao || texto_publicacao.trim().length === 0) {
       throw new BadRequestException(
@@ -356,9 +356,13 @@ Elabore um resumo conciso contendo:
     }
 
     const systemInstruction = `Você é um analista processual de controladoria jurídica do escritório Davino Neves Advocacia.
-Sua função é identificar prazos legais (CPC, CPP, CLT ou Juizados Especiais), providências necessárias, termos fatais e partes intimadas a partir de publicações e intimações judiciais.`;
+Sua função é identificar prazos legais (CPC, CPP, CLT ou Juizados Especiais), providências necessárias, termos fatais e partes intimadas a partir de publicações e intimações judiciais.
+Respeite a contagem expressamente informada no texto: dias úteis ou dias corridos. Se a regra não estiver informada, não escolha uma regra por conta própria: solicite confirmação nas observacoes e não preencha data_limite_estimada.
+Nunca assuma a data atual quando faltar a data inicial. Não confunda disponibilização, publicação e início da contagem. Se houver ambiguidade, solicite confirmação e não preencha data_limite_estimada.
+Antes de responder, confira a quantidade de dias e a data final. Explique nas observacoes a data inicial e a regra aplicada. Não invente feriados ou suspensões; se faltarem dados do calendário necessário, informe a limitação e não apresente o vencimento como confirmado.`;
 
-    const prompt = `Data da Publicação/Disponibilização: ${data_publicacao || 'Não informada (assumir data atual)'}
+    const prompt = `Data informada pelo usuário: ${data_publicacao || 'Não informada: solicitar confirmação, sem assumir a data atual'}
+Regra escolhida pelo usuário: ${tipo_contagem || 'Não informada'}. Use-a somente se o texto não especificar a regra. Se houver conflito, solicite confirmação sem sugerir uma data.
 Texto da Intimação/Publicação:
 ---
 ${texto_publicacao}
@@ -426,19 +430,27 @@ Extraia as informações estruturadas sobre o prazo.`;
       rawText = rawText.replace(/^```\s*/i, '').replace(/\s*```$/, '');
     }
 
-    let parsedResult: any = {};
+    let parsedResult: any;
     try {
       parsedResult = JSON.parse(rawText);
-    } catch (parseError) {
-      this.logger.warn(
-        `[GeminiService] Falha ao fazer parse do JSON retornado pela IA. Resposta bruta: ${rawText}`,
-      );
-      parsedResult = {
-        tem_prazo: true,
-        descricao_providencia: 'Análise de prazo concluída',
-        urgencia: 'Média',
-        observacoes: rawText,
-      };
+    } catch {
+      throw new BadRequestException('A IA retornou uma resposta inválida. Tente novamente; nenhum prazo foi agendado.');
+    }
+    if (!parsedResult || typeof parsedResult.tem_prazo !== 'boolean') {
+      throw new BadRequestException('A IA não confirmou os dados do prazo. Revise o texto e tente novamente.');
+    }
+    const explicitUseful = /dias?\s+[uú]teis/i.test(texto_publicacao);
+    const explicitCalendar = /dias?\s+corridos/i.test(texto_publicacao);
+    if ((!tipo_contagem && !explicitUseful && !explicitCalendar) || (explicitUseful && explicitCalendar) || (tipo_contagem === 'uteis' && explicitCalendar) || (tipo_contagem === 'corridos' && explicitUseful)) {
+      delete parsedResult.data_limite_estimada;
+      parsedResult.observacoes = 'Confirme se a contagem é em dias úteis ou corridos. ' + (parsedResult.observacoes || '');
+    }
+    const suggested = parsedResult.data_limite_estimada;
+    if (suggested) {
+      const date = new Date(suggested + 'T00:00:00Z');
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(suggested) || Number.isNaN(date.getTime()) || date.toISOString().slice(0, 10) !== suggested) {
+        throw new BadRequestException('A IA retornou uma data inválida. Revise as informações e tente novamente.');
+      }
     }
 
     return {
@@ -655,4 +667,3 @@ Elabore a minuta jurídica completa pronta para revisão do advogado.`;
     };
   }
 }
-

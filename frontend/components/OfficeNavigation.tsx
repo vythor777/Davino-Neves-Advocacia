@@ -3,6 +3,7 @@ import { usePermissions } from '@/hooks/usePermissions';
 import Link from "next/link";
 import {
   Briefcase,
+  Files,
   CalendarClock,
   CircleDollarSign,
   LayoutDashboard,
@@ -26,6 +27,7 @@ const groups = [
   {
     label: "Ferramentas",
     links: [
+      { label: "Documentos", href: "/documentos", icon: Files },
       { label: "Consultar CNJ", href: "/datajud", icon: Scale },
       { label: "Assistente IA", href: "/gemini", icon: Sparkles },
       { label: "Equipe", href: "/usuarios", icon: Shield },
