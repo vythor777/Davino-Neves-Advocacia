@@ -11,6 +11,7 @@ import {
 } from './dto/create-lancamento.dto.js';
 import { UpdateLancamentoDto } from './dto/update-lancamento.dto.js';
 import { FilterLancamentoDto } from './dto/filter-lancamento.dto.js';
+import { effectiveFinancialStatus } from './financial-status.js';
 
 @Injectable()
 export class FinanceiroService {
@@ -79,7 +80,13 @@ export class FinanceiroService {
     }
 
     if (filter.status) {
-      where.status = filter.status;
+      if (filter.status === 'PENDENTE' || filter.status === 'ATRASADO') {
+        const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(new Date());
+        where.status = { in: ['PENDENTE', 'ATRASADO'] };
+        where.AND = [{ dataVencimento: filter.status === 'ATRASADO' ? { lt: new Date(today) } : { gte: new Date(today) } }];
+      } else {
+        where.status = filter.status;
+      }
     }
 
     if (filter.mes || filter.ano) {
@@ -123,7 +130,7 @@ export class FinanceiroService {
       ];
     }
 
-    return this.prisma.lancamentoFinanceiro.findMany({
+    const results = await this.prisma.lancamentoFinanceiro.findMany({
       where,
       orderBy: {
         dataVencimento: 'desc',
@@ -146,6 +153,7 @@ export class FinanceiroService {
         },
       },
     });
+    return results.map((item) => ({ ...item, status: effectiveFinancialStatus(item.status, item.dataVencimento) }));
   }
 
   async findOne(id: string) {
@@ -161,7 +169,7 @@ export class FinanceiroService {
       throw new NotFoundException(`Lançamento com ID ${id} não encontrado.`);
     }
 
-    return lancamento;
+    return { ...lancamento, status: effectiveFinancialStatus(lancamento.status, lancamento.dataVencimento) };
   }
 
   async update(id: string, updateLancamentoDto: UpdateLancamentoDto) {
@@ -255,6 +263,7 @@ export class FinanceiroService {
     };
 
     for (const item of lancamentos) {
+      if (item.status === 'CANCELADO') continue;
       const valorNum = Number(item.valor);
 
       if (item.tipo === TipoLancamentoDto.RECEITA) {
@@ -301,6 +310,7 @@ export class FinanceiroService {
 
     const lancamentosHistorico = await this.prisma.lancamentoFinanceiro.findMany({
       where: {
+        status: { not: 'CANCELADO' },
         dataVencimento: {
           gte: seisMesesAtras,
         },

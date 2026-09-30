@@ -15,6 +15,7 @@ import { MetricCardSkeleton } from '@/components/Skeleton';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
 import { ConfirmModal } from '@/components/ConfirmModal';
+import { ProcessWorkspace } from '@/components/ProcessWorkspace';
 import { RemoteAuditTrail } from '@/components/RemoteAuditTrail';
 import { ProcessAccessPanel } from '@/components/ProcessAccessPanel';
 import { usePermissions } from '@/hooks/usePermissions';
@@ -689,7 +690,7 @@ function ProcessosContent() {
       {/* Modal / Drawer de Detalhes */}
       {detailsModalOpen && selectedProcesso && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm">
-          <div className="legal-modal-card fio-de-luz w-full max-w-lg p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+          <div className="legal-modal-card fio-de-luz w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-200/60 pb-4 dark:border-white/[0.06]">
               <div className="flex items-center gap-2.5">
                 <div className="rounded-xl bg-brand/15 text-brand border border-brand/25 p-2">
@@ -756,6 +757,7 @@ function ProcessosContent() {
                 </p>
               </div>
 
+              <ProcessWorkspace key={selectedProcesso.id_processo} process={selectedProcesso} />
               {/* Trilha de Auditoria dos Autos */}
               <div className="pt-2">
                 <div className="space-y-4">

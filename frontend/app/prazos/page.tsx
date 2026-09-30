@@ -222,6 +222,9 @@ function PrazosContent() {
       errors.idProcesso = 'Selecione o processo judicial vinculado.';
     }
 
+    if (tipoCompromisso.toLowerCase().includes('fatal') && !responsavel.trim()) {
+      errors.responsavel = 'Defina o responsável pelo prazo fatal.';
+    }
     setFormErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -1222,10 +1225,11 @@ function PrazosContent() {
                   <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                     Responsável pelo Cumprimento{' '}
                     <span className="text-slate-500 dark:text-slate-400 font-normal">
-                      (Opcional)
+                      {tipoCompromisso.toLowerCase().includes('fatal') ? '(Obrigatório)' : '(Opcional)'}
                     </span>
                   </label>
                   <select
+                    required={tipoCompromisso.toLowerCase().includes('fatal')}
                     value={responsavel}
                     onChange={(e) => setResponsavel(e.target.value)}
                     className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/90 dark:bg-surface px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
