@@ -21,13 +21,13 @@ const groups = [
       { label: "Processos", href: "/processos", icon: Briefcase },
       { label: "Agenda e prazos", href: "/prazos", icon: CalendarClock },
       { label: "Clientes", href: "/clientes", icon: Users },
+      { label: "Documentos", href: "/documentos", icon: Files },
       { label: "Financeiro", href: "/financeiro", icon: CircleDollarSign },
     ],
   },
   {
     label: "Ferramentas",
     links: [
-      { label: "Documentos", href: "/documentos", icon: Files },
       { label: "Consultar CNJ", href: "/datajud", icon: Scale },
       { label: "Assistente IA", href: "/gemini", icon: Sparkles },
       { label: "Equipe", href: "/usuarios", icon: Shield },
