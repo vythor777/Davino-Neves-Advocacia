@@ -1,23 +1,23 @@
-import { jsPDF } from 'jspdf';
+import { jsPDF, GState } from 'jspdf';
 
 /** Institutional origin, not a certified digital signature. No HTML from the model is executed. */
-export function createInstitutionalPdf(title: string, content: string, now = new Date()) {
+export function createInstitutionalPdf(title: string, content: string, now = new Date(), logo?: string) {
   const doc = new jsPDF({ format: 'a4', compress: true });
   const clean = (text: string) => text.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').replace(/[–—]/g, '-').replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
   const issued = now.toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
   const decorate = () => {
-    doc.setTextColor(238, 241, 246);
-    doc.setFontSize(38);
-    doc.text('DAVINO NEVES', 105, 156, { align: 'center', angle: 30 });
-    doc.setDrawColor(0, 71, 171);
-    // Balance symbol used by the application's visual identity.
-    doc.setLineWidth(0.5);
-    doc.line(23, 14, 23, 27); doc.line(17, 18, 29, 18); doc.line(19, 27, 27, 27);
-    for (const x of [17, 29]) { doc.line(x, 18, x - 3, 23); doc.line(x, 18, x + 3, 23); doc.line(x - 3, 23, x + 3, 23); }
-    doc.setFont('helvetica', 'bold'); doc.setFontSize(14); doc.setTextColor(0, 71, 171);
-    doc.text('DAVINO NEVES ADVOCACIA', 35, 20);
+    if (logo) {
+      doc.saveGraphicsState();
+      doc.setGState(new GState({ opacity: 0.06 }));
+      doc.addImage(logo, 'PNG', 40, 112, 130, 65.58, 'davino-logo', 'FAST');
+      doc.restoreGraphicsState();
+      doc.addImage(logo, 'PNG', 18, 9, 42, 21.19, 'davino-logo', 'FAST');
+    }
+    doc.setDrawColor(183, 154, 97);
+    doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor(23, 37, 54);
+    doc.text('DAVINO NEVES ADVOCACIA', 68, 19);
     doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(80);
-    doc.text(`Assistente de IA | Emitido em ${issued}`, 35, 26);
+    doc.text(`Assistente de IA | Emitido em ${issued}`, 68, 26);
     doc.line(18, 32, 192, 32);
     doc.setFontSize(8); doc.text('Elaborado com apoio de IA. Sujeito à revisão do advogado.', 18, 278);
     doc.text('Identificação institucional: Davino Neves Advocacia', 18, 283);
@@ -41,5 +41,28 @@ export function createInstitutionalPdf(title: string, content: string, now = new
 }
 
 export async function downloadInstitutionalPdf(title: string, content: string) {
-  createInstitutionalPdf(title, content).save('Davino-Neves-Assistente-IA.pdf');
+  const logo = await loadInstitutionalLogo();
+  createInstitutionalPdf(title, content, new Date(), logo).save('Davino-Neves-Assistente-IA.pdf');
+}
+
+let logoPromise: Promise<string> | undefined;
+function loadInstitutionalLogo(): Promise<string> {
+  if (!logoPromise) {
+    logoPromise = new Promise<string>((resolve, reject) => {
+      const image = new Image();
+      image.onload = () => {
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = image.naturalWidth; canvas.height = image.naturalHeight;
+          const context = canvas.getContext('2d');
+          if (!context) throw new Error('Não foi possível preparar a logo do escritório.');
+          context.drawImage(image, 0, 0);
+          resolve(canvas.toDataURL('image/png'));
+        } catch (error) { reject(error); }
+      };
+      image.onerror = () => reject(new Error('Não foi possível carregar a logo. Tente gerar o PDF novamente.'));
+      image.src = '/brand/davino-neves-logo.png';
+    }).catch(error => { logoPromise = undefined; throw error; });
+  }
+  return logoPromise;
 }

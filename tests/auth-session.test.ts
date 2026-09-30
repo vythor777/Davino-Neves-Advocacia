@@ -89,7 +89,7 @@ test('401 clears both cookies and storage even while on the login page', async (
   authService.setSession('expired', user);
   window.location.pathname = '/login';
   rejectWithStatus(401);
-  await assert.rejects(authService.getProfile(), { message: 'Acesso não autorizado.' });
+  await assert.rejects(authService.getProfile(), { message: 'Sua sessão expirou ou não é válida. Faça login novamente para continuar.' });
   assert.equal(getSessionToken(), null);
   assert.equal(cookies.size, 0);
 });
@@ -150,4 +150,32 @@ test('backend routing preserves priority and avoids duplicate API prefixes', () 
   assert.equal(getBackendApiUrl({ BACKEND_INTERNAL_URL: 'http://internal:10000/', BACKEND_URL: 'https://external.invalid/api' }), 'http://internal:10000/api');
   assert.equal(getBackendApiUrl({ BACKEND_URL: 'https://backend.invalid/api/' }), 'https://backend.invalid/api');
   assert.equal(getBackendApiUrl({ NEXT_PUBLIC_API_URL: '/api' }), 'http://127.0.0.1:10000/api');
+});
+
+
+test('PDF upload preserves multipart file and authenticated bearer token', async () => {
+  authService.setSession('pdf-token', user);
+  const form = new FormData();
+  form.append('arquivo', new Blob(['%PDF-1.7'], { type: 'application/pdf' }), 'teste.pdf');
+  api.defaults.adapter = async (config) => {
+    assert.equal(config.headers.Authorization, 'Bearer pdf-token');
+    assert.ok(config.data instanceof FormData);
+    assert.ok(config.data.get('arquivo') instanceof Blob);
+    assert.notEqual(config.headers.getContentType(), 'application/json');
+    return { status: 201, statusText: 'Created', config, headers: {}, data: {} };
+  };
+  await api.post('/documentos', form);
+});
+
+test('binary PDF errors retain the server message and status', async () => {
+  authService.setSession('pdf-token', user);
+  api.defaults.adapter = async (config) => {
+    throw new AxiosError('Request failed', 'ERR_BAD_REQUEST', config, undefined, {
+      status: 503, statusText: 'Error', config, headers: new AxiosHeaders(),
+      data: new Blob([JSON.stringify({ message: 'Armazenamento indisponível.' })], { type: 'application/json' }),
+    });
+  };
+  await assert.rejects(api.get('/documentos/1/download', { responseType: 'blob' }),
+    { message: 'Armazenamento indisponível.', status: 503 });
+  assert.equal(getSessionToken(), 'pdf-token');
 });

@@ -19,6 +19,7 @@ export const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
+      if (config.data instanceof FormData) config.headers.delete('Content-Type');
       const token = getSessionToken();
       if (token && config.headers) {
         config.headers.Authorization = `Bearer ${token}`;
@@ -31,7 +32,7 @@ api.interceptors.request.use(
 
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
+  async (error) => {
     // Uma resposta antiga não deve encerrar uma sessão aberta após a requisição.
     if (error.response?.status === 401 && typeof window !== 'undefined') {
       const currentToken = getSessionToken();
@@ -41,8 +42,12 @@ api.interceptors.response.use(
       }
     }
 
+    let data = error.response?.data;
+    if (data instanceof Blob) {
+      try { data = JSON.parse(await data.text()); } catch { data = undefined; }
+    }
     const message =
-      error.response?.data?.message ||
+      (error.response?.status === 401 && error.config?.url !== '/auth/login' ? 'Sua sessão expirou ou não é válida. Faça login novamente para continuar.' : data?.message) ||
       error.message ||
       'Ocorreu um erro ao processar a requisição.';
     const customError = new Error(Array.isArray(message) ? message.join(', ') : message);

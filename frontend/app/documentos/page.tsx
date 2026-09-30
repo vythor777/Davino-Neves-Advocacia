@@ -10,6 +10,10 @@ import { clienteService, type Cliente } from '@/services/clienteService';
 import { toast } from 'sonner';
 const button = 'rounded-lg border border-slate-200 dark:border-slate-700 px-3 py-2 text-sm hover:bg-blue-50 dark:hover:bg-slate-800 focus-visible:ring-2 focus-visible:ring-blue-700 active:scale-95 disabled:opacity-50';
 export default function DocumentosPage() {
+  return <AuthGuard><DocumentosContent /></AuthGuard>;
+}
+
+function DocumentosContent() {
   const { admin, canManageDeadline } = usePermissions();
   const { documents, usage, loading, error, reload, run } = useDocuments();
   const [file, setFile] = useState<File | null>(null);
@@ -20,7 +24,7 @@ export default function DocumentosPage() {
   const [archiveTarget, setArchiveTarget] = useState<Documento | null>(null); const [confirmed, setConfirmed] = useState(false);
   useEffect(() => { void Promise.all([processoService.getAll(), clienteService.getAll()]).then(([p, c]) => { setProcesses(p); setClients(c); }).catch(() => toast.error('Não foi possível carregar os vínculos.')); }, []);
   const action = (fn: () => Promise<void>) => { setBusy(true); void run(fn).finally(() => setBusy(false)); };
-  return <AuthGuard><main className="space-y-6 p-6 text-slate-800 dark:text-slate-200">
+  return <main className="space-y-6 p-6 text-slate-800 dark:text-slate-200">
     <PageHeader title="Documentos" description="Documentos do escritório, clientes e processos. PDFs de até 5 MB." />
     {usage && <section className="rounded-xl border border-slate-200 dark:border-slate-700 p-4" aria-label="Uso do armazenamento">
       <p>{(usage.usado / 1e6).toFixed(1)} MB de {(usage.limite / 1e6).toFixed(0)} MB reservados ({usage.percentual}%)</p>
@@ -49,5 +53,5 @@ export default function DocumentosPage() {
       <label className="flex gap-2"><input type="checkbox" checked={confirmed} onChange={e => setConfirmed(e.target.checked)} />Baixei, abri e conferi o backup local deste documento.</label>
       <button className={button} onClick={() => setArchiveTarget(null)}>Cancelar</button> <button className={button} disabled={busy || !confirmed || !archiveTarget.sha256} onClick={() => action(async () => { await documentoService.archive(archiveTarget.id_documento, archiveTarget.sha256!); setArchiveTarget(null); setSelected([]); toast.success('Documento arquivado; histórico preservado.'); await reload(); })}>Confirmar arquivamento</button>
     </div></section>}
-  </main></AuthGuard>;
+  </main>;
 }
