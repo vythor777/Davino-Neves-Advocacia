@@ -1,4 +1,5 @@
 'use client';
+import { isValidCnj } from '@/utils/identifiers';
 
 import React, { useState } from 'react';
 import { PageHeader } from '@/components/ui/PageHeader';
@@ -111,8 +112,8 @@ function DataJudContent() {
     if (e) e.preventDefault();
     const limpo = numeroProcesso.replace(/\D/g, '');
 
-    if (!limpo || limpo.length < 15) {
-      setErroValidacao('Por favor, informe o número completo do processo no padrão CNJ (20 dígitos).');
+    if (!isValidCnj(numeroProcesso)) {
+      setErroValidacao('Número CNJ inválido. Confira os 20 dígitos e os dígitos verificadores.');
       return;
     }
 

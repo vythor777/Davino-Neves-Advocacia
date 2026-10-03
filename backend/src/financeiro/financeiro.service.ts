@@ -91,7 +91,7 @@ export class FinanceiroService {
 
     if (filter.mes || filter.ano) {
       const now = new Date();
-      const targetYear = filter.ano ? parseInt(filter.ano, 10) : now.getFullYear();
+      const targetYear = filter.ano ? parseInt(filter.ano, 10) : filter.mes?.includes('-') ? Number(filter.mes.split('-')[0]) : now.getFullYear();
       let targetMonth: number | null = null;
 
       if (filter.mes) {
@@ -355,8 +355,8 @@ export class FinanceiroService {
 
     return {
       periodo: {
-        mes: mes || 'Mês Atual',
-        ano: ano || new Date().getFullYear().toString(),
+        mes: mes?.includes('-') ? mes.split('-')[1] : mes || (ano ? 'Ano completo' : 'Todo o histórico'),
+        ano: ano || (mes?.includes('-') ? mes.split('-')[0] : new Date().getFullYear().toString()),
       },
       metricas: {
         entradasRealizadas,

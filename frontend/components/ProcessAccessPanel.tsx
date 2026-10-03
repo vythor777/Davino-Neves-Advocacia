@@ -17,13 +17,13 @@ export function ProcessAccessPanel({
   return (
     <section className="space-y-3 rounded-xl border border-slate-200 p-4 dark:border-slate-800">
       <h3 className="font-semibold">Equipe e acesso ao processo</h3>
-      <p className="text-sm text-slate-500">
+      <p className={process.responsavel ? 'text-sm text-slate-500' : 'rounded-lg bg-amber-50 p-3 text-sm font-medium text-amber-800 dark:bg-amber-950/40 dark:text-amber-200'}>
         Responsável:{' '}
         {process.responsavel?.nome ??
           'Aguardando atribuição pelo administrador'}
       </p>
       {admin && (
-        <details>
+        <details open={!process.responsavel}>
           <summary className="cursor-pointer text-sm font-medium text-blue-700 focus-visible:outline-2">
             Gerenciar acessos
           </summary>

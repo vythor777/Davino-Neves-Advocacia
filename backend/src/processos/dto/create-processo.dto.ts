@@ -1,3 +1,4 @@
+import { IsCnj } from '../../common/validation/identifier.decorators.js';
 import {
   IsDateString,
   IsInt,
@@ -11,6 +12,7 @@ export class CreateProcessoDto {
   @IsString({ message: 'O número do processo deve ser um texto.' })
   @IsNotEmpty({ message: 'O número do processo é obrigatório.' })
   @MaxLength(50, { message: 'O número do processo não pode exceder 50 caracteres.' })
+  @IsCnj({ message: 'Número CNJ inválido. Confira o formato e os dígitos verificadores.' })
   numero_processo: string;
 
   @IsString({ message: 'O título deve ser um texto.' })

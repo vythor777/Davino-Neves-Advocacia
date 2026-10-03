@@ -1,3 +1,4 @@
+import { IsCpfCnpj } from '../../common/validation/identifier.decorators.js';
 import {
   IsEmail,
   IsNotEmpty,
@@ -16,6 +17,7 @@ export class CreateClienteDto {
   @IsString({ message: 'O CPF/CNPJ deve ser um texto.' })
   @IsNotEmpty({ message: 'O CPF/CNPJ é obrigatório.' })
   @MaxLength(20, { message: 'O CPF/CNPJ não pode exceder 20 caracteres.' })
+  @IsCpfCnpj({ message: 'CPF/CNPJ inválido. Confira os dígitos verificadores.' })
   cpf_cnpj: string;
 
   @IsEmail({}, { message: 'Formato de e-mail inválido.' })
