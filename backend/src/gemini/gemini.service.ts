@@ -1,10 +1,10 @@
 import {
   Injectable,
-  InternalServerErrorException,
   BadRequestException,
   ServiceUnavailableException,
   Logger,
 } from '@nestjs/common';
+import { simpleDeadline } from './simple-deadline.js';
 import { GoogleGenAI, Type } from '@google/genai';
 import { AnalisarDocumentoDto } from './dto/analisar-documento.dto.js';
 import { ResumirProcessoDto } from './dto/resumir-processo.dto.js';
@@ -18,6 +18,7 @@ import { ResumirDocumentoDto } from './dto/resumir-documento.dto.js';
 export class GeminiService {
   private readonly logger = new Logger(GeminiService.name);
   private aiClient: GoogleGenAI | null = null;
+  private modelCooldown = new Map<string, { until: number; error: any }>();
 
   // Lista de modelos ordenados do principal para fallbacks suportados pelo @google/genai
   private readonly fallbackModels = [
@@ -41,6 +42,8 @@ export class GeminiService {
       this.aiClient = new GoogleGenAI({
         apiKey: apiKey.trim().replace(/^["']|["']$/g, ''),
         httpOptions: {
+          timeout: 12000,
+          retryOptions: { attempts: 1 },
           headers: {
             'User-Agent': 'aistudio-build',
           },
@@ -105,6 +108,8 @@ export class GeminiService {
       message.includes('too many requests') ||
       message.includes('econnreset') ||
       message.includes('etimedout') ||
+      message.includes('timeout') ||
+      message.includes('aborterror') ||
       message.includes('socket hang up') ||
       message.includes('deadline exceeded') ||
       message.includes('fetch failed') ||
@@ -143,7 +148,9 @@ export class GeminiService {
       errorStr.includes('quota') ||
       errorStr.includes('rate limit')
     ) {
-      return 'Limite de requisições por minuto atingido na API do Gemini (Erro 429). Por favor, aguarde cerca de 10 a 20 segundos antes de enviar uma nova solicitação.';
+      return /perday|requestsperday|9h|quota.*daily/.test(errorStr)
+        ? 'A cota diária gratuita do serviço de IA foi esgotada nos modelos disponíveis. Aguarde a renovação da cota ou solicite ao administrador revisar o plano. Seu texto continua disponível.'
+        : 'O serviço de IA atingiu seu limite de uso. Aguarde a liberação da cota antes de tentar novamente. Seu texto continua disponível.';
     }
 
     if (
@@ -157,7 +164,6 @@ export class GeminiService {
     }
 
     return (
-      error?.message ||
       'Ocorreu uma instabilidade ao conectar com a IA do Google Gemini. Por favor, tente novamente.'
     );
   }
@@ -170,13 +176,18 @@ export class GeminiService {
     taskName = 'Operação com IA',
   ): Promise<T> {
     const modelsToTry = this.fallbackModels;
-    const maxRetriesPerModel = 3; // 3 tentativas por modelo
+    const maxRetriesPerModel = 2;
+    const deadline = Date.now() + 45000;
     let lastError: any = null;
 
     for (let mIndex = 0; mIndex < modelsToTry.length; mIndex++) {
       const model = modelsToTry[mIndex];
+      const cooldown = this.modelCooldown.get(model);
+      if (cooldown && cooldown.until > Date.now()) { lastError = cooldown.error; continue; }
+      this.modelCooldown.delete(model);
 
       for (let attempt = 1; attempt <= maxRetriesPerModel; attempt++) {
+        if (Date.now() + 12000 > deadline) break;
         try {
           if (attempt > 1 || mIndex > 0) {
             this.logger.log(
@@ -196,6 +207,19 @@ export class GeminiService {
         } catch (error: any) {
           lastError = error;
           const isTransient = this.isTransientError(error);
+          const status = Number(error?.status || error?.statusCode || error?.response?.status || error?.error?.code);
+          if (status === 429) {
+            let parsed = error;
+            try { parsed = JSON.parse(error?.message)?.error || error; } catch { /* SDK may already return an object. */ }
+            const details = JSON.stringify(parsed);
+            const retrySeconds = Number(details.match(/"retryDelay"\s*:\s*"(\d+)s"/)?.[1] || 60);
+            this.modelCooldown.set(model, { until: Date.now() + Math.max(60, retrySeconds) * 1000, error });
+            break;
+          }
+          if ([401, 403].includes(status)) throw new ServiceUnavailableException(this.formatUserFriendlyErrorMessage(error));
+          if (!isTransient && status !== 404 && !(status === 400 && /model|not supported/i.test(error?.message || ''))) {
+            throw new ServiceUnavailableException(this.formatUserFriendlyErrorMessage(error));
+          }
 
           this.logger.warn(
             `[GeminiService] [${taskName}] Erro na tentativa ${attempt}/${maxRetriesPerModel} com '${model}': ${error?.message || error}. Transitório/Sobrecarga: ${isTransient}`,
@@ -238,6 +262,15 @@ export class GeminiService {
 
     const friendlyMessage = this.formatUserFriendlyErrorMessage(lastError);
     throw new ServiceUnavailableException(friendlyMessage);
+  }
+
+  private requireText(response: { text?: string; candidates?: Array<{ finishReason?: string }> }) {
+    if (response.candidates?.some(candidate => candidate.finishReason === 'MAX_TOKENS')) {
+      throw new ServiceUnavailableException('A resposta atingiu o limite e ficou incompleta. Divida o documento ou reduza o pedido e tente novamente.');
+    }
+    const text = response?.text?.trim();
+    if (!text) throw new ServiceUnavailableException('A IA não retornou conteúdo legível. Tente novamente ou revise o texto enviado.');
+    return text;
   }
 
   /**
@@ -289,8 +322,7 @@ Por favor, forneça:
       sucesso: true,
       tipo_documento: tipo_documento || 'Geral',
       analise:
-        response?.text ||
-        'Análise jurídica gerada com sucesso pela Inteligência Artificial.',
+        this.requireText(response),
     };
   }
 
@@ -338,7 +370,7 @@ Elabore um resumo conciso contendo:
     return {
       sucesso: true,
       publico_alvo: publico,
-      resumo: response?.text || 'Resumo processual gerado com sucesso.',
+      resumo: this.requireText(response),
     };
   }
 
@@ -346,7 +378,6 @@ Elabore um resumo conciso contendo:
    * Extrai prazos, datas fatais e providências a partir do texto de intimações/publicações do DJE.
    */
   async extrairPrazos(dto: ExtrairPrazosDto) {
-    const ai = this.getClient();
     const { texto_publicacao, data_publicacao, tipo_contagem } = dto;
 
     if (!texto_publicacao || texto_publicacao.trim().length === 0) {
@@ -354,6 +385,10 @@ Elabore um resumo conciso contendo:
         'O texto da intimação ou publicação é obrigatório.',
       );
     }
+
+    const simple = simpleDeadline(texto_publicacao, data_publicacao, tipo_contagem);
+    if (simple) return { sucesso: true, dados_prazo: simple };
+    const ai = this.getClient();
 
     const explicitUseful = /dias?\s+[uú]teis/i.test(texto_publicacao);
     const explicitCalendar = /dias?\s+corridos/i.test(texto_publicacao);
@@ -406,7 +441,7 @@ Extraia as informações estruturadas sobre o prazo.`;
                 tipo_contagem: {
                   type: Type.STRING,
                   description:
-                    'Dias úteis (CPC/CLT) ou dias corridos (CPP/ECA).',
+                    'A regra informada pelo usuário, sem inferir pela área jurídica.',
                 },
                 data_limite_estimada: {
                   type: Type.STRING,
@@ -431,7 +466,7 @@ Extraia as informações estruturadas sobre o prazo.`;
       'Extração de Prazos',
     );
 
-    let rawText = response?.text?.trim() || '{}';
+    let rawText = this.requireText(response);
     if (rawText.startsWith('```json')) {
       rawText = rawText.replace(/^```json\s*/i, '').replace(/\s*```$/, '');
     } else if (rawText.startsWith('```')) {
@@ -444,13 +479,23 @@ Extraia as informações estruturadas sobre o prazo.`;
     } catch {
       throw new BadRequestException('A IA retornou uma resposta inválida. Tente novamente; nenhum prazo foi agendado.');
     }
-    if (!parsedResult || typeof parsedResult.tem_prazo !== 'boolean') {
+    if (!parsedResult || typeof parsedResult.tem_prazo !== 'boolean'
+      || typeof parsedResult.descricao_providencia !== 'string'
+      || (parsedResult.tem_prazo && !parsedResult.descricao_providencia.trim())
+      || typeof parsedResult.urgencia !== 'string' || !parsedResult.urgencia.trim()) {
       throw new BadRequestException('A IA não confirmou os dados do prazo. Revise o texto e tente novamente.');
     }
     if (!resolvedCounting) {
       delete parsedResult.data_limite_estimada;
       parsedResult.observacoes = 'Confirme se a contagem é em dias úteis ou corridos. ' + (parsedResult.observacoes || '');
     }
+    if (parsedResult.tem_prazo === false || !data_publicacao) {
+      delete parsedResult.data_limite_estimada;
+    }
+    if (parsedResult.quantidade_dias !== undefined && (!Number.isInteger(parsedResult.quantidade_dias) || parsedResult.quantidade_dias <= 0)) {
+      throw new BadRequestException('A IA retornou uma quantidade de dias inválida. Revise o texto.');
+    }
+    if (resolvedCounting) parsedResult.tipo_contagem = resolvedCounting === 'uteis' ? 'Dias úteis' : 'Dias corridos';
     const suggested = parsedResult.data_limite_estimada;
     if (suggested) {
       const date = new Date(suggested + 'T00:00:00Z');
@@ -478,6 +523,7 @@ Extraia as informações estruturadas sobre o prazo.`;
 
     const systemInstruction = `Você é o Estrategista Jurídico de Inteligência Artificial do escritório Davino Neves Advocacia.
 Sua missão é realizar uma análise analítica e profunda de autos processuais, peças adversas, decisões interlocutórias e sentenças.
+Não invente provas, fatos, decisões, fases processuais, números de julgados ou dados pessoais. Diferencie fatos informados de hipóteses. Se houver ambiguidade sobre quem pagou ou deve, indique-a antes de atribuir dívida ou recomendar medida. Não atribua prestação de serviço comprovada apenas pela existência de contrato. Não presuma processo ajuizado nem recomende réplica como ato atual se não houver contestação processual. Probabilidade é qualitativa e condicionada às provas disponíveis.
 Você deve identificar:
 1. Objeto da lide e fatos controvertidos;
 2. Teses da parte autora vs. teses da parte ré;
@@ -513,7 +559,7 @@ Por favor, forneça uma análise estruturada, técnica e com alto nível de acur
     return {
       sucesso: true,
       numero_processo: numero_processo || null,
-      analise: response?.text || 'Análise processual concluída com sucesso.',
+      analise: this.requireText(response),
     };
   }
 
@@ -538,7 +584,8 @@ Por favor, forneça uma análise estruturada, técnica e com alto nível de acur
 
     const systemInstruction = `Você é o Especialista em Síntese Jurídica de IA do escritório Davino Neves Advocacia.
 Objetivo: Transformar documentos jurídicos extensos em resumos claros, precisos e diretamente acionáveis.
-Diretriz de Formatação: ${orientacaoFormato}`;
+Diretriz de Formatação: ${orientacaoFormato}
+Preserve valores, datas, partes, decisões e negações exatamente como constam. Não invente fundamentos ausentes nem calcule vencimento sem termo inicial. Separe o resumo do documento de recomendações adicionais.`;
 
     const prompt = `Tipo do Documento: ${tipo_documento || 'Documento Jurídico'}
 Texto Original:
@@ -566,7 +613,7 @@ Elabore o resumo estruturado conforme as instruções.`;
       sucesso: true,
       tipo_documento: tipo_documento || 'Geral',
       formato_resumo: formato,
-      resumo: response?.text || 'Resumo do documento gerado com sucesso.',
+      resumo: this.requireText(response),
     };
   }
 
@@ -587,8 +634,9 @@ Para a consulta fornecida, estruture:
 1. Tese Jurídica Predominante e Tendência Atual dos Tribunais;
 2. Súmulas Aplicáveis (Vinculantes, STF, STJ, TST);
 3. Precedentes Qualificados / Temas Repetitivos / IRDR relevantes;
-4. Modelos de Ementas Exemplificativas com indicação de órgão julgador, relator e fundamentos legais;
-5. Argumentos e Distinguishing recomendados para fundamentar a peça processual.`;
+4. Referências para conferência nas bases oficiais, sem inventar ementas, números, datas ou relatores;
+5. Argumentos e Distinguishing recomendados para fundamentar a peça processual.
+Esta chamada não possui consulta em tempo real às bases dos tribunais. Não afirme que pesquisou ou verificou um julgado. Não produza ementas fictícias como se fossem reais. Cite apenas referências que conhece com segurança; se não houver certeza, informe a necessidade de consulta oficial. Não invente links de fontes. Diferencie teses gerais, referências conhecidas e itens não confirmados.`;
 
     const prompt = `Tema / Controvérsia: ${tema}
 ${ramo_direito ? `Ramo do Direito: ${ramo_direito}\n` : ''}
@@ -614,7 +662,7 @@ Apresente a pesquisa jurisprudencial completa, estruturada e com fundamentação
     return {
       sucesso: true,
       tema,
-      resultado: response?.text || 'Pesquisa jurisprudencial gerada com sucesso.',
+      resultado: 'Pesquisa preliminar: referências ainda precisam ser conferidas nas bases oficiais; não houve consulta em tempo real.\n\n' + this.requireText(response),
     };
   }
 
@@ -625,7 +673,7 @@ Apresente a pesquisa jurisprudencial completa, estruturada e com fundamentação
     const ai = this.getClient();
     const { tipo_peca, fatos_contexto, polos_partes, pedidos_especificos, jurisprudencia_referencia, tribunal_foro } = dto;
 
-    if (!tipo_peca || !fatos_contexto) {
+    if (!tipo_peca?.trim() || !fatos_contexto?.trim()) {
       throw new BadRequestException('O tipo da peça e os fatos/contexto são obrigatórios para a redação.');
     }
 
@@ -638,7 +686,8 @@ Estruture a peça com:
 - Fundamentação jurídica sólida (leis, princípios, doutrina e jurisprudência);
 - Tutela de urgência/evidência se aplicável;
 - Rol de Pedidos e Requerimentos finais claros, líquidos ou especificados;
-- Valor da causa e fechamento formal com data e OAB.`;
+- Valor da causa e fechamento formal com data e OAB.
+Não invente fatos, provas, documentos, julgados, dados pessoais, OAB ou datas ausentes. Use placeholders apenas para informação não fornecida; preserve os nomes e demais dados explicitamente informados. Respeite os pedidos e exclusões expressos pelo usuário. Não adicione danos morais ou tutela quando o usuário os excluir. Não use precedentes não verificados como citações reais.`;
 
     const prompt = `Tipo de Peça: ${tipo_peca}
 Endereçamento / Tribunal: ${tribunal_foro || 'Juízo Competente'}
@@ -669,7 +718,7 @@ Elabore a minuta jurídica completa pronta para revisão do advogado.`;
     return {
       sucesso: true,
       tipo_peca,
-      minuta: response?.text || 'Minuta jurídica gerada com sucesso.',
+      minuta: this.requireText(response),
     };
   }
 }

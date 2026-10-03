@@ -96,6 +96,7 @@ export interface ExtrairPrazosParams {
 
 export interface DadosPrazoExtraido {
   tem_prazo: boolean;
+  natureza?: 'calculo_simples';
   descricao_providencia: string;
   quantidade_dias?: number;
   tipo_contagem?: string;
@@ -110,6 +111,12 @@ export interface ExtrairPrazosResponse {
 }
 
 export const geminiService = {
+  async extrairTexto(file: File, signal?: AbortSignal): Promise<{ texto: string; nome: string; caracteres: number }> {
+    const data = new FormData(); data.append('arquivo', file);
+    const response = await api.post('/gemini/extrair-texto', data, { timeout: 60000, signal });
+    return response.data;
+  },
+
   // 1. Analisar Processo (Autos, riscos, probabilidade de êxito)
   async analisarProcesso(params: AnalisarProcessoParams): Promise<AnaliseProcessoResponse> {
     const response = await api.post<AnaliseProcessoResponse>('/gemini/analisar-processo', params, {

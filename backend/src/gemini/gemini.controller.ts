@@ -1,10 +1,12 @@
 import {
-  Controller,
+  Controller, UploadedFile, UseInterceptors,
   Post,
   Body,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { DocumentTextService, MAX_AI_FILE_BYTES } from './document-text.service.js';
 import { GeminiService } from './gemini.service.js';
 import { AnalisarDocumentoDto } from './dto/analisar-documento.dto.js';
 import { ResumirProcessoDto } from './dto/resumir-processo.dto.js';
@@ -16,7 +18,14 @@ import { ResumirDocumentoDto } from './dto/resumir-documento.dto.js';
 
 @Controller('gemini')
 export class GeminiController {
-  constructor(private readonly geminiService: GeminiService) {}
+  constructor(private readonly geminiService: GeminiService, private readonly documentText: DocumentTextService) {}
+
+  @Post('extrair-texto')
+  @HttpCode(HttpStatus.OK)
+  @UseInterceptors(FileInterceptor('arquivo', { limits: { fileSize: MAX_AI_FILE_BYTES, files: 1 } }))
+  extrairTexto(@UploadedFile() file?: { originalname: string; buffer: Buffer }) {
+    return this.documentText.extract(file);
+  }
 
   @Post('analisar-processo')
   @HttpCode(HttpStatus.OK)
