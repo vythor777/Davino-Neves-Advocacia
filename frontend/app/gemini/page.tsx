@@ -1346,7 +1346,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                     if (!text) return;
                     try {
                       const { downloadInstitutionalPdf } = await import('@/utils/institutionalPdf');
-                      await downloadInstitutionalPdf('Resultado do Assistente de IA', text);
+                      await downloadInstitutionalPdf('Relatório jurídico', text);
                     } catch { toast.error('Não foi possível gerar o PDF. Tente novamente.'); }
                   }} className="rounded-lg border border-slate-200 bg-white dark:bg-slate-900 px-3 py-2 text-xs hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:ring-2 focus-visible:ring-blue-700 active:scale-95">Baixar PDF institucional</button>
                 )}
