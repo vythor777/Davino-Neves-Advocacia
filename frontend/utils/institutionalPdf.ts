@@ -1,6 +1,14 @@
 import { jsPDF, GState } from 'jspdf';
 
 /** Institutional origin, not a certified digital signature. No HTML from the model is executed. */
+export function formatPdfDates(text: string) {
+  return text.replace(/\b(\d{4})-(\d{2})-(\d{2})\b/g, (date, year, month, day) => {
+    const parsed = new Date(`${date}T00:00:00Z`);
+    return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === date
+      ? `${day}/${month}/${year}` : date;
+  });
+}
+
 export function createInstitutionalPdf(title: string, content: string, now = new Date(), logo?: string) {
   const doc = new jsPDF({ format: 'a4', compress: true });
   const clean = (text: string) => text.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').replace(/[–—]/g, '-').replace(/[“”]/g, '"').replace(/[‘’]/g, "'");
@@ -17,9 +25,9 @@ export function createInstitutionalPdf(title: string, content: string, now = new
     doc.setFont('helvetica', 'bold'); doc.setFontSize(12); doc.setTextColor(23, 37, 54);
     doc.text('DAVINO NEVES ADVOCACIA', 68, 19);
     doc.setFont('helvetica', 'normal'); doc.setFontSize(8); doc.setTextColor(80);
-    doc.text(`Assistente de IA | Emitido em ${issued}`, 68, 26);
+    doc.text(`Emitido em ${issued}`, 68, 26);
     doc.line(18, 32, 192, 32);
-    doc.setFontSize(8); doc.text('Elaborado com apoio de IA. Sujeito à revisão do advogado.', 18, 278);
+    doc.setFontSize(8);
     doc.text('Identificação institucional: Davino Neves Advocacia', 18, 283);
     doc.setFontSize(11); doc.setTextColor(35);
   };
@@ -28,7 +36,7 @@ export function createInstitutionalPdf(title: string, content: string, now = new
   doc.setFont('helvetica', 'bold');
   for (const line of doc.splitTextToSize(clean(title), 174) as string[]) { doc.text(line, 18, y); y += 6; }
   y += 4; doc.setFont('helvetica', 'normal');
-  for (const paragraph of clean(content).split('\n')) {
+  for (const paragraph of clean(formatPdfDates(content)).split('\n')) {
     for (const line of doc.splitTextToSize(paragraph || ' ', 174) as string[]) {
       if (y > 267) { doc.addPage(); decorate(); y = 41; }
       doc.text(line, 18, y); y += 5;
