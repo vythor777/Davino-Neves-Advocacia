@@ -57,7 +57,7 @@ export function LoginShell({ children }: { children: ReactNode }) {
           </p>
           {children}
           <div className="mt-8 overflow-hidden rounded-xl border border-line lg:hidden">
-            <Image src="/login/cover.png" width={1280} height={800}
+            <Image src="/login/cover-v2.png" width={1280} height={800}
               alt="Interface do sistema Davino Neves Advocacia"
               className="aspect-[8/5] w-full object-contain" />
           </div>
