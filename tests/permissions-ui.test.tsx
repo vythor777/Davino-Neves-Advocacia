@@ -68,3 +68,12 @@ test('tabela oculta edição por registro e exclusão para advogado/estagiário'
     assert.equal(deleteCount, role === 'ADMINISTRADOR' ? 2 : 0);
   }
 });
+
+test('Financeiro é permanente para admin e depende de liberação para os demais', () => {
+  assert.equal(permissionsFor(actor('ADMINISTRADOR')).canAccessFinance, true);
+  assert.equal(permissionsFor(null).canAccessFinance, false);
+  for (const role of ['ADVOGADO', 'ESTAGIARIO'] as const) {
+    assert.equal(permissionsFor(actor(role)).canAccessFinance, false);
+    assert.equal(permissionsFor({...actor(role), acesso_financeiro: true}).canAccessFinance, true);
+  }
+});

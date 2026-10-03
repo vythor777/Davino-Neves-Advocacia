@@ -10,6 +10,7 @@ export interface Actor {
   id_usuario: number;
   role: Role;
   nome: string;
+  acesso_financeiro?: boolean;
 }
 export const isClosed = (status: string) =>
   /arquivado|encerrado|finalizado|julgado/i.test(status);

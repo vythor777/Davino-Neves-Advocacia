@@ -50,7 +50,7 @@ export default function HomePage() {
 }
 
 function Dashboard() {
-  const { admin, canCreateProcess } = usePermissions();
+  const { admin, canCreateProcess, canAccessFinance } = usePermissions();
   const { data, loading, errors, reload } = useDashboardData();
   const [birthdayFilter, setBirthdayFilter] = useState("TODOS");
   const { processos, prazos, clientes, financeiro, equipe, aniversariantes } =
@@ -144,7 +144,7 @@ function Dashboard() {
         </div>
       )}
       <div className="grid grid-cols-2 gap-3 xl:grid-cols-4 sm:gap-4">
-        {metrics.map((metric) => (
+        {metrics.filter(metric => metric.href !== "/financeiro" || canAccessFinance).map((metric) => (
           <MetricCard key={metric.label} {...metric} loading={loading} />
         ))}
       </div>
@@ -230,7 +230,7 @@ function Dashboard() {
         </DashboardSection>
         </div>
         <div className="dashboard-column">
-        <DashboardSection
+        {canAccessFinance && <DashboardSection
           className="dashboard-finance"
           title="Financeiro"
           href="/financeiro"
@@ -264,7 +264,7 @@ function Dashboard() {
             </dl>
             </>
           )}
-        </DashboardSection>
+        </DashboardSection>}
         <section className="dashboard-shortcuts min-w-0 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900">
           <h2 className="mb-3 text-sm font-semibold tracking-tight">Acesso rápido</h2>
           <nav aria-label="Ações do escritório" className="-mx-3 space-y-1">

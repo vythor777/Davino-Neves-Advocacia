@@ -10,9 +10,10 @@ import { WorkspaceSkeleton } from '@/components/ui/WorkspaceSkeleton';
 interface AuthGuardProps {
   children: React.ReactNode;
   requireAdmin?: boolean;
+  requireFinance?: boolean;
 }
 
-export default function AuthGuard({ children, requireAdmin = false }: AuthGuardProps) {
+export default function AuthGuard({ children, requireAdmin = false, requireFinance = false }: AuthGuardProps) {
   const { user, token, isLoading, isAdmin } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -31,7 +32,7 @@ export default function AuthGuard({ children, requireAdmin = false }: AuthGuardP
     return null; // Será redirecionado pelo useEffect
   }
 
-  if (requireAdmin && !isAdmin) {
+  if ((requireAdmin && !isAdmin) || (requireFinance && !isAdmin && !user?.acesso_financeiro)) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50 dark:bg-slate-950 p-6 text-center">
         <div className="max-w-md w-full rounded-2xl border border-red-200 bg-white p-8 shadow-sm dark:border-red-900/40 dark:bg-slate-900">
@@ -42,7 +43,7 @@ export default function AuthGuard({ children, requireAdmin = false }: AuthGuardP
             Acesso Restrito
           </h2>
           <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
-            Esta funcionalidade é exclusiva para usuários com o perfil <strong>ADMINISTRADOR</strong>. Seu perfil atual é <strong>{user?.role || 'ADVOGADO'}</strong>.
+            {requireFinance ? 'Peça ao administrador para liberar seu acesso ao Financeiro na Gestão da Equipe.' : 'Esta funcionalidade é exclusiva para administradores.'}
           </p>
           <div className="mt-6 flex justify-center">
             <Link

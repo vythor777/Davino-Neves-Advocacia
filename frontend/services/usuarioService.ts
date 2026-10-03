@@ -7,6 +7,7 @@ export interface UsuarioItem {
   nome: string;
   email: string;
   role: Role;
+  acesso_financeiro?: boolean;
   ativo: boolean;
   data_nascimento?: string | null;
   data_criacao: string;
@@ -19,6 +20,7 @@ export interface ResponsavelItem {
   nome: string;
   cargo: string;
   role: Role;
+  acesso_financeiro?: boolean;
 }
 
 export interface CreateUsuarioInput {
@@ -26,6 +28,7 @@ export interface CreateUsuarioInput {
   email: string;
   senha: string;
   role: Role;
+  acesso_financeiro?: boolean;
   ativo?: boolean;
   data_nascimento?: string | null;
 }
@@ -35,6 +38,7 @@ export interface UpdateUsuarioInput {
   email?: string;
   senha?: string;
   role?: Role;
+  acesso_financeiro?: boolean;
   ativo?: boolean;
   data_nascimento?: string | null;
 }

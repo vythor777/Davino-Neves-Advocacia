@@ -1,3 +1,4 @@
+import { canAccessFinance } from '../financeiro/financial-access.guard.js';
 import { AccessService, type Actor } from '../access/access.service.js';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
@@ -116,7 +117,7 @@ export class NotificacoesService {
 
     try {
       // 2. Buscar Lançamentos Financeiros Reais (atrasados ou vencendo nos próximos dias)
-      const lancamentos = await this.prisma.lancamentoFinanceiro.findMany({
+      const lancamentos = canAccessFinance(user) ? await this.prisma.lancamentoFinanceiro.findMany({
         where: {
           status: {
             in: ['PENDENTE', 'ATRASADO'],
@@ -129,7 +130,7 @@ export class NotificacoesService {
           dataVencimento: 'asc',
         },
         take: 10,
-      });
+      }) : [];
 
       for (const lanc of lancamentos) {
         const dataVenc = new Date(lanc.dataVencimento);

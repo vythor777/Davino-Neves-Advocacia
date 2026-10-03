@@ -14,7 +14,7 @@ export class UsuariosService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createUsuarioDto: CreateUsuarioDto) {
-    const { email, senha, nome, role, ativo, data_nascimento } = createUsuarioDto;
+    const { email, senha, nome, role, ativo, data_nascimento, acesso_financeiro } = createUsuarioDto;
 
     const usuarioExistente = await this.prisma.usuario.findUnique({
       where: { email: email.toLowerCase().trim() },
@@ -35,6 +35,7 @@ export class UsuariosService {
           senha_hash,
           role: role || 'ADVOGADO',
           ativo: ativo !== undefined ? ativo : true,
+          acesso_financeiro: acesso_financeiro ?? false,
           data_nascimento: data_nascimento ? new Date(data_nascimento) : null,
         },
         select: {
@@ -43,6 +44,7 @@ export class UsuariosService {
           email: true,
           role: true,
           ativo: true,
+          acesso_financeiro: true,
           data_nascimento: true,
           data_criacao: true,
           data_atualizacao: true,
@@ -69,6 +71,7 @@ export class UsuariosService {
         email: true,
         role: true,
         ativo: true,
+        acesso_financeiro: true,
         data_nascimento: true,
         data_criacao: true,
         data_atualizacao: true,
@@ -115,6 +118,7 @@ export class UsuariosService {
         email: true,
         role: true,
         ativo: true,
+        acesso_financeiro: true,
         data_nascimento: true,
         data_criacao: true,
         data_atualizacao: true,
@@ -137,12 +141,13 @@ export class UsuariosService {
   async update(id: number, updateUsuarioDto: UpdateUsuarioDto) {
     await this.findOne(id);
 
-    const { email, senha, nome, role, ativo, data_nascimento } = updateUsuarioDto;
+    const { email, senha, nome, role, ativo, data_nascimento, acesso_financeiro } = updateUsuarioDto;
     const dataToUpdate: Record<string, any> = {};
 
     if (nome) dataToUpdate.nome = nome.trim();
     if (role) dataToUpdate.role = role;
     if (ativo !== undefined) dataToUpdate.ativo = ativo;
+    if (acesso_financeiro !== undefined) dataToUpdate.acesso_financeiro = acesso_financeiro;
     if (data_nascimento !== undefined) {
       dataToUpdate.data_nascimento = data_nascimento ? new Date(data_nascimento) : null;
     }
@@ -173,6 +178,7 @@ export class UsuariosService {
         email: true,
         role: true,
         ativo: true,
+        acesso_financeiro: true,
         data_nascimento: true,
         data_criacao: true,
         data_atualizacao: true,

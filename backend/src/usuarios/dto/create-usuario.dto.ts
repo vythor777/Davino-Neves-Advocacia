@@ -2,6 +2,10 @@ import { IsEmail, IsEnum, IsNotEmpty, IsOptional, IsString, MinLength, IsBoolean
 import { Role } from '@prisma/client';
 
 export class CreateUsuarioDto {
+  @IsBoolean({ message: 'A permissão financeira deve ser booleana.' })
+  @IsOptional()
+  acesso_financeiro?: boolean;
+
   @IsString({ message: 'O nome deve ser um texto' })
   @IsNotEmpty({ message: 'O nome é obrigatório' })
   nome: string;

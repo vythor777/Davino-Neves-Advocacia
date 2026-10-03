@@ -7,6 +7,7 @@ export function permissionsFor(user: Usuario | null) {
   const intern = user?.role === 'ESTAGIARIO';
   return {
     admin,
+    canAccessFinance: admin || user?.acesso_financeiro === true,
     intern,
     canCreateProcess: admin || lawyer,
     canManageDeadline: admin || lawyer,

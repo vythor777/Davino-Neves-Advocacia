@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { usePathname, useRouter } from 'next/navigation';
+import { usePermissions } from '@/hooks/usePermissions';
 import { useAiTasks } from '@/context/AiTaskContext';
 import { AiTaskNotifications } from '@/components/AiTaskNotifications';
 import { useAuth } from '@/context/AuthContext';
@@ -37,6 +38,7 @@ interface AppLayoutProps {
 export function AppLayout({ children }: AppLayoutProps) {
   const { tasks: aiTasks } = useAiTasks();
   const aiUnread = aiTasks.filter(task => !task.read && task.status !== 'pending').length;
+  const { canAccessFinance } = usePermissions();
   const pathname = usePathname();
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuth();
@@ -529,13 +531,13 @@ export function AppLayout({ children }: AppLayoutProps) {
                     >
                       Prazos & Agenda &rarr;
                     </Link>
-                    <Link
+                    {canAccessFinance && <Link
                       href="/financeiro"
                       onClick={() => setNotificationsOpen(false)}
                       className="font-medium text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:underline transition"
                     >
                       Financeiro &rarr;
-                    </Link>
+                    </Link>}
                   </div>
                 </div>
               )}

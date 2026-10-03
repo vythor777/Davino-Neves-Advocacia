@@ -23,6 +23,7 @@ model Usuario {
   senha_hash       String      @db.VarChar(255)
   role             Role        @default(ADVOGADO)
   ativo            Boolean     @default(true)
+  acesso_financeiro Boolean     @default(false)
   data_nascimento  DateTime?   @db.Date
   data_criacao     DateTime    @default(now())
   data_atualizacao DateTime    @updatedAt

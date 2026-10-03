@@ -51,7 +51,7 @@ type TabType = 'EXTRATO' | 'RECEBER' | 'PAGAR' | 'DRE';
 
 export default function FinanceiroPage() {
   return (
-    <AuthGuard>
+    <AuthGuard requireFinance>
       <Suspense
         fallback={
           <div className="flex h-96 items-center justify-center">

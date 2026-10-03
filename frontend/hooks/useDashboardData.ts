@@ -1,5 +1,6 @@
 "use client";
 
+import { usePermissions } from '@/hooks/usePermissions';
 import { useCallback, useEffect, useRef, useState } from "react";
 import { processoService } from "@/services/processoService";
 import { prazoService } from "@/services/prazoService";
@@ -24,6 +25,7 @@ type DashboardData = {
 };
 
 export function useDashboardData() {
+  const { canAccessFinance } = usePermissions();
   const [data, setData] = useState<DashboardData>({});
   const [errors, setErrors] = useState<Module[]>([]);
   const [loading, setLoading] = useState(true);
@@ -35,6 +37,7 @@ export function useDashboardData() {
     const entries = await Promise.all(
       Object.entries(loaders).map(async ([key, load]) => {
         try {
+          if (key === 'financeiro' && !canAccessFinance) return { key: key as Module, value: undefined };
           return { key: key as Module, value: await load() };
         } catch {
           return { key: key as Module, value: undefined };
@@ -47,7 +50,7 @@ export function useDashboardData() {
       entries.filter(({ value }) => value === undefined).map(({ key }) => key),
     );
     setLoading(false);
-  }, []);
+  }, [canAccessFinance]);
 
   useEffect(() => {
     const requestGeneration = generation;
