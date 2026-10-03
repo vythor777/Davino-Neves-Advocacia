@@ -14,10 +14,18 @@ import { UpdatePrazoDto } from './dto/update-prazo.dto.js';
 export class PrazosService {
   constructor(private readonly prisma: PrismaService, private readonly access: AccessService) {}
 
+  private async resolveResponsavel(id: number, processoId: number) {
+    const usuario = await this.prisma.usuario.findUnique({ where: { id_usuario: id } });
+    if (!usuario?.ativo) throw new BadRequestException('Selecione um responsável ativo da equipe.');
+    await this.access.process(usuario, processoId);
+    return usuario;
+  }
+
   async create(createPrazoDto: CreatePrazoDto, user: Actor) {
     this.access.requireRole(user, 'ADMINISTRADOR', 'ADVOGADO');
     await this.access.process(user, createPrazoDto.id_processo);
-    if ((createPrazoDto.tipoCompromisso || 'Prazo Fatal').toLowerCase().includes('fatal') && !createPrazoDto.responsavel?.trim()) {
+    const responsavel = createPrazoDto.id_responsavel === undefined ? null : await this.resolveResponsavel(createPrazoDto.id_responsavel, createPrazoDto.id_processo);
+    if ((createPrazoDto.tipoCompromisso || 'Prazo Fatal').toLowerCase().includes('fatal') && !responsavel && !createPrazoDto.responsavel?.trim()) {
       throw new BadRequestException('Defina um responsável pelo cumprimento do prazo fatal.');
     }
     try {
@@ -27,7 +35,8 @@ export class PrazosService {
           data_vencimento: new Date(createPrazoDto.data_vencimento),
           hora: createPrazoDto.hora || '09:00',
           tipoCompromisso: createPrazoDto.tipoCompromisso || 'Prazo Fatal',
-          responsavel: createPrazoDto.responsavel || null,
+          responsavel: responsavel?.nome || createPrazoDto.responsavel || null,
+          id_responsavel: responsavel?.id_usuario,
           status: createPrazoDto.status,
           id_processo: createPrazoDto.id_processo,
         },
@@ -94,7 +103,9 @@ export class PrazosService {
     if (updatePrazoDto.id_processo !== undefined) await this.access.process(user, updatePrazoDto.id_processo);
     // Garante que o prazo existe antes de atualizar
     const existing = await this.findOne(id, user);
-    if ((updatePrazoDto.tipoCompromisso ?? existing.tipoCompromisso).toLowerCase().includes('fatal') && !(updatePrazoDto.responsavel ?? existing.responsavel)?.trim()) {
+    const responsavel = updatePrazoDto.id_responsavel === undefined ? null : await this.resolveResponsavel(updatePrazoDto.id_responsavel, updatePrazoDto.id_processo ?? existing.id_processo);
+    if (updatePrazoDto.id_processo !== undefined && existing.id_responsavel && !responsavel) await this.resolveResponsavel(existing.id_responsavel, updatePrazoDto.id_processo);
+    if ((updatePrazoDto.tipoCompromisso ?? existing.tipoCompromisso).toLowerCase().includes('fatal') && !responsavel && !(updatePrazoDto.responsavel ?? existing.responsavel)?.trim()) {
       throw new BadRequestException('Defina um responsável pelo cumprimento do prazo fatal.');
     }
 
@@ -118,6 +129,12 @@ export class PrazosService {
       }
       if (updatePrazoDto.responsavel !== undefined) {
         dataToUpdate.responsavel = updatePrazoDto.responsavel;
+      }
+      if (responsavel) {
+        dataToUpdate.usuario_responsavel = { connect: { id_usuario: responsavel.id_usuario } };
+        dataToUpdate.responsavel = responsavel.nome;
+      } else if (updatePrazoDto.responsavel !== undefined && updatePrazoDto.responsavel !== existing.responsavel) {
+        dataToUpdate.usuario_responsavel = { disconnect: true };
       }
       if (updatePrazoDto.id_processo !== undefined) {
         dataToUpdate.processo = {

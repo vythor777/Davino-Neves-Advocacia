@@ -31,6 +31,7 @@ model Usuario {
   // Relacionamentos
   processosResponsavel Processo[] @relation("ResponsavelProcesso")
   participacoes ProcessoParticipante[]
+  prazosResponsavel Prazo[] @relation("ResponsavelPrazo")
   agendas          Agenda[]
   documentos       Documento[]
 }
@@ -85,6 +86,8 @@ model Prazo {
   hora             String      @default("09:00") @db.VarChar(10)
   tipoCompromisso  String      @default("Prazo Fatal") @db.VarChar(50)
   responsavel      String?     @db.VarChar(100)
+  id_responsavel   Int?
+  usuario_responsavel Usuario? @relation("ResponsavelPrazo", fields: [id_responsavel], references: [id_usuario], onDelete: SetNull)
   status           String      @db.VarChar(50)
   data_criacao     DateTime    @default(now())
   data_atualizacao DateTime    @updatedAt
@@ -92,6 +95,8 @@ model Prazo {
   // Chave Estrangeira
   id_processo      Int
   processo         Processo    @relation(fields: [id_processo], references: [id_processo])
+
+  @@index([id_responsavel])
 }
 
 model Documento {
