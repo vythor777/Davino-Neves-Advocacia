@@ -1,8 +1,9 @@
 'use client';
 
 import { useAiTasks, useAiDraft } from '@/context/AiTaskContext';
-import { aiTaskUrl, type AiAction } from '@/utils/ai-tasks';
-import React, { useState, useEffect, Suspense } from 'react';
+import { aiTaskUrl, findAiTask, type AiAction } from '@/utils/ai-tasks';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
+import { Skeleton } from '@/components/Skeleton';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { useSearchParams, useRouter } from 'next/navigation';
 import AuthGuard from '@/components/AuthGuard';
@@ -108,7 +109,7 @@ function GeminiContent() {
   };
   const searchParams = useSearchParams();
   const resultId = searchParams.get('resultado');
-  const getTask = (action: AiAction) => aiTasks.find(task => task.action === action && task.id === (resultId || aiVisible[action]));
+  const getTask = (action: AiAction) => findAiTask({ tasks: aiTasks, visible: aiVisible, drafts: {} }, action, resultId);
   const acaoParam = (searchParams.get('acao') as AcaoIA) || (searchParams.get('tab') as AcaoIA);
   const procParam = searchParams.get('processo') || '';
 
@@ -149,7 +150,8 @@ function GeminiContent() {
   const [procFoco, setProcFoco] = useAiDraft('procFoco', '');
   const procLoading = aiTasks.some(task => task.action === 'analisar_processo' && task.status === 'pending');
   const procResultado = (getTask('analisar_processo')?.result as string | undefined) ?? null;
-  const setProcResultado = () => aiStore.hide('analisar_processo');
+  const hideResult = (action: AiAction) => { aiStore.hide(action); router.replace(`/gemini?acao=${action}`, { scroll: false }); };
+  const setProcResultado = () => hideResult('analisar_processo');
 
   // 2. Estados: Resumir Documento
   const [docTexto, setDocTexto] = useAiDraft('docTexto', '');
@@ -157,7 +159,7 @@ function GeminiContent() {
   const [docFormato, setDocFormato] = useAiDraft<'executivo' | 'cliente_simples' | 'topicos_estrategicos'>('docFormato', 'executivo');
   const docLoading = aiTasks.some(task => task.action === 'resumir_documento' && task.status === 'pending');
   const docResultado = (getTask('resumir_documento')?.result as string | undefined) ?? null;
-  const setDocResultado = () => aiStore.hide('resumir_documento');
+  const setDocResultado = () => hideResult('resumir_documento');
 
   // 3. Estados: Encontrar Jurisprudência
   const [jurisTema, setJurisTema] = useAiDraft('jurisTema', '');
@@ -166,7 +168,7 @@ function GeminiContent() {
   const [jurisTese, setJurisTese] = useAiDraft('jurisTese', '');
   const jurisLoading = aiTasks.some(task => task.action === 'encontrar_jurisprudencia' && task.status === 'pending');
   const jurisResultado = (getTask('encontrar_jurisprudencia')?.result as string | undefined) ?? null;
-  const setJurisResultado = () => aiStore.hide('encontrar_jurisprudencia');
+  const setJurisResultado = () => hideResult('encontrar_jurisprudencia');
 
   // 4. Estados: Criar Peça
   const [pecaTipo, setPecaTipo] = useAiDraft('pecaTipo', 'Petição Inicial');
@@ -177,7 +179,7 @@ function GeminiContent() {
   const [pecaJurisReferencia, setPecaJurisReferencia] = useAiDraft('pecaJurisReferencia', '');
   const pecaLoading = aiTasks.some(task => task.action === 'criar_peca' && task.status === 'pending');
   const pecaResultado = (getTask('criar_peca')?.result as string | undefined) ?? null;
-  const setPecaResultado = () => aiStore.hide('criar_peca');
+  const setPecaResultado = () => hideResult('criar_peca');
 
   // 5. Estados: Identificar Prazos
   const [prazoTexto, setPrazoTexto] = useAiDraft('prazoTexto', '');
@@ -185,7 +187,10 @@ function GeminiContent() {
   const [prazoDataPub, setPrazoDataPub] = useAiDraft('prazoDataPub', '');
   const prazoLoading = aiTasks.some(task => task.action === 'identificar_prazos' && task.status === 'pending');
   const prazoResultado = (getTask('identificar_prazos')?.result as DadosPrazoExtraido | undefined) ?? null;
-  const setPrazoResultado = () => aiStore.hide('identificar_prazos');
+  const setPrazoResultado = () => hideResult('identificar_prazos');
+
+  const activeTask = getTask(acaoAtiva);
+  const activeLoading = aiTasks.some(task => task.action === acaoAtiva && task.status === 'pending');
 
   // Modal para agendar prazo extraído
   const [modalPrazoAberto, setModalPrazoAberto] = useState(false);
@@ -205,17 +210,25 @@ function GeminiContent() {
     setTimeout(() => setCopiado(false), 2500);
   };
 
-  // Upload genérico de arquivo .txt/.md
-  const handleUploadTexto = (e: React.ChangeEvent<HTMLInputElement>, setField: (v: string) => void) => {
+  const [uploadLoading, setUploadLoading] = useState(false);
+  const uploadAbort = useRef<AbortController | null>(null);
+  useEffect(() => () => { uploadAbort.current?.abort(); }, []);
+  const handleUploadTexto = async (e: React.ChangeEvent<HTMLInputElement>, setField: (v: string) => void) => {
     const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const conteudo = event.target?.result as string;
-      setField(conteudo);
-      toast.success(`Arquivo ${file.name} carregado com sucesso.`);
-    };
-    reader.readAsText(file);
+    e.target.value = '';
+    if (!file || uploadLoading) return;
+    if (file.size > 5_000_000) { toast.warning('O arquivo deve ter até 5 MB.'); return; }
+    setUploadLoading(true);
+    const controller = new AbortController(); uploadAbort.current = controller;
+    const toastId = toast.loading('Extraindo o texto do arquivo…');
+    try {
+      const result = await geminiService.extrairTexto(file, controller.signal);
+      if (controller.signal.aborted) return;
+      setField(result.texto);
+      toast.success(`Texto de ${file.name} carregado. Confira o conteúdo antes de analisar.`, { id: toastId });
+    } catch (error) {
+      if (!controller.signal.aborted) toast.error(error instanceof Error ? error.message : 'Não foi possível ler o arquivo.', { id: toastId });
+    } finally { if (controller.signal.aborted) toast.dismiss(toastId); setUploadLoading(false); }
   };
 
   // -------------------------------------------------------------
@@ -486,7 +499,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                 key={acao.id}
                 type="button"
                 id={`btn-acao-${acao.id}`}
-                onClick={() => setAcaoAtiva(acao.id)}
+                onClick={() => { setAcaoAtiva(acao.id); router.replace(`/gemini?acao=${acao.id}`, { scroll: false }); }}
                 className={`group relative flex flex-col justify-between text-left p-4 rounded-xl border transition-all cursor-pointer ${
                   isAtiva
                     ? 'bg-white dark:bg-slate-900 border-[#0047ab] dark:border-brand shadow-sm ring-1 ring-[#0047ab]/20 dark:ring-brand/20'
@@ -577,10 +590,12 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
 
                   <label className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 transition">
                     <Upload className="h-3.5 w-3.5 text-slate-500" />
-                    <span>Upload .txt</span>
+                    <span>{uploadLoading ? 'Lendo arquivo…' : 'PDF, Word ou TXT'}</span>
                     <input
                       type="file"
-                      accept=".txt,.md,.text"
+                      accept=".pdf,.docx,.txt,.md,.text"
+                      disabled={uploadLoading}
+                      aria-label="Carregar PDF, Word ou TXT de até 5 MB"
                       onChange={(e) => handleUploadTexto(e, setProcConteudo)}
                       className="hidden"
                     />
@@ -767,10 +782,12 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
 
                   <label className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 transition">
                     <Upload className="h-3.5 w-3.5 text-slate-500" />
-                    <span>Upload .txt</span>
+                    <span>{uploadLoading ? 'Lendo arquivo…' : 'PDF, Word ou TXT'}</span>
                     <input
                       type="file"
-                      accept=".txt,.md,.text"
+                      accept=".pdf,.docx,.txt,.md,.text"
+                      disabled={uploadLoading}
+                      aria-label="Carregar PDF, Word ou TXT de até 5 MB"
                       onChange={(e) => handleUploadTexto(e, setDocTexto)}
                       className="hidden"
                     />
@@ -1232,10 +1249,12 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
 
                   <label className="cursor-pointer inline-flex items-center gap-1.5 rounded-lg border border-slate-200/80 bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 transition">
                     <Upload className="h-3.5 w-3.5 text-slate-500" />
-                    <span>Upload .txt</span>
+                    <span>{uploadLoading ? 'Lendo arquivo…' : 'PDF, Word ou TXT'}</span>
                     <input
                       type="file"
-                      accept=".txt,.md,.text"
+                      accept=".pdf,.docx,.txt,.md,.text"
+                      disabled={uploadLoading}
+                      aria-label="Carregar PDF, Word ou TXT de até 5 MB"
                       onChange={(e) => handleUploadTexto(e, setPrazoTexto)}
                       className="hidden"
                     />
@@ -1251,7 +1270,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                       htmlFor="prazoDataPubInput"
                       className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1"
                     >
-                      Data da Disponibilização / Publicação no DJE
+                      Data de referência (inicial para contagem simples)
                     </label>
                     <input
                       id="prazoDataPubInput"
@@ -1340,7 +1359,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                 </div>
 
                 {/* Ações de cópia e exportação */}
-                {(procResultado || docResultado || jurisResultado || pecaResultado || prazoResultado) && (
+                {activeTask?.status === 'success' && (
                   <button type="button" onClick={async () => {
                     const text = acaoAtiva === 'analisar_processo' ? procResultado : acaoAtiva === 'resumir_documento' ? docResultado : acaoAtiva === 'encontrar_jurisprudencia' ? jurisResultado : acaoAtiva === 'criar_peca' ? pecaResultado : prazoResultado ? [prazoResultado.descricao_providencia, `Quantidade: ${prazoResultado.quantidade_dias ?? 'Não confirmada'}`, `Contagem: ${prazoResultado.tipo_contagem ?? 'Não confirmada'}`, `Data sugerida: ${prazoResultado.data_limite_estimada ?? 'Aguardando confirmação'}`, prazoResultado.observacoes].filter(Boolean).join('\n') : null;
                     if (!text) return;
@@ -1383,13 +1402,9 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
               {/* Corpo do resultado */}
               <div className="mt-4">
                 {/* 1. Loading State */}
-                {(procLoading ||
-                  docLoading ||
-                  jurisLoading ||
-                  pecaLoading ||
-                  prazoLoading) && (
+                {activeLoading && (
                   <div className="py-20 text-center space-y-4">
-                    <div className="mx-auto h-9 w-9 animate-spin rounded-full border-3 border-[#0047ab] dark:border-brand border-t-transparent" />
+                    <div className="space-y-3" aria-hidden="true"><Skeleton className="h-4 w-3/4" /><Skeleton className="h-4 w-full" /><Skeleton className="h-4 w-5/6" /></div>
                     <div>
                       <p className="text-xs font-semibold text-slate-900 dark:text-white">
                         O Gemini está processando a solicitação jurídica...
@@ -1402,6 +1417,12 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                   </div>
                 )}
 
+                {activeTask?.status === 'error' && (
+                  <div role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-800 dark:border-red-900 dark:bg-red-950 dark:text-red-200">
+                    <p>{activeTask.error}</p>
+                    <button type="button" onClick={() => aiStore.retry(activeTask.id)} className="mt-3 font-semibold underline focus-visible:ring-2">Tentar novamente</button>
+                  </div>
+                )}
                 {/* 2. Resultados: Texto corrido estruturado */}
                 {!procLoading &&
                   acaoAtiva === 'analisar_processo' &&
@@ -1461,7 +1482,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                           </div>
                           {prazoResultado.tem_prazo && (
                             <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-600 text-white dark:bg-rose-500">
-                              Prazo Processual Exigido
+                              {prazoResultado.natureza === 'calculo_simples' ? 'Estimativa de calendário' : 'Prazo identificado'}
                             </span>
                           )}
                         </div>
@@ -1527,16 +1548,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                   )}
 
                 {/* 4. Estado Vazio / Inicial */}
-                {!procLoading &&
-                  !docLoading &&
-                  !jurisLoading &&
-                  !pecaLoading &&
-                  !prazoLoading &&
-                  !procResultado &&
-                  !docResultado &&
-                  !jurisResultado &&
-                  !pecaResultado &&
-                  !prazoResultado && (
+                {!activeLoading && !activeTask && (
                     <div className="py-20 text-center text-slate-400 space-y-3">
                       <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 dark:bg-white/[0.04] text-slate-400">
                         <Sparkles className="h-6 w-6 stroke-[1.25]" />

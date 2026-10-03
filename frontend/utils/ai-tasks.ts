@@ -42,3 +42,10 @@ export class AiTaskStore {
   }
 }
 export function aiTaskUrl(task: AiTask) { return `/gemini?acao=${task.action}&resultado=${encodeURIComponent(task.id)}`; }
+
+export function findAiTask(snapshot: AiSnapshot, action: AiAction, requestedId?: string | null) {
+  const requested = snapshot.tasks.find(task => task.action === action && task.id === requestedId);
+  const visible = snapshot.tasks.find(task => task.action === action && task.id === snapshot.visible[action]);
+  if (requested?.status === 'error' && visible && visible.id !== requested.id) return visible;
+  return requested || visible;
+}

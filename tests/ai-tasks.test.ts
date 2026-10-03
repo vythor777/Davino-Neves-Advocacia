@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { AiTaskStore, aiTaskUrl } from '../frontend/utils/ai-tasks';
+import { AiTaskStore, aiTaskUrl, findAiTask } from '../frontend/utils/ai-tasks';
 const tick = () => new Promise(resolve => setImmediate(resolve));
 test('generation completes after page subscriber leaves; results and drafts remain', async () => {
   const store = new AiTaskStore();
@@ -38,4 +38,23 @@ test('logout clears content and ignores late responses from the previous session
   store.setDraft('docTexto', 'Privado'); await tick(); store.clear();
   finish('Resposta antiga'); await tick();
   assert.deepEqual(store.getSnapshot(), { tasks: [], drafts: {}, visible: {} });
+});
+
+test('switching actions restores their results despite a URL pointing at another action', async () => {
+ const store=new AiTaskStore();
+ const analysis=store.start('analisar_processo','Análise',async()=>'Análise');
+ const summary=store.start('resumir_documento','Resumo',async()=>'Resumo');
+ await tick();
+ assert.equal(findAiTask(store.getSnapshot(),'resumir_documento',analysis)?.id,summary);
+ store.hide('resumir_documento');
+ assert.equal(findAiTask(store.getSnapshot(),'resumir_documento',analysis),undefined);
+});
+test('retry replaces an old failed result while preserving explicit successful history', async () => {
+ const store=new AiTaskStore();let attempt=0;
+ const failed=store.start('criar_peca','Peça',async()=>{if(++attempt===1)throw new Error('Falha');return 'Peça';});
+ await tick();const retried=store.retry(failed);await tick();
+ assert.equal(findAiTask(store.getSnapshot(),'criar_peca',failed)?.id,retried);
+ const newer=store.start('criar_peca','Peça nova',async()=>'Nova');await tick();
+ assert.equal(findAiTask(store.getSnapshot(),'criar_peca',retried)?.id,retried);
+ assert.equal(findAiTask(store.getSnapshot(),'criar_peca')?.id,newer);
 });

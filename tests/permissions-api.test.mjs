@@ -622,3 +622,16 @@ test('usuário não pode liberar seu Financeiro e endpoints de escrita são bloq
     await api[method](`/api/financeiro/${path}`).set(auth(2)).expect(403);
   }
 });
+
+test('upload para IA exige sessão, extrai texto e rejeita formato inválido', async () => {
+ await api.post('/api/gemini/extrair-texto').attach('arquivo',Buffer.from('Teste'),'teste.txt').expect(401);
+ const response=await api.post('/api/gemini/extrair-texto').set(auth(5)).attach('arquivo',Buffer.from('Texto fictício de teste.'),'teste.txt').expect(200);
+ assert.equal(response.body.texto,'Texto fictício de teste.');
+ await api.post('/api/gemini/extrair-texto').set(auth(2)).attach('arquivo',Buffer.from('falso'),'teste.pdf').expect(400);
+ await api.post('/api/gemini/extrair-texto').set(auth(2)).attach('arquivo',Buffer.alloc(5000001),'grande.txt').expect(413);
+});
+test('recursos de IA rejeitam campos obrigatórios vazios ou somente espaços antes de chamar Gemini', async () => {
+ for(const [path,payload] of [['analisar-processo',{conteudo_processual:'   '}],['resumir-documento',{texto:'  '}],['encontrar-jurisprudencia',{tema:'   '}],['criar-peca',{tipo_peca:'Petição',fatos_contexto:'   '}],['identificar-prazos',{texto_publicacao:'  '}]]) {
+   await api.post(`/api/gemini/${path}`).set(auth(2)).send(payload).expect(400);
+ }
+});

@@ -11,6 +11,7 @@ export function AiTaskNotifications({ onOpen }: { onOpen?: () => void }) {
     {tasks.map(task => <div key={task.id} className="mb-2 rounded-lg bg-slate-50 p-3 text-xs dark:bg-slate-800">
       <p className="font-medium">{task.title}</p>
       <p className="mt-1 text-slate-500 dark:text-slate-400">{task.status === 'pending' ? 'Análise em andamento…' : task.status === 'success' ? 'Resultado pronto' : 'Não foi possível concluir'}</p>
+      {task.status === 'error' && <p role="alert" className="mt-1 text-red-700 dark:text-red-300">{task.error}</p>}
       {task.status === 'error' ? <button type="button" className="ui-button ui-button-secondary mt-2" onClick={() => store.retry(task.id)}>Tentar novamente</button> : <Link className="mt-2 inline-block text-blue-700 underline hover:text-blue-900 focus-visible:ring-2 active:opacity-80 dark:text-blue-300" href={aiTaskUrl(task)} onClick={() => { store.markRead(task.id); onOpen?.(); }}>{task.status === 'success' ? 'Ver resultado' : 'Ver análise'}</Link>}
     </div>)}
   </section>;
