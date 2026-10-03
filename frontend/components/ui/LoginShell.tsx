@@ -1,24 +1,8 @@
 import type { ReactNode } from "react";
-import { Briefcase, CalendarClock, Scale, Users } from "lucide-react";
+import Image from "next/image";
+import { Scale } from "lucide-react";
+import { LoginShowcase } from "./LoginShowcase";
 import { ThemeToggle } from "@/components/ThemeToggle";
-
-const features = [
-  {
-    icon: Briefcase,
-    title: "Processos organizados",
-    text: "Histórico e informações para acompanhar cada caso.",
-  },
-  {
-    icon: CalendarClock,
-    title: "Prazos em perspectiva",
-    text: "Uma agenda para as prioridades do escritório.",
-  },
-  {
-    icon: Users,
-    title: "Equipe conectada",
-    text: "Clientes, responsáveis e atividades em um só lugar.",
-  },
-];
 
 export function LoginShell({ children }: { children: ReactNode }) {
   return (
@@ -35,7 +19,7 @@ export function LoginShell({ children }: { children: ReactNode }) {
             </p>
           </div>
         </div>
-        <div className="my-auto py-12">
+        <div className="my-auto space-y-7 py-8">
           <p className="mb-4 text-xs font-semibold uppercase tracking-widest text-blue-200">
             Gestão jurídica
           </p>
@@ -46,20 +30,8 @@ export function LoginShell({ children }: { children: ReactNode }) {
             Sua rotina de trabalho, organizada do primeiro atendimento ao
             acompanhamento processual.
           </p>
-          <ul className="mt-10 space-y-6">
-            {features.map(({ icon: Icon, title, text }) => (
-              <li key={title} className="flex gap-4">
-                <Icon
-                  aria-hidden
-                  className="mt-1 h-5 w-5 shrink-0 text-blue-200"
-                />
-                <div>
-                  <p className="text-sm font-medium">{title}</p>
-                  <p className="mt-1 text-sm text-slate-300">{text}</p>
-                </div>
-              </li>
-            ))}
-          </ul>
+          <LoginShowcase />
+          <p className="text-xs leading-relaxed text-blue-100/80">Assistente IA · Consulta CNJ · Agenda e prazos</p>
         </div>
         <p className="text-xs text-slate-400">
           Davino Neves Advocacia · {new Date().getFullYear()}
@@ -84,6 +56,11 @@ export function LoginShell({ children }: { children: ReactNode }) {
             Entre com sua conta para acessar o sistema.
           </p>
           {children}
+          <div className="mt-8 overflow-hidden rounded-xl border border-line lg:hidden">
+            <Image src="/login/cover.png" width={1280} height={800}
+              alt="Interface do sistema Davino Neves Advocacia"
+              className="aspect-[8/5] w-full object-contain" />
+          </div>
           <p className="mt-8 border-t border-line pt-5 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
             Precisa de acesso? Entre em contato com o administrador do
             escritório.
