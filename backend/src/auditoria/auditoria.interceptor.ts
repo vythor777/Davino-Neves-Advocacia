@@ -1,3 +1,4 @@
+import { auditChanges } from './audit-changes.js';
 import {
   Injectable,
   type CallHandler,
@@ -38,7 +39,7 @@ export class AuditoriaInterceptor implements NestInterceptor {
       financeiro: { name: 'lancamentoFinanceiro', id: 'id' },
     };
     const model = models[entity];
-    const allowed = ['nome', 'titulo', 'numero_processo', 'descricao', 'status', 'data_vencimento', 'hora', 'tipoCompromisso', 'responsavel', 'id_responsavel', 'id_processo', 'id_cliente', 'role', 'ativo', 'valor', 'dataVencimento', 'dataPagamento', 'tipo', 'categoria'];
+    const allowed = ['cpf_cnpj', 'email', 'telefone', 'endereco', 'data_nascimento', 'data_abertura', 'nome', 'titulo', 'numero_processo', 'descricao', 'status', 'data_vencimento', 'hora', 'tipoCompromisso', 'responsavel', 'id_responsavel', 'id_processo', 'id_cliente', 'role', 'ativo', 'valor', 'dataVencimento', 'dataPagamento', 'tipo', 'categoria'];
     let previous: Record<string, unknown> | null = null;
     if (model && req.params.id && ['PATCH', 'DELETE'].includes(req.method)) {
       const id = model.id === 'id' ? req.params.id : Number(req.params.id);
@@ -46,7 +47,7 @@ export class AuditoriaInterceptor implements NestInterceptor {
         previous = await (this.prisma as any)[model.name].findUnique({
           where: { [model.id]: id }, select: Object.fromEntries(allowed.filter(key => {
             const fields: Record<string, string[]> = {
-              cliente: ['nome'], processo: ['titulo', 'numero_processo', 'descricao', 'status', 'id_responsavel', 'id_cliente'],
+              cliente: ['nome', 'cpf_cnpj', 'email', 'telefone', 'endereco', 'data_nascimento'], processo: ['data_abertura', 'titulo', 'numero_processo', 'descricao', 'status', 'id_responsavel', 'id_cliente'],
               prazo: ['descricao', 'status', 'data_vencimento', 'hora', 'tipoCompromisso', 'responsavel', 'id_processo'],
               usuario: ['nome', 'role', 'ativo'], documento: ['id_processo'], agenda: ['titulo'],
               lancamentoFinanceiro: ['descricao', 'status', 'valor', 'dataVencimento', 'dataPagamento', 'tipo', 'categoria'],
@@ -71,7 +72,8 @@ export class AuditoriaInterceptor implements NestInterceptor {
             : undefined;
         const record = String(req.params.id ?? resultId ?? '');
         // Explicit whitelist: never record passwords, tokens, or document contents.
-        const changes = Object.entries(req.body ?? {}).filter(([key]) => allowed.includes(key)).map(([key, value]) => `${key}: ${previous && key in previous ? JSON.stringify(previous[key]) + " → " : ""}${JSON.stringify(value)}`).join('; ');
+        const changes = auditChanges(req.body ?? {}, previous);
+        if (req.method === 'PATCH' && previous && !operation && !changes && Object.keys(req.body ?? {}).every(key => key in previous!)) return result;
         await this.prisma.auditLog.create({
           data: {
             id_usuario: user.id_usuario,
@@ -82,7 +84,7 @@ export class AuditoriaInterceptor implements NestInterceptor {
             registro: record,
             descricao: operation
               ? `${operation} em ${entity} #${record}${changes ? ": " + changes : ""}`
-              : `${action} em ${entity} #${record}${changes ? ": " + changes : ""}`,
+              : `${action === 'CRIACAO' ? 'Criação' : action === 'EDICAO' ? 'Edição' : 'Exclusão'} em ${entity} #${record}${changes ? ": " + changes : ""}`,
           },
         });
         return result;

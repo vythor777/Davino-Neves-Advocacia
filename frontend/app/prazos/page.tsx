@@ -1240,7 +1240,7 @@ function PrazosContent() {
                     >
                       {loadingResponsaveis
                         ? 'Carregando equipe...'
-                        : 'Selecione um Responsável (Opcional)'}
+                        : tipoCompromisso.toLowerCase().includes('fatal') ? 'Selecione um Responsável (Obrigatório)' : 'Selecione um Responsável (Opcional)'}
                     </option>
                     {responsaveis.map((u) => {
                       const cargoFormatado =

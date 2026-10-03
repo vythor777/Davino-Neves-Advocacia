@@ -8,12 +8,14 @@ import { aniversarianteService } from "@/services/aniversarianteService";
 import { financeiroService } from "@/services/financeiroService";
 import { usuarioService } from "@/services/usuarioService";
 
+import { financialPeriods } from '@/utils/financial-period';
+
 const loaders = {
   processos: processoService.getAll,
   prazos: prazoService.getAll,
   clientes: clienteService.getAll,
   aniversariantes: aniversarianteService.getAniversariantesDoMes,
-  financeiro: financeiroService.getResumo,
+  financeiro: () => financeiroService.getResumo(financialPeriods().current),
   equipe: usuarioService.getEquipe,
 };
 type Module = keyof typeof loaders;

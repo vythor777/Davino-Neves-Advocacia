@@ -1,5 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { documentLink } from '@/utils/document-link';
 import AuthGuard from '@/components/AuthGuard';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { usePermissions } from '@/hooks/usePermissions';
@@ -45,7 +47,7 @@ function DocumentosContent() {
     {admin && <button className={button} disabled={busy || !selected.length} onClick={() => action(async () => { saveDocumentBlob(await documentoService.backup(selected), 'Davino-Neves-backup-documentos.zip'); toast.success('Backup baixado. Abra o ZIP e confira os PDFs e o manifesto antes de arquivar.'); })}>Baixar backup selecionado ({selected.length}/8)</button>}
     {loading ? <div aria-label="Carregando documentos" className="animate-pulse space-y-3">{[1,2,3].map(i => <div key={i} className="h-12 rounded bg-slate-200 dark:bg-slate-800" />)}</div> : <ul className="space-y-3">{documents.map(d => <li key={d.id_documento} className="flex min-w-0 flex-col gap-4 rounded-xl border border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-700 p-4">
       <div className="flex w-full min-w-0 items-start gap-3">{admin && d.situacao === 'DISPONIVEL' && <input type="checkbox" aria-label={'Selecionar ' + d.nome_arquivo} checked={selected.includes(d.id_documento)} onChange={e => { if (e.target.checked && selected.length >= 8) { toast.warning('Selecione até 8 PDFs por lote de backup.'); return; } setSelected(e.target.checked ? [...selected, d.id_documento] : selected.filter(id => id !== d.id_documento)); }} />}
-      <div className="min-w-0 flex-1"><p className="break-all font-medium">{d.nome_arquivo}</p><p className="text-sm">{(d.tamanho_bytes / 1e6).toFixed(2)} MB · {d.situacao} · {new Date(d.data_upload).toLocaleDateString('pt-BR')}</p><p className="text-sm">{d.id_processo ? `Processo #${d.id_processo}` : d.id_cliente ? `Cliente #${d.id_cliente}` : 'Escritório'}</p></div></div>
+      <div className="min-w-0 flex-1"><p className="break-all font-medium">{d.nome_arquivo}</p><p className="text-sm">{(d.tamanho_bytes / 1e6).toFixed(2)} MB · {d.situacao} · {new Date(d.data_upload).toLocaleDateString('pt-BR')}</p><p className="text-sm">{documentLink(d, processes, clients).href ? <Link className="text-blue-700 underline hover:text-blue-900 focus-visible:ring-2 active:opacity-80 dark:text-blue-300" href={documentLink(d, processes, clients).href!}>{documentLink(d, processes, clients).label}</Link> : documentLink(d, processes, clients).label}</p></div></div>
       {d.situacao === 'DISPONIVEL' && <div className="flex flex-wrap gap-2"><button className={button} disabled={busy} onClick={() => action(async () => saveDocumentBlob(await documentoService.download(d.id_documento), d.nome_arquivo))}>Baixar PDF</button>{admin && <button className={button} disabled={busy} onClick={() => { setArchiveTarget(d); setConfirmed(false); }}>Arquivar após backup</button>}</div>}
     </li>)}{!documents.length && <li>Nenhum documento cadastrado.</li>}</ul>}
     {archiveTarget && <section role="dialog" aria-modal="true" aria-label="Conferir backup antes de arquivar" className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4"><div className="max-w-lg rounded-xl bg-white dark:bg-slate-900 p-6 space-y-4">

@@ -243,7 +243,7 @@ beforeEach(() => {
         id_processo: 101,
         id_responsavel: 2,
         participantes: [{ id_usuario: 3 }, { id_usuario: 5 }],
-        numero_processo: '0000001-00.2026.8.26.0001',
+        numero_processo: '0000001-74.2026.8.26.0001',
         titulo: 'Liberado',
         id_cliente: 201,
         status: 'Em Andamento',
@@ -252,7 +252,7 @@ beforeEach(() => {
         id_processo: 102,
         id_responsavel: 4,
         participantes: [],
-        numero_processo: '0000002-00.2026.8.26.0001',
+        numero_processo: '0000002-59.2026.8.26.0001',
         titulo: 'Segredo',
         id_cliente: 201,
         status: 'Em Andamento',
@@ -261,7 +261,7 @@ beforeEach(() => {
         id_processo: 103,
         id_responsavel: null,
         participantes: [],
-        numero_processo: '0000003-00.2026.8.26.0001',
+        numero_processo: '0000003-44.2026.8.26.0001',
         titulo: 'Legado',
         id_cliente: 201,
         status: 'Em Andamento',
@@ -317,7 +317,7 @@ beforeEach(() => {
 });
 const auth = (id) => ({ Authorization: `Bearer ${token(id)}` });
 const processInput = {
-  numero_processo: '00000040020268260001',
+  numero_processo: '00000042920268260001',
   titulo: 'Novo',
   descricao: 'Teste',
   data_abertura: '2026-09-28',
@@ -378,13 +378,13 @@ test('acesso direto por ID, prazos, documentos e CNJ não contornam vínculo', a
     await api
       .post('/api/datajud/consultar')
       .set(auth(id))
-      .send({ numero_processo: '0000002-00.2026.8.26.0001' })
+      .send({ numero_processo: '0000002-59.2026.8.26.0001' })
       .expect(404);
   }
   await api
     .post('/api/datajud/consultar')
     .set(auth(5))
-    .send({ numero_processo: '0000001-00.2026.8.26.0001' })
+    .send({ numero_processo: '0000001-74.2026.8.26.0001' })
     .expect(200);
 });
 test('somente advogado responsável edita; apenas administrador exclui', async () => {
@@ -463,7 +463,7 @@ test('estagiário cria cliente e edita contatos, mas não dados sensíveis nem e
     .set(auth(5))
     .send({
       nome: 'Novo cliente',
-      cpf_cnpj: '12345678902',
+      cpf_cnpj: '52998224725',
       email: 'novo@example.test',
       telefone: '11999999999',
       endereco: 'Rua B',
@@ -480,7 +480,7 @@ test('estagiário cria cliente e edita contatos, mas não dados sensíveis nem e
     .expect(200);
   for (const patch of [
     { nome: 'Alterado' },
-    { cpf_cnpj: '99999999999' },
+    { cpf_cnpj: '11144477735' },
     { data_nascimento: '2000-01-01' },
   ])
     await api.patch('/api/clientes/201').set(auth(5)).send(patch).expect(403);

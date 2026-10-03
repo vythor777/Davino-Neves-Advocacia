@@ -1,6 +1,8 @@
 'use client';
+import { isValidCpfCnpj } from '@/utils/identifiers';
 
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { PageHeader } from '@/components/ui/PageHeader';
 import AuthGuard from '@/components/AuthGuard';
 import { useCreateFromQuery } from '@/hooks/useCreateFromQuery';
@@ -117,7 +119,9 @@ function ClientesContent() {
   const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   // Estados de busca e filtro
-  const [searchTerm, setSearchTerm] = useState<string>('');
+  const searchParams = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState<string>(() => searchParams.get('q') || '');
+  useEffect(() => { setSearchTerm(searchParams.get('q') || ''); }, [searchParams]);
   const [filtroTipo, setFiltroTipo] = useState<'todos' | 'pf' | 'pj'>('todos');
 
   // Estados de Modal de Criação / Edição
@@ -225,6 +229,8 @@ function ClientesContent() {
         errors.cpfCnpj = 'CPF deve conter 11 dígitos válidos (000.000.000-00).';
       } else if (formTipo === 'pj' && digits.length !== 14) {
         errors.cpfCnpj = 'CNPJ deve conter 14 dígitos válidos (00.000.000/0001-00).';
+      } else if (!isValidCpfCnpj(cpfCnpj)) {
+        errors.cpfCnpj = 'CPF/CNPJ inválido. Confira os dígitos verificadores.';
       }
     }
     if (!email.trim()) {

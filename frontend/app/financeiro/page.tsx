@@ -1,4 +1,5 @@
 'use client';
+import { financialPeriods } from '@/utils/financial-period';
 
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { PageHeader } from '@/components/ui/PageHeader';
@@ -77,7 +78,8 @@ function FinanceiroContent() {
   const [processos, setProcessos] = useState<Processo[]>([]);
 
   // Filtros
-  const [mesFiltro, setMesFiltro] = useState<string>('2026-09');
+  const periods = useMemo(() => financialPeriods(), []);
+  const [mesFiltro, setMesFiltro] = useState<string>(() => financialPeriods().current);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFiltro, setStatusFiltro] = useState<string>('TODOS');
   const [categoriaFiltro, setCategoriaFiltro] = useState<string>('TODAS');
@@ -106,10 +108,12 @@ function FinanceiroContent() {
 
       const [lancRes, resRes, cliRes, procRes] = await Promise.allSettled([
         financeiroService.getAll({
-          mes: mesFiltro !== 'TODOS' ? mesFiltro : undefined,
+          mes: mesFiltro.includes('-') ? mesFiltro : undefined,
+          ano: /^\d{4}$/.test(mesFiltro) ? mesFiltro : undefined,
         }),
         financeiroService.getResumo(
-          mesFiltro !== 'TODOS' ? mesFiltro : undefined,
+          mesFiltro.includes('-') ? mesFiltro : undefined,
+          /^\d{4}$/.test(mesFiltro) ? mesFiltro : undefined,
         ),
         clienteService.getAll(),
         processoService.getAll(),
@@ -301,30 +305,8 @@ function FinanceiroContent() {
             onChange={(e) => setMesFiltro(e.target.value)}
             className="bg-transparent font-medium text-slate-800 dark:text-slate-200 focus:outline-hidden cursor-pointer"
           >
-            <option
-              value="2026-09"
-              className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
-            >
-              Setembro / 2026 (Mês Atual)
-            </option>
-            <option
-              value="2026-08"
-              className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
-            >
-              Agosto / 2026
-            </option>
-            <option
-              value="2026-07"
-              className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
-            >
-              Julho / 2026
-            </option>
-            <option
-              value="2026"
-              className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
-            >
-              Ano 2026 Completo
-            </option>
+            {periods.months.map(period => <option key={period.value} value={period.value} className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">{period.label}</option>)}
+            <option value={periods.year} className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Ano {periods.year} Completo</option>
             <option
               value="TODOS"
               className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"

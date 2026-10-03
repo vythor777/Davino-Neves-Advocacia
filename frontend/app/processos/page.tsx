@@ -1,4 +1,5 @@
 'use client';
+import { isValidCnj } from '@/utils/identifiers';
 
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { PageHeader } from '@/components/ui/PageHeader';
@@ -166,6 +167,8 @@ function ProcessosContent() {
     const errors: Record<string, string> = {};
     if (!numeroProcesso.trim()) {
       errors.numeroProcesso = 'O número do processo é obrigatório.';
+    } else if (!isValidCnj(numeroProcesso)) {
+      errors.numeroProcesso = 'Número CNJ inválido. Confira o formato e os dígitos verificadores.';
     }
     if (!titulo.trim()) {
       errors.titulo = 'O título ou classe de ação é obrigatório.';
