@@ -34,6 +34,7 @@ import geminiService, {
 } from '@/services/geminiService';
 import processoService, { Processo } from '@/services/processoService';
 import prazoService from '@/services/prazoService';
+import usuarioService, { UsuarioItem } from '@/services/usuarioService';
 
 type AcaoIA =
   | 'analisar_processo'
@@ -195,7 +196,16 @@ function GeminiContent() {
   // Modal para agendar prazo extraído
   const [modalPrazoAberto, setModalPrazoAberto] = useState(false);
   const [processoSelecionadoId, setProcessoSelecionadoId] = useState<number | ''>('');
-  const [responsavelPrazoModal, setResponsavelPrazoModal] = useState('');
+  const [responsavelPrazoModal, setResponsavelPrazoModal] = useState<number | ''>('');
+  const [equipePrazo, setEquipePrazo] = useState<Pick<UsuarioItem, 'id_usuario' | 'nome' | 'role' | 'ativo' | 'email'>[]>([]);
+  const [carregandoEquipePrazo, setCarregandoEquipePrazo] = useState(false);
+  const processoPrazo = processosEscritorio.find(p => p.id_processo === processoSelecionadoId);
+  const responsaveisPrazo = equipePrazo.filter(u => u.ativo && (u.role === 'ADMINISTRADOR' || u.id_usuario === processoPrazo?.id_responsavel || processoPrazo?.participantes?.some(p => p.id_usuario === u.id_usuario)));
+  const selecionarProcessoPrazo = (id: number | '') => {
+    setProcessoSelecionadoId(id);
+    const processo = processosEscritorio.find(p => p.id_processo === id);
+    setResponsavelPrazoModal(equipePrazo.some(u => u.ativo && u.id_usuario === processo?.id_responsavel) ? processo!.id_responsavel! : '');
+  };
   const [descricaoPrazoModal, setDescricaoPrazoModal] = useState('');
   const [dataVencimentoModal, setDataVencimentoModal] = useState('');
   const [salvandoPrazo, setSalvandoPrazo] = useState(false);
@@ -389,7 +399,7 @@ Fica a parte autora intimada para, no prazo impreterível de 15 (quinze) dias ú
   };
 
   // Modal para vincular e agendar prazo extraído
-  const abrirModalSalvarPrazo = () => {
+  const abrirModalSalvarPrazo = async () => {
     if (!prazoResultado?.data_limite_estimada) {
       toast.warning('Confirme as informações necessárias antes de agendar.');
       return;
@@ -399,7 +409,17 @@ Fica a parte autora intimada para, no prazo impreterível de 15 (quinze) dias ú
     }
     setDescricaoPrazoModal(prazoResultado.descricao_providencia || 'Cumprimento de Prazo Processual');
     setDataVencimentoModal(prazoResultado.data_limite_estimada);
+    setResponsavelPrazoModal('');
+    setEquipePrazo([]);
     setModalPrazoAberto(true);
+    setCarregandoEquipePrazo(true);
+    try {
+      const equipe = await usuarioService.getEquipe();
+      setEquipePrazo(equipe);
+      const processo = processosEscritorio.find(p => p.id_processo === (processoSelecionadoId || processosEscritorio[0]?.id_processo));
+      if (equipe.some(u => u.ativo && u.id_usuario === processo?.id_responsavel)) setResponsavelPrazoModal(processo!.id_responsavel!);
+    } catch { toast.error('Não foi possível carregar a equipe. Feche e abra o agendamento para tentar novamente.'); }
+    finally { setCarregandoEquipePrazo(false); }
   };
 
   const handleSalvarPrazoModal = async (e: React.FormEvent) => {
@@ -408,11 +428,12 @@ Fica a parte autora intimada para, no prazo impreterível de 15 (quinze) dias ú
       toast.warning('Selecione um processo do escritório para vincular o prazo.');
       return;
     }
+    if (!responsaveisPrazo.some(u => u.id_usuario === responsavelPrazoModal)) { toast.warning('Selecione um responsável da equipe com acesso ao processo.'); return; }
     setSalvandoPrazo(true);
     try {
       await prazoService.create({
         descricao: descricaoPrazoModal.trim(),
-        responsavel: responsavelPrazoModal.trim(),
+        id_responsavel: Number(responsavelPrazoModal),
         data_vencimento: dataVencimentoModal,
         hora: '18:00',
         tipoCompromisso: 'Prazo Fatal',
@@ -1610,7 +1631,11 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
             <form onSubmit={handleSalvarPrazoModal} className="space-y-3">
               <div>
                 <label htmlFor="responsavelPrazoModal" className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Responsável pelo cumprimento *</label>
-                <input id="responsavelPrazoModal" required maxLength={100} value={responsavelPrazoModal} onChange={(e) => setResponsavelPrazoModal(e.target.value)} className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-blue-700" />
+                {carregandoEquipePrazo ? <Skeleton className="h-10 w-full" /> : <select id="responsavelPrazoModal" required value={responsavelPrazoModal} onChange={(e) => setResponsavelPrazoModal(e.target.value ? Number(e.target.value) : '')} className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-blue-700">
+                  <option value="">Selecione um responsável...</option>
+                  {responsaveisPrazo.map(u => <option key={u.id_usuario} value={u.id_usuario}>{u.nome} — {u.role === 'ADMINISTRADOR' ? 'Administrador' : u.role === 'ADVOGADO' ? 'Advogado' : 'Estagiário'}</option>)}
+                </select>}
+                <p className="mt-1 text-xs text-slate-500">Membros ativos com acesso ao processo selecionado.</p>
               </div>
               <div>
                 <label
@@ -1623,7 +1648,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                   id="modalProcessoSelect"
                   value={processoSelecionadoId}
                   onChange={(e) =>
-                    setProcessoSelecionadoId(Number(e.target.value))
+                    selecionarProcessoPrazo(e.target.value ? Number(e.target.value) : '')
                   }
                   required
                   className="w-full rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-1 focus:ring-[#0047ab]"
@@ -1681,7 +1706,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                 </button>
                 <button
                   type="submit"
-                  disabled={salvandoPrazo || !processoSelecionadoId}
+                  disabled={salvandoPrazo || carregandoEquipePrazo || !processoSelecionadoId || !responsaveisPrazo.some(u => u.id_usuario === responsavelPrazoModal)}
                   className="inline-flex items-center gap-2 rounded-lg bg-[#0047ab] hover:bg-[#003d94] dark:bg-action dark:hover:bg-action-hover text-white dark:text-white font-semibold px-4 py-2 text-xs shadow-xs transition disabled:opacity-50"
                 >
                   {salvandoPrazo ? 'Salvando...' : 'Confirmar e Agendar'}

@@ -39,6 +39,11 @@ export class CreatePrazoDto {
   @MaxLength(100, { message: 'O responsável não pode exceder 100 caracteres.' })
   responsavel?: string;
 
+  @IsOptional()
+  @IsInt()
+  @IsPositive()
+  id_responsavel?: number;
+
   @IsString({ message: 'O status deve ser um texto.' })
   @IsNotEmpty({ message: 'O status é obrigatório.' })
   @MaxLength(50, { message: 'O status não pode exceder 50 caracteres.' })

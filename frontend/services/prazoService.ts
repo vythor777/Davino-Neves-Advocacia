@@ -7,6 +7,7 @@ export interface Prazo {
   data_vencimento: string;
   hora?: string;
   tipoCompromisso?: string;
+  id_responsavel?: number | null;
   responsavel?: string | null;
   status: string;
   id_processo: number;
@@ -20,6 +21,7 @@ export interface CreatePrazoInput {
   data_vencimento: string; // Formato YYYY-MM-DD ou ISO string
   hora?: string;
   tipoCompromisso?: string;
+  id_responsavel?: number;
   responsavel?: string;
   status: string;
   id_processo: number;
