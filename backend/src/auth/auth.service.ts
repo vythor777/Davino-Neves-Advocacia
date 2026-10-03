@@ -92,6 +92,7 @@ export class AuthService implements OnModuleInit {
         email: user.email,
         role: user.role,
         ativo: user.ativo,
+        acesso_financeiro: user.acesso_financeiro,
       },
     };
   }

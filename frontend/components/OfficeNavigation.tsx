@@ -44,7 +44,7 @@ export function OfficeNavigation({
   pathname: string;
   onNavigate?: () => void;
 }) {
-  const { admin } = usePermissions();
+  const { admin, canAccessFinance } = usePermissions();
   return (
     <nav aria-label="Navegação do escritório" className="mt-10 space-y-8">
       {groups.map((group) => (
@@ -53,7 +53,7 @@ export function OfficeNavigation({
             {group.label}
           </p>
           <ul className="space-y-1">
-            {group.links.filter(link => admin || !["/usuarios", "/auditoria", "/configuracoes"].includes(link.href)).map(({ label, href, icon: Icon }) => {
+            {group.links.filter(link => (link.href !== "/financeiro" || canAccessFinance) && (admin || !["/usuarios", "/auditoria", "/configuracoes"].includes(link.href))).map(({ label, href, icon: Icon }) => {
               const active =
                 pathname === href ||
                 (href !== "/" && pathname.startsWith(`${href}/`));

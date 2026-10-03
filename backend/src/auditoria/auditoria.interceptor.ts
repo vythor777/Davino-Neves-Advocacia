@@ -39,7 +39,7 @@ export class AuditoriaInterceptor implements NestInterceptor {
       financeiro: { name: 'lancamentoFinanceiro', id: 'id' },
     };
     const model = models[entity];
-    const allowed = ['cpf_cnpj', 'email', 'telefone', 'endereco', 'data_nascimento', 'data_abertura', 'nome', 'titulo', 'numero_processo', 'descricao', 'status', 'data_vencimento', 'hora', 'tipoCompromisso', 'responsavel', 'id_responsavel', 'id_processo', 'id_cliente', 'role', 'ativo', 'valor', 'dataVencimento', 'dataPagamento', 'tipo', 'categoria'];
+    const allowed = ['acesso_financeiro', 'cpf_cnpj', 'email', 'telefone', 'endereco', 'data_nascimento', 'data_abertura', 'nome', 'titulo', 'numero_processo', 'descricao', 'status', 'data_vencimento', 'hora', 'tipoCompromisso', 'responsavel', 'id_responsavel', 'id_processo', 'id_cliente', 'role', 'ativo', 'valor', 'dataVencimento', 'dataPagamento', 'tipo', 'categoria'];
     let previous: Record<string, unknown> | null = null;
     if (model && req.params.id && ['PATCH', 'DELETE'].includes(req.method)) {
       const id = model.id === 'id' ? req.params.id : Number(req.params.id);
@@ -49,7 +49,7 @@ export class AuditoriaInterceptor implements NestInterceptor {
             const fields: Record<string, string[]> = {
               cliente: ['nome', 'cpf_cnpj', 'email', 'telefone', 'endereco', 'data_nascimento'], processo: ['data_abertura', 'titulo', 'numero_processo', 'descricao', 'status', 'id_responsavel', 'id_cliente'],
               prazo: ['descricao', 'status', 'data_vencimento', 'hora', 'tipoCompromisso', 'responsavel', 'id_processo'],
-              usuario: ['nome', 'role', 'ativo'], documento: ['id_processo'], agenda: ['titulo'],
+              usuario: ['acesso_financeiro', 'nome', 'role', 'ativo'], documento: ['id_processo'], agenda: ['titulo'],
               lancamentoFinanceiro: ['descricao', 'status', 'valor', 'dataVencimento', 'dataPagamento', 'tipo', 'categoria'],
             };
             return fields[model.name]?.includes(key);

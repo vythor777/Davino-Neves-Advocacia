@@ -110,6 +110,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
+  useEffect(() => {
+    if (!token) return;
+    const refresh = () => { void refreshProfile(); };
+    window.addEventListener('focus', refresh);
+    const interval = setInterval(refresh, 45000);
+    return () => { window.removeEventListener('focus', refresh); clearInterval(interval); };
+  }, [token, refreshProfile]);
+
   const isAdmin = user?.role === 'ADMINISTRADOR';
   const isAdvogado = user?.role === 'ADVOGADO';
   const isEstagiario = user?.role === 'ESTAGIARIO';

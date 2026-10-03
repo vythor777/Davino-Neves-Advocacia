@@ -1,4 +1,5 @@
 const labels: Record<string, string> = {
+  acesso_financeiro: 'Acesso ao Financeiro',
   nome: 'Nome', titulo: 'Título', numero_processo: 'Número CNJ', descricao: 'Descrição',
   cpf_cnpj: 'CPF/CNPJ', email: 'E-mail', telefone: 'Telefone', endereco: 'Endereço',
   data_nascimento: 'Data de nascimento', data_abertura: 'Data de abertura', status: 'Status',

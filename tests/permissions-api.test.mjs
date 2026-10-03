@@ -27,6 +27,7 @@ const users = [
   nome: `Pessoa ${u.id_usuario}`,
   email: `p${u.id_usuario}@example.test`,
   ativo: true,
+  acesso_financeiro: false,
 }));
 const token = (id) =>
   new JwtService({ secret: process.env.JWT_SECRET }).sign({
@@ -67,6 +68,11 @@ function project(row, select) {
 }
 const prisma = {
   usuario: {
+    update: async ({where, data, select}) => {
+      const user = db.users.find(u => matches(u, where));
+      Object.assign(user, data);
+      return project(user, select);
+    },
     count: async () => db.users.length,
     findUnique: async ({ where, select }) =>
       project(
@@ -595,4 +601,24 @@ test('nulos e campos extras não contornam validação de processos', async () =
     .set(auth(2))
     .send({ participantes: [6] })
     .expect(400);
+});
+
+test('Financeiro exige liberação e revogação vale com o mesmo token', async () => {
+  await api.get('/api/financeiro/lancamentos').set(auth(1)).expect(200);
+  for (const id of [2, 5]) {
+    const existingToken = token(id);
+    const header = {Authorization: `Bearer ${existingToken}`};
+    await api.get('/api/financeiro/lancamentos').set(header).expect(403);
+    await api.patch(`/api/usuarios/${id}`).set(auth(1)).send({acesso_financeiro: true}).expect(200);
+    await api.get('/api/financeiro/lancamentos').set(header).expect(200);
+    await api.patch(`/api/usuarios/${id}`).set(auth(1)).send({acesso_financeiro: false}).expect(200);
+    await api.get('/api/financeiro/lancamentos').set(header).expect(403);
+  }
+});
+test('usuário não pode liberar seu Financeiro e endpoints de escrita são bloqueados', async () => {
+  await api.patch('/api/usuarios/2').set(auth(2)).send({acesso_financeiro: true}).expect(403);
+  await api.patch('/api/usuarios/2').set(auth(1)).send({acesso_financeiro: 'true'}).expect(400);
+  for (const [method, path] of [['get','resumo'], ['get','lancamentos/x'], ['post','lancamentos'], ['patch','lancamentos/x'], ['delete','lancamentos/x']]) {
+    await api[method](`/api/financeiro/${path}`).set(auth(2)).expect(403);
+  }
 });

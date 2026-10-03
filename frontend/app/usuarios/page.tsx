@@ -68,6 +68,7 @@ function UsuariosContent() {
     senha: '',
     role: 'ADVOGADO',
     ativo: true,
+    acesso_financeiro: false,
     data_nascimento: '',
   });
 
@@ -77,6 +78,7 @@ function UsuariosContent() {
     senha: '',
     role: 'ADVOGADO',
     ativo: true,
+    acesso_financeiro: false,
     data_nascimento: '',
   });
 
@@ -108,6 +110,7 @@ function UsuariosContent() {
       senha: '',
       role: 'ADVOGADO',
       ativo: true,
+    acesso_financeiro: false,
       data_nascimento: '',
     });
     setShowPassword(false);
@@ -123,6 +126,7 @@ function UsuariosContent() {
       senha: '',
       role: usuario.role,
       ativo: usuario.ativo,
+      acesso_financeiro: usuario.acesso_financeiro ?? false,
       data_nascimento: usuario.data_nascimento ? usuario.data_nascimento.split('T')[0] : '',
     });
     setShowPassword(false);
@@ -212,6 +216,7 @@ function UsuariosContent() {
         email: editFormData.email,
         role: editFormData.role,
         ativo: editFormData.ativo,
+        acesso_financeiro: editFormData.acesso_financeiro,
         data_nascimento: editFormData.data_nascimento ? editFormData.data_nascimento : null,
       };
 
@@ -765,6 +770,10 @@ function UsuariosContent() {
                 </div>
               </div>
 
+              <label className="flex items-start gap-3 rounded-lg border border-slate-200 p-3 text-sm dark:border-slate-700">
+                <input type="checkbox" aria-label="Liberar acesso ao Financeiro" checked={formData.role === 'ADMINISTRADOR' || !!formData.acesso_financeiro} disabled={formData.role === 'ADMINISTRADOR'} onChange={e => setFormData({ ...formData, acesso_financeiro: e.target.checked })} className="mt-1 focus-visible:ring-2" />
+                <span><strong>Liberar acesso ao Financeiro</strong><span className="mt-1 block text-xs text-slate-500">Permite consultar e gerenciar os lançamentos financeiros do escritório. Administradores têm acesso permanente.</span></span>
+              </label>
               <div className="flex items-center gap-2 pt-2">
                 <input
                   type="checkbox"
@@ -967,6 +976,10 @@ function UsuariosContent() {
                 </div>
               </div>
 
+              <label className="flex items-start gap-3 rounded-lg border border-slate-200 p-3 text-sm dark:border-slate-700">
+                <input type="checkbox" aria-label="Liberar acesso ao Financeiro" checked={editFormData.role === 'ADMINISTRADOR' || !!editFormData.acesso_financeiro} disabled={editFormData.role === 'ADMINISTRADOR'} onChange={e => setEditFormData({ ...editFormData, acesso_financeiro: e.target.checked })} className="mt-1 focus-visible:ring-2" />
+                <span><strong>Liberar acesso ao Financeiro</strong><span className="mt-1 block text-xs text-slate-500">Permite consultar e gerenciar os lançamentos financeiros do escritório. Administradores têm acesso permanente.</span></span>
+              </label>
               <div className="flex items-center gap-2 pt-2">
                 <input
                   type="checkbox"

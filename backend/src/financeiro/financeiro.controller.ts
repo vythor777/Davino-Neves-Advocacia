@@ -1,3 +1,5 @@
+import { UseGuards } from '@nestjs/common';
+import { FinancialAccessGuard } from './financial-access.guard.js';
 import {
   Controller,
   Get,
@@ -16,6 +18,7 @@ import { UpdateLancamentoDto } from './dto/update-lancamento.dto.js';
 import { FilterLancamentoDto } from './dto/filter-lancamento.dto.js';
 
 @Controller('financeiro')
+@UseGuards(FinancialAccessGuard)
 export class FinanceiroController {
   constructor(private readonly financeiroService: FinanceiroService) {}
 

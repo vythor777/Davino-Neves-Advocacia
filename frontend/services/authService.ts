@@ -9,6 +9,7 @@ export interface Usuario {
   nome: string;
   email: string;
   role: Role;
+  acesso_financeiro?: boolean;
   ativo?: boolean;
   data_criacao?: string;
   data_atualizacao?: string;
