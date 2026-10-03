@@ -355,14 +355,22 @@ Elabore um resumo conciso contendo:
       );
     }
 
+    const explicitUseful = /dias?\s+[uú]teis/i.test(texto_publicacao);
+    const explicitCalendar = /dias?\s+corridos/i.test(texto_publicacao);
+    const countingConflict = (explicitUseful && explicitCalendar)
+      || (tipo_contagem === 'uteis' && explicitCalendar)
+      || (tipo_contagem === 'corridos' && explicitUseful);
+    const resolvedCounting = countingConflict ? undefined
+      : explicitUseful ? 'uteis' : explicitCalendar ? 'corridos' : tipo_contagem;
+
     const systemInstruction = `Você é um analista processual de controladoria jurídica do escritório Davino Neves Advocacia.
 Sua função é identificar prazos legais (CPC, CPP, CLT ou Juizados Especiais), providências necessárias, termos fatais e partes intimadas a partir de publicações e intimações judiciais.
-Respeite a contagem expressamente informada no texto: dias úteis ou dias corridos. Se a regra não estiver informada, não escolha uma regra por conta própria: solicite confirmação nas observacoes e não preencha data_limite_estimada.
+Respeite a regra de contagem resolvida: dias úteis ou dias corridos. Quando informada sem conflito no texto ou no campo, ela já está definida pelo usuário: NÃO peça para confirmar ou escolher novamente entre dias úteis e corridos, inclusive quando o texto for apenas "120 dias corridos". A falta de providência ou rito processual não torna essa regra ausente. Não deduza outra regra pelo rito. Se a regra estiver ausente ou em conflito, solicite confirmação nas observacoes e não preencha data_limite_estimada.
 Nunca assuma a data atual quando faltar a data inicial. Não confunda disponibilização, publicação e início da contagem. Se houver ambiguidade, solicite confirmação e não preencha data_limite_estimada.
 Antes de responder, confira a quantidade de dias e a data final. Explique nas observacoes a data inicial e a regra aplicada. Não invente feriados ou suspensões; se faltarem dados do calendário necessário, informe a limitação e não apresente o vencimento como confirmado.`;
 
     const prompt = `Data informada pelo usuário: ${data_publicacao || 'Não informada: solicitar confirmação, sem assumir a data atual'}
-Regra escolhida pelo usuário: ${tipo_contagem || 'Não informada'}. Use-a somente se o texto não especificar a regra. Se houver conflito, solicite confirmação sem sugerir uma data.
+Regra de contagem resolvida: ${countingConflict ? 'CONFLITO: solicitar confirmação sem sugerir data' : resolvedCounting === 'uteis' ? 'Dias úteis, já definida pelo usuário; não pedir nova confirmação' : resolvedCounting === 'corridos' ? 'Dias corridos, já definida pelo usuário; não pedir nova confirmação' : 'Ausente: solicitar confirmação sem sugerir data'}.
 Texto da Intimação/Publicação:
 ---
 ${texto_publicacao}
@@ -439,9 +447,7 @@ Extraia as informações estruturadas sobre o prazo.`;
     if (!parsedResult || typeof parsedResult.tem_prazo !== 'boolean') {
       throw new BadRequestException('A IA não confirmou os dados do prazo. Revise o texto e tente novamente.');
     }
-    const explicitUseful = /dias?\s+[uú]teis/i.test(texto_publicacao);
-    const explicitCalendar = /dias?\s+corridos/i.test(texto_publicacao);
-    if ((!tipo_contagem && !explicitUseful && !explicitCalendar) || (explicitUseful && explicitCalendar) || (tipo_contagem === 'uteis' && explicitCalendar) || (tipo_contagem === 'corridos' && explicitUseful)) {
+    if (!resolvedCounting) {
       delete parsedResult.data_limite_estimada;
       parsedResult.observacoes = 'Confirme se a contagem é em dias úteis ou corridos. ' + (parsedResult.observacoes || '');
     }
