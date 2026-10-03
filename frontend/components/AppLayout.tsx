@@ -4,6 +4,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { usePathname, useRouter } from 'next/navigation';
+import { useAiTasks } from '@/context/AiTaskContext';
+import { AiTaskNotifications } from '@/components/AiTaskNotifications';
 import { useAuth } from '@/context/AuthContext';
 import { useOfficeIdentity } from '@/hooks/useOfficeIdentity';
 import { OfficeNavigation } from '@/components/OfficeNavigation';
@@ -33,6 +35,8 @@ interface AppLayoutProps {
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
+  const { tasks: aiTasks } = useAiTasks();
+  const aiUnread = aiTasks.filter(task => !task.read && task.status !== 'pending').length;
   const pathname = usePathname();
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuth();
@@ -383,7 +387,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                 aria-expanded={notificationsOpen}
               >
                 <Bell className="h-4 w-4 stroke-[1.25]" />
-                {notificacoesData.totalNaoLidas > 0 && (
+                {(notificacoesData.totalNaoLidas > 0 || aiUnread > 0) && (
                   <span className="absolute top-1.5 right-1.5 flex h-2 w-2 rounded-full bg-blue-500" />
                 )}
               </button>
@@ -430,6 +434,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
                   {/* Lista de Alertas Reais */}
                   <div className="mt-2 max-h-80 overflow-y-auto space-y-2 pr-0.5">
+                    <AiTaskNotifications onOpen={() => setNotificationsOpen(false)} />
                     {loadingNotificacoes && notificacoesData.notificacoes.length === 0 ? (
                       <div className="space-y-2 py-2">
                         {[1, 2, 3].map((i) => (
