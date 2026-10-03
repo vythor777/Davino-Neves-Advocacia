@@ -42,8 +42,8 @@ export function LoginShowcase() {
         <video
           ref={video}
           className="aspect-[8/5] w-full object-contain"
-          poster="/login/cover.png"
-          src="/login/presentation.mp4"
+          poster="/login/cover-v2.png"
+          src="/login/presentation-v2.mp4"
           autoPlay={!paused}
           muted loop playsInline preload="none"
           aria-label="Apresentação do Assistente IA, consulta ao CNJ e agenda do sistema"
@@ -52,7 +52,7 @@ export function LoginShowcase() {
           onError={() => { setUnavailable(true); setPlaying(false); }}
         />
       ) : (
-        <Image src="/login/cover.png" width={1280} height={800}
+        <Image src="/login/cover-v2.png" width={1280} height={800}
           alt="Apresentação da interface do sistema Davino Neves Advocacia"
           className="aspect-[8/5] w-full object-contain" priority />
       )}
