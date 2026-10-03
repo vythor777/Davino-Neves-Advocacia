@@ -1,8 +1,10 @@
 'use client';
 
+import { useAiTasks, useAiDraft } from '@/context/AiTaskContext';
+import { aiTaskUrl, type AiAction } from '@/utils/ai-tasks';
 import React, { useState, useEffect, Suspense } from 'react';
 import { PageHeader } from '@/components/ui/PageHeader';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
 import { InstitutionalFooter } from '@/components/InstitutionalFooter';
@@ -98,7 +100,15 @@ const ACOES_IA: AcaoConfig[] = [
 ];
 
 function GeminiContent() {
+  const { store: aiStore, tasks: aiTasks, visible: aiVisible } = useAiTasks();
+  const router = useRouter();
+  const startTask = (action: AiAction, title: string, operation: () => Promise<unknown>) => {
+    const id = aiStore.start(action, title, operation);
+    router.replace(aiTaskUrl({ id, action, title, status: 'pending', read: false }));
+  };
   const searchParams = useSearchParams();
+  const resultId = searchParams.get('resultado');
+  const getTask = (action: AiAction) => aiTasks.find(task => task.action === action && task.id === (resultId || aiVisible[action]));
   const acaoParam = (searchParams.get('acao') as AcaoIA) || (searchParams.get('tab') as AcaoIA);
   const procParam = searchParams.get('processo') || '';
 
@@ -132,45 +142,50 @@ function GeminiContent() {
   }, []);
 
   // 1. Estados: Analisar Processo
-  const [procNumero, setProcNumero] = useState(procParam);
-  const [procTitulo, setProcTitulo] = useState('');
-  const [procPolo, setProcPolo] = useState<'Autor' | 'Réu' | 'Terceiro Interessado'>('Autor');
-  const [procConteudo, setProcConteudo] = useState('');
-  const [procFoco, setProcFoco] = useState('');
-  const [procLoading, setProcLoading] = useState(false);
-  const [procResultado, setProcResultado] = useState<string | null>(null);
+  const [procNumero, setProcNumero] = useAiDraft('procNumero', procParam);
+  const [procTitulo, setProcTitulo] = useAiDraft('procTitulo', '');
+  const [procPolo, setProcPolo] = useAiDraft<'Autor' | 'Réu' | 'Terceiro Interessado'>('procPolo', 'Autor');
+  const [procConteudo, setProcConteudo] = useAiDraft('procConteudo', '');
+  const [procFoco, setProcFoco] = useAiDraft('procFoco', '');
+  const procLoading = aiTasks.some(task => task.action === 'analisar_processo' && task.status === 'pending');
+  const procResultado = (getTask('analisar_processo')?.result as string | undefined) ?? null;
+  const setProcResultado = () => aiStore.hide('analisar_processo');
 
   // 2. Estados: Resumir Documento
-  const [docTexto, setDocTexto] = useState('');
-  const [docTipo, setDocTipo] = useState('Sentença / Decisão');
-  const [docFormato, setDocFormato] = useState<'executivo' | 'cliente_simples' | 'topicos_estrategicos'>('executivo');
-  const [docLoading, setDocLoading] = useState(false);
-  const [docResultado, setDocResultado] = useState<string | null>(null);
+  const [docTexto, setDocTexto] = useAiDraft('docTexto', '');
+  const [docTipo, setDocTipo] = useAiDraft('docTipo', 'Sentença / Decisão');
+  const [docFormato, setDocFormato] = useAiDraft<'executivo' | 'cliente_simples' | 'topicos_estrategicos'>('docFormato', 'executivo');
+  const docLoading = aiTasks.some(task => task.action === 'resumir_documento' && task.status === 'pending');
+  const docResultado = (getTask('resumir_documento')?.result as string | undefined) ?? null;
+  const setDocResultado = () => aiStore.hide('resumir_documento');
 
   // 3. Estados: Encontrar Jurisprudência
-  const [jurisTema, setJurisTema] = useState('');
-  const [jurisRamo, setJurisRamo] = useState('Direito Civil / Processual');
-  const [jurisTribunal, setJurisTribunal] = useState('STJ & Tribunais Estaduais');
-  const [jurisTese, setJurisTese] = useState('');
-  const [jurisLoading, setJurisLoading] = useState(false);
-  const [jurisResultado, setJurisResultado] = useState<string | null>(null);
+  const [jurisTema, setJurisTema] = useAiDraft('jurisTema', '');
+  const [jurisRamo, setJurisRamo] = useAiDraft('jurisRamo', 'Direito Civil / Processual');
+  const [jurisTribunal, setJurisTribunal] = useAiDraft('jurisTribunal', 'STJ & Tribunais Estaduais');
+  const [jurisTese, setJurisTese] = useAiDraft('jurisTese', '');
+  const jurisLoading = aiTasks.some(task => task.action === 'encontrar_jurisprudencia' && task.status === 'pending');
+  const jurisResultado = (getTask('encontrar_jurisprudencia')?.result as string | undefined) ?? null;
+  const setJurisResultado = () => aiStore.hide('encontrar_jurisprudencia');
 
   // 4. Estados: Criar Peça
-  const [pecaTipo, setPecaTipo] = useState('Petição Inicial');
-  const [pecaTribunal, setPecaTribunal] = useState('Vara Cível da Comarca de São Paulo/SP');
-  const [pecaPartes, setPecaPartes] = useState('Autor (Cliente) x Réu (Instituição Financeira)');
-  const [pecaFatos, setPecaFatos] = useState('');
-  const [pecaPedidos, setPecaPedidos] = useState('');
-  const [pecaJurisReferencia, setPecaJurisReferencia] = useState('');
-  const [pecaLoading, setPecaLoading] = useState(false);
-  const [pecaResultado, setPecaResultado] = useState<string | null>(null);
+  const [pecaTipo, setPecaTipo] = useAiDraft('pecaTipo', 'Petição Inicial');
+  const [pecaTribunal, setPecaTribunal] = useAiDraft('pecaTribunal', 'Vara Cível da Comarca de São Paulo/SP');
+  const [pecaPartes, setPecaPartes] = useAiDraft('pecaPartes', 'Autor (Cliente) x Réu (Instituição Financeira)');
+  const [pecaFatos, setPecaFatos] = useAiDraft('pecaFatos', '');
+  const [pecaPedidos, setPecaPedidos] = useAiDraft('pecaPedidos', '');
+  const [pecaJurisReferencia, setPecaJurisReferencia] = useAiDraft('pecaJurisReferencia', '');
+  const pecaLoading = aiTasks.some(task => task.action === 'criar_peca' && task.status === 'pending');
+  const pecaResultado = (getTask('criar_peca')?.result as string | undefined) ?? null;
+  const setPecaResultado = () => aiStore.hide('criar_peca');
 
   // 5. Estados: Identificar Prazos
-  const [prazoTexto, setPrazoTexto] = useState('');
-  const [prazoContagem, setPrazoContagem] = useState<'' | 'uteis' | 'corridos'>('');
-  const [prazoDataPub, setPrazoDataPub] = useState('');
-  const [prazoLoading, setPrazoLoading] = useState(false);
-  const [prazoResultado, setPrazoResultado] = useState<DadosPrazoExtraido | null>(null);
+  const [prazoTexto, setPrazoTexto] = useAiDraft('prazoTexto', '');
+  const [prazoContagem, setPrazoContagem] = useAiDraft<'' | 'uteis' | 'corridos'>('prazoContagem', '');
+  const [prazoDataPub, setPrazoDataPub] = useAiDraft('prazoDataPub', '');
+  const prazoLoading = aiTasks.some(task => task.action === 'identificar_prazos' && task.status === 'pending');
+  const prazoResultado = (getTask('identificar_prazos')?.result as DadosPrazoExtraido | undefined) ?? null;
+  const setPrazoResultado = () => aiStore.hide('identificar_prazos');
 
   // Modal para agendar prazo extraído
   const [modalPrazoAberto, setModalPrazoAberto] = useState(false);
@@ -271,9 +286,7 @@ Fica a parte autora intimada para, no prazo impreterível de 15 (quinze) dias ú
       toast.warning('Informe o conteúdo ou síntese dos autos para análise.');
       return;
     }
-    setProcLoading(true);
-    setProcResultado(null);
-    try {
+    startTask('analisar_processo', 'Análise do processo', async () => {
       const res = await geminiService.analisarProcesso({
         numero_processo: procNumero || undefined,
         titulo: procTitulo || undefined,
@@ -281,14 +294,9 @@ Fica a parte autora intimada para, no prazo impreterível de 15 (quinze) dias ú
         polo_cliente: procPolo,
         foco_estrategico: procFoco || undefined,
       });
-      setProcResultado(res.analise);
-      toast.success('Análise do processo concluída!');
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Falha ao processar análise com IA.';
-      toast.error('Erro na análise', { description: msg });
-    } finally {
-      setProcLoading(false);
-    }
+      if (!res.sucesso) throw new Error('A IA não conseguiu concluir a solicitação.');
+      return res.analise;
+    });
   };
 
   // 2. Resumir Documento
@@ -298,22 +306,15 @@ Fica a parte autora intimada para, no prazo impreterível de 15 (quinze) dias ú
       toast.warning('Cole o texto do documento a ser resumido.');
       return;
     }
-    setDocLoading(true);
-    setDocResultado(null);
-    try {
+    startTask('resumir_documento', 'Resumo do documento', async () => {
       const res = await geminiService.resumirDocumento({
         texto: docTexto,
         tipo_documento: docTipo,
         formato_resumo: docFormato,
       });
-      setDocResultado(res.resumo);
-      toast.success('Resumo gerado com sucesso!');
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Falha ao gerar resumo com IA.';
-      toast.error('Erro no resumo', { description: msg });
-    } finally {
-      setDocLoading(false);
-    }
+      if (!res.sucesso) throw new Error('A IA não conseguiu concluir a solicitação.');
+      return res.resumo;
+    });
   };
 
   // 3. Encontrar Jurisprudência
@@ -323,23 +324,16 @@ Fica a parte autora intimada para, no prazo impreterível de 15 (quinze) dias ú
       toast.warning('Informe o tema ou controvérsia para pesquisa.');
       return;
     }
-    setJurisLoading(true);
-    setJurisResultado(null);
-    try {
+    startTask('encontrar_jurisprudencia', 'Pesquisa de jurisprudência', async () => {
       const res = await geminiService.encontrarJurisprudencia({
         tema: jurisTema,
         ramo_direito: jurisRamo || undefined,
         tribunal_alvo: jurisTribunal || undefined,
         tese_pretendida: jurisTese || undefined,
       });
-      setJurisResultado(res.resultado);
-      toast.success('Pesquisa jurisprudencial concluída!');
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Falha ao pesquisar jurisprudência.';
-      toast.error('Erro na pesquisa', { description: msg });
-    } finally {
-      setJurisLoading(false);
-    }
+      if (!res.sucesso) throw new Error('A IA não conseguiu concluir a solicitação.');
+      return res.resultado;
+    });
   };
 
   // 4. Criar Peça
@@ -349,9 +343,7 @@ Fica a parte autora intimada para, no prazo impreterível de 15 (quinze) dias ú
       toast.warning('Informe os fatos e o contexto do caso para redigir a peça.');
       return;
     }
-    setPecaLoading(true);
-    setPecaResultado(null);
-    try {
+    startTask('criar_peca', 'Minuta jurídica', async () => {
       const res = await geminiService.criarPeca({
         tipo_peca: pecaTipo,
         tribunal_foro: pecaTribunal || undefined,
@@ -360,14 +352,9 @@ Fica a parte autora intimada para, no prazo impreterível de 15 (quinze) dias ú
         pedidos_especificos: pecaPedidos || undefined,
         jurisprudencia_referencia: pecaJurisReferencia || undefined,
       });
-      setPecaResultado(res.minuta);
-      toast.success('Minuta jurídica redigida com sucesso!');
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Falha ao redigir minuta com IA.';
-      toast.error('Erro na redação', { description: msg });
-    } finally {
-      setPecaLoading(false);
-    }
+      if (!res.sucesso) throw new Error('A IA não conseguiu concluir a solicitação.');
+      return res.minuta;
+    });
   };
 
   // 5. Identificar Prazos
@@ -377,23 +364,15 @@ Fica a parte autora intimada para, no prazo impreterível de 15 (quinze) dias ú
       toast.warning('Cole o texto da publicação ou intimação.');
       return;
     }
-    setPrazoLoading(true);
-    setPrazoResultado(null);
-    try {
+    startTask('identificar_prazos', 'Identificação de prazos', async () => {
       const res = await geminiService.identificarPrazos({
         texto_publicacao: prazoTexto,
         data_publicacao: prazoDataPub || undefined,
         tipo_contagem: prazoContagem || undefined,
       });
-      setPrazoResultado(res.dados_prazo);
-      if (res.dados_prazo.data_limite_estimada) toast.success('Data sugerida gerada. Revise a contagem antes de agendar.');
-      else toast.warning('Confira as informações solicitadas pela IA antes de agendar.');
-    } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : 'Falha ao identificar prazos.';
-      toast.error('Erro nos prazos', { description: msg });
-    } finally {
-      setPrazoLoading(false);
-    }
+      if (!res.sucesso) throw new Error('A IA não conseguiu concluir a solicitação.');
+      return res.dados_prazo;
+    });
   };
 
   // Modal para vincular e agendar prazo extraído
@@ -739,7 +718,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                         setProcConteudo('');
                         setProcTitulo('');
                         setProcFoco('');
-                        setProcResultado(null);
+                        setProcResultado();
                       }}
                       className="rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 dark:border-white/[0.08] dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-white/[0.04] transition cursor-pointer"
                     >
@@ -893,7 +872,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                       type="button"
                       onClick={() => {
                         setDocTexto('');
-                        setDocResultado(null);
+                        setDocResultado();
                       }}
                       className="rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 dark:border-white/[0.08] dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-white/[0.04] transition cursor-pointer"
                     >
@@ -1022,7 +1001,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                       onClick={() => {
                         setJurisTema('');
                         setJurisTese('');
-                        setJurisResultado(null);
+                        setJurisResultado();
                       }}
                       className="rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 dark:border-white/[0.08] dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-white/[0.04] transition cursor-pointer"
                     >
@@ -1204,7 +1183,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                       onClick={() => {
                         setPecaFatos('');
                         setPecaPedidos('');
-                        setPecaResultado(null);
+                        setPecaResultado();
                       }}
                       className="rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 dark:border-white/[0.08] dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-white/[0.04] transition cursor-pointer"
                     >
@@ -1278,14 +1257,14 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                       id="prazoDataPubInput"
                       type="date"
                       value={prazoDataPub}
-                      onChange={(e) => { setPrazoDataPub(e.target.value); setPrazoResultado(null); }}
+                      onChange={(e) => { setPrazoDataPub(e.target.value); setPrazoResultado(); }}
                       className="w-full sm:w-64 rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-slate-900 px-3.5 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-1 focus:ring-[#0047ab]"
                     />
                   </div>
 
                   <div>
                     <label htmlFor="prazoContagem" className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Regra de contagem</label>
-                    <select id="prazoContagem" value={prazoContagem} onChange={(e) => { setPrazoContagem(e.target.value as '' | 'uteis' | 'corridos'); setPrazoResultado(null); }} className="w-full rounded-lg border border-slate-200 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-blue-700">
+                    <select id="prazoContagem" value={prazoContagem} onChange={(e) => { setPrazoContagem(e.target.value as '' | 'uteis' | 'corridos'); setPrazoResultado(); }} className="w-full rounded-lg border border-slate-200 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-blue-700">
                       <option value="">Usar o texto; pedir confirmação se faltar</option>
                       <option value="uteis">Dias úteis</option>
                       <option value="corridos">Dias corridos</option>
@@ -1304,7 +1283,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                       rows={8}
                       required
                       value={prazoTexto}
-                      onChange={(e) => { setPrazoTexto(e.target.value); setPrazoResultado(null); }}
+                      onChange={(e) => { setPrazoTexto(e.target.value); setPrazoResultado(); }}
                       placeholder="Cole aqui o recorte do Diário da Justiça Eletrônico ou teor da intimação..."
                       className="w-full rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-slate-900 p-3 font-mono text-xs leading-relaxed text-slate-800 dark:text-slate-200 placeholder:text-slate-400 focus:outline-hidden focus:ring-1 focus:ring-[#0047ab]"
                     />
@@ -1315,7 +1294,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                       type="button"
                       onClick={() => {
                         setPrazoTexto('');
-                        setPrazoResultado(null);
+                        setPrazoResultado();
                       }}
                       className="rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-medium text-slate-600 hover:bg-slate-50 dark:border-white/[0.08] dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-white/[0.04] transition cursor-pointer"
                     >
