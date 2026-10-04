@@ -2,6 +2,8 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
+import { BrandMark } from '@/components/ui/BrandMark';
+import { WorkspaceSearch } from '@/components/WorkspaceSearch';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { usePermissions } from '@/hooks/usePermissions';
@@ -13,8 +15,6 @@ import { OfficeNavigation } from '@/components/OfficeNavigation';
 import { ThemeToggle } from '@/components/ThemeToggle';
 import {
   CircleDollarSign,
-  Search,
-  Scale,
   Bell,
   ChevronDown,
   LogOut,
@@ -47,7 +47,6 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [mobileDrawerOpen, setMobileDrawerOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
 
   // Notificações Reais do Escritório
   const [notificacoesData, setNotificacoesData] = useState<ResumoNotificacoes>({
@@ -107,7 +106,6 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   const notificationsRef = useRef<HTMLDivElement>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
-  const searchInputRef = useRef<HTMLInputElement>(null);
 
   // Close menus on outside click
   useEffect(() => {
@@ -124,22 +122,12 @@ export function AppLayout({ children }: AppLayoutProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Global shortcut Ctrl + K / Cmd + K to focus search
   useEffect(() => {
-    function handleKeyDown(e: KeyboardEvent) {
-      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
-        e.preventDefault();
-        searchInputRef.current?.focus();
-        searchInputRef.current?.select();
-      }
-      if (e.key === 'Escape') {
-        setMobileDrawerOpen(false);
-        setNotificationsOpen(false);
-        setUserDropdownOpen(false);
-      }
+    function closeMenus(e: KeyboardEvent) {
+      if (e.key === 'Escape') { setMobileDrawerOpen(false); setNotificationsOpen(false); setUserDropdownOpen(false); }
     }
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener('keydown', closeMenus);
+    return () => window.removeEventListener('keydown', closeMenus);
   }, []);
 
   // Close drawer and menus on path change
@@ -152,12 +140,6 @@ export function AppLayout({ children }: AppLayoutProps) {
       setUserDropdownOpen(false);
     }
   }, [pathname]);
-
-  const handleGlobalSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!searchQuery.trim()) return;
-    router.push(`/processos?q=${encodeURIComponent(searchQuery.trim())}`);
-  };
 
   const displayName = user?.nome || 'Usuário';
   const displayRole =
@@ -183,9 +165,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         <div className="flex flex-col">
           {/* Logotipo estilizado do escritório 'Davino Neves Advocacia' */}
           <Link href="/" className="group flex items-center gap-3 transition-opacity hover:opacity-95">
-            <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0c1f3d] dark:bg-[#10203a] text-blue-200 border border-blue-500/30 dark:border-blue-500/25 shadow-xs transition-transform group-hover:scale-105">
-              <Scale className="h-5 w-5 stroke-[1.25] text-blue-200" />
-            </div>
+            <BrandMark />
             <div className="min-w-0 flex-1">
               <span className="font-semibold text-sm tracking-tight text-[#0c1f3d] dark:text-white block truncate">
                 {officeName}
@@ -251,7 +231,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                     onClick={() => setUserDropdownOpen(false)}
                     className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-[#f7f9fc] dark:hover:bg-white/[0.05] hover:text-[#0c1f3d] dark:hover:text-white transition"
                   >
-                    <Scale className="h-3.5 w-3.5 stroke-[1.25] text-blue-700" />
+                    <BrandMark />
                     <span>Status de Conexão CNJ</span>
                   </Link>
                   <div className="border-t border-slate-100 dark:border-white/[0.06] my-1" />
@@ -287,7 +267,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.06]">
                 <div className="flex items-center gap-2.5">
                   <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#0c1f3d] text-blue-200 border border-blue-500/30">
-                    <Scale className="h-4.5 w-4.5 stroke-[1.25] text-blue-200" />
+                    <BrandMark />
                   </div>
                   <div>
                     <span className="text-sm font-semibold text-[#0c1f3d] dark:text-white block">Davino Neves</span>
@@ -355,19 +335,7 @@ export function AppLayout({ children }: AppLayoutProps) {
             </button>
 
             {/* Busca Global Expansível */}
-            <form onSubmit={handleGlobalSearch} className="relative flex-1">
-              <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 stroke-[1.25] text-slate-400 dark:text-slate-500" />
-              <input
-                ref={searchInputRef}
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                aria-label="Buscar processos"
-                placeholder="Buscar processos..."
-                className="w-full rounded-lg border border-[#0c1f3d]/[0.08] dark:border-white/[0.08] bg-[#f7f9fc] dark:bg-white/[0.04] pl-9 pr-16 py-2.5 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:border-blue-500 dark:focus:border-blue-500 focus:bg-white dark:focus:bg-surface focus:outline-hidden transition"
-              />
-              <kbd aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 hidden -translate-y-1/2 rounded border border-line px-1.5 py-0.5 text-xs text-slate-500 sm:block">Ctrl K</kbd>
-            </form>
+            <WorkspaceSearch />
           </div>
 
           {/* Lado Direito: Alternador de Tema e Notificações */}
@@ -547,7 +515,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
         {/* Conteúdo Rolável da Página */}
         <main id="main-content" tabIndex={-1} className="flex-1 overflow-y-auto min-h-0 min-w-0 bg-slate-50 dark:bg-slate-950 transition-colors duration-200">
-          {children}
+          <div key={pathname} className="workspace-enter">{children}</div>
         </main>
       </div>
     </div>

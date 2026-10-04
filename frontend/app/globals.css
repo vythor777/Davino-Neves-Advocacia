@@ -520,3 +520,22 @@ select option {
     animation: none;
   }
 }
+
+/* Shared workspace polish */
+.brand-mark { position: relative; display: inline-block; flex-shrink: 0; overflow: hidden; border-radius: 10px; background: #fff; border: 1px solid #b99a53; }
+.brand-mark-image { position: absolute; width: 145px; height: auto; max-width: none; top: 3px; left: -51px; }
+.brand-mark.h-12 .brand-mark-image { width: 174px; top: 4px; left: -61px; }
+.ai-launchpad { border: 1px solid rgb(0 71 171 / .13); border-radius: 12px; padding: 16px; background: linear-gradient(135deg, #f0f5ff, #f8fafc); }
+.dark .ai-launchpad { background: linear-gradient(135deg, #10203a, #0f172a); border-color: rgb(147 197 253 / .15); }
+.search-result { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border-radius: 8px; }
+.search-result:hover, .search-result:focus-visible { background: #eff6ff; outline: 2px solid var(--brand); }
+.dark .search-result:hover, .dark .search-result:focus-visible { background: #1e293b; }
+.workspace-enter, .search-results { animation: workspace-reveal 180ms ease-out both; }
+@keyframes workspace-reveal { from { opacity: .5; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+.process-workspace-list > li { padding: 14px 16px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); font-size: 14px; line-height: 1.8; }
+.process-workspace-tabs button { transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease; }
+.process-workspace-tabs button[aria-selected=true] { background: #eff6ff; box-shadow: inset 0 -2px #0047ab; }
+.dark .process-workspace-tabs button[aria-selected=true] { background: #10203a; }
+@media (prefers-reduced-motion: reduce) { .workspace-enter, .search-results { animation: none; } }
+.process-data-table[data-hide~="2"] tr > :nth-child(2), .process-data-table[data-hide~="3"] tr > :nth-child(3), .process-data-table[data-hide~="4"] tr > :nth-child(4) { display: none; }
+.process-data-table[data-compact="true"] tbody td { padding-top: 8px; padding-bottom: 8px; }

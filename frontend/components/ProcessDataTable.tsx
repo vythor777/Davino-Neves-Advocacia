@@ -2,7 +2,7 @@
 
 import { formatPrazoDateBR } from '@/utils/dateUtils';
 
-import React, { useState } from 'react';
+import React, { useState, useSyncExternalStore } from 'react';
 import {
   Eye,
   Copy,
@@ -155,6 +155,12 @@ function getDataFormatada(item: ProcessoItem): string {
  * - Ações: Coluna final com botão destacado 'Ver Detalhes' para visualização do processo.
  * - Acessibilidade completa (WCAG): Contraste rigoroso, navegação via teclado, atributos aria e marcação semântica de tabela.
  */
+function subscribeTablePreferences(callback: () => void) {
+  window.addEventListener('storage', callback); window.addEventListener('davino-table-view', callback);
+  return () => { window.removeEventListener('storage', callback); window.removeEventListener('davino-table-view', callback); };
+}
+function readTablePreferences() { try { return localStorage.getItem('davino-process-table-view') || ''; } catch { return ''; } }
+
 export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
   processos,
   loading = false,
@@ -175,6 +181,14 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
   onPageChange,
   caption = 'Tabela de Processos Judiciais',
 }: ProcessDataTableProps<T>) {
+  const preference = useSyncExternalStore(subscribeTablePreferences, readTablePreferences, () => '');
+  const compact = preference.includes('compact');
+  const hiddenColumns = [2, 3, 4].filter(n => preference.includes(`hide${n}`));
+  function setPreference(token: string, enabled: boolean) {
+    const tokens = preference.split(',').filter(t => t && t !== token);
+    if (enabled) tokens.push(token);
+    try { localStorage.setItem('davino-process-table-view', tokens.join(',')); window.dispatchEvent(new Event('davino-table-view')); } catch { /* Preferences are optional. */ }
+  }
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   const handleCopyCNJ = (e: React.MouseEvent, cnj: string, idKey: string) => {
@@ -331,10 +345,17 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
   // ==========================================
   return (
     <div
-      className={`legal-glass-card flex flex-col w-full overflow-hidden ${className}`}
+      className={`process-data-table legal-glass-card flex flex-col w-full overflow-hidden ${className}`}
+      data-compact={compact} data-hide={hiddenColumns.join(" ")}
     >
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-3 text-xs">
+        <span className="text-slate-500">Personalize sua visualização</span>
+        <div className="flex flex-wrap items-center gap-4"><label className="flex items-center gap-2"><input type="checkbox" checked={compact} onChange={e => setPreference('compact', e.target.checked)} />Compacta</label>
+          {[[2, 'Cliente'], [3, 'Tribunal'], [4, 'Distribuição']].map(([n, label]) => <label key={n} className="flex items-center gap-2"><input type="checkbox" checked={!hiddenColumns.includes(Number(n))} onChange={e => setPreference(`hide${n}`, !e.target.checked)} />{label}</label>)}
+        </div>
+      </div>
       <div className={`overflow-x-auto ${maxHeight} focus:outline-hidden`}>
-        <table className="w-full text-left border-collapse text-xs">
+        <table className="w-full text-left border-collapse text-sm">
           <caption className="sr-only">{caption}</caption>
 
           {/* Cabeçalhos Fixos (Sticky Top) */}
@@ -432,7 +453,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                       {/* Descrição resumida opcional com truncagem */}
                       {proc.descricao && (
                         <p
-                          className="truncate text-[11px] text-slate-400 dark:text-slate-500"
+                          className="truncate text-xs text-slate-400 dark:text-slate-500"
                           title={proc.descricao}
                         >
                           {proc.descricao}
@@ -455,7 +476,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                           {nomeCliente}
                         </span>
                         {typeof proc.cliente === 'object' && proc.cliente?.cpf_cnpj && (
-                          <span className="font-mono text-[10px] text-slate-400">
+                          <span className="font-mono text-xs text-slate-400">
                             {proc.cliente.cpf_cnpj}
                           </span>
                         )}
@@ -467,7 +488,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                   <td className="px-4 py-3.5">
                     <div className="flex flex-col gap-0.5 max-w-[160px] sm:max-w-[200px]">
                       {tribunal ? (
-                        <span className="inline-flex w-fit items-center gap-1 rounded-md bg-brand/10 px-2 py-0.5 font-mono text-[10px] font-bold text-brand dark:bg-brand/15 dark:text-brand border border-brand/25">
+                        <span className="inline-flex w-fit items-center gap-1 rounded-md bg-brand/10 px-2 py-0.5 font-mono text-xs font-bold text-brand dark:bg-brand/15 dark:text-brand border border-brand/25">
                           <Landmark className="h-3 w-3" aria-hidden="true" />
                           <span>{tribunal}</span>
                         </span>
@@ -476,7 +497,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                       )}
                       {orgao && (
                         <span
-                          className="truncate text-[11px] text-slate-500 dark:text-slate-400"
+                          className="truncate text-xs text-slate-500 dark:text-slate-400"
                           title={orgao}
                         >
                           {orgao}
@@ -487,7 +508,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
 
                   {/* Coluna 4: Distribuição */}
                   <td className="px-4 py-3.5 whitespace-nowrap">
-                    <div className="flex items-center gap-1.5 font-mono text-[11px] text-slate-600 dark:text-slate-400">
+                    <div className="flex items-center gap-1.5 font-mono text-xs text-slate-600 dark:text-slate-400">
                       <Calendar className="h-3.5 w-3.5 text-slate-400 shrink-0" aria-hidden="true" />
                       <span>{dataFormatada}</span>
                     </div>
@@ -496,7 +517,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                   {/* Coluna 5: Status */}
                   <td className="px-4 py-3.5 whitespace-nowrap">
                     <span
-                      className={`inline-flex items-center rounded-md border px-2.5 py-0.5 text-[11px] font-medium tracking-wide ${getStatusBadgeStyle(
+                      className={`inline-flex items-center rounded-md border px-2.5 py-0.5 text-xs font-medium tracking-wide ${getStatusBadgeStyle(
                         statusText
                       )}`}
                     >
@@ -580,7 +601,7 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
               <span>Anterior</span>
             </button>
 
-            <span className="px-2 font-mono text-[11px] text-slate-600 dark:text-slate-400">
+            <span className="px-2 font-mono text-xs text-slate-600 dark:text-slate-400">
               {currentPage} / {totalPages}
             </span>
 
