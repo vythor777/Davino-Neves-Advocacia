@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import Image from "next/image";
-import { Scale } from "lucide-react";
+import { BrandMark } from "@/components/ui/BrandMark";
 import { LoginShowcase } from "./LoginShowcase";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
@@ -9,9 +9,7 @@ export function LoginShell({ children }: { children: ReactNode }) {
     <main className="login-page">
       <aside className="login-identity">
         <div className="flex items-center gap-3">
-          <span className="flex h-12 w-12 items-center justify-center rounded-xl border border-blue-300/30 bg-blue-500/15">
-            <Scale className="h-6 w-6 text-blue-200" />
-          </span>
+          <BrandMark size="large" />
           <div>
             <p className="text-lg font-semibold">Davino Neves</p>
             <p className="text-xs uppercase tracking-widest text-blue-200">
@@ -43,7 +41,7 @@ export function LoginShell({ children }: { children: ReactNode }) {
         </div>
         <div className="w-full max-w-md animate-fade-in-up">
           <div className="mb-8 flex items-center gap-3 lg:hidden">
-            <Scale className="h-7 w-7 text-brand" />
+            <BrandMark />
             <span className="font-semibold">Davino Neves Advocacia</span>
           </div>
           <p className="text-xs font-semibold uppercase tracking-widest text-brand">

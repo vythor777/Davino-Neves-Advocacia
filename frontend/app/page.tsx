@@ -29,7 +29,7 @@ import { DeadlineAgenda } from "@/components/dashboard/DeadlineAgenda";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { MetricCard } from "@/components/ui/MetricCard";
-import { formatPrazoDateBR } from "@/utils/dateUtils";
+import { calcularStatusPrazo, formatPrazoDateBR } from "@/utils/dateUtils";
 
 const money = (value: number) =>
   value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -61,6 +61,9 @@ function Dashboard() {
   const pending = prazos?.filter(
     (p) => p.status.toLowerCase() !== "cumprido",
   ).length;
+  const deadlineTiming = prazos?.map(p => calcularStatusPrazo(p.data_vencimento, p.status, p.hora));
+  const overdue = deadlineTiming?.filter(p => p.isVencido).length;
+  const dueToday = deadlineTiming?.filter(p => p.isHoje && !p.isCumprido).length;
   const metrics = [
     {
       label: "Processos ativos",
@@ -148,6 +151,10 @@ function Dashboard() {
           <MetricCard key={metric.label} {...metric} loading={loading} />
         ))}
       </div>
+      {!loading && deadlineTiming && <Link href="/prazos" className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-surface px-5 py-4 transition hover:border-brand/40 focus-visible:ring-2 focus-visible:ring-brand">
+        <div><p className="text-sm font-semibold">Sua atenção hoje</p><p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{overdue ? `${overdue} prazo(s) vencido(s)` : 'Nenhum prazo vencido'} · {dueToday || 0} para hoje</p></div>
+        <span className="flex items-center gap-2 text-sm font-medium text-brand">Revisar agenda <ArrowUpRight className="h-4 w-4" aria-hidden /></span>
+      </Link>}
       <div className="dashboard-grid">
         <div className="dashboard-column">
         <DashboardSection
@@ -275,17 +282,11 @@ function Dashboard() {
                 <ArrowUpRight aria-hidden className="h-4 w-4 shrink-0" />
               </Link>
             ))}
-            <details className="group rounded-lg">
-              <summary className="cursor-pointer rounded-lg px-3 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50 focus-visible:outline-2 focus-visible:outline-brand dark:text-slate-200 dark:hover:bg-slate-800">Assistente IA <span className="ml-2 text-xs font-normal text-slate-500">3 ações</span></summary>
-              <div className="ml-3 border-l border-line pl-2">
-                {shortcuts.slice(2).map(([href, label, Icon]) => (
-                  <Link key={href} href={href} className="dashboard-link flex items-center gap-3 rounded-lg px-3 py-3 text-sm transition hover:bg-slate-50 dark:hover:bg-slate-800">
-                    <Icon aria-hidden className="h-4 w-4 shrink-0 text-slate-500" />
-                    {label}
-                  </Link>
-                ))}
-              </div>
-            </details>
+            <div className="ai-launchpad mt-4">
+              <div className="mb-3 flex items-center gap-2"><Sparkles className="h-4 w-4 text-brand" aria-hidden /><h3 className="text-sm font-semibold">Seu assistente jurídico</h3></div>
+              <p className="mb-3 text-xs leading-relaxed text-slate-500 dark:text-slate-400">Prepare documentos e organize providências. Você pode continuar trabalhando enquanto a IA analisa.</p>
+              <div className="space-y-1">{shortcuts.slice(2).map(([href, label, Icon]) => <Link key={href} href={href} className="dashboard-link flex items-center gap-3 rounded-lg px-3 py-3 text-sm transition hover:bg-white dark:hover:bg-slate-800"><Icon aria-hidden className="h-4 w-4 shrink-0 text-brand" /><span className="flex-1">{label}</span><ArrowUpRight className="h-4 w-4" aria-hidden /></Link>)}</div>
+            </div>
           </nav>
         </section>
         <DashboardSection
