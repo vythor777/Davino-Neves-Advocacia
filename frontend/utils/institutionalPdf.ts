@@ -36,12 +36,54 @@ export function createInstitutionalPdf(title: string, content: string, now = new
   doc.setFont('helvetica', 'bold');
   for (const line of doc.splitTextToSize(clean(title), 174) as string[]) { doc.text(line, 18, y); y += 6; }
   y += 4; doc.setFont('helvetica', 'normal');
-  for (const paragraph of clean(formatPdfDates(content)).split('\n')) {
-    for (const line of doc.splitTextToSize(paragraph || ' ', 174) as string[]) {
-      if (y > 267) { doc.addPage(); decorate(); y = 41; }
-      doc.text(line, 18, y); y += 5;
+  // Render Markdown as PDF text operations; never execute model-generated HTML.
+  const ensureSpace = (height: number) => {
+    if (y + height > 272) { doc.addPage(); decorate(); y = 41; }
+  };
+  const renderLine = (text: string, size = 11, bold = false, indent = 0, prefix = '') => {
+    doc.setFontSize(size);
+    const lineHeight = size * 0.46;
+    let x = 18 + indent;
+    ensureSpace(lineHeight);
+    if (prefix) { doc.setFont('helvetica', 'normal'); doc.text(prefix, 18, y); }
+    // Keep whitespace and wrap styled runs using the width of their actual font.
+    const runs = text.split(/(\*\*[^*]+\*\*|__[^_]+__|\*[^*]+\*|_[^_]+_|`[^`]+`)/g);
+    for (const run of runs) {
+      const strong = /^(\*\*|__)/.test(run);
+      const emphasis = !strong && /^(\*|_)/.test(run);
+      const code = run.startsWith('`') && run.endsWith('`');
+      const value = strong ? run.slice(2, -2) : emphasis || code ? run.slice(1, -1) : run;
+      doc.setFont(code ? 'courier' : 'helvetica', bold || strong ? 'bold' : emphasis ? 'italic' : 'normal');
+      for (const token of value.split(/(\s+)/)) {
+        if (!token) continue;
+        const width = doc.getTextWidth(token);
+        if (x + width > 192 && x > 18 + indent) {
+          y += lineHeight; ensureSpace(lineHeight);
+          doc.setFontSize(size);
+          doc.setFont(code ? 'courier' : 'helvetica', bold || strong ? 'bold' : emphasis ? 'italic' : 'normal');
+          x = 18 + indent;
+        }
+        if (/^\s+$/.test(token) && x === 18 + indent) continue;
+        // Split unusually long URLs/words instead of drawing past the margin.
+        for (const part of doc.splitTextToSize(token, 174 - indent) as string[]) {
+          if (x + doc.getTextWidth(part) > 192) { y += lineHeight; ensureSpace(lineHeight); doc.setFontSize(size); doc.setFont(code ? 'courier' : 'helvetica', bold || strong ? 'bold' : emphasis ? 'italic' : 'normal'); x = 18 + indent; }
+          doc.text(part, x, y); x += doc.getTextWidth(part);
+        }
+      }
     }
-    y += 1;
+    y += lineHeight + 2;
+  };
+  let fenced = false;
+  for (const paragraph of clean(formatPdfDates(content)).replace(/\r\n?/g, '\n').split('\n')) {
+    if (/^\s*```/.test(paragraph)) { fenced = !fenced; continue; }
+    if (!paragraph.trim()) { y += 3; continue; }
+    if (!fenced && /^\s*(?:-{3,}|\*{3,}|_{3,})\s*$/.test(paragraph)) { y += 3; continue; }
+    const heading = !fenced && paragraph.match(/^\s{0,3}(#{1,6})\s+(.+?)(?:\s+#+)?$/);
+    const list = !fenced && paragraph.match(/^\s*(?:[-+*]|(\d+)[.)])\s+(.+)$/);
+    const text = paragraph.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '$1 ($2)');
+    if (heading) { ensureSpace(18); y += 2; renderLine(heading[2], heading[1].length === 1 ? 15 : 12, true); }
+    else if (list) renderLine(list[2], 11, false, 7, list[1] ? `${list[1]}.` : '•');
+    else renderLine(text.replace(/^>\s?/, ''), 11);
   }
   const pages = doc.getNumberOfPages();
   for (let page = 1; page <= pages; page++) { doc.setPage(page); doc.setFontSize(8); doc.setTextColor(80); doc.text(`${page} / ${pages}`, 192, 283, { align: 'right' }); }
