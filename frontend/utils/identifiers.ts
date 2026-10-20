@@ -26,3 +26,15 @@ export function isValidCnj(value: string): boolean {
   for (const digit of reordered) remainder = (remainder * 10 + Number(digit)) % 97;
   return remainder === 1;
 }
+
+/** Field feedback shared by blur and submit validation. */
+export function cpfCnpjError(value: string, type: 'pf' | 'pj'): string | undefined {
+  const label = type === 'pf' ? 'CPF' : 'CNPJ';
+  if (!value.trim()) return `O ${label} é obrigatório.`;
+  const length = type === 'pf' ? 11 : 14;
+  if (value.replace(/\D/g, '').length !== length) {
+    return `${label} deve conter ${length} dígitos.`;
+  }
+  if (!isValidCpfCnpj(value)) return `${label} inválido. Confira o número informado.`;
+  return undefined;
+}

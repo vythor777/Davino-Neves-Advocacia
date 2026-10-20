@@ -1,5 +1,5 @@
 'use client';
-import { isValidCpfCnpj } from '@/utils/identifiers';
+import { cpfCnpjError } from '@/utils/identifiers';
 
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -221,18 +221,8 @@ function ClientesContent() {
   const validateForm = () => {
     const errors: Record<string, string> = {};
     if (!nome.trim()) errors.nome = 'O nome ou razão social é obrigatório.';
-    if (!cpfCnpj.trim()) {
-      errors.cpfCnpj = formTipo === 'pf' ? 'O CPF é obrigatório.' : 'O CNPJ é obrigatório.';
-    } else {
-      const digits = cpfCnpj.replace(/\D/g, '');
-      if (formTipo === 'pf' && digits.length !== 11) {
-        errors.cpfCnpj = 'CPF deve conter 11 dígitos válidos (000.000.000-00).';
-      } else if (formTipo === 'pj' && digits.length !== 14) {
-        errors.cpfCnpj = 'CNPJ deve conter 14 dígitos válidos (00.000.000/0001-00).';
-      } else if (!isValidCpfCnpj(cpfCnpj)) {
-        errors.cpfCnpj = 'CPF/CNPJ inválido. Confira os dígitos verificadores.';
-      }
-    }
+    const documentError = cpfCnpjError(cpfCnpj, formTipo);
+    if (documentError) errors.cpfCnpj = documentError;
     if (!email.trim()) {
       errors.email = 'O e-mail é obrigatório.';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -964,6 +954,17 @@ function ClientesContent() {
                       inputMode="numeric"
                       maxLength={formTipo === 'pf' ? 14 : 18}
                       value={cpfCnpj}
+                      aria-invalid={!!formErrors.cpfCnpj}
+                      aria-describedby={formErrors.cpfCnpj ? 'cliente-documento-erro' : undefined}
+                      onBlur={() => {
+                        const error = cpfCnpjError(cpfCnpj, formTipo);
+                        setFormErrors((prev) => {
+                          const next = { ...prev };
+                          if (error) next.cpfCnpj = error;
+                          else delete next.cpfCnpj;
+                          return next;
+                        });
+                      }}
                       onChange={(e) => {
                         const val = e.target.value;
                         const formatted =
@@ -987,7 +988,7 @@ function ClientesContent() {
                       className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-hidden font-mono dark:border-white/[0.08] dark:bg-surface dark:text-slate-100 dark:placeholder:text-slate-500 transition"
                     />
                     {formErrors.cpfCnpj && (
-                      <p className="text-rose-400 mt-1">{formErrors.cpfCnpj}</p>
+                      <p id="cliente-documento-erro" role="alert" className="text-rose-700 dark:text-rose-400 mt-1">{formErrors.cpfCnpj}</p>
                     )}
                   </div>
 
