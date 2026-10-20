@@ -17,7 +17,7 @@ const labels: Record<string, string> = {
   data_vencimento: 'Vencimento', hora: 'Hora', tipoCompromisso: 'Tipo de compromisso',
   responsavel: 'Responsável', id_responsavel: 'Responsável (ID)', id_processo: 'Processo (ID)',
   id_cliente: 'Cliente (ID)', role: 'Cargo', ativo: 'Ativo', valor: 'Valor',
-  dataVencimento: 'Vencimento', dataPagamento: 'Pagamento', tipo: 'Tipo', categoria: 'Categoria',
+  dataVencimento: 'Vencimento', dataPagamento: 'Pagamento', tipo: 'Tipo', categoria: 'Categoria', subcategoria: 'Subcategoria',
 };
 function comparable(value: unknown) {
   return value instanceof Date ? value.toISOString().slice(0, 10) : value;

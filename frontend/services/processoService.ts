@@ -9,6 +9,8 @@ export interface Processo {
   numero_processo: string;
   titulo: string;
   descricao: string;
+  categoria?: string | null;
+  subcategoria?: string | null;
   data_abertura: string;
   status: string;
   id_cliente: number;
@@ -18,6 +20,8 @@ export interface Processo {
   prazos?: Array<{
     id_prazo: number;
     descricao: string;
+  categoria?: string | null;
+  subcategoria?: string | null;
     data_limite: string;
     status: string;
   }>;
@@ -37,6 +41,8 @@ export interface CreateProcessoInput {
   numero_processo: string;
   titulo: string;
   descricao: string;
+  categoria?: string | null;
+  subcategoria?: string | null;
   data_abertura: string; // Formato YYYY-MM-DD
   status: string;
   id_cliente: number;

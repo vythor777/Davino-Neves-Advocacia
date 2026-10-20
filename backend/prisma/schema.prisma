@@ -74,6 +74,8 @@ model Processo {
   numero_processo  String      @unique @db.VarChar(50)
   titulo           String      @db.VarChar(100)
   descricao        String      @db.Text
+  categoria        String?     @db.VarChar(50)
+  subcategoria     String?     @db.VarChar(100)
   data_abertura    DateTime    @db.Date
   status           String      @db.VarChar(50)
   data_criacao     DateTime    @default(now())

@@ -27,6 +27,8 @@ export interface ProcessoItem {
   titulo?: string;
   classe?: string;
   descricao?: string;
+  categoria?: string | null;
+  subcategoria?: string | null;
   cliente?:
     | {
         id_cliente?: number;
@@ -449,6 +451,8 @@ export function ProcessDataTable<T extends ProcessoItem = ProcessoItem>({
                       >
                         {titulo}
                       </p>
+
+                      {proc.categoria && <p className="truncate text-xs text-slate-500 dark:text-slate-400" title={[proc.categoria, proc.subcategoria].filter(Boolean).join(' → ')}>{[proc.categoria, proc.subcategoria].filter(Boolean).join(' → ')}</p>}
 
                       {/* Descrição resumida opcional com truncagem */}
                       {proc.descricao && (

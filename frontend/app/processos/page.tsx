@@ -1,4 +1,5 @@
 'use client';
+import { ProcessClassificationFields } from '@/components/processos/ProcessClassificationFields';
 import { isValidCnj } from '@/utils/identifiers';
 
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
@@ -80,6 +81,8 @@ function ProcessosContent() {
   // Form Fields
   const [numeroProcesso, setNumeroProcesso] = useState<string>('');
   const [titulo, setTitulo] = useState<string>('');
+  const [categoria, setCategoria] = useState('');
+  const [subcategoria, setSubcategoria] = useState('');
   const [descricao, setDescricao] = useState<string>('');
   const [dataAbertura, setDataAbertura] = useState<string>('');
   const [status, setStatus] = useState<string>('Em Andamento');
@@ -134,6 +137,8 @@ function ProcessosContent() {
     setNumeroProcesso('');
     setTitulo('');
     setDescricao('');
+    setCategoria('');
+    setSubcategoria('');
     const today = formatDateForInput('');
     setDataAbertura(today);
     setStatus('Em Andamento');
@@ -153,6 +158,8 @@ function ProcessosContent() {
     setNumeroProcesso(proc.numero_processo);
     setTitulo(proc.titulo);
     setDescricao(proc.descricao);
+    setCategoria(proc.categoria ?? '');
+    setSubcategoria(proc.subcategoria ?? '');
     const dateFormatted = proc.data_abertura
       ? new Date(proc.data_abertura).toISOString().split('T')[0]
       : new Date().toISOString().split('T')[0];
@@ -201,6 +208,8 @@ function ProcessosContent() {
       numero_processo: numeroProcesso.trim(),
       titulo: titulo.trim(),
       descricao: descricao.trim(),
+      categoria: categoria || null,
+      subcategoria: subcategoria.trim() || null,
       data_abertura: dataAbertura,
       status: status.trim(),
       id_cliente: Number(idCliente),
@@ -274,6 +283,8 @@ function ProcessosContent() {
         procNum.includes(term) ||
         procTitle.includes(term) ||
         procDesc.includes(term) ||
+        (proc.categoria ?? '').toLowerCase().includes(term) ||
+        (proc.subcategoria ?? '').toLowerCase().includes(term) ||
         clientName.includes(term) ||
         clientDoc.includes(term)
       );
@@ -559,6 +570,12 @@ function ProcessosContent() {
                   )}
                 </div>
 
+                <ProcessClassificationFields
+                  category={categoria}
+                  subcategory={subcategoria}
+                  onChange={(category, subcategory) => { setCategoria(category); setSubcategoria(subcategory); }}
+                />
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
                     <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
@@ -759,6 +776,11 @@ function ProcessosContent() {
                   {selectedProcesso.descricao}
                 </p>
               </div>
+
+              <dl className="grid grid-cols-1 gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3.5 sm:grid-cols-2 dark:border-slate-700 dark:bg-surface">
+                <div><dt className="text-slate-500 dark:text-slate-400">Categoria</dt><dd className="mt-1 text-slate-800 dark:text-slate-200">{selectedProcesso.categoria || 'Não informada'}</dd></div>
+                <div><dt className="text-slate-500 dark:text-slate-400">Subcategoria</dt><dd className="mt-1 break-words text-slate-800 dark:text-slate-200">{selectedProcesso.subcategoria || 'Não informada'}</dd></div>
+              </dl>
 
               <ProcessWorkspace key={selectedProcesso.id_processo} process={selectedProcesso} />
               {/* Trilha de Auditoria dos Autos */}

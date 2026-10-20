@@ -1,12 +1,16 @@
 import { IsCnj } from '../../common/validation/identifier.decorators.js';
 import {
   IsDateString,
+  IsIn,
+  IsOptional,
   IsInt,
   IsNotEmpty,
   IsPositive,
   IsString,
   MaxLength,
 } from 'class-validator';
+
+export const PROCESS_CATEGORIES = ['Cível', 'Penal', 'Trabalhista', 'Previdenciário', 'Família', 'Sucessões', 'Consumidor', 'Tributário', 'Administrativo', 'Empresarial', 'Imobiliário', 'Ambiental', 'Eleitoral', 'Outros'] as const;
 
 export class CreateProcessoDto {
   @IsString({ message: 'O número do processo deve ser um texto.' })
@@ -37,4 +41,14 @@ export class CreateProcessoDto {
   @IsPositive({ message: 'O ID do cliente deve ser positivo.' })
   @IsNotEmpty({ message: 'O ID do cliente é obrigatório.' })
   id_cliente: number;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(PROCESS_CATEGORIES, { message: 'Selecione uma categoria de processo válida.' })
+  categoria?: string | null;
+
+  @IsOptional()
+  @IsString({ message: 'A subcategoria deve ser um texto.' })
+  @MaxLength(100, { message: 'A subcategoria não pode exceder 100 caracteres.' })
+  subcategoria?: string | null;
 }

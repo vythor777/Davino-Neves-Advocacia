@@ -19,9 +19,10 @@ export class ProcessosService {
 
   async create(dto: CreateProcessoDto, user: Actor) {
     this.access.requireRole(user, 'ADMINISTRADOR', 'ADVOGADO');
+    const classification = this.classification(dto);
     try {
       return await this.prisma.processo.create({
-        data: { ...dto, data_abertura: new Date(dto.data_abertura),
+        data: { ...dto, ...classification, data_abertura: new Date(dto.data_abertura),
           id_responsavel: user.role === 'ADVOGADO' ? user.id_usuario : null }, include,
       });
     } catch (error) { this.rethrow(error); }
@@ -44,12 +45,13 @@ export class ProcessosService {
 
   async update(id: number, dto: UpdateProcessoDto, user: Actor) {
     const current = await this.access.process(user, id, 'edit');
+    const classification = this.classification(dto, current);
     if (dto.status && isClosed(current.status) && !isClosed(dto.status) && user.role !== 'ADMINISTRADOR') {
       throw new ForbiddenException('Somente o administrador pode restaurar processos encerrados.');
     }
     try {
       return await this.prisma.processo.update({ where: { id_processo: id },
-        data: { ...dto, ...(dto.data_abertura !== undefined ? { data_abertura: new Date(dto.data_abertura) } : {}) }, include });
+        data: { ...dto, ...classification, ...(dto.data_abertura !== undefined ? { data_abertura: new Date(dto.data_abertura) } : {}) }, include });
     } catch (error) { this.rethrow(error); }
   }
 
@@ -84,6 +86,22 @@ export class ProcessosService {
     await this.access.process(user, id);
     try { return await this.prisma.processo.delete({ where: { id_processo: id } }); }
     catch (error) { this.rethrow(error); }
+  }
+
+  private classification(
+    dto: { categoria?: string | null; subcategoria?: string | null },
+    current?: { categoria?: string | null; subcategoria?: string | null },
+  ) {
+    if (current && dto.categoria === undefined && dto.subcategoria === undefined) return {};
+    const categoria = dto.categoria !== undefined ? dto.categoria : current?.categoria ?? null;
+    const changed = dto.categoria !== undefined && dto.categoria !== current?.categoria;
+    const subcategoria = dto.subcategoria !== undefined
+      ? dto.subcategoria?.trim() || null
+      : changed ? null : current?.subcategoria ?? null;
+    if (subcategoria && !categoria) {
+      throw new BadRequestException('Selecione a categoria antes de informar a subcategoria.');
+    }
+    return { categoria, subcategoria };
   }
 
   private rethrow(error: unknown): never {
