@@ -1,6 +1,20 @@
 import api from './api';
 
-export interface Cliente {
+export interface ClienteProfile {
+  tratamento?: string | null;
+  genero?: string | null;
+  estado_civil?: string | null;
+  naturalidade?: string | null;
+  nacionalidade?: string | null;
+  empresa?: string | null;
+  profissao?: string | null;
+  nome_mae?: string | null;
+  nome_pai?: string | null;
+  qualificacao?: string | null;
+  id_representante_legal?: number | null;
+}
+
+export interface Cliente extends ClienteProfile {
   id_cliente: number;
   nome: string;
   cpf_cnpj: string;
@@ -22,7 +36,7 @@ export interface Cliente {
   };
 }
 
-export interface CreateClienteInput {
+export interface CreateClienteInput extends ClienteProfile {
   nome: string;
   cpf_cnpj: string;
   email: string;

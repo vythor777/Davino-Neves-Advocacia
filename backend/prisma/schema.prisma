@@ -47,6 +47,21 @@ model Cliente {
   data_criacao     DateTime    @default(now())
   data_atualizacao DateTime    @updatedAt
 
+  tratamento String? @db.VarChar(50)
+  genero String? @db.VarChar(30)
+  estado_civil String? @db.VarChar(50)
+  naturalidade String? @db.VarChar(100)
+  nacionalidade String? @db.VarChar(100)
+  empresa String? @db.VarChar(150)
+  profissao String? @db.VarChar(100)
+  nome_mae String? @db.VarChar(100)
+  nome_pai String? @db.VarChar(100)
+  qualificacao String? @db.Text
+  id_representante_legal Int?
+  representante_legal Cliente? @relation("RepresentacaoLegal", fields: [id_representante_legal], references: [id_cliente], onDelete: SetNull)
+  representados Cliente[] @relation("RepresentacaoLegal")
+  @@index([id_representante_legal])
+
   // Relacionamentos
   processos             Processo[]
   lancamentosFinanceiros LancamentoFinanceiro[]

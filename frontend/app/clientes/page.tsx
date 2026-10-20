@@ -1,4 +1,6 @@
 'use client';
+import { ClientProfileFields, ClientProfileDetails, profileFields } from '@/components/clientes/ClientProfileFields';
+import type { ClienteProfile } from '@/services/clienteService';
 import { cpfCnpjError } from '@/utils/identifiers';
 
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
@@ -137,6 +139,7 @@ function ClientesContent() {
   const [telefone, setTelefone] = useState<string>('');
   const [endereco, setEndereco] = useState<string>('');
   const [dataNascimento, setDataNascimento] = useState<string>('');
+  const [profile, setProfile] = useState<ClienteProfile>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
   // Modal de Exclusão
@@ -185,6 +188,7 @@ function ClientesContent() {
     setTelefone('');
     setEndereco('');
     setDataNascimento('');
+    setProfile({});
     setFormErrors({});
     setModalOpen(true);
   }, []);
@@ -196,6 +200,10 @@ function ClientesContent() {
     const digits = client.cpf_cnpj.replace(/\D/g, '');
     const isPj = digits.length > 11;
     setFormTipo(isPj ? 'pj' : 'pf');
+    setProfile(Object.fromEntries([
+      ...profileFields.map(({ key }) => [key, client[key] ?? null]),
+      ['id_representante_legal', client.id_representante_legal ?? null],
+    ]));
     setNome(client.nome);
     setCpfCnpj(isPj ? formatarCNPJ(client.cpf_cnpj) : formatarCPF(client.cpf_cnpj));
     setEmail(client.email);
@@ -260,7 +268,11 @@ function ClientesContent() {
     setSaving(true);
     setErrorMsg(null);
 
+    const profilePayload = Object.fromEntries(
+      Object.entries(profile).map(([key, value]) => [key, typeof value === 'string' ? value.trim() || null : value]),
+    );
     const clientPayload: CreateClienteInput = {
+      ...profilePayload,
       nome: nome.trim(),
       cpf_cnpj: cpfCnpj.trim(),
       email: email.trim().toLowerCase(),
@@ -839,7 +851,7 @@ function ClientesContent() {
       {/* Modal de Criação / Edição */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/40 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-150">
-          <div className="relative w-full max-w-lg legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-[90vh] my-auto animate-in zoom-in-95 duration-150">
+          <div className="relative w-full max-w-3xl legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-[90vh] my-auto animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-200/60 p-5 dark:border-white/[0.06] shrink-0 bg-slate-50/80 dark:bg-surface">
               <div className="flex items-center gap-2.5">
                 <div className="rounded-xl bg-brand/15 text-brand border border-brand/25 p-2">
@@ -1081,6 +1093,12 @@ function ClientesContent() {
                     <p className="text-rose-400 mt-1">{formErrors.endereco}</p>
                   )}
                 </div>
+                <ClientProfileFields
+                  value={profile}
+                  onChange={setProfile}
+                  representatives={clientes.filter((client) => client.id_cliente !== editingClient?.id_cliente && client.cpf_cnpj.replace(/\D/g, '').length === 11)}
+                  disabled={intern && !!editingClient}
+                />
               </div>
 
               <div className="shrink-0 flex items-center justify-end gap-2.5 border-t border-slate-200/60 p-4 dark:border-white/[0.06] bg-slate-50/80 dark:bg-surface">
@@ -1219,6 +1237,8 @@ function ClientesContent() {
                   </span>
                 </div>
               </div>
+
+              <ClientProfileDetails client={selectedClient} representatives={clientes} />
 
               {/* Trilha de Auditoria do Cliente - Real / Empty State sem dados mockados */}
               <div className="pt-2">

@@ -15,7 +15,22 @@ import { UpdateClienteDto } from './dto/update-cliente.dto.js';
 export class ClientesService {
   constructor(private readonly prisma: PrismaService, private readonly access: AccessService) {}
 
+  private async validateRepresentative(representativeId?: number | null, clientId?: number) {
+    if (representativeId == null) return;
+    if (representativeId === clientId) {
+      throw new BadRequestException('O cliente não pode ser seu próprio representante legal.');
+    }
+    const representative = await this.prisma.cliente.findUnique({
+      where: { id_cliente: representativeId },
+      select: { id_cliente: true, cpf_cnpj: true },
+    });
+    if (!representative || representative.cpf_cnpj.replace(/\D/g, '').length !== 11) {
+      throw new BadRequestException('Selecione uma pessoa física cadastrada como representante legal.');
+    }
+  }
+
   async create(createClienteDto: CreateClienteDto, user: Actor) {
+    await this.validateRepresentative(createClienteDto.id_representante_legal);
     if (createClienteDto.data_nascimento) {
       const birthDate = new Date(createClienteDto.data_nascimento);
       const hoje = new Date();
@@ -83,6 +98,7 @@ export class ClientesService {
 
   async update(id: number, updateClienteDto: UpdateClienteDto, user: Actor) {
     this.access.clientUpdate(user, updateClienteDto);
+    await this.validateRepresentative(updateClienteDto.id_representante_legal, id);
     // Garante que o cliente existe antes de atualizar
     await this.findOne(id, user);
 
