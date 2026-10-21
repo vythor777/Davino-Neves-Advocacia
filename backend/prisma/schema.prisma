@@ -38,10 +38,13 @@ model Usuario {
 
 model Cliente {
   id_cliente       Int         @id @default(autoincrement())
+  tipo_pessoa      String      @default("pf") @db.VarChar(2)
+  categoria        String?     @db.VarChar(50)
+  subcategoria     String?     @db.VarChar(100)
   nome             String      @db.VarChar(100)
-  cpf_cnpj         String      @unique @db.VarChar(20)
-  email            String      @db.VarChar(100)
-  telefone         String      @db.VarChar(20)
+  cpf_cnpj         String?     @unique @db.VarChar(20)
+  email            String?     @db.VarChar(100)
+  telefone         String?     @db.VarChar(20)
   endereco         String      @db.Text
   data_nascimento  DateTime?   @db.Date
   data_criacao     DateTime    @default(now())

@@ -12,14 +12,17 @@ export interface ClienteProfile {
   nome_pai?: string | null;
   qualificacao?: string | null;
   id_representante_legal?: number | null;
+  categoria?: string | null;
+  subcategoria?: string | null;
 }
 
 export interface Cliente extends ClienteProfile {
+  tipo_pessoa?: 'pf' | 'pj';
   id_cliente: number;
   nome: string;
-  cpf_cnpj: string;
-  email: string;
-  telefone: string;
+  cpf_cnpj: string | null;
+  email: string | null;
+  telefone: string | null;
   endereco: string;
   data_nascimento?: string | null;
   data_criacao: string;
@@ -37,10 +40,11 @@ export interface Cliente extends ClienteProfile {
 }
 
 export interface CreateClienteInput extends ClienteProfile {
+  tipo_pessoa?: 'pf' | 'pj';
   nome: string;
-  cpf_cnpj: string;
-  email: string;
-  telefone: string;
+  cpf_cnpj?: string | null;
+  email?: string | null;
+  telefone?: string | null;
   endereco: string;
   data_nascimento?: string | null;
 }

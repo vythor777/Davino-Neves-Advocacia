@@ -20,7 +20,7 @@ test('API rejeita tipo inválido, texto excessivo, gênero inválido e represent
   }
 });
 
-function setup(representative = { id_cliente: 2, cpf_cnpj: '52998224725' }) {
+function setup(representative = { id_cliente: 2, cpf_cnpj: '52998224725', tipo_pessoa: 'pf' }) {
   const writes = [];
   const prisma = { cliente: {
     findUnique: async ({ where }) => where.id_cliente === 1 ? { ...base, id_cliente: 1 } : representative,
@@ -42,7 +42,7 @@ test('criação e edição persistem dados complementares e permitem remover rep
 });
 
 test('representante inexistente, pessoa jurídica e autorrepresentação são bloqueados antes da gravação', async () => {
-  for (const representative of [null, { id_cliente: 2, cpf_cnpj: '04252011000110' }]) {
+  for (const representative of [null, { id_cliente: 2, cpf_cnpj: '04252011000110', tipo_pessoa: 'pj' }]) {
     const { service, writes } = setup(representative);
     await assert.rejects(service.create({ ...base, ...profile }, {}), /pessoa física/);
     assert.equal(writes.length, 0);

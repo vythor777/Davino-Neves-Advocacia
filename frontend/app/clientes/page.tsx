@@ -1,4 +1,5 @@
 'use client';
+import { ClientClassificationFields } from '@/components/clientes/ClientClassificationFields';
 import { ClientProfileFields, ClientProfileDetails, profileFields } from '@/components/clientes/ClientProfileFields';
 import type { ClienteProfile } from '@/services/clienteService';
 import { cpfCnpjError } from '@/utils/identifiers';
@@ -37,7 +38,8 @@ import {
 } from 'lucide-react';
 
 // Funções utilitárias de formatação estrita
-function formatarCPF(valor: string): string {
+function formatarCPF(valor: string | null = ''): string {
+  if (!valor) return '';
   const digits = valor.replace(/\D/g, '').slice(0, 11);
   return digits
     .replace(/^(\d{3})(\d)/, '$1.$2')
@@ -45,7 +47,8 @@ function formatarCPF(valor: string): string {
     .replace(/\.(\d{3})(\d{1,2})$/, '.$1-$2');
 }
 
-function formatarCNPJ(valor: string): string {
+function formatarCNPJ(valor: string | null = ''): string {
+  if (!valor) return '';
   const digits = valor.replace(/\D/g, '').slice(0, 14);
   return digits
     .replace(/^(\d{2})(\d)/, '$1.$2')
@@ -54,7 +57,8 @@ function formatarCNPJ(valor: string): string {
     .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
 }
 
-function formatarCpfCnpj(valor: string): string {
+function formatarCpfCnpj(valor: string | null = ''): string {
+  if (!valor) return '';
   const digits = valor.replace(/\D/g, '');
   if (digits.length <= 11) {
     return formatarCPF(digits);
@@ -62,7 +66,8 @@ function formatarCpfCnpj(valor: string): string {
   return formatarCNPJ(digits);
 }
 
-function formatarTelefone(valor: string): string {
+function formatarTelefone(valor: string | null = ''): string {
+  if (!valor) return '';
   const digits = valor.replace(/\D/g, '');
   if (digits.length <= 10) {
     return digits
@@ -139,6 +144,8 @@ function ClientesContent() {
   const [telefone, setTelefone] = useState<string>('');
   const [endereco, setEndereco] = useState<string>('');
   const [dataNascimento, setDataNascimento] = useState<string>('');
+  const [categoria, setCategoria] = useState('');
+  const [subcategoria, setSubcategoria] = useState('');
   const [profile, setProfile] = useState<ClienteProfile>({});
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
 
@@ -189,6 +196,8 @@ function ClientesContent() {
     setEndereco('');
     setDataNascimento('');
     setProfile({});
+    setCategoria('');
+    setSubcategoria('');
     setFormErrors({});
     setModalOpen(true);
   }, []);
@@ -197,17 +206,19 @@ function ClientesContent() {
 
   const openEditModal = (client: Cliente) => {
     setEditingClient(client);
-    const digits = client.cpf_cnpj.replace(/\D/g, '');
-    const isPj = digits.length > 11;
+    const digits = (client.cpf_cnpj ?? '').replace(/\D/g, '');
+    const isPj = client.tipo_pessoa ? client.tipo_pessoa === 'pj' : digits.length > 11;
     setFormTipo(isPj ? 'pj' : 'pf');
     setProfile(Object.fromEntries([
       ...profileFields.map(({ key }) => [key, client[key] ?? null]),
       ['id_representante_legal', client.id_representante_legal ?? null],
     ]));
+    setCategoria(client.categoria ?? '');
+    setSubcategoria(client.subcategoria ?? '');
     setNome(client.nome);
-    setCpfCnpj(isPj ? formatarCNPJ(client.cpf_cnpj) : formatarCPF(client.cpf_cnpj));
-    setEmail(client.email);
-    setTelefone(client.telefone);
+    setCpfCnpj(client.cpf_cnpj ? (isPj ? formatarCNPJ(client.cpf_cnpj) : formatarCPF(client.cpf_cnpj)) : '');
+    setEmail(client.email ?? '');
+    setTelefone(client.telefone ?? '');
     setEndereco(client.endereco);
     setDataNascimento(client.data_nascimento ? client.data_nascimento.split('T')[0] : '');
     setFormErrors({});
@@ -229,14 +240,11 @@ function ClientesContent() {
   const validateForm = () => {
     const errors: Record<string, string> = {};
     if (!nome.trim()) errors.nome = 'O nome ou razão social é obrigatório.';
-    const documentError = cpfCnpjError(cpfCnpj, formTipo);
+    const documentError = cpfCnpj.trim() ? cpfCnpjError(cpfCnpj, formTipo) : undefined;
     if (documentError) errors.cpfCnpj = documentError;
-    if (!email.trim()) {
-      errors.email = 'O e-mail é obrigatório.';
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       errors.email = 'Insira um endereço de e-mail válido.';
     }
-    if (!telefone.trim()) errors.telefone = 'O telefone de contato é obrigatório.';
     if (!endereco.trim()) errors.endereco = 'O endereço completo é obrigatório.';
 
     if (dataNascimento) {
@@ -274,9 +282,12 @@ function ClientesContent() {
     const clientPayload: CreateClienteInput = {
       ...profilePayload,
       nome: nome.trim(),
-      cpf_cnpj: cpfCnpj.trim(),
-      email: email.trim().toLowerCase(),
-      telefone: telefone.trim(),
+      tipo_pessoa: formTipo,
+      categoria: categoria || null,
+      subcategoria: subcategoria.trim() || null,
+      cpf_cnpj: cpfCnpj.trim() || null,
+      email: email.trim().toLowerCase() || null,
+      telefone: telefone.trim() || null,
       endereco: endereco.trim(),
       data_nascimento: dataNascimento ? dataNascimento : null,
     };
@@ -322,8 +333,8 @@ function ClientesContent() {
   // Clientes filtrados
   const filteredClientes = useMemo(() => {
     return clientes.filter((client) => {
-      const digits = client.cpf_cnpj.replace(/\D/g, '');
-      const isPJ = digits.length > 11;
+      const digits = (client.cpf_cnpj ?? '').replace(/\D/g, '');
+      const isPJ = client.tipo_pessoa ? client.tipo_pessoa === 'pj' : digits.length > 11;
 
       if (filtroTipo === 'pf' && isPJ) return false;
       if (filtroTipo === 'pj' && !isPJ) return false;
@@ -331,10 +342,12 @@ function ClientesContent() {
       if (!searchTerm.trim()) return true;
       const term = searchTerm.toLowerCase();
       return (
+        (client.categoria ?? '').toLowerCase().includes(term) ||
+        (client.subcategoria ?? '').toLowerCase().includes(term) ||
         client.nome.toLowerCase().includes(term) ||
-        client.cpf_cnpj.toLowerCase().includes(term) ||
-        client.email.toLowerCase().includes(term) ||
-        client.telefone.toLowerCase().includes(term) ||
+        (client.cpf_cnpj ?? '').toLowerCase().includes(term) ||
+        (client.email ?? '').toLowerCase().includes(term) ||
+        (client.telefone ?? '').toLowerCase().includes(term) ||
         client.endereco.toLowerCase().includes(term)
       );
     });
@@ -342,8 +355,8 @@ function ClientesContent() {
 
   // Métricas
   const totalClientes = clientes.length;
-  const totalPF = clientes.filter((c) => c.cpf_cnpj.replace(/\D/g, '').length <= 11).length;
-  const totalPJ = clientes.filter((c) => c.cpf_cnpj.replace(/\D/g, '').length > 11).length;
+  const totalPF = clientes.filter((c) => (c.tipo_pessoa ? c.tipo_pessoa === 'pf' : (c.cpf_cnpj ?? '').replace(/\D/g, '').length <= 11)).length;
+  const totalPJ = clientes.filter((c) => (c.tipo_pessoa ? c.tipo_pessoa === 'pj' : (c.cpf_cnpj ?? '').replace(/\D/g, '').length > 11)).length;
   const totalComProcessos = clientes.filter((c) => (c._count?.processos || (c.processos?.length ?? 0)) > 0).length;
 
   return (
@@ -574,8 +587,8 @@ function ClientesContent() {
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-white/[0.04]">
                   {filteredClientes.map((client) => {
-                    const digits = client.cpf_cnpj.replace(/\D/g, '');
-                    const isPJ = digits.length > 11;
+                    const digits = (client.cpf_cnpj ?? '').replace(/\D/g, '');
+                    const isPJ = client.tipo_pessoa ? client.tipo_pessoa === 'pj' : digits.length > 11;
                     const countProc =
                       client._count?.processos ?? client.processos?.length ?? 0;
 
@@ -633,12 +646,12 @@ function ClientesContent() {
                         <td className="px-3 py-4">
                           <div className="flex items-center gap-1.5">
                             <span className="font-mono text-slate-700 dark:text-slate-300">
-                              {formatarCpfCnpj(client.cpf_cnpj)}
+                              {formatarCpfCnpj(client.cpf_cnpj) || 'Não informado'}
                             </span>
                             <button
                               onClick={() =>
                                 copyToClipboard(
-                                  client.cpf_cnpj,
+                                  client.cpf_cnpj ?? '',
                                   `doc-${client.id_cliente}`,
                                 )
                               }
@@ -659,11 +672,11 @@ function ClientesContent() {
                           <div className="space-y-0.5 text-[11px]">
                             <div className="flex items-center gap-1 text-slate-600 dark:text-slate-300">
                               <Mail className="h-3 w-3 text-slate-400" />
-                              <span>{client.email}</span>
+                              <span>{client.email || 'Não informado'}</span>
                             </div>
                             <div className="flex items-center gap-1 text-slate-600 dark:text-slate-300">
                               <Phone className="h-3 w-3 text-slate-400" />
-                              <span>{formatarTelefone(client.telefone)}</span>
+                              <span>{formatarTelefone(client.telefone) || 'Não informado'}</span>
                             </div>
                           </div>
                         </td>
@@ -732,8 +745,8 @@ function ClientesContent() {
             {/* Mobile Cards View */}
             <div className="block md:hidden divide-y divide-slate-100 dark:divide-white/[0.04]">
               {filteredClientes.map((client) => {
-                const digits = client.cpf_cnpj.replace(/\D/g, '');
-                const isPJ = digits.length > 11;
+                const digits = (client.cpf_cnpj ?? '').replace(/\D/g, '');
+                const isPJ = client.tipo_pessoa ? client.tipo_pessoa === 'pj' : digits.length > 11;
                 const countProc =
                   client._count?.processos ?? client.processos?.length ?? 0;
 
@@ -778,7 +791,7 @@ function ClientesContent() {
                               </span>
                             )}
                             <span className="font-mono text-xs text-slate-600 dark:text-slate-300">
-                              {formatarCpfCnpj(client.cpf_cnpj)}
+                              {formatarCpfCnpj(client.cpf_cnpj) || 'Não informado'}
                             </span>
                           </div>
                         </div>
@@ -798,11 +811,11 @@ function ClientesContent() {
                     <div className="grid grid-cols-1 gap-1 text-xs text-slate-600 dark:text-slate-300 pt-1">
                       <div className="flex items-center gap-1.5">
                         <Mail className="h-3.5 w-3.5 text-slate-400" />
-                        <span className="truncate">{client.email}</span>
+                        <span className="truncate">{client.email || 'Não informado'}</span>
                       </div>
                       <div className="flex items-center gap-1.5">
                         <Phone className="h-3.5 w-3.5 text-slate-400" />
-                        <span>{formatarTelefone(client.telefone)}</span>
+                        <span>{formatarTelefone(client.telefone) || 'Não informado'}</span>
                       </div>
                     </div>
 
@@ -957,7 +970,7 @@ function ClientesContent() {
                       htmlFor="input-cpf-cnpj"
                       className="block font-medium text-slate-700 dark:text-slate-300 mb-1"
                     >
-                      {formTipo === 'pf' ? 'CPF *' : 'CNPJ *'}
+                      {formTipo === 'pf' ? 'CPF' : 'CNPJ'}
                     </label>
                     <input
                       id="input-cpf-cnpj"
@@ -969,7 +982,7 @@ function ClientesContent() {
                       aria-invalid={!!formErrors.cpfCnpj}
                       aria-describedby={formErrors.cpfCnpj ? 'cliente-documento-erro' : undefined}
                       onBlur={() => {
-                        const error = cpfCnpjError(cpfCnpj, formTipo);
+                        const error = cpfCnpj.trim() ? cpfCnpjError(cpfCnpj, formTipo) : undefined;
                         setFormErrors((prev) => {
                           const next = { ...prev };
                           if (error) next.cpfCnpj = error;
@@ -1009,7 +1022,7 @@ function ClientesContent() {
                       htmlFor="input-telefone-cliente"
                       className="block font-medium text-slate-700 dark:text-slate-300 mb-1"
                     >
-                      Telefone de Contato *
+                      Telefone de Contato
                     </label>
                     <input
                       id="input-telefone-cliente"
@@ -1036,7 +1049,7 @@ function ClientesContent() {
                     htmlFor="input-email-cliente"
                     className="block font-medium text-slate-700 dark:text-slate-300 mb-1"
                   >
-                    E-mail de Contato *
+                    E-mail de Contato
                   </label>
                   <input
                     id="input-email-cliente"
@@ -1093,10 +1106,11 @@ function ClientesContent() {
                     <p className="text-rose-400 mt-1">{formErrors.endereco}</p>
                   )}
                 </div>
+                <ClientClassificationFields disabled={intern && !!editingClient} category={categoria} subcategory={subcategoria} onChange={(category, subcategory) => { setCategoria(category); setSubcategoria(subcategory); }} />
                 <ClientProfileFields
                   value={profile}
                   onChange={setProfile}
-                  representatives={clientes.filter((client) => client.id_cliente !== editingClient?.id_cliente && client.cpf_cnpj.replace(/\D/g, '').length === 11)}
+                  representatives={clientes.filter((client) => client.id_cliente !== editingClient?.id_cliente && (client.tipo_pessoa ? client.tipo_pessoa === 'pf' : (client.cpf_cnpj ?? '').replace(/\D/g, '').length === 11))}
                   disabled={intern && !!editingClient}
                 />
               </div>
@@ -1175,12 +1189,12 @@ function ClientesContent() {
                     Documento de Identificação
                   </span>
                   <span className="text-slate-800 dark:text-slate-200 font-mono font-medium mt-0.5 block">
-                    {formatarCpfCnpj(selectedClient.cpf_cnpj)}
+                    {formatarCpfCnpj(selectedClient.cpf_cnpj) || 'Não informado'}
                   </span>
                 </div>
                 <div className="rounded-xl bg-slate-50/90 dark:bg-surface p-3.5 border border-slate-200/80 dark:border-white/[0.08] shadow-xs">
                   <span className="text-slate-400 block text-[10px] uppercase font-semibold">
-                    {selectedClient.cpf_cnpj.replace(/\D/g, '').length > 11
+                    {(selectedClient.tipo_pessoa ? selectedClient.tipo_pessoa === 'pj' : (selectedClient.cpf_cnpj ?? '').replace(/\D/g, '').length > 11)
                       ? 'Data de Fundação / Abertura'
                       : 'Data de Nascimento'}
                   </span>
@@ -1196,7 +1210,7 @@ function ClientesContent() {
                     E-mail Corporativo
                   </span>
                   <span className="text-slate-800 dark:text-slate-200 truncate block mt-0.5 font-medium">
-                    {selectedClient.email}
+                    {selectedClient.email || 'Não informado'}
                   </span>
                 </div>
                 <div className="rounded-xl bg-slate-50/90 dark:bg-surface p-3.5 border border-slate-200/80 dark:border-white/[0.08] shadow-xs">
@@ -1204,7 +1218,7 @@ function ClientesContent() {
                     Telefone de Contato
                   </span>
                   <span className="text-slate-800 dark:text-slate-200 font-mono mt-0.5 block font-medium">
-                    {formatarTelefone(selectedClient.telefone)}
+                    {formatarTelefone(selectedClient.telefone) || 'Não informado'}
                   </span>
                 </div>
               </div>
@@ -1238,6 +1252,10 @@ function ClientesContent() {
                 </div>
               </div>
 
+              <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <div><dt className="text-slate-500">Categoria</dt><dd>{selectedClient.categoria || 'Não informada'}</dd></div>
+                <div><dt className="text-slate-500">Subcategoria</dt><dd>{selectedClient.subcategoria || 'Não informada'}</dd></div>
+              </dl>
               <ClientProfileDetails client={selectedClient} representatives={clientes} />
 
               {/* Trilha de Auditoria do Cliente - Real / Empty State sem dados mockados */}

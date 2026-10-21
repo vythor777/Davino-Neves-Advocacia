@@ -22,14 +22,31 @@ export class ClientesService {
     }
     const representative = await this.prisma.cliente.findUnique({
       where: { id_cliente: representativeId },
-      select: { id_cliente: true, cpf_cnpj: true },
+      select: { id_cliente: true, cpf_cnpj: true, tipo_pessoa: true },
     });
-    if (!representative || representative.cpf_cnpj.replace(/\D/g, '').length !== 11) {
+    if (!representative || representative.tipo_pessoa !== 'pf') {
       throw new BadRequestException('Selecione uma pessoa física cadastrada como representante legal.');
     }
   }
 
+  private classification(
+    dto: { categoria?: string | null; subcategoria?: string | null },
+    current?: { categoria?: string | null; subcategoria?: string | null },
+  ) {
+    if (current && dto.categoria === undefined && dto.subcategoria === undefined) return {};
+    const categoria = dto.categoria !== undefined ? dto.categoria : current?.categoria ?? null;
+    const changed = dto.categoria !== undefined && dto.categoria !== current?.categoria;
+    const subcategoria = dto.subcategoria !== undefined
+      ? dto.subcategoria?.trim() || null
+      : changed ? null : current?.subcategoria ?? null;
+    if (subcategoria && !categoria) {
+      throw new BadRequestException('Selecione a categoria antes de informar a subcategoria.');
+    }
+    return { categoria, subcategoria };
+  }
+
   async create(createClienteDto: CreateClienteDto, user: Actor) {
+    const classification = this.classification(createClienteDto);
     await this.validateRepresentative(createClienteDto.id_representante_legal);
     if (createClienteDto.data_nascimento) {
       const birthDate = new Date(createClienteDto.data_nascimento);
@@ -43,6 +60,8 @@ export class ClientesService {
     try {
       const data: any = {
         ...createClienteDto,
+        ...classification,
+        tipo_pessoa: createClienteDto.tipo_pessoa ?? ((createClienteDto.cpf_cnpj ?? '').replace(/\D/g, '').length === 14 ? 'pj' : 'pf'),
         data_nascimento: createClienteDto.data_nascimento
           ? new Date(createClienteDto.data_nascimento)
           : null,
@@ -100,7 +119,8 @@ export class ClientesService {
     this.access.clientUpdate(user, updateClienteDto);
     await this.validateRepresentative(updateClienteDto.id_representante_legal, id);
     // Garante que o cliente existe antes de atualizar
-    await this.findOne(id, user);
+    const current = await this.findOne(id, user);
+    const classification = this.classification(updateClienteDto, current);
 
     if (updateClienteDto.data_nascimento) {
       const birthDate = new Date(updateClienteDto.data_nascimento);
@@ -112,7 +132,7 @@ export class ClientesService {
     }
 
     try {
-      const dataToUpdate: any = { ...updateClienteDto };
+      const dataToUpdate: any = { ...updateClienteDto, ...classification };
       if (updateClienteDto.data_nascimento !== undefined) {
         dataToUpdate.data_nascimento = updateClienteDto.data_nascimento
           ? new Date(updateClienteDto.data_nascimento)

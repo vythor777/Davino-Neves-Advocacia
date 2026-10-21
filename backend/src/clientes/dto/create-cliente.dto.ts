@@ -1,3 +1,5 @@
+import { Transform } from 'class-transformer';
+import { PROCESS_CATEGORIES } from '../../processos/dto/create-processo.dto.js';
 import { IsCpfCnpj } from '../../common/validation/identifier.decorators.js';
 import {
   IsEmail,
@@ -9,6 +11,7 @@ import {
   IsString,
   MaxLength,
   IsDateString,
+  ValidateIf,
 } from 'class-validator';
 
 export class CreateClienteDto {
@@ -17,21 +20,24 @@ export class CreateClienteDto {
   @MaxLength(100, { message: 'O nome não pode exceder 100 caracteres.' })
   nome: string;
 
+  @Transform(({ value }) => typeof value === 'string' ? value.trim() || null : value)
+  @IsOptional()
   @IsString({ message: 'O CPF/CNPJ deve ser um texto.' })
-  @IsNotEmpty({ message: 'O CPF/CNPJ é obrigatório.' })
   @MaxLength(20, { message: 'O CPF/CNPJ não pode exceder 20 caracteres.' })
   @IsCpfCnpj({ message: 'CPF/CNPJ inválido. Confira os dígitos verificadores.' })
-  cpf_cnpj: string;
+  cpf_cnpj?: string | null;
 
+  @Transform(({ value }) => typeof value === 'string' ? value.trim() || null : value)
+  @IsOptional()
   @IsEmail({}, { message: 'Formato de e-mail inválido.' })
-  @IsNotEmpty({ message: 'O e-mail é obrigatório.' })
   @MaxLength(100, { message: 'O e-mail não pode exceder 100 caracteres.' })
-  email: string;
+  email?: string | null;
 
+  @Transform(({ value }) => typeof value === 'string' ? value.trim() || null : value)
+  @IsOptional()
   @IsString({ message: 'O telefone deve ser um texto.' })
-  @IsNotEmpty({ message: 'O telefone é obrigatório.' })
   @MaxLength(20, { message: 'O telefone não pode exceder 20 caracteres.' })
-  telefone: string;
+  telefone?: string | null;
 
   @IsString({ message: 'O endereço deve ser um texto.' })
   @IsNotEmpty({ message: 'O endereço é obrigatório.' })
@@ -96,4 +102,18 @@ export class CreateClienteDto {
   @IsInt({ message: 'Selecione um representante legal válido.' })
   @Min(1)
   id_representante_legal?: number | null;
+
+  @ValidateIf((_object, value) => value !== undefined)
+  @IsIn(['pf', 'pj'])
+  tipo_pessoa?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(PROCESS_CATEGORIES, { message: 'Selecione uma categoria válida.' })
+  categoria?: string | null;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  subcategoria?: string | null;
 }

@@ -56,7 +56,7 @@ export function ClientProfileFields({ value, onChange, representatives, disabled
           <label htmlFor="cliente-representante-legal" className="mb-1 block font-medium text-slate-700 dark:text-slate-300">Representante legal</label>
           <select id="cliente-representante-legal" className={inputClass} value={value.id_representante_legal ?? ''} aria-describedby="cliente-representante-ajuda" onChange={(event) => update('id_representante_legal', event.target.value ? Number(event.target.value) : null)}>
             <option value="">Sem representante legal</option>
-            {representatives.map((client) => <option key={client.id_cliente} value={client.id_cliente}>{client.nome} — {client.cpf_cnpj}</option>)}
+            {representatives.map((client) => <option key={client.id_cliente} value={client.id_cliente}>{client.nome}{client.cpf_cnpj ? ` — ${client.cpf_cnpj}` : ''}</option>)}
           </select>
           <p id="cliente-representante-ajuda" className="mt-1 text-slate-500 dark:text-slate-400">Selecione uma pessoa física já cadastrada como cliente. Se necessário, cadastre-a primeiro.</p>
         </div>
@@ -79,7 +79,7 @@ export function ClientProfileDetails({ client, representatives }: { client: Clie
         ))}
         <div className="sm:col-span-2">
           <dt className="text-slate-500 dark:text-slate-400">Representante legal</dt>
-          <dd className="mt-1 text-slate-800 dark:text-slate-200">{representative ? `${representative.nome} — ${representative.cpf_cnpj}` : client.id_representante_legal ? `Cliente #${client.id_representante_legal}` : 'Não informado'}</dd>
+          <dd className="mt-1 text-slate-800 dark:text-slate-200">{representative ? `${representative.nome}${representative.cpf_cnpj ? ` — ${representative.cpf_cnpj}` : ''}` : client.id_representante_legal ? `Cliente #${client.id_representante_legal}` : 'Não informado'}</dd>
         </div>
       </dl>
     </section>

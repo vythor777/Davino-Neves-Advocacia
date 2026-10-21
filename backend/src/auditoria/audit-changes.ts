@@ -1,4 +1,5 @@
 const labels: Record<string, string> = {
+  tipo_pessoa: 'Tipo de pessoa',
   tratamento: 'Tratamento',
   genero: 'Gênero',
   estado_civil: 'Estado civil',
