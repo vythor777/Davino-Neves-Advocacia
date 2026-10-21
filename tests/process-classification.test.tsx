@@ -12,7 +12,9 @@ test('opções do formulário e da API estão alinhadas', () => {
 test('sugestões são da categoria selecionada e campo permite texto livre', () => {
   for (const [category, example] of [['Cível', 'Divórcio'], ['Trabalhista', 'Insalubridade'], ['Previdenciário', 'Benefício BPC/LOAS']]) {
     const html = renderToStaticMarkup(<ClientClassificationFields category={category} subcategory={example} onChange={() => {}} />);
-    assert.ok(html.includes(`<option value="${example}">`));
+    assert.ok(processCategories[category].includes(example));
+    assert.ok(html.includes('role="combobox"'));
+    assert.ok(!html.includes('<datalist'));
     assert.ok(html.includes('Use uma sugestão ou digite outra subcategoria.'));
     if (category !== 'Trabalhista') assert.ok(!html.includes('<option value="Insalubridade">'));
   }
