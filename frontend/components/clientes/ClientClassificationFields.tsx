@@ -45,9 +45,8 @@ export function ClientClassificationFields({ category, subcategory, onChange, di
             <ComboboxButton className="absolute inset-y-0 right-0 flex w-10 items-center justify-center rounded-r-xl text-slate-500 hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-brand active:bg-slate-100 disabled:opacity-50 dark:text-slate-400 dark:hover:text-slate-100 dark:active:bg-slate-800" aria-label="Mostrar subcategorias">
               <ChevronDown className="h-4 w-4" aria-hidden="true" />
             </ComboboxButton>
-          </div>
-          {/* Portal avoids clipping inside the scrollable client modal. */}
-          <ComboboxOptions anchor={{ to: 'bottom start', gap: 4, padding: 12 }} portal className="z-100 max-h-60 w-(--input-width) overflow-y-auto rounded-xl border border-slate-200 bg-white p-1 text-xs text-slate-800 shadow-lg empty:invisible focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
+          {/* Keep the list below the field and inside the page theme context. */}
+          <ComboboxOptions className="absolute inset-x-0 top-full z-50 mt-1 max-h-48 overflow-y-auto overscroll-contain rounded-xl border border-slate-200 bg-white p-1 text-xs text-slate-800 shadow-lg empty:invisible focus:outline-none dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
             {matches.map((name) => (
               <ComboboxOption key={name} value={name} className="group flex cursor-pointer items-start gap-2 rounded-lg px-3 py-2.5 wrap-break-word select-none data-focus:bg-blue-50 data-focus:text-blue-800 dark:data-focus:bg-slate-800 dark:data-focus:text-white">
                 <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 opacity-0 group-data-selected:opacity-100" aria-hidden="true" />
@@ -61,6 +60,7 @@ export function ClientClassificationFields({ category, subcategory, onChange, di
             )}
             {!matches.length && !showCustom && <p className="px-3 py-2.5 text-slate-500 dark:text-slate-400">Digite uma subcategoria personalizada.</p>}
           </ComboboxOptions>
+          </div>
         </Combobox>
         <p id="cliente-subcategoria-ajuda" className="mt-1 text-slate-500 dark:text-slate-400">Use uma sugestão ou digite outra subcategoria.</p>
       </div>
