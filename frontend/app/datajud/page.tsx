@@ -1,4 +1,5 @@
 'use client';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { ClientPicker } from '@/components/ui/EntityPicker';
 import { isValidCnj } from '@/utils/identifiers';
 
@@ -540,18 +541,25 @@ function DataJudContent() {
 
       {/* Modal para Vincular Processo ao Sistema */}
       {modalVincularAberto && resultado && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-lg legal-glass-card fio-de-luz p-6 shadow-2xl">
+        <Dialog
+          open={modalVincularAberto}
+          onClose={() => setModalVincularAberto(false)}
+          className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center bg-slate-950/70 p-4 backdrop-blur-sm"
+        >
+          <DialogPanel className="w-full max-w-lg legal-glass-card fio-de-luz p-6 shadow-2xl max-h-full overflow-y-auto overscroll-contain">
             <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] pb-4">
               <div className="flex items-center gap-2.5">
                 <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand/15 text-brand border border-brand/25">
                   <BookmarkPlus className="h-4 w-4" />
                 </span>
-                <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                <DialogTitle as="h3" className="text-base font-semibold text-slate-900 dark:text-slate-100">
                   Vincular Processo ao Escritório
-                </h3>
+                </DialogTitle>
               </div>
               <button
+                data-autofocus
+                aria-label="Fechar vínculo do DataJud"
+                type="button"
                 onClick={() => setModalVincularAberto(false)}
                 className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-white/[0.04] dark:hover:text-slate-200 transition cursor-pointer"
               >
@@ -676,8 +684,8 @@ function DataJudContent() {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
+          </DialogPanel>
+        </Dialog>
       )}
 
       {/* Rodapé Institucional */}

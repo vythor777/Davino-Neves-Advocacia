@@ -1,5 +1,6 @@
 'use client';
 
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { ProcessPicker } from '@/components/ui/EntityPicker';
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { PageHeader } from '@/components/ui/PageHeader';
@@ -1049,8 +1050,12 @@ function PrazosContent() {
 
       {/* Modal de Criação / Edição */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/40 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-150">
-          <div className="relative w-full max-w-lg legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-[90vh] my-auto text-slate-900 dark:text-slate-100 transition-colors animate-in zoom-in-95 duration-150">
+        <Dialog
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center p-3 sm:p-4 bg-slate-950/40 backdrop-blur-sm animate-in fade-in duration-150"
+        >
+          <DialogPanel className="relative w-full max-w-lg legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-full text-slate-900 dark:text-slate-100 transition-colors animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] p-5 shrink-0 bg-slate-50/80 dark:bg-surface">
               <div className="flex items-center gap-2.5">
                 <div className="rounded-xl bg-brand/15 text-brand border border-brand/25 p-2">
@@ -1061,19 +1066,20 @@ function PrazosContent() {
                   )}
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+                  <DialogTitle as="h3" className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
                     {editingPrazo ? 'Editar prazo' : 'Novo prazo'}
-                  </h3>
+                  </DialogTitle>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
                     Defina o vencimento e o processo vinculado
                   </p>
                 </div>
               </div>
               <button
+                data-autofocus
+                aria-label="Fechar formulário de prazo"
                 type="button"
                 onClick={() => setModalOpen(false)}
                 className="rounded-lg p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-white transition cursor-pointer hover:bg-slate-100 dark:hover:bg-white/[0.04]"
-                aria-label="Fechar modal"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -1289,8 +1295,8 @@ function PrazosContent() {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
+          </DialogPanel>
+        </Dialog>
       )}
 
       {/* Modal de Exclusão Reutilizável & Acessível */}

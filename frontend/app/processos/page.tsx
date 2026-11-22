@@ -663,23 +663,29 @@ function ProcessosContent() {
 
       {/* Modal / Drawer de Detalhes */}
       {detailsModalOpen && selectedProcesso && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm">
-          <div className="legal-modal-card fio-de-luz w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+        <Dialog
+          open={detailsModalOpen}
+          onClose={() => setDetailsModalOpen(false)}
+          className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center bg-slate-950/40 p-4 backdrop-blur-sm"
+        >
+          <DialogPanel className="legal-modal-card fio-de-luz w-full max-w-3xl max-h-full overflow-y-auto p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-200/60 pb-4 dark:border-white/[0.06]">
               <div className="flex items-center gap-2.5">
                 <div className="rounded-xl bg-brand/15 text-brand border border-brand/25 p-2">
                   <Scale className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+                  <DialogTitle as="h3" className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
                     Autos Processuais
-                  </h3>
+                  </DialogTitle>
                   <p className="text-[11px] font-mono text-slate-400">
                     {formatarNumeroCNJ(selectedProcesso.numero_processo)}
                   </p>
                 </div>
               </div>
               <button
+                data-autofocus
+                aria-label="Fechar autos processuais"
                 type="button"
                 onClick={() => setDetailsModalOpen(false)}
                 className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-200 transition cursor-pointer"
@@ -750,8 +756,8 @@ function ProcessosContent() {
                 Fechar Autos
               </button>
             </div>
-          </div>
-        </div>
+          </DialogPanel>
+        </Dialog>
       )}
 
       {/* Rodapé Institucional */}

@@ -1,5 +1,6 @@
 'use client';
 
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { ProcessPicker } from '@/components/ui/EntityPicker';
 import { useAiTasks, useAiDraft } from '@/context/AiTaskContext';
 import { aiTaskUrl, findAiTask, type AiAction } from '@/utils/ai-tasks';
@@ -1597,16 +1598,22 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
       {/* MODAL: SALVAR PRAZO EXTRAÍDO NO CALENDÁRIO */}
       {/* ========================================================================= */}
       {modalPrazoAberto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/[0.1] p-6 shadow-xl space-y-4 animate-fade-in-up">
+        <Dialog
+          open={modalPrazoAberto}
+          onClose={() => setModalPrazoAberto(false)}
+          className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center bg-slate-950/60 backdrop-blur-xs p-4"
+        >
+          <DialogPanel className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/[0.1] p-6 shadow-xl space-y-4 animate-fade-in-up max-h-full overflow-y-auto overscroll-contain">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/[0.06] pb-3">
               <div className="flex items-center gap-2">
                 <CalendarClock className="h-4 w-4 text-[#0047ab] dark:text-brand" />
-                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+                <DialogTitle as="h3" className="text-sm font-semibold text-slate-900 dark:text-white">
                   Agendar Prazo no Calendário
-                </h3>
+                </DialogTitle>
               </div>
               <button
+                data-autofocus
+                aria-label="Fechar agendamento"
                 type="button"
                 onClick={() => setModalPrazoAberto(false)}
                 className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs"
@@ -1686,8 +1693,8 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                 </button>
               </div>
             </form>
-          </div>
-        </div>
+          </DialogPanel>
+        </Dialog>
       )}
 
       {/* Rodapé institucional */}

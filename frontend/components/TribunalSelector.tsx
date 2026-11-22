@@ -358,7 +358,10 @@ export const TribunalSelector = forwardRef<HTMLButtonElement, TribunalSelectorPr
                           placeholder="Filtrar por sigla, nome ou estado..."
                           className="w-full rounded-lg border border-slate-200 bg-white py-1.5 pl-8 pr-7 text-xs text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-hidden dark:border-slate-800 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-brand"
                           onClick={(e) => e.stopPropagation()}
-                          onKeyDown={(e) => e.stopPropagation()}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Escape') setSearchQuery('');
+                            else e.stopPropagation();
+                          }}
                         />
                         {searchQuery && (
                           <button

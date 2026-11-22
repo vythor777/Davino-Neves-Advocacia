@@ -1,4 +1,5 @@
 'use client';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { ClientPicker, ProcessPicker } from '@/components/ui/EntityPicker';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -59,10 +60,35 @@ function DocumentosContent() {
       <div className="min-w-0 flex-1"><p className="break-all font-medium">{d.nome_arquivo}</p><p className="text-sm">{(d.tamanho_bytes / 1e6).toFixed(2)} MB · {d.situacao} · {new Date(d.data_upload).toLocaleDateString('pt-BR')}</p><p className="text-sm">{documentLink(d, processes, clients).href ? <Link className="text-blue-700 underline hover:text-blue-900 focus-visible:ring-2 active:opacity-80 dark:text-blue-300" href={documentLink(d, processes, clients).href!}>{documentLink(d, processes, clients).label}</Link> : documentLink(d, processes, clients).label}</p></div></div>
       {d.situacao === 'DISPONIVEL' && <div className="flex flex-wrap gap-2"><button className={button} disabled={busy} onClick={() => action(async () => saveDocumentBlob(await documentoService.download(d.id_documento), d.nome_arquivo))}>Baixar PDF</button>{admin && <button className={button} disabled={busy} onClick={() => { setArchiveTarget(d); setConfirmed(false); }}>Arquivar após backup</button>}</div>}
     </li>)}{!documents.length && <li>Nenhum documento cadastrado.</li>}</ul>}
-    {archiveTarget && <section role="dialog" aria-modal="true" aria-label="Conferir backup antes de arquivar" className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4"><div className="max-w-lg rounded-xl bg-white dark:bg-slate-900 p-6 space-y-4">
-      <h2 className="font-semibold">Arquivar {archiveTarget.nome_arquivo}</h2><p>O PDF será removido da nuvem. O histórico e a identificação serão preservados. Abra o backup local e confira a integridade pelo SHA-256 do manifesto.</p><p className="break-all text-xs">SHA-256: {archiveTarget.sha256}</p>
-      <label className="flex gap-2"><input type="checkbox" checked={confirmed} onChange={e => setConfirmed(e.target.checked)} />Baixei, abri e conferi o backup local deste documento.</label>
-      <button className={button} onClick={() => setArchiveTarget(null)}>Cancelar</button> <button className={button} disabled={busy || !confirmed || !archiveTarget.sha256} onClick={() => action(async () => { await documentoService.archive(archiveTarget.id_documento, archiveTarget.sha256!); setArchiveTarget(null); setSelected([]); toast.success('Documento arquivado; histórico preservado.'); await reload(); })}>Confirmar arquivamento</button>
-    </div></section>}
+    {archiveTarget && (
+      <Dialog open onClose={() => setArchiveTarget(null)} className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center bg-slate-950/60 p-4">
+        <DialogPanel className="max-h-full w-full max-w-lg space-y-4 overflow-y-auto overscroll-contain rounded-xl bg-white p-6 dark:bg-slate-900">
+          <DialogTitle as="h2" className="break-words font-semibold">Arquivar {archiveTarget.nome_arquivo}</DialogTitle>
+          <p>O PDF será removido da nuvem. O histórico e a identificação serão preservados. Abra o backup local e confira a integridade pelo SHA-256 do manifesto.</p>
+          <p className="break-all text-xs">SHA-256: {archiveTarget.sha256}</p>
+          <label className="flex gap-2">
+            <input type="checkbox" checked={confirmed} onChange={e => setConfirmed(e.target.checked)} />
+            Baixei, abri e conferi o backup local deste documento.
+          </label>
+          <div className="flex flex-wrap gap-2">
+            <button type="button" data-autofocus className={button} onClick={() => setArchiveTarget(null)}>Cancelar</button>
+            <button
+              type="button"
+              className={button}
+              disabled={busy || !confirmed || !archiveTarget.sha256}
+              onClick={() => action(async () => {
+                await documentoService.archive(archiveTarget.id_documento, archiveTarget.sha256!);
+                setArchiveTarget(null);
+                setSelected([]);
+                toast.success('Documento arquivado; histórico preservado.');
+                await reload();
+              })}
+            >
+              Confirmar arquivamento
+            </button>
+          </div>
+        </DialogPanel>
+      </Dialog>
+    )}
   </main>;
 }

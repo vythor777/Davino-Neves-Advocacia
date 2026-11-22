@@ -1,5 +1,6 @@
 'use client';
 
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { ClientPicker, ProcessPicker } from '@/components/ui/EntityPicker';
 import React, { useState } from 'react';
 import {
@@ -159,11 +160,12 @@ function LancamentoModalForm({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm animate-in fade-in duration-150">
-      <div
-        className="relative w-full max-w-2xl legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <Dialog
+      open
+      onClose={onClose}
+      className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center p-4 bg-slate-950/40 backdrop-blur-sm animate-in fade-in duration-150"
+    >
+      <DialogPanel className="relative w-full max-w-2xl legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-full">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/60 dark:border-white/[0.06]">
           <div className="flex items-center gap-3">
@@ -177,15 +179,17 @@ function LancamentoModalForm({
               <DollarSign className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+              <DialogTitle as="h3" className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
                 {initialData ? 'Editar Lançamento Financeiro' : 'Novo Lançamento Financeiro'}
-              </h3>
+              </DialogTitle>
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 Controle de receitas, honorários, despesas operacionais e custas
               </p>
             </div>
           </div>
           <button
+            data-autofocus
+            aria-label="Fechar formulário financeiro"
             type="button"
             onClick={onClose}
             className="rounded-lg p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/[0.06] transition cursor-pointer"
@@ -195,7 +199,7 @@ function LancamentoModalForm({
         </div>
 
         {/* Form Body */}
-        <form id="lancamento-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-4">
+        <form id="lancamento-form" onSubmit={handleSubmit} className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-6 space-y-4">
           {errorMessage && (
             <div className="rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 p-3 text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2">
               <AlertCircle className="h-4 w-4 shrink-0" />
@@ -433,7 +437,7 @@ function LancamentoModalForm({
             )}
           </button>
         </div>
-      </div>
-    </div>
+      </DialogPanel>
+    </Dialog>
   );
 }

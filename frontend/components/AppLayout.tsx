@@ -124,7 +124,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
   useEffect(() => {
     function closeMenus(e: KeyboardEvent) {
-      if (e.key === 'Escape') { setMobileDrawerOpen(false); setNotificationsOpen(false); setUserDropdownOpen(false); }
+      if (e.key === 'Escape' && !e.defaultPrevented) { setNotificationsOpen(false); setUserDropdownOpen(false); }
     }
     window.addEventListener('keydown', closeMenus);
     return () => window.removeEventListener('keydown', closeMenus);
