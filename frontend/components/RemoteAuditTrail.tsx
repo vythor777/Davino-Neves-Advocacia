@@ -9,12 +9,14 @@ export function RemoteAuditTrail({
   record,
   from,
   to,
+  includeDocuments,
   pagination,
 }: {
   entity?: string;
   record?: number;
   from?: string;
   to?: string;
+  includeDocuments?: boolean;
   pagination?: { page: number; onChange: (page: number) => void };
 }) {
   const { admin } = usePermissions();
@@ -27,7 +29,7 @@ export function RemoteAuditTrail({
     let active = true;
     api
       .get<AuditLogItem[]>('/auditoria', {
-        params: { entidade: entity, registro: record, de: from || undefined, ate: to || undefined, pagina: page },
+        params: { entidade: entity, registro: record, de: from || undefined, ate: to || undefined, pagina: page, incluir_documentos: includeDocuments },
       })
       .then(({ data }) => {
         if (active) setLogs(data);
@@ -41,7 +43,7 @@ export function RemoteAuditTrail({
     return () => {
       active = false;
     };
-  }, [admin, entity, record, from, to, page]);
+  }, [admin, entity, record, from, to, page, includeDocuments]);
   if (!admin) return null;
   if (loading) return <Skeleton className="h-24 w-full" />;
   if (error)

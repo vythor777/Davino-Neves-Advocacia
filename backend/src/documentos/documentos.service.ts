@@ -17,6 +17,10 @@ export class DocumentosService {
   private scope(user: Actor): Prisma.DocumentoWhereInput {
     if (user.role === 'ADMINISTRADOR') return {};
     const scope = this.access.processScope(user);
+    if (user.role === 'ESTAGIARIO') {
+      // O cadastro de clientes é compartilhado. Documentos dos autos seguem o acesso do processo.
+      return { OR: [{ id_processo: null }, { processo: scope }] };
+    }
     return { OR: [
       { processo: scope },
       { id_processo: null, id_cliente: { not: null }, id_usuario: user.id_usuario },

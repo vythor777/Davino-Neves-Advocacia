@@ -742,7 +742,7 @@ function ProcessosContent() {
               <div className="pt-2">
                 <div className="space-y-4">
                   <ProcessAccessPanel key={selectedProcesso.id_processo} process={selectedProcesso} onUpdated={p => { setSelectedProcesso(p); void fetchProcessos(); }} />
-                  <RemoteAuditTrail key={selectedProcesso.data_atualizacao} entity="processos" record={selectedProcesso.id_processo} />
+                  <RemoteAuditTrail key={selectedProcesso.data_atualizacao} entity="processos" record={selectedProcesso.id_processo} includeDocuments />
                 </div>
               </div>
             </div>

@@ -39,11 +39,10 @@ function matches(row, where = {}) {
     if (value === undefined) return true;
     if (key === 'OR') return value.some((w) => matches(row, w));
     if (key === 'AND') return value.every((w) => matches(row, w));
-    if (key === 'processo')
-      return matches(
-        db.processos.find((p) => p.id_processo === row.id_processo),
-        value,
-      );
+    if (key === 'processo') {
+      const process = db.processos.find((p) => p.id_processo === row.id_processo);
+      return !!process && matches(process, value);
+    }
     if (key === 'participantes')
       return row.participantes.some((p) => matches(p, value.some));
     if (value && typeof value === 'object' && !Array.isArray(value)) {
@@ -543,6 +542,22 @@ test('documentos: validação de PDF e controle das operações', async () => {
   assert.equal(db.docs.length, before);
   const list = await api.get('/api/documentos').set(auth(5)).expect(200);
   assert.ok(list.body.every(d => d.conteudo === undefined && d.caminho_arquivo === undefined));
+});
+test('estagiário consulta documentos diretos do cliente com ou sem processo acessível', async () => {
+  db.docs.push(
+    { id_documento: 403, id_cliente: 201, id_processo: null, id_usuario: 1, nome_arquivo: 'cadastro.pdf' },
+    { id_documento: 404, id_cliente: null, id_processo: null, id_usuario: 1, nome_arquivo: 'escritorio.pdf' },
+  );
+  const withoutProcess = await api.get('/api/documentos?id_cliente=201').set(auth(6)).expect(200);
+  assert.deepEqual(withoutProcess.body.map(document => document.id_documento), [403]);
+  const withProcess = await api.get('/api/documentos?id_cliente=201').set(auth(5)).expect(200);
+  assert.deepEqual(withProcess.body.map(document => document.id_documento), [401, 403]);
+  await api.get('/api/documentos/403').set(auth(6)).expect(200);
+  await api.get('/api/documentos/402').set(auth(6)).expect(404);
+  await api.post('/api/documentos').set(auth(6)).field('id_cliente', '201')
+    .attach('arquivo', Buffer.from('teste'), 'teste.pdf').expect(403);
+  await api.post('/api/documentos/403/arquivar').set(auth(6))
+    .send({ backup_conferido: true, sha256: 'a'.repeat(64) }).expect(403);
 });
 test('usuários, auditoria e configurações administrativas protegidos', async () => {
   for (const id of [2, 5]) {
