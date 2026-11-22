@@ -10,12 +10,15 @@ import type { Processo } from '@/services/processoService';
 import { ProcessTimeline } from '@/components/ProcessTimeline';
 import { usePermissions } from '@/hooks/usePermissions';
 import { toast } from 'sonner';
+import { isValidCnj } from '@/utils/identifiers';
 export function ProcessWorkspace({ process }: { process: Processo }) {
   const { canAccessFinance } = usePermissions();
   const [retry, setRetry] = useState(0);
   const [tab, setTab] = useState('Prazos');
   const [deadlines, setDeadlines] = useState<Prazo[]>([]); const [documents, setDocuments] = useState<Documento[]>([]);
   const [finance, setFinance] = useState<LancamentoFinanceiro[]>([]); const [moves, setMoves] = useState<MovimentoDataJud[]>([]);
+  const [processFound, setProcessFound] = useState(true);
+  const validProcessNumber = isValidCnj(process.numero_processo);
   const [loading, setLoading] = useState(false); const [error, setError] = useState('');
   useEffect(() => {
     let active = true; setLoading(true); setError('');
@@ -24,11 +27,17 @@ export function ProcessWorkspace({ process }: { process: Processo }) {
         if (tab === 'Prazos') { const rows = await prazoService.getAll(); if (active) setDeadlines(rows.filter(r => r.id_processo === process.id_processo)); }
         if (tab === 'Documentos') { const rows = await documentoService.list(process.id_processo); if (active) setDocuments(rows); }
         if (tab === 'Honorários' && canAccessFinance) { const { data } = await api.get<LancamentoFinanceiro[]>('/financeiro/lancamentos'); if (active) setFinance(data.filter(r => r.processoId === process.id_processo)); }
-        if (tab === 'Movimentações') { const data = await datajudService.consultarPorNumero(process.numero_processo); if (active) setMoves(data.movimentos); }
-      } catch { if (active) setError('Não foi possível carregar esta seção.'); }
+        if (tab === 'Movimentações' && validProcessNumber) {
+          const data = await datajudService.listarMovimentacoes(process.numero_processo);
+          if (active) {
+            setMoves(data.movimentos ?? []);
+            setProcessFound(data.encontrado);
+          }
+        }
+      } catch { if (active) setError(tab === 'Movimentações' ? 'Não foi possível consultar as movimentações no DataJud.' : 'Não foi possível carregar esta seção.'); }
       finally { if (active) setLoading(false); }
     }; void load(); return () => { active = false; };
-  }, [tab, process.id_processo, process.numero_processo, canAccessFinance, retry]);
+  }, [tab, process.id_processo, process.numero_processo, canAccessFinance, retry, validProcessNumber]);
   const tabs = ['Prazos', 'Movimentações', 'Documentos', ...(canAccessFinance ? ['Honorários'] : [])];
   return <section className="space-y-3">
     <div role="tablist" aria-label="Informações vinculadas ao processo" className="process-workspace-tabs flex flex-wrap gap-2">{tabs.map(name => <button key={name} role="tab" id={'process-tab-' + name} aria-selected={tab === name} aria-controls="process-panel" tabIndex={tab === name ? 0 : -1} onKeyDown={e => {
@@ -40,7 +49,13 @@ export function ProcessWorkspace({ process }: { process: Processo }) {
     <div key={tab} className="workspace-enter" role="tabpanel" id="process-panel" aria-labelledby={'process-tab-' + tab}>
       {loading ? <div aria-label="Carregando seção" className="h-24 animate-pulse rounded bg-slate-200 dark:bg-slate-800" /> : error ? <p role="alert" className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:bg-amber-950 dark:text-amber-200">{error} <button type="button" className="underline" onClick={() => setRetry(n => n + 1)}>Tentar novamente</button></p> : <>
         {tab === 'Prazos' && <ul className="process-workspace-list space-y-2">{deadlines.map(d => <li key={d.id_prazo}>{d.descricao} · {d.data_vencimento.slice(0,10).split('-').reverse().join('/')} · {d.status}<br />Responsável: {d.responsavel || 'Não definido'}<br />{!process.id_responsavel && <span className="text-amber-700">O processo está sem advogado responsável.</span>}</li>)}{!deadlines.length && <li>Nenhum prazo vinculado.</li>}<li><Link href="/prazos" className="underline hover:text-blue-700 focus-visible:ring-2 active:opacity-80">Gerenciar prazos</Link></li></ul>}
-        {tab === 'Movimentações' && <ProcessTimeline movimentacoes={moves} />}
+        {tab === 'Movimentações' && (
+          validProcessNumber
+            ? <ProcessTimeline movimentacoes={moves}
+                emptyMessage={processFound ? undefined : 'Processo não localizado no DataJud'}
+                emptyDescription={processFound ? undefined : 'A consulta pública do CNJ não retornou um processo com esse número.'} />
+            : <p className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:bg-amber-950 dark:text-amber-200">O número CNJ cadastrado é inválido. Confira o número na edição do processo para consultar as movimentações.</p>
+        )}
         {tab === 'Documentos' && <ul className="process-workspace-list space-y-2">{documents.map(d => <li key={d.id_documento}>{d.nome_arquivo} · {d.situacao} {d.situacao === 'DISPONIVEL' && <button className="underline hover:text-blue-700 focus-visible:ring-2 active:opacity-80" onClick={() => void documentoService.download(d.id_documento).then(blob => saveDocumentBlob(blob, d.nome_arquivo)).catch(() => toast.error('Não foi possível baixar o documento.'))}>Baixar</button>}</li>)}{!documents.length && <li>Nenhum documento vinculado.</li>}<li><Link href="/documentos" className="underline hover:text-blue-700 focus-visible:ring-2 active:opacity-80">Gerenciar documentos</Link></li></ul>}
         {tab === 'Honorários' && canAccessFinance && <ul className="process-workspace-list space-y-2">{finance.map(f => <li key={f.id}>{f.descricao} · {Number(f.valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} · {f.status}</li>)}{!finance.length && <li>Nenhum lançamento vinculado.</li>}</ul>}
       </>}
