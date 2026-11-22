@@ -104,7 +104,7 @@ const ACOES_IA: AcaoConfig[] = [
 ];
 
 function GeminiContent() {
-  const { store: aiStore, tasks: aiTasks, visible: aiVisible } = useAiTasks();
+  const { store: aiStore, tasks: aiTasks, visible: aiVisible, drafts: aiDrafts } = useAiTasks();
   const router = useRouter();
   const startTask = (action: AiAction, title: string, operation: () => Promise<unknown>) => {
     const id = aiStore.start(action, title, operation);
@@ -153,7 +153,6 @@ function GeminiContent() {
   const [procConteudo, setProcConteudo] = useAiDraft('procConteudo', '');
   const [procFoco, setProcFoco] = useAiDraft('procFoco', '');
   const procLoading = aiTasks.some(task => task.action === 'analisar_processo' && task.status === 'pending');
-  const procResultado = (getTask('analisar_processo')?.result as string | undefined) ?? null;
   const hideResult = (action: AiAction) => { aiStore.hide(action); router.replace(`/gemini?acao=${action}`, { scroll: false }); };
   const setProcResultado = () => hideResult('analisar_processo');
 
@@ -162,7 +161,6 @@ function GeminiContent() {
   const [docTipo, setDocTipo] = useAiDraft('docTipo', 'Sentença / Decisão');
   const [docFormato, setDocFormato] = useAiDraft<'executivo' | 'cliente_simples' | 'topicos_estrategicos'>('docFormato', 'executivo');
   const docLoading = aiTasks.some(task => task.action === 'resumir_documento' && task.status === 'pending');
-  const docResultado = (getTask('resumir_documento')?.result as string | undefined) ?? null;
   const setDocResultado = () => hideResult('resumir_documento');
 
   // 3. Estados: Encontrar Jurisprudência
@@ -171,7 +169,6 @@ function GeminiContent() {
   const [jurisTribunal, setJurisTribunal] = useAiDraft('jurisTribunal', 'STJ & Tribunais Estaduais');
   const [jurisTese, setJurisTese] = useAiDraft('jurisTese', '');
   const jurisLoading = aiTasks.some(task => task.action === 'encontrar_jurisprudencia' && task.status === 'pending');
-  const jurisResultado = (getTask('encontrar_jurisprudencia')?.result as string | undefined) ?? null;
   const setJurisResultado = () => hideResult('encontrar_jurisprudencia');
 
   // 4. Estados: Criar Peça
@@ -182,7 +179,6 @@ function GeminiContent() {
   const [pecaPedidos, setPecaPedidos] = useAiDraft('pecaPedidos', '');
   const [pecaJurisReferencia, setPecaJurisReferencia] = useAiDraft('pecaJurisReferencia', '');
   const pecaLoading = aiTasks.some(task => task.action === 'criar_peca' && task.status === 'pending');
-  const pecaResultado = (getTask('criar_peca')?.result as string | undefined) ?? null;
   const setPecaResultado = () => hideResult('criar_peca');
 
   // 5. Estados: Identificar Prazos
@@ -195,6 +191,22 @@ function GeminiContent() {
 
   const activeTask = getTask(acaoAtiva);
   const activeLoading = aiTasks.some(task => task.action === acaoAtiva && task.status === 'pending');
+  const resultKey = activeTask?.status === 'success' ? `resultado:${activeTask.id}` : null;
+  const originalResultText = typeof activeTask?.result === 'string'
+    ? activeTask.result
+    : acaoAtiva === 'identificar_prazos' && prazoResultado
+      ? [
+          prazoResultado.descricao_providencia,
+          `Quantidade: ${prazoResultado.quantidade_dias ?? 'Não confirmada'}`,
+          `Contagem: ${prazoResultado.tipo_contagem ?? 'Não confirmada'}`,
+          `Data sugerida: ${prazoResultado.data_limite_estimada ?? 'Aguardando confirmação'}`,
+          prazoResultado.observacoes,
+        ].filter(Boolean).join('\n')
+      : null;
+  const editedResult = resultKey ? aiDrafts[resultKey] : undefined;
+  const resultText = typeof editedResult === 'string' ? editedResult : originalResultText;
+  const canEditResult = resultKey !== null && resultText !== null && !activeLoading;
+
 
   // Modal para agendar prazo extraído
   const [modalPrazoAberto, setModalPrazoAberto] = useState(false);
@@ -597,7 +609,7 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
             {/* 1. AÇÃO: ANALISAR PROCESSO */}
             {acaoAtiva === 'analisar_processo' && (
               <div>
-                <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-white/[0.06]">
+                <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100 dark:border-white/[0.06]">
                   <div className="flex items-center gap-2.5">
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#0047ab]/10 text-[#0047ab] dark:bg-brand/15 dark:text-brand">
                       <FileSearch className="h-4 w-4" />
@@ -1367,44 +1379,21 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                   </h3>
                 </div>
 
-                {/* Ações de cópia e exportação */}
-                {activeTask?.status === 'success' && (
-                  <button type="button" onClick={async () => {
-                    const text = acaoAtiva === 'analisar_processo' ? procResultado : acaoAtiva === 'resumir_documento' ? docResultado : acaoAtiva === 'encontrar_jurisprudencia' ? jurisResultado : acaoAtiva === 'criar_peca' ? pecaResultado : prazoResultado ? [prazoResultado.descricao_providencia, `Quantidade: ${prazoResultado.quantidade_dias ?? 'Não confirmada'}`, `Contagem: ${prazoResultado.tipo_contagem ?? 'Não confirmada'}`, `Data sugerida: ${prazoResultado.data_limite_estimada ?? 'Aguardando confirmação'}`, prazoResultado.observacoes].filter(Boolean).join('\n') : null;
-                    if (!text) return;
-                    try {
-                      const { downloadInstitutionalPdf } = await import('@/utils/institutionalPdf');
-                      await downloadInstitutionalPdf('Relatório jurídico', text);
-                    } catch { toast.error('Não foi possível gerar o PDF. Tente novamente.'); }
-                  }} className="rounded-lg border border-slate-200 bg-white dark:bg-slate-900 px-3 py-2 text-xs hover:bg-slate-100 dark:hover:bg-slate-800 focus-visible:ring-2 focus-visible:ring-blue-700 active:scale-95">Baixar PDF institucional</button>
-                )}
-                {((acaoAtiva === 'analisar_processo' && procResultado) ||
-                  (acaoAtiva === 'resumir_documento' && docResultado) ||
-                  (acaoAtiva === 'encontrar_jurisprudencia' &&
-                    jurisResultado) ||
-                  (acaoAtiva === 'criar_peca' && pecaResultado)) && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const txt =
-                        acaoAtiva === 'analisar_processo'
-                          ? procResultado
-                          : acaoAtiva === 'resumir_documento'
-                            ? docResultado
-                            : acaoAtiva === 'encontrar_jurisprudencia'
-                              ? jurisResultado
-                              : pecaResultado;
-                      if (txt) handleCopiar(txt);
-                    }}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 cursor-pointer transition"
-                  >
-                    {copiado ? (
-                      <Check className="h-3.5 w-3.5 text-emerald-500" />
-                    ) : (
-                      <Copy className="h-3.5 w-3.5" />
-                    )}
-                    <span>{copiado ? 'Copiado!' : 'Copiar Texto'}</span>
-                  </button>
+                {canEditResult && (
+                  <div className="flex flex-wrap items-center justify-end gap-2">
+                    <button type="button" disabled={!resultText?.trim()} onClick={async () => {
+                      if (!resultText?.trim()) return;
+                      try {
+                        const { downloadInstitutionalPdf } = await import('@/utils/institutionalPdf');
+                        await downloadInstitutionalPdf('Relatório jurídico', resultText);
+                      } catch { toast.error('Não foi possível gerar o PDF. Tente novamente.'); }
+                    }} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-blue-700 active:scale-95 disabled:opacity-50 dark:bg-slate-900 dark:hover:bg-slate-800">Baixar PDF institucional</button>
+                    <button type="button" disabled={!resultText?.trim()} onClick={() => { if (resultText?.trim()) handleCopiar(resultText); }}
+                      className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-100 focus-visible:ring-2 focus-visible:ring-blue-700 active:scale-95 disabled:opacity-50 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300">
+                      {copiado ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+                      <span>{copiado ? 'Copiado!' : 'Copiar texto'}</span>
+                    </button>
+                  </div>
                 )}
               </div>
 
@@ -1432,44 +1421,27 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                     <button type="button" onClick={() => aiStore.retry(activeTask.id)} className="mt-3 font-semibold underline focus-visible:ring-2">Tentar novamente</button>
                   </div>
                 )}
-                {/* 2. Resultados: Texto corrido estruturado */}
-                {!procLoading &&
-                  acaoAtiva === 'analisar_processo' &&
-                  procResultado && (
-                    <div className="rounded-xl bg-slate-50 dark:bg-white/[0.02] p-5 text-xs leading-relaxed text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-white/[0.04] whitespace-pre-wrap font-sans">
-                      {procResultado}
-                    </div>
-                  )}
-
-                {!docLoading &&
-                  acaoAtiva === 'resumir_documento' &&
-                  docResultado && (
-                    <div className="rounded-xl bg-slate-50 dark:bg-white/[0.02] p-5 text-xs leading-relaxed text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-white/[0.04] whitespace-pre-wrap font-sans">
-                      {docResultado}
-                    </div>
-                  )}
-
-                {!jurisLoading &&
-                  acaoAtiva === 'encontrar_jurisprudencia' &&
-                  jurisResultado && (
-                    <div className="rounded-xl bg-slate-50 dark:bg-white/[0.02] p-5 text-xs leading-relaxed text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-white/[0.04] whitespace-pre-wrap font-sans">
-                      {jurisResultado}
-                    </div>
-                  )}
-
-                {!pecaLoading &&
-                  acaoAtiva === 'criar_peca' &&
-                  pecaResultado && (
-                    <div className="rounded-xl bg-slate-50 dark:bg-white/[0.02] p-5 text-xs leading-relaxed text-slate-800 dark:text-slate-200 border border-slate-100 dark:border-white/[0.04] whitespace-pre-wrap font-serif">
-                      {pecaResultado}
-                    </div>
-                  )}
+                {canEditResult && resultKey && (
+                  <div className="space-y-2">
+                    <label htmlFor="ai-result-text" className="block text-xs font-medium text-slate-700 dark:text-slate-300">
+                      {acaoAtiva === 'identificar_prazos' ? 'Texto do relatório de prazos' : 'Texto do resultado'}
+                    </label>
+                    <textarea
+                      key={resultKey}
+                      id="ai-result-text"
+                      rows={acaoAtiva === 'identificar_prazos' ? 8 : 18}
+                      value={resultText ?? ''}
+                      onChange={event => aiStore.setDraft(resultKey, event.target.value)}
+                      className="w-full resize-y rounded-xl border border-slate-200 bg-slate-50 p-4 text-sm leading-relaxed text-slate-800 focus-visible:outline-2 focus-visible:outline-brand dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200"
+                    />
+                  </div>
+                )}
 
                 {/* 3. Resultado: Identificar Prazos (Card Estruturado) */}
                 {!prazoLoading &&
                   acaoAtiva === 'identificar_prazos' &&
                   prazoResultado && (
-                    <div className="space-y-4">
+                    <div className="mt-4 space-y-4">
                       <div
                         className={`p-4 rounded-xl border ${
                           prazoResultado.urgencia
