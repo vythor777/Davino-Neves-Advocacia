@@ -379,7 +379,7 @@ test('listagem: administrador vê todos; responsável e vinculados somente liber
 });
 test('acesso direto por ID, prazos, documentos e CNJ não contornam vínculo', async () => {
   for (const id of [2, 3, 5, 6]) {
-    for (const path of ['processos/102', 'prazos/302', 'documentos/402'])
+    for (const path of ['processos/102', 'prazos/302', 'documentos/402', 'datajud/00000025920268260001/movimentacoes'])
       await api.get(`/api/${path}`).set(auth(id)).expect(404);
     await api
       .post('/api/datajud/consultar')

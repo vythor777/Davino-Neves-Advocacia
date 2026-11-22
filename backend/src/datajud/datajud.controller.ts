@@ -9,7 +9,7 @@ import {
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
-import { DataJudService } from './datajud.service.js';
+import { DataJudProcessNotFoundException, DataJudService } from './datajud.service.js';
 import { ConsultarProcessoDto } from './dto/consultar-processo.dto.js';
 
 @Controller('datajud')
@@ -29,5 +29,17 @@ export class DataJudController {
     return this.dataJudService.consultarProcesso({
       numero_processo: numeroProcesso,
     });
+  }
+
+  @Get(':numeroProcesso/movimentacoes')
+  async movimentacoes(@CurrentUser() user: Actor, @Param('numeroProcesso') numeroProcesso: string) {
+    await this.access.processNumber(user, numeroProcesso);
+    try {
+      const { movimentos } = await this.dataJudService.consultarProcesso({ numero_processo: numeroProcesso });
+      return { encontrado: true, movimentos };
+    } catch (error) {
+      if (error instanceof DataJudProcessNotFoundException) return { encontrado: false, movimentos: [] };
+      throw error;
+    }
   }
 }

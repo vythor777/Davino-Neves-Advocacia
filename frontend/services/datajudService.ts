@@ -57,6 +57,12 @@ export const datajudService = {
     const response = await api.get<DataJudProcessoResponse>(`/datajud/${limpo}`);
     return response.data;
   },
+
+  async listarMovimentacoes(numeroProcesso: string): Promise<{ encontrado: boolean; movimentos: MovimentoDataJud[] }> {
+    const limpo = limparNumeroProcesso(numeroProcesso);
+    const response = await api.get(`/datajud/${limpo}/movimentacoes`);
+    return response.data;
+  },
 };
 
 export default datajudService;

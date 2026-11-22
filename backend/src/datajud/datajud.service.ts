@@ -7,13 +7,19 @@ import {
 } from '@nestjs/common';
 import { ConsultarProcessoDto } from './dto/consultar-processo.dto.js';
 
+const publicDataJudUrl = 'https://api-publica.datajud.cnj.jus.br';
+// Chave pública publicada pelo CNJ em https://datajud-wiki.cnj.jus.br/api-publica/acesso/
+const publicDataJudKey = 'cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw==';
+
+export class DataJudProcessNotFoundException extends NotFoundException {}
+
 @Injectable()
 export class DataJudService {
   private readonly logger = new Logger(DataJudService.name);
   private getBaseUrl(): string {
     const rawUrl = process.env.DATAJUD_API_URL || process.env.DATA_JUD_API_URL;
     if (!rawUrl || rawUrl.trim() === '') {
-      return 'https://api-publica.datajud.cnj.jus.br';
+      return publicDataJudUrl;
     }
 
     let url = rawUrl.trim().replace(/^["']|["']$/g, '').trim();
@@ -31,11 +37,11 @@ export class DataJudService {
       const parsed = new URL(url);
       return `${parsed.protocol}//${parsed.host}`;
     } catch {
-      return 'https://api-publica.datajud.cnj.jus.br';
+      return publicDataJudUrl;
     }
   }
 
-  private getApiKey(): string {
+  private getApiKey(baseUrl: string): string {
     // Lista de variações de nomes possíveis no ambiente do Render/Docker/Next
     const possibleEnvKeys = [
       'DATAJUD_API_KEY',
@@ -60,6 +66,7 @@ export class DataJudService {
     }
 
     if (!foundKey) {
+      if (baseUrl === publicDataJudUrl) return publicDataJudKey;
       this.logger.warn(
         `[DataJud Config] Nenhuma chave de API configurada no ambiente. Variáveis verificadas: ${possibleEnvKeys.join(', ')}.`,
       );
@@ -76,11 +83,6 @@ export class DataJudService {
     );
 
     return foundKey;
-  }
-
-  private getAuthHeader(): string {
-    const key = this.getApiKey();
-    return key.startsWith('APIKey ') ? key : `APIKey ${key}`;
   }
 
   /**
@@ -186,16 +188,13 @@ export class DataJudService {
     );
 
     try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000);
-
-      const authHeader = this.getAuthHeader();
-
-      const response = await fetch(endpoint, {
+      const key = this.getApiKey(baseUrl).replace(/^APIKey\s+/i, '');
+      const signal = AbortSignal.timeout(10000);
+      const search = (apiKey: string) => fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: authHeader,
+          Authorization: `APIKey ${apiKey}`,
         },
         body: JSON.stringify({
           query: {
@@ -204,10 +203,13 @@ export class DataJudService {
             },
           },
         }),
-        signal: controller.signal,
+        signal,
       });
-
-      clearTimeout(timeoutId);
+      let response = await search(key);
+      if (baseUrl === publicDataJudUrl && key !== publicDataJudKey && [401, 403].includes(response.status)) {
+        await response.body?.cancel();
+        response = await search(publicDataJudKey);
+      }
 
       if (!response.ok) {
         const errorBody = await response.text();
@@ -239,7 +241,7 @@ export class DataJudService {
         this.logger.warn(
           `Nenhum registro retornado pelo DataJud para o processo ${numeroLimpo} no tribunal ${siglaTribunal.toUpperCase()}.`,
         );
-        throw new NotFoundException(
+        throw new DataJudProcessNotFoundException(
           `Nenhum registro localizado no DataJud para o processo ${numeroLimpo} no tribunal ${siglaTribunal.toUpperCase()}.`,
         );
       }
