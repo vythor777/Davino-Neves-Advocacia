@@ -4,7 +4,16 @@ import React from 'react';
 
 import type { Cliente, ClienteProfile } from '@/services/clienteService';
 
-export const profileFields = [
+type TipoPessoa = NonNullable<Cliente['tipo_pessoa']>;
+
+const qualificacao = {
+  key: 'qualificacao',
+  label: 'Qualificação',
+  maxLength: 5000,
+  placeholder: 'Informações complementares para a qualificação do cliente',
+} as const;
+
+const personalProfileFields = [
   { key: 'tratamento', label: 'Tratamento', maxLength: 50, placeholder: 'Ex.: Sr., Sra., Dr., Dra.' },
   { key: 'genero', label: 'Gênero', maxLength: 30 },
   { key: 'estado_civil', label: 'Estado civil', maxLength: 50, placeholder: 'Informe o estado civil' },
@@ -14,8 +23,16 @@ export const profileFields = [
   { key: 'profissao', label: 'Profissão', maxLength: 100, placeholder: 'Informe a profissão' },
   { key: 'nome_mae', label: 'Nome da mãe', maxLength: 100, placeholder: 'Nome completo da mãe' },
   { key: 'nome_pai', label: 'Nome do pai', maxLength: 100, placeholder: 'Nome completo do pai' },
-  { key: 'qualificacao', label: 'Qualificação', maxLength: 5000, placeholder: 'Informações complementares para a qualificação do cliente' },
+  qualificacao,
 ] as const;
+
+const companyProfileFields = [
+  { ...qualificacao, placeholder: 'Informações complementares sobre a empresa' },
+] as const;
+
+export function getClientProfileFields(tipoPessoa: TipoPessoa) {
+  return tipoPessoa === 'pj' ? companyProfileFields : personalProfileFields;
+}
 
 export const genderLabels: Record<string, string> = {
   FEMININO: 'Feminino', MASCULINO: 'Masculino', NAO_BINARIO: 'Não binário', OUTRO: 'Outro',
@@ -24,20 +41,21 @@ export const genderLabels: Record<string, string> = {
 const inputClass = 'w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-hidden focus-visible:ring-2 focus-visible:ring-brand/40 disabled:opacity-60 dark:border-slate-700 dark:bg-surface dark:text-slate-100';
 
 type Props = {
+  tipoPessoa: TipoPessoa;
   value: ClienteProfile;
   onChange: (value: ClienteProfile) => void;
   representatives: Cliente[];
   disabled?: boolean;
 };
 
-export function ClientProfileFields({ value, onChange, representatives, disabled }: Props) {
+export function ClientProfileFields({ tipoPessoa, value, onChange, representatives, disabled }: Props) {
   const update = (key: keyof ClienteProfile, next: string | number | null) => onChange({ ...value, [key]: next });
   return (
     <fieldset disabled={disabled} className="space-y-3 border-t border-slate-200 pt-4 dark:border-slate-700">
-      <legend className="px-1 font-semibold text-slate-900 dark:text-slate-100">Qualificação do cliente</legend>
+      <legend className="px-1 font-semibold text-slate-900 dark:text-slate-100">{tipoPessoa === 'pj' ? 'Qualificação da empresa' : 'Qualificação do cliente'}</legend>
       <p className="text-slate-500 dark:text-slate-400">Dados complementares opcionais.</p>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {profileFields.map((field) => (
+        {getClientProfileFields(tipoPessoa).map((field) => (
           <div key={field.key} className={field.key === 'qualificacao' ? 'sm:col-span-2' : undefined}>
             <label htmlFor={`cliente-${field.key}`} className="mb-1 block font-medium text-slate-700 dark:text-slate-300">{field.label}</label>
             {field.key === 'genero' ? (
@@ -65,13 +83,14 @@ export function ClientProfileFields({ value, onChange, representatives, disabled
   );
 }
 
-export function ClientProfileDetails({ client, representatives }: { client: Cliente; representatives: Cliente[] }) {
+export function ClientProfileDetails({ client, representatives, tipoPessoa }: { client: Cliente; representatives: Cliente[]; tipoPessoa: TipoPessoa }) {
   const representative = representatives.find((candidate) => candidate.id_cliente === client.id_representante_legal);
+  const title = tipoPessoa === 'pj' ? 'Qualificação da empresa' : 'Qualificação do cliente';
   return (
-    <section className="border-t border-slate-200 pt-4 dark:border-slate-700" aria-label="Qualificação do cliente">
-      <h4 className="mb-3 font-semibold text-slate-900 dark:text-slate-100">Qualificação do cliente</h4>
+    <section className="border-t border-slate-200 pt-4 dark:border-slate-700" aria-label={title}>
+      <h4 className="mb-3 font-semibold text-slate-900 dark:text-slate-100">{title}</h4>
       <dl className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {profileFields.map((field) => (
+        {getClientProfileFields(tipoPessoa).map((field) => (
           <div key={field.key} className={field.key === 'qualificacao' ? 'sm:col-span-2' : undefined}>
             <dt className="text-slate-500 dark:text-slate-400">{field.label}</dt>
             <dd className="mt-1 whitespace-pre-wrap break-words text-slate-800 dark:text-slate-200">{(field.key === 'genero' ? genderLabels[client.genero ?? ''] : client[field.key]) || 'Não informado'}</dd>

@@ -1,10 +1,11 @@
 'use client';
 import { ClientClassificationFields } from '@/components/clientes/ClientClassificationFields';
-import { ClientProfileFields, ClientProfileDetails, profileFields } from '@/components/clientes/ClientProfileFields';
+import { ClientProfileFields, ClientProfileDetails, getClientProfileFields } from '@/components/clientes/ClientProfileFields';
 import type { ClienteProfile } from '@/services/clienteService';
 import { cpfCnpjError } from '@/utils/identifiers';
 
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { useSearchParams } from 'next/navigation';
 import { PageHeader } from '@/components/ui/PageHeader';
 import AuthGuard from '@/components/AuthGuard';
@@ -64,6 +65,10 @@ function formatarCpfCnpj(valor: string | null = ''): string {
     return formatarCPF(digits);
   }
   return formatarCNPJ(digits);
+}
+
+function tipoPessoaCliente(client: Cliente): 'pf' | 'pj' {
+  return client.tipo_pessoa ?? ((client.cpf_cnpj ?? '').replace(/\D/g, '').length > 11 ? 'pj' : 'pf');
 }
 
 function formatarTelefone(valor: string | null = ''): string {
@@ -138,12 +143,14 @@ function ClientesContent() {
 
   // Form fields
   const [formTipo, setFormTipo] = useState<'pf' | 'pj'>('pf');
+  const contatosObrigatorios = formTipo === 'pj' && (!editingClient || tipoPessoaCliente(editingClient) !== 'pj');
   const [nome, setNome] = useState<string>('');
   const [cpfCnpj, setCpfCnpj] = useState<string>('');
   const [email, setEmail] = useState<string>('');
   const [telefone, setTelefone] = useState<string>('');
   const [endereco, setEndereco] = useState<string>('');
-  const [dataNascimento, setDataNascimento] = useState<string>('');
+  const [datasCliente, setDatasCliente] = useState<Partial<Record<'pf' | 'pj', string>>>({});
+  const dataNascimento = datasCliente[formTipo] ?? '';
   const [categoria, setCategoria] = useState('');
   const [subcategoria, setSubcategoria] = useState('');
   const [profile, setProfile] = useState<ClienteProfile>({});
@@ -194,7 +201,7 @@ function ClientesContent() {
     setEmail('');
     setTelefone('');
     setEndereco('');
-    setDataNascimento('');
+    setDatasCliente({});
     setProfile({});
     setCategoria('');
     setSubcategoria('');
@@ -206,21 +213,20 @@ function ClientesContent() {
 
   const openEditModal = (client: Cliente) => {
     setEditingClient(client);
-    const digits = (client.cpf_cnpj ?? '').replace(/\D/g, '');
-    const isPj = client.tipo_pessoa ? client.tipo_pessoa === 'pj' : digits.length > 11;
-    setFormTipo(isPj ? 'pj' : 'pf');
+    const tipoPessoa = tipoPessoaCliente(client);
+    setFormTipo(tipoPessoa);
     setProfile(Object.fromEntries([
-      ...profileFields.map(({ key }) => [key, client[key] ?? null]),
+      ...getClientProfileFields(tipoPessoa).map(({ key }) => [key, client[key] ?? null]),
       ['id_representante_legal', client.id_representante_legal ?? null],
     ]));
     setCategoria(client.categoria ?? '');
     setSubcategoria(client.subcategoria ?? '');
     setNome(client.nome);
-    setCpfCnpj(client.cpf_cnpj ? (isPj ? formatarCNPJ(client.cpf_cnpj) : formatarCPF(client.cpf_cnpj)) : '');
+    setCpfCnpj(client.cpf_cnpj ? (tipoPessoa === 'pj' ? formatarCNPJ(client.cpf_cnpj) : formatarCPF(client.cpf_cnpj)) : '');
     setEmail(client.email ?? '');
     setTelefone(client.telefone ?? '');
     setEndereco(client.endereco);
-    setDataNascimento(client.data_nascimento ? client.data_nascimento.split('T')[0] : '');
+    setDatasCliente({ [tipoPessoa]: client.data_nascimento?.split('T')[0] ?? '' });
     setFormErrors({});
     setModalOpen(true);
   };
@@ -233,6 +239,9 @@ function ClientesContent() {
     setFormErrors((prev) => {
       const next = { ...prev };
       delete next.cpfCnpj;
+      delete next.email;
+      delete next.telefone;
+      delete next.dataNascimento;
       return next;
     });
   };
@@ -242,6 +251,11 @@ function ClientesContent() {
     if (!nome.trim()) errors.nome = 'O nome ou razão social é obrigatório.';
     const documentError = cpfCnpj.trim() ? cpfCnpjError(cpfCnpj, formTipo) : undefined;
     if (documentError) errors.cpfCnpj = documentError;
+    if (contatosObrigatorios) {
+      if (!cpfCnpj.trim()) errors.cpfCnpj = 'Informe o CNPJ da empresa.';
+      if (!email.trim()) errors.email = 'Informe o e-mail de contato da empresa.';
+      if (!telefone.trim()) errors.telefone = 'Informe o telefone de contato da empresa.';
+    }
     if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       errors.email = 'Insira um endereço de e-mail válido.';
     }
@@ -277,10 +291,11 @@ function ClientesContent() {
     setErrorMsg(null);
 
     const profilePayload = Object.fromEntries(
-      Object.entries(profile).map(([key, value]) => [key, typeof value === 'string' ? value.trim() || null : value]),
+      getClientProfileFields(formTipo).map(({ key }) => [key, profile[key]?.trim() || null]),
     );
     const clientPayload: CreateClienteInput = {
       ...profilePayload,
+      id_representante_legal: profile.id_representante_legal,
       nome: nome.trim(),
       tipo_pessoa: formTipo,
       categoria: categoria || null,
@@ -970,11 +985,12 @@ function ClientesContent() {
                       htmlFor="input-cpf-cnpj"
                       className="block font-medium text-slate-700 dark:text-slate-300 mb-1"
                     >
-                      {formTipo === 'pf' ? 'CPF' : 'CNPJ'}
+                      {formTipo === 'pf' ? 'CPF' : 'CNPJ'}{contatosObrigatorios && ' *'}
                     </label>
                     <input
                       id="input-cpf-cnpj"
                       disabled={intern && !!editingClient}
+                      required={contatosObrigatorios}
                       type="text"
                       inputMode="numeric"
                       maxLength={formTipo === 'pf' ? 14 : 18}
@@ -1022,12 +1038,15 @@ function ClientesContent() {
                       htmlFor="input-telefone-cliente"
                       className="block font-medium text-slate-700 dark:text-slate-300 mb-1"
                     >
-                      Telefone de Contato
+                      Telefone de Contato{contatosObrigatorios && ' *'}
                     </label>
                     <input
                       id="input-telefone-cliente"
                       type="text"
                       inputMode="tel"
+                      required={contatosObrigatorios}
+                      aria-invalid={!!formErrors.telefone}
+                      aria-describedby={formErrors.telefone ? 'cliente-telefone-erro' : undefined}
                       maxLength={15}
                       value={telefone}
                       onChange={(e) =>
@@ -1037,7 +1056,7 @@ function ClientesContent() {
                       className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-hidden font-mono dark:border-white/[0.08] dark:bg-surface dark:text-slate-100 dark:placeholder:text-slate-500 transition"
                     />
                     {formErrors.telefone && (
-                      <p className="text-rose-400 mt-1">
+                      <p id="cliente-telefone-erro" role="alert" className="text-rose-700 dark:text-rose-400 mt-1">
                         {formErrors.telefone}
                       </p>
                     )}
@@ -1049,18 +1068,21 @@ function ClientesContent() {
                     htmlFor="input-email-cliente"
                     className="block font-medium text-slate-700 dark:text-slate-300 mb-1"
                   >
-                    E-mail de Contato
+                    E-mail de Contato{contatosObrigatorios && ' *'}
                   </label>
                   <input
                     id="input-email-cliente"
                     type="email"
+                    required={contatosObrigatorios}
+                    aria-invalid={!!formErrors.email}
+                    aria-describedby={formErrors.email ? 'cliente-email-erro' : undefined}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="cliente@dominio.com.br"
                     className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-hidden dark:border-white/[0.08] dark:bg-surface dark:text-slate-100 dark:placeholder:text-slate-500 transition"
                   />
                   {formErrors.email && (
-                    <p className="text-rose-400 mt-1">{formErrors.email}</p>
+                    <p id="cliente-email-erro" role="alert" className="text-rose-700 dark:text-rose-400 mt-1">{formErrors.email}</p>
                   )}
                 </div>
 
@@ -1080,7 +1102,7 @@ function ClientesContent() {
                       type="date"
                       max={new Date().toISOString().split('T')[0]}
                       value={dataNascimento}
-                      onChange={(e) => setDataNascimento(e.target.value)}
+                      onChange={(e) => setDatasCliente({ ...datasCliente, [formTipo]: e.target.value })}
                       className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-hidden dark:border-white/[0.08] dark:bg-surface dark:text-slate-100 dark:placeholder:text-slate-500 transition"
                     />
                     {formErrors.dataNascimento && (
@@ -1108,6 +1130,7 @@ function ClientesContent() {
                 </div>
                 <ClientClassificationFields disabled={intern && !!editingClient} category={categoria} subcategory={subcategoria} onChange={(category, subcategory) => { setCategoria(category); setSubcategoria(subcategory); }} />
                 <ClientProfileFields
+                  tipoPessoa={formTipo}
                   value={profile}
                   onChange={setProfile}
                   representatives={clientes.filter((client) => client.id_cliente !== editingClient?.id_cliente && (client.tipo_pessoa ? client.tipo_pessoa === 'pf' : (client.cpf_cnpj ?? '').replace(/\D/g, '').length === 11))}
@@ -1158,31 +1181,38 @@ function ClientesContent() {
 
       {/* Modal / Ficha Detalhada */}
       {detailsModalOpen && selectedClient && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm overflow-y-auto">
-          <div className="legal-modal-card fio-de-luz w-full max-w-xl p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150 my-8">
-            <div className="flex items-center justify-between border-b border-slate-200/60 pb-4 dark:border-white/[0.06]">
-              <div className="flex items-center gap-2.5">
-                <div className="rounded-xl bg-brand/15 text-brand border border-brand/25 p-2">
+        <Dialog
+          open={detailsModalOpen}
+          onClose={() => setDetailsModalOpen(false)}
+          className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center bg-slate-950/40 p-3 backdrop-blur-sm sm:p-4"
+        >
+          <DialogPanel className="legal-modal-card fio-de-luz flex max-h-full w-full max-w-xl flex-col overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+            <div className="flex shrink-0 items-center justify-between gap-2 border-b border-slate-200/60 px-4 py-4 sm:px-6 dark:border-white/[0.06]">
+              <div className="flex min-w-0 items-center gap-2.5">
+                <div className="shrink-0 rounded-xl bg-brand/15 text-brand border border-brand/25 p-2">
                   <User className="h-5 w-5" />
                 </div>
-                <div>
-                  <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+                <div className="min-w-0">
+                  <DialogTitle as="h3" className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
                     Ficha do Cliente #{selectedClient.id_cliente}
-                  </h3>
-                  <p className="text-[11px] text-slate-400">
+                  </DialogTitle>
+                  <p className="line-clamp-2 text-[11px] text-slate-500 [overflow-wrap:anywhere] dark:text-slate-400">
                     {selectedClient.nome}
                   </p>
                 </div>
               </div>
               <button
+                type="button"
+                aria-label="Fechar ficha do cliente"
+                data-autofocus
                 onClick={() => setDetailsModalOpen(false)}
-                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-200 transition cursor-pointer"
+                className="shrink-0 rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-2 focus-visible:outline-brand active:bg-slate-200 dark:text-slate-400 dark:hover:bg-white/[0.06] dark:hover:text-slate-200 dark:active:bg-white/10 transition cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <div className="mt-4 space-y-3 text-xs">
+            <div className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-4 text-xs [overflow-wrap:anywhere] sm:px-6">
               <div className="grid grid-cols-2 gap-2.5">
                 <div className="rounded-xl bg-slate-50/90 dark:bg-surface p-3.5 border border-slate-200/80 dark:border-white/[0.08] shadow-xs">
                   <span className="text-slate-400 block text-[10px] uppercase font-semibold">
@@ -1194,7 +1224,7 @@ function ClientesContent() {
                 </div>
                 <div className="rounded-xl bg-slate-50/90 dark:bg-surface p-3.5 border border-slate-200/80 dark:border-white/[0.08] shadow-xs">
                   <span className="text-slate-400 block text-[10px] uppercase font-semibold">
-                    {(selectedClient.tipo_pessoa ? selectedClient.tipo_pessoa === 'pj' : (selectedClient.cpf_cnpj ?? '').replace(/\D/g, '').length > 11)
+                    {tipoPessoaCliente(selectedClient) === 'pj'
                       ? 'Data de Fundação / Abertura'
                       : 'Data de Nascimento'}
                   </span>
@@ -1256,7 +1286,7 @@ function ClientesContent() {
                 <div><dt className="text-slate-500">Categoria</dt><dd>{selectedClient.categoria || 'Não informada'}</dd></div>
                 <div><dt className="text-slate-500">Subcategoria</dt><dd>{selectedClient.subcategoria || 'Não informada'}</dd></div>
               </dl>
-              <ClientProfileDetails client={selectedClient} representatives={clientes} />
+              <ClientProfileDetails client={selectedClient} representatives={clientes} tipoPessoa={tipoPessoaCliente(selectedClient)} />
 
               {/* Trilha de Auditoria do Cliente - Real / Empty State sem dados mockados */}
               <div className="pt-2">
@@ -1264,7 +1294,21 @@ function ClientesContent() {
               </div>
             </div>
 
-            <div className="mt-5 flex items-center justify-end border-t border-slate-200/60 pt-4 dark:border-white/[0.06]">
+            <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-slate-200/60 px-4 py-4 sm:px-6 dark:border-white/[0.06]">
+              {admin && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setDetailsModalOpen(false);
+                    setClientToDelete(selectedClient);
+                    setDeleteModalOpen(true);
+                  }}
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-rose-200/80 bg-rose-500/10 px-4 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-500/20 focus-visible:outline-2 focus-visible:outline-rose-600 active:bg-rose-500/30 dark:border-rose-900/60 dark:text-rose-400 transition-colors cursor-pointer"
+                >
+                  <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
+                  Excluir cliente
+                </button>
+              )}
               <button
                 type="button"
                 onClick={() => setDetailsModalOpen(false)}
@@ -1273,8 +1317,8 @@ function ClientesContent() {
                 Fechar Ficha
               </button>
             </div>
-          </div>
-        </div>
+          </DialogPanel>
+        </Dialog>
       )}
 
       {/* Rodapé Institucional Completo */}
