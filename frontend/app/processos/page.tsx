@@ -3,6 +3,7 @@ import { ClientPicker } from '@/components/ui/EntityPicker';
 import { isValidCnj } from '@/utils/identifiers';
 
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { useSearchParams } from 'next/navigation';
 import AuthGuard from '@/components/AuthGuard';
@@ -483,8 +484,12 @@ function ProcessosContent() {
 
       {/* Modal de Criação / Edição */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/40 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-150">
-          <div className="relative w-full max-w-lg legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-[90vh] my-auto animate-in zoom-in-95 duration-150">
+        <Dialog
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center bg-slate-950/40 p-3 backdrop-blur-sm sm:p-4"
+        >
+          <DialogPanel className="legal-modal-card fio-de-luz flex max-h-full w-full max-w-lg flex-col overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-200/60 p-5 dark:border-white/[0.06] shrink-0 bg-slate-50/80 dark:bg-surface">
               <div className="flex items-center gap-2.5">
                 <div className="rounded-xl bg-brand/15 text-brand border border-brand/25 p-2">
@@ -495,9 +500,9 @@ function ProcessosContent() {
                   )}
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+                  <DialogTitle as="h3" className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
                     {editingProcesso ? 'Editar processo' : 'Novo processo'}
-                  </h3>
+                  </DialogTitle>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
                     Preencha os dados dos autos e vincule ao cliente
                   </p>
@@ -505,8 +510,10 @@ function ProcessosContent() {
               </div>
               <button
                 type="button"
+                aria-label="Fechar formulário de processo"
+                data-autofocus
                 onClick={() => setModalOpen(false)}
-                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-200 transition cursor-pointer"
+                className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-2 focus-visible:outline-brand active:bg-slate-200 dark:text-slate-400 dark:hover:bg-white/[0.06] dark:hover:text-slate-200 dark:active:bg-white/10 transition cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -516,7 +523,7 @@ function ProcessosContent() {
               onSubmit={handleSaveProcesso}
               className="flex flex-col flex-1 min-h-0 overflow-hidden"
             >
-              <div className="overflow-y-auto p-5 space-y-3.5 text-xs flex-1">
+              <div className="min-h-0 flex-1 space-y-3.5 overflow-y-auto overscroll-contain p-5 text-xs">
                 <NumberProcessInput
                   id="modal-numero-processo"
                   label="Número Único CNJ * (20 dígitos)"
@@ -634,8 +641,8 @@ function ProcessosContent() {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
+          </DialogPanel>
+        </Dialog>
       )}
 
       {/* Modal de Confirmação de Exclusão Reutilizável & Acessível */}

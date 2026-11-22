@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { PageHeader } from '@/components/ui/PageHeader';
 import AuthGuard from '@/components/AuthGuard';
 import { Breadcrumbs } from '@/components/Breadcrumbs';
@@ -815,20 +816,27 @@ function UsuariosContent() {
 
       {/* Modal de Edição */}
       {isEditModalOpen && selectedUsuario && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-lg legal-glass-card fio-de-luz p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] pb-4">
+        <Dialog
+          open={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center bg-slate-950/40 p-3 backdrop-blur-sm sm:p-4"
+        >
+          <DialogPanel className="legal-modal-card fio-de-luz flex max-h-full w-full max-w-lg flex-col overflow-hidden shadow-2xl">
+            <div className="flex shrink-0 items-center justify-between gap-2 border-b border-slate-200/60 p-4 sm:px-6 dark:border-white/[0.06]">
               <div className="flex items-center gap-2.5">
                 <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand/15 text-brand border border-brand/25">
                   <Edit2 className="h-4 w-4" />
                 </span>
-                <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                <DialogTitle as="h3" className="text-base font-semibold text-slate-900 dark:text-slate-100">
                   Editar membro da equipe
-                </h3>
+                </DialogTitle>
               </div>
               <button
+                type="button"
+                aria-label="Fechar edição da equipe"
+                data-autofocus
                 onClick={() => setIsEditModalOpen(false)}
-                className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-white/[0.04] dark:hover:text-slate-200 transition cursor-pointer"
+                className="shrink-0 rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-2 focus-visible:outline-brand active:bg-slate-200 dark:text-slate-400 dark:hover:bg-white/[0.06] dark:hover:text-slate-200 dark:active:bg-white/10 transition cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -836,172 +844,174 @@ function UsuariosContent() {
 
             <form
               onSubmit={handleEditSubmit}
-              className="mt-4 space-y-4 text-xs"
+              className="flex min-h-0 flex-1 flex-col text-xs"
             >
-              <div>
-                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Nome Completo
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={editFormData.nome}
-                  onChange={(e) =>
-                    setEditFormData({ ...editFormData, nome: e.target.value })
-                  }
-                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface px-3.5 py-2 text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
-                />
-              </div>
-
-              <div>
-                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  E-mail Corporativo
-                </label>
-                <input
-                  type="email"
-                  required
-                  value={editFormData.email}
-                  onChange={(e) =>
-                    setEditFormData({ ...editFormData, email: e.target.value })
-                  }
-                  className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface px-3.5 py-2 text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
-                />
-              </div>
-
-              <div>
-                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Data de Nascimento (para registro de aniversariante)
-                </label>
-                <div className="relative">
-                  <Cake className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+              <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain p-4 sm:px-6">
+                <div>
+                  <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+                    Nome Completo
+                  </label>
                   <input
-                    type="date"
-                    value={editFormData.data_nascimento || ''}
+                    type="text"
+                    required
+                    value={editFormData.nome}
+                    onChange={(e) =>
+                      setEditFormData({ ...editFormData, nome: e.target.value })
+                    }
+                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface px-3.5 py-2 text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+                    E-mail Corporativo
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={editFormData.email}
+                    onChange={(e) =>
+                      setEditFormData({ ...editFormData, email: e.target.value })
+                    }
+                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface px-3.5 py-2 text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+                    Data de Nascimento (para registro de aniversariante)
+                  </label>
+                  <div className="relative">
+                    <Cake className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <input
+                      type="date"
+                      value={editFormData.data_nascimento || ''}
+                      onChange={(e) =>
+                        setEditFormData({
+                          ...editFormData,
+                          data_nascimento: e.target.value,
+                        })
+                      }
+                      className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface pl-9 pr-3 py-2 text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+                    Redefinir Senha (deixe em branco para manter a atual)
+                  </label>
+                  <div className="relative">
+                    <Lock className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                    <input
+                      type={showPassword ? 'text' : 'password'}
+                      minLength={6}
+                      value={editFormData.senha || ''}
+                      onChange={(e) =>
+                        setEditFormData({
+                          ...editFormData,
+                          senha: e.target.value,
+                        })
+                      }
+                      placeholder="Nova senha (opcional)"
+                      className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface pl-9 pr-10 py-2 text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4" />
+                      ) : (
+                        <Eye className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+                    Perfil de Acesso
+                  </label>
+                  <div className="grid grid-cols-3 gap-2">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setEditFormData({
+                          ...editFormData,
+                          role: 'ADMINISTRADOR',
+                        })
+                      }
+                      className={`rounded-xl border p-3 text-center transition cursor-pointer ${
+                        editFormData.role === 'ADMINISTRADOR'
+                          ? 'border-purple-500/40 bg-purple-500/10 text-purple-600 dark:text-purple-300'
+                          : 'border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
+                      }`}
+                    >
+                      <ShieldCheck className="mx-auto h-4 w-4 mb-1 text-purple-500" />
+                      <span className="font-semibold block">Administrador</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setEditFormData({ ...editFormData, role: 'ADVOGADO' })
+                      }
+                      className={`rounded-xl border p-3 text-center transition cursor-pointer ${
+                        editFormData.role === 'ADVOGADO'
+                          ? 'border-brand/50 bg-brand/15 text-brand'
+                          : 'border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
+                      }`}
+                    >
+                      <Briefcase className="mx-auto h-4 w-4 mb-1 text-brand" />
+                      <span className="font-semibold block">Advogado</span>
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setEditFormData({ ...editFormData, role: 'ESTAGIARIO' })
+                      }
+                      className={`rounded-xl border p-3 text-center transition cursor-pointer ${
+                        editFormData.role === 'ESTAGIARIO'
+                          ? 'border-brand/50 bg-brand/15 text-slate-900 dark:text-brand'
+                          : 'border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
+                      }`}
+                    >
+                      <GraduationCap className="mx-auto h-4 w-4 mb-1 text-brand" />
+                      <span className="font-semibold block">Estagiário</span>
+                    </button>
+                  </div>
+                </div>
+
+                <label className="flex items-start gap-3 rounded-lg border border-slate-200 p-3 text-sm dark:border-slate-700">
+                  <input type="checkbox" aria-label="Liberar acesso ao Financeiro" checked={editFormData.role === 'ADMINISTRADOR' || !!editFormData.acesso_financeiro} disabled={editFormData.role === 'ADMINISTRADOR'} onChange={e => setEditFormData({ ...editFormData, acesso_financeiro: e.target.checked })} className="mt-1 focus-visible:ring-2" />
+                  <span><strong>Liberar acesso ao Financeiro</strong><span className="mt-1 block text-xs text-slate-500">Permite consultar e gerenciar os lançamentos financeiros do escritório. Administradores têm acesso permanente.</span></span>
+                </label>
+                <div className="flex items-center gap-2 pt-2">
+                  <input
+                    type="checkbox"
+                    id="ativoEdit"
+                    checked={editFormData.ativo}
                     onChange={(e) =>
                       setEditFormData({
                         ...editFormData,
-                        data_nascimento: e.target.value,
+                        ativo: e.target.checked,
                       })
                     }
-                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface pl-9 pr-3 py-2 text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
+                    className="rounded text-brand focus:ring-brand"
                   />
+                  <label
+                    htmlFor="ativoEdit"
+                    className="font-medium text-slate-700 dark:text-slate-300"
+                  >
+                    Status ativo (desmarque para bloquear o acesso deste usuário)
+                  </label>
                 </div>
               </div>
 
-              <div>
-                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Redefinir Senha (deixe em branco para manter a atual)
-                </label>
-                <div className="relative">
-                  <Lock className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
-                  <input
-                    type={showPassword ? 'text' : 'password'}
-                    minLength={6}
-                    value={editFormData.senha || ''}
-                    onChange={(e) =>
-                      setEditFormData({
-                        ...editFormData,
-                        senha: e.target.value,
-                      })
-                    }
-                    placeholder="Nova senha (opcional)"
-                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface pl-9 pr-10 py-2 text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </button>
-                </div>
-              </div>
-
-              <div>
-                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
-                  Perfil de Acesso
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setEditFormData({
-                        ...editFormData,
-                        role: 'ADMINISTRADOR',
-                      })
-                    }
-                    className={`rounded-xl border p-3 text-center transition cursor-pointer ${
-                      editFormData.role === 'ADMINISTRADOR'
-                        ? 'border-purple-500/40 bg-purple-500/10 text-purple-600 dark:text-purple-300'
-                        : 'border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
-                    }`}
-                  >
-                    <ShieldCheck className="mx-auto h-4 w-4 mb-1 text-purple-500" />
-                    <span className="font-semibold block">Administrador</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setEditFormData({ ...editFormData, role: 'ADVOGADO' })
-                    }
-                    className={`rounded-xl border p-3 text-center transition cursor-pointer ${
-                      editFormData.role === 'ADVOGADO'
-                        ? 'border-brand/50 bg-brand/15 text-brand'
-                        : 'border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
-                    }`}
-                  >
-                    <Briefcase className="mx-auto h-4 w-4 mb-1 text-brand" />
-                    <span className="font-semibold block">Advogado</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setEditFormData({ ...editFormData, role: 'ESTAGIARIO' })
-                    }
-                    className={`rounded-xl border p-3 text-center transition cursor-pointer ${
-                      editFormData.role === 'ESTAGIARIO'
-                        ? 'border-brand/50 bg-brand/15 text-slate-900 dark:text-brand'
-                        : 'border-slate-200/80 dark:border-white/[0.08] bg-white/60 dark:bg-white/[0.02] text-slate-700 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
-                    }`}
-                  >
-                    <GraduationCap className="mx-auto h-4 w-4 mb-1 text-brand" />
-                    <span className="font-semibold block">Estagiário</span>
-                  </button>
-                </div>
-              </div>
-
-              <label className="flex items-start gap-3 rounded-lg border border-slate-200 p-3 text-sm dark:border-slate-700">
-                <input type="checkbox" aria-label="Liberar acesso ao Financeiro" checked={editFormData.role === 'ADMINISTRADOR' || !!editFormData.acesso_financeiro} disabled={editFormData.role === 'ADMINISTRADOR'} onChange={e => setEditFormData({ ...editFormData, acesso_financeiro: e.target.checked })} className="mt-1 focus-visible:ring-2" />
-                <span><strong>Liberar acesso ao Financeiro</strong><span className="mt-1 block text-xs text-slate-500">Permite consultar e gerenciar os lançamentos financeiros do escritório. Administradores têm acesso permanente.</span></span>
-              </label>
-              <div className="flex items-center gap-2 pt-2">
-                <input
-                  type="checkbox"
-                  id="ativoEdit"
-                  checked={editFormData.ativo}
-                  onChange={(e) =>
-                    setEditFormData({
-                      ...editFormData,
-                      ativo: e.target.checked,
-                    })
-                  }
-                  className="rounded text-brand focus:ring-brand"
-                />
-                <label
-                  htmlFor="ativoEdit"
-                  className="font-medium text-slate-700 dark:text-slate-300"
-                >
-                  Status ativo (desmarque para bloquear o acesso deste usuário)
-                </label>
-              </div>
-
-              <div className="mt-6 flex items-center justify-end gap-3 border-t border-slate-200/60 dark:border-white/[0.06] pt-4">
+              <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-slate-200/60 p-4 sm:px-6 dark:border-white/[0.06]">
                 <button
                   type="button"
                   onClick={() => setIsEditModalOpen(false)}
@@ -1018,8 +1028,8 @@ function UsuariosContent() {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
+          </DialogPanel>
+        </Dialog>
       )}
 
       {/* Modal de Exclusão Reutilizável & Acessível */}
