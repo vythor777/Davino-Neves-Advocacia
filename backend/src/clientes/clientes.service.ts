@@ -135,14 +135,17 @@ export class ClientesService {
     await this.validateRepresentative(updateClienteDto.id_representante_legal, id);
     // Garante que o cliente existe antes de atualizar
     const current = await this.findOne(id, user);
-    const classification = this.classification(updateClienteDto, current);
-    if (updateClienteDto.tipo_pessoa === 'pj' && current.tipo_pessoa !== 'pj') {
-      validateCompanyRegistration(
-        updateClienteDto.cpf_cnpj === undefined ? current.cpf_cnpj : updateClienteDto.cpf_cnpj,
-        updateClienteDto.email === undefined ? current.email : updateClienteDto.email,
-        updateClienteDto.telefone === undefined ? current.telefone : updateClienteDto.telefone,
-      );
+    const { tipo_pessoa, ...changes } = updateClienteDto;
+    const currentDocument = current.cpf_cnpj?.replace(/\D/g, '');
+    const currentType = current.tipo_pessoa ?? (currentDocument?.length === 14 ? 'pj' : 'pf');
+    if (tipo_pessoa !== undefined && tipo_pessoa !== currentType) {
+      throw new BadRequestException('O tipo de pessoa não pode ser alterado após o cadastro.');
     }
+    const newDocument = changes.cpf_cnpj?.replace(/\D/g, '');
+    if (newDocument && newDocument !== currentDocument && newDocument.length !== (currentType === 'pj' ? 14 : 11)) {
+      throw new BadRequestException(currentType === 'pj' ? 'Informe um CNPJ válido.' : 'Informe um CPF válido.');
+    }
+    const classification = this.classification(updateClienteDto, current);
 
     if (updateClienteDto.data_nascimento) {
       const birthDate = new Date(updateClienteDto.data_nascimento);
@@ -154,7 +157,7 @@ export class ClientesService {
     }
 
     try {
-      const dataToUpdate: any = { ...updateClienteDto, ...classification };
+      const dataToUpdate: any = { ...changes, ...classification };
       if (updateClienteDto.data_nascimento !== undefined) {
         dataToUpdate.data_nascimento = updateClienteDto.data_nascimento
           ? new Date(updateClienteDto.data_nascimento)

@@ -51,21 +51,29 @@ test('criação de pessoa jurídica exige CNPJ válido, e-mail e telefone', asyn
   assert.equal((await service.create(base, {})).tipo_pessoa, 'pf');
 });
 
-test('conversão para PJ valida os contatos e mantém a edição de uma empresa legada disponível', async () => {
-  let current = { ...base, id_cliente: 1, tipo_pessoa: 'pf', email: companyContacts.email, telefone: companyContacts.telefone };
+test('edição mantém o tipo do cliente e aceita corrigir um documento do mesmo tipo', async () => {
+  const person = { ...base, id_cliente: 1, tipo_pessoa: 'pf', cpf_cnpj: '52998224725' };
+  const company = { ...base, id_cliente: 2, tipo_pessoa: 'pj' };
   const writes = [];
   const service = new ClientesService({
     cliente: {
-      findUnique: async () => current,
+      findUnique: async ({ where }) => where.id_cliente === 1 ? person : company,
       update: async ({ data }) => { writes.push(data); return data; },
     },
   }, { clientUpdate: () => {}, processScope: () => ({}) });
-  await assert.rejects(service.update(1, { tipo_pessoa: 'pj', cpf_cnpj: companyContacts.cpf_cnpj, email: null }, {}), /Informe o CNPJ, o e-mail e o telefone/);
+  await assert.rejects(service.update(1, { ...companyContacts, tipo_pessoa: 'pj' }, {}), /tipo de pessoa não pode ser alterado/);
+  await assert.rejects(service.update(2, { tipo_pessoa: 'pf' }, {}), /tipo de pessoa não pode ser alterado/);
+  await assert.rejects(service.update(1, { cpf_cnpj: companyContacts.cpf_cnpj }, {}), /CPF válido/);
+  await assert.rejects(service.update(2, { cpf_cnpj: person.cpf_cnpj }, {}), /CNPJ válido/);
   assert.equal(writes.length, 0);
-  await service.update(1, { tipo_pessoa: 'pj', cpf_cnpj: companyContacts.cpf_cnpj }, {});
-  current = { ...base, id_cliente: 1, tipo_pessoa: 'pj' };
-  await service.update(1, { tipo_pessoa: 'pj', endereco: 'Novo endereço' }, {});
-  assert.equal(writes.length, 2);
+  await service.update(1, { tipo_pessoa: 'pf', cpf_cnpj: '11144477735' }, {});
+  await service.update(2, { endereco: 'Novo endereço' }, {});
+  await service.update(2, { cpf_cnpj: companyContacts.cpf_cnpj }, {});
+  assert.deepEqual(writes, [
+    { cpf_cnpj: '11144477735' },
+    { endereco: 'Novo endereço' },
+    { cpf_cnpj: companyContacts.cpf_cnpj },
+  ]);
 });
 test('edição permite apagar contatos e rejeita categoria inválida', async () => {
   assert.deepEqual(await validate(plainToInstance(UpdateClienteDto,{cpf_cnpj:'',email:'',telefone:''})),[]);
