@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import {
   X,
   DollarSign,
@@ -63,16 +64,17 @@ export function LancamentoDetailModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm animate-in fade-in duration-150">
-      <div
-        className="relative w-full max-w-xl legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center bg-slate-950/40 p-3 backdrop-blur-sm sm:p-4 animate-in fade-in duration-150"
+    >
+      <DialogPanel className="legal-modal-card fio-de-luz flex max-h-full w-full max-w-xl flex-col overflow-hidden shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/60 dark:border-white/[0.06]">
-          <div className="flex items-center gap-3">
+        <div className="flex shrink-0 items-center justify-between gap-2 border-b border-slate-200/60 px-4 py-4 sm:px-6 dark:border-white/[0.06]">
+          <div className="flex min-w-0 items-center gap-3">
             <div
-              className={`flex h-10 w-10 items-center justify-center rounded-xl shadow-xs ${
+              className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-xs ${
                 isReceita
                   ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25'
                   : 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/25'
@@ -80,8 +82,8 @@ export function LancamentoDetailModal({
             >
               <DollarSign className="h-5 w-5" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-center gap-x-2">
                 <span className="text-[11px] font-medium uppercase tracking-wider text-brand">
                   Comprovante Financeiro
                 </span>
@@ -89,22 +91,24 @@ export function LancamentoDetailModal({
                   #{lancamento.id.slice(-6)}
                 </span>
               </div>
-              <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100 line-clamp-1">
+              <DialogTitle as="h3" className="line-clamp-2 text-base font-semibold tracking-tight text-slate-900 [overflow-wrap:anywhere] dark:text-slate-100">
                 {lancamento.descricao}
-              </h3>
+              </DialogTitle>
             </div>
           </div>
           <button
             type="button"
+            aria-label="Fechar comprovante financeiro"
+            data-autofocus
             onClick={onClose}
-            className="rounded-lg p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/[0.06] transition cursor-pointer"
+            className="shrink-0 rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-2 focus-visible:outline-brand active:bg-slate-200 dark:text-slate-400 dark:hover:bg-white/[0.06] dark:hover:text-slate-200 dark:active:bg-white/10 transition cursor-pointer"
           >
             <X className="h-5 w-5" />
           </button>
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 overflow-y-auto space-y-5">
+        <div className="min-h-0 flex-1 space-y-5 overflow-y-auto overscroll-contain p-4 [overflow-wrap:anywhere] sm:p-6">
           {/* Card de Valor e Status Principal */}
           <div className="rounded-2xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/60 dark:bg-white/[0.02] p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
@@ -218,8 +222,8 @@ export function LancamentoDetailModal({
         </div>
 
         {/* Footer & Actions */}
-        <div className="flex flex-wrap items-center justify-between gap-3 px-6 py-4 border-t border-slate-200/60 dark:border-white/[0.06]">
-          <div className="flex items-center gap-2">
+        <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 border-t border-slate-200/60 px-4 py-4 sm:px-6 dark:border-white/[0.06]">
+          <div className="flex flex-wrap items-center gap-2">
             <button
               type="button"
               onClick={() => onDelete(lancamento.id)}
@@ -269,7 +273,7 @@ export function LancamentoDetailModal({
             )}
           </div>
         </div>
-      </div>
-    </div>
+      </DialogPanel>
+    </Dialog>
   );
 }
