@@ -143,7 +143,7 @@ function ClientesContent() {
 
   // Form fields
   const [formTipo, setFormTipo] = useState<'pf' | 'pj'>('pf');
-  const contatosObrigatorios = formTipo === 'pj' && (!editingClient || tipoPessoaCliente(editingClient) !== 'pj');
+  const contatosObrigatorios = formTipo === 'pj' && !editingClient;
   const [nome, setNome] = useState<string>('');
   const [cpfCnpj, setCpfCnpj] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -232,7 +232,7 @@ function ClientesContent() {
   };
 
   const handleTrocarTipoPessoa = (novoTipo: 'pf' | 'pj') => {
-    if ((intern && editingClient) || formTipo === novoTipo) return;
+    if (editingClient || formTipo === novoTipo) return;
     setFormTipo(novoTipo);
     // Limpeza de estado estrita para evitar resquícios de dígitos e conflito de formatação
     setCpfCnpj('');
@@ -297,7 +297,6 @@ function ClientesContent() {
       ...profilePayload,
       id_representante_legal: profile.id_representante_legal,
       nome: nome.trim(),
-      tipo_pessoa: formTipo,
       categoria: categoria || null,
       subcategoria: subcategoria.trim() || null,
       cpf_cnpj: cpfCnpj.trim() || null,
@@ -312,7 +311,7 @@ function ClientesContent() {
         await clienteService.update(editingClient.id_cliente, intern ? { email: clientPayload.email, telefone: clientPayload.telefone, endereco: clientPayload.endereco } : clientPayload);
         setSuccessMsg(`Cliente "${nome}" atualizado com sucesso no banco de dados!`);
       } else {
-        await clienteService.create(clientPayload);
+        await clienteService.create({ ...clientPayload, tipo_pessoa: formTipo });
         setSuccessMsg(`Cliente "${nome}" cadastrado com sucesso no banco de dados!`);
       }
       setModalOpen(false);
@@ -912,43 +911,49 @@ function ClientesContent() {
               className="flex flex-col flex-1 min-h-0 overflow-hidden"
             >
               <div className="overflow-y-auto p-5 space-y-4 text-xs flex-1">
-                {/* Tipo PF ou PJ com Reset Estrito de Estado */}
-                <div
-                  className="grid grid-cols-2 gap-2"
-                  role="tablist"
-                  aria-label="Tipo de Pessoa"
-                >
-                  <button
-                    type="button"
-                    role="tab"
-                    id="tab-pf"
-                    disabled={intern && !!editingClient}
-                    aria-selected={formTipo === 'pf'}
-                    onClick={() => handleTrocarTipoPessoa('pf')}
-                    className={`rounded-xl border p-2.5 text-center font-semibold transition cursor-pointer ${
-                      formTipo === 'pf'
-                        ? 'border-brand/50 bg-brand/15 text-brand shadow-xs'
-                        : 'border-slate-200/80 bg-white/60 text-slate-700 dark:border-white/[0.06] dark:bg-white/[0.02] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
-                    }`}
+                {editingClient ? (
+                  <div className="rounded-xl border border-slate-200/80 bg-slate-50/80 px-3 py-2 dark:border-white/[0.08] dark:bg-surface">
+                    <span className="block text-slate-500 dark:text-slate-400">Tipo de pessoa</span>
+                    <span className="mt-0.5 block font-semibold text-slate-900 dark:text-slate-100">
+                      {formTipo === 'pf' ? 'Pessoa Física (CPF)' : 'Pessoa Jurídica (CNPJ)'}
+                    </span>
+                  </div>
+                ) : (
+                  <div
+                    className="grid grid-cols-2 gap-2"
+                    role="tablist"
+                    aria-label="Tipo de Pessoa"
                   >
-                    Pessoa Física (CPF)
-                  </button>
-                  <button
-                    type="button"
-                    role="tab"
-                    id="tab-pj"
-                    disabled={intern && !!editingClient}
-                    aria-selected={formTipo === 'pj'}
-                    onClick={() => handleTrocarTipoPessoa('pj')}
-                    className={`rounded-xl border p-2.5 text-center font-semibold transition cursor-pointer ${
-                      formTipo === 'pj'
-                        ? 'border-brand/50 bg-brand/15 text-brand shadow-xs'
-                        : 'border-slate-200/80 bg-white/60 text-slate-700 dark:border-white/[0.06] dark:bg-white/[0.02] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
-                    }`}
-                  >
-                    Pessoa Jurídica (CNPJ)
-                  </button>
-                </div>
+                    <button
+                      type="button"
+                      role="tab"
+                      id="tab-pf"
+                      aria-selected={formTipo === 'pf'}
+                      onClick={() => handleTrocarTipoPessoa('pf')}
+                      className={`rounded-xl border p-2.5 text-center font-semibold transition cursor-pointer ${
+                        formTipo === 'pf'
+                          ? 'border-brand/50 bg-brand/15 text-brand shadow-xs'
+                          : 'border-slate-200/80 bg-white/60 text-slate-700 dark:border-white/[0.06] dark:bg-white/[0.02] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
+                      }`}
+                    >
+                      Pessoa Física (CPF)
+                    </button>
+                    <button
+                      type="button"
+                      role="tab"
+                      id="tab-pj"
+                      aria-selected={formTipo === 'pj'}
+                      onClick={() => handleTrocarTipoPessoa('pj')}
+                      className={`rounded-xl border p-2.5 text-center font-semibold transition cursor-pointer ${
+                        formTipo === 'pj'
+                          ? 'border-brand/50 bg-brand/15 text-brand shadow-xs'
+                          : 'border-slate-200/80 bg-white/60 text-slate-700 dark:border-white/[0.06] dark:bg-white/[0.02] dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04]'
+                      }`}
+                    >
+                      Pessoa Jurídica (CNPJ)
+                    </button>
+                  </div>
+                )}
 
                 <div>
                   <label
