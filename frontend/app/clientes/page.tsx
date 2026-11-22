@@ -1,6 +1,6 @@
 'use client';
 import { ClientClassificationFields } from '@/components/clientes/ClientClassificationFields';
-import { ClientProfileFields, ClientProfileDetails, profileFields } from '@/components/clientes/ClientProfileFields';
+import { ClientProfileFields, ClientProfileDetails, getClientProfileFields } from '@/components/clientes/ClientProfileFields';
 import type { ClienteProfile } from '@/services/clienteService';
 import { cpfCnpjError } from '@/utils/identifiers';
 
@@ -144,7 +144,8 @@ function ClientesContent() {
   const [email, setEmail] = useState<string>('');
   const [telefone, setTelefone] = useState<string>('');
   const [endereco, setEndereco] = useState<string>('');
-  const [dataNascimento, setDataNascimento] = useState<string>('');
+  const [datasCliente, setDatasCliente] = useState<Partial<Record<'pf' | 'pj', string>>>({});
+  const dataNascimento = datasCliente[formTipo] ?? '';
   const [categoria, setCategoria] = useState('');
   const [subcategoria, setSubcategoria] = useState('');
   const [profile, setProfile] = useState<ClienteProfile>({});
@@ -158,6 +159,8 @@ function ClientesContent() {
   // Drawer de Detalhes
   const [detailsModalOpen, setDetailsModalOpen] = useState<boolean>(false);
   const [selectedClient, setSelectedClient] = useState<Cliente | null>(null);
+  const selectedClientType = selectedClient?.tipo_pessoa
+    ?? ((selectedClient?.cpf_cnpj ?? '').replace(/\D/g, '').length > 11 ? 'pj' : 'pf');
 
   // Estado de cópia para clipboard
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -195,7 +198,7 @@ function ClientesContent() {
     setEmail('');
     setTelefone('');
     setEndereco('');
-    setDataNascimento('');
+    setDatasCliente({});
     setProfile({});
     setCategoria('');
     setSubcategoria('');
@@ -208,20 +211,20 @@ function ClientesContent() {
   const openEditModal = (client: Cliente) => {
     setEditingClient(client);
     const digits = (client.cpf_cnpj ?? '').replace(/\D/g, '');
-    const isPj = client.tipo_pessoa ? client.tipo_pessoa === 'pj' : digits.length > 11;
-    setFormTipo(isPj ? 'pj' : 'pf');
+    const tipoPessoa = client.tipo_pessoa ?? (digits.length > 11 ? 'pj' : 'pf');
+    setFormTipo(tipoPessoa);
     setProfile(Object.fromEntries([
-      ...profileFields.map(({ key }) => [key, client[key] ?? null]),
+      ...getClientProfileFields(tipoPessoa).map(({ key }) => [key, client[key] ?? null]),
       ['id_representante_legal', client.id_representante_legal ?? null],
     ]));
     setCategoria(client.categoria ?? '');
     setSubcategoria(client.subcategoria ?? '');
     setNome(client.nome);
-    setCpfCnpj(client.cpf_cnpj ? (isPj ? formatarCNPJ(client.cpf_cnpj) : formatarCPF(client.cpf_cnpj)) : '');
+    setCpfCnpj(client.cpf_cnpj ? (tipoPessoa === 'pj' ? formatarCNPJ(client.cpf_cnpj) : formatarCPF(client.cpf_cnpj)) : '');
     setEmail(client.email ?? '');
     setTelefone(client.telefone ?? '');
     setEndereco(client.endereco);
-    setDataNascimento(client.data_nascimento ? client.data_nascimento.split('T')[0] : '');
+    setDatasCliente({ [tipoPessoa]: client.data_nascimento?.split('T')[0] ?? '' });
     setFormErrors({});
     setModalOpen(true);
   };
@@ -234,6 +237,7 @@ function ClientesContent() {
     setFormErrors((prev) => {
       const next = { ...prev };
       delete next.cpfCnpj;
+      delete next.dataNascimento;
       return next;
     });
   };
@@ -278,10 +282,11 @@ function ClientesContent() {
     setErrorMsg(null);
 
     const profilePayload = Object.fromEntries(
-      Object.entries(profile).map(([key, value]) => [key, typeof value === 'string' ? value.trim() || null : value]),
+      getClientProfileFields(formTipo).map(({ key }) => [key, profile[key]?.trim() || null]),
     );
     const clientPayload: CreateClienteInput = {
       ...profilePayload,
+      id_representante_legal: profile.id_representante_legal,
       nome: nome.trim(),
       tipo_pessoa: formTipo,
       categoria: categoria || null,
@@ -1081,7 +1086,7 @@ function ClientesContent() {
                       type="date"
                       max={new Date().toISOString().split('T')[0]}
                       value={dataNascimento}
-                      onChange={(e) => setDataNascimento(e.target.value)}
+                      onChange={(e) => setDatasCliente({ ...datasCliente, [formTipo]: e.target.value })}
                       className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-hidden dark:border-white/[0.08] dark:bg-surface dark:text-slate-100 dark:placeholder:text-slate-500 transition"
                     />
                     {formErrors.dataNascimento && (
@@ -1109,6 +1114,7 @@ function ClientesContent() {
                 </div>
                 <ClientClassificationFields disabled={intern && !!editingClient} category={categoria} subcategory={subcategoria} onChange={(category, subcategory) => { setCategoria(category); setSubcategoria(subcategory); }} />
                 <ClientProfileFields
+                  tipoPessoa={formTipo}
                   value={profile}
                   onChange={setProfile}
                   representatives={clientes.filter((client) => client.id_cliente !== editingClient?.id_cliente && (client.tipo_pessoa ? client.tipo_pessoa === 'pf' : (client.cpf_cnpj ?? '').replace(/\D/g, '').length === 11))}
@@ -1202,7 +1208,7 @@ function ClientesContent() {
                 </div>
                 <div className="rounded-xl bg-slate-50/90 dark:bg-surface p-3.5 border border-slate-200/80 dark:border-white/[0.08] shadow-xs">
                   <span className="text-slate-400 block text-[10px] uppercase font-semibold">
-                    {(selectedClient.tipo_pessoa ? selectedClient.tipo_pessoa === 'pj' : (selectedClient.cpf_cnpj ?? '').replace(/\D/g, '').length > 11)
+                    {selectedClientType === 'pj'
                       ? 'Data de Fundação / Abertura'
                       : 'Data de Nascimento'}
                   </span>
@@ -1264,7 +1270,7 @@ function ClientesContent() {
                 <div><dt className="text-slate-500">Categoria</dt><dd>{selectedClient.categoria || 'Não informada'}</dd></div>
                 <div><dt className="text-slate-500">Subcategoria</dt><dd>{selectedClient.subcategoria || 'Não informada'}</dd></div>
               </dl>
-              <ClientProfileDetails client={selectedClient} representatives={clientes} />
+              <ClientProfileDetails client={selectedClient} representatives={clientes} tipoPessoa={selectedClientType} />
 
               {/* Trilha de Auditoria do Cliente - Real / Empty State sem dados mockados */}
               <div className="pt-2">
