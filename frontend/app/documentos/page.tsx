@@ -1,5 +1,6 @@
 'use client';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import { PdfUpload } from '@/components/PdfUpload';
 import { ClientPicker, ProcessPicker } from '@/components/ui/EntityPicker';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -20,7 +21,6 @@ export default function DocumentosPage() {
 function DocumentosContent() {
   const { admin, canManageDeadline } = usePermissions();
   const { documents, usage, loading, error, reload, run } = useDocuments();
-  const [file, setFile] = useState<File | null>(null);
   const [processes, setProcesses] = useState<Processo[]>([]);
   const [clients, setClients] = useState<Cliente[]>([]);
   const [processId, setProcessId] = useState(''); const [clientId, setClientId] = useState('');
@@ -47,11 +47,12 @@ function DocumentosContent() {
         <ClientPicker id="documento-cliente" value={clientId} clients={clients} onChange={setClientId}
           emptyLabel={admin ? 'Documento geral do escritório (administrador)' : undefined} />
       </div>}
-      <label className="block">PDF <input type="file" accept="application/pdf,.pdf" disabled={busy} onChange={e => { const next = e.target.files?.[0] || null; if (next && next.size > 20e6) { toast.warning('Para otimização, o arquivo deve ter até 20 MB.'); setFile(null); return; } setFile(next); }} className="block mt-2 w-full min-w-0 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-blue-50 file:px-3 file:py-2 file:text-blue-800 dark:file:bg-slate-800 dark:file:text-slate-200" /></label>
-      {file && <p className="break-all text-sm">{file.name} - {(file.size / 1e6).toFixed(2)} MB {file.size > 5e6 && '(Acima do limite: otimize antes de enviar)'}</p>}
-      <div className="flex flex-wrap gap-2"><button className={button} disabled={busy || !file || file.size > 5e6 || (!admin && !processId && !clientId)} onClick={() => action(async () => { if (!file) return; await documentoService.upload(file, Number(processId) || undefined, Number(clientId) || undefined); setFile(null); toast.success('Documento armazenado.'); await reload(); })}>Enviar PDF</button>
-        <button className={button} disabled={busy || !file} onClick={() => action(async () => { if (!file) return; const blob = await documentoService.compress(file); setFile(new File([blob], file.name, { type: 'application/pdf' })); toast.success('PDF otimizado. Confira o arquivo antes de enviar.'); saveDocumentBlob(blob, 'otimizado-' + file.name); })}>Otimizar PDF sem perda</button></div>
-      <p className="text-sm text-slate-500">A otimização não garante redução a 5 MB. PDFs assinados não são alterados. Se continuar grande, divida o arquivo ou reduza as imagens.</p>
+      <PdfUpload
+        processId={Number(processId) || undefined}
+        clientId={Number(clientId) || undefined}
+        disabled={!admin && !processId && !clientId}
+        onUploaded={reload}
+      />
     </section>}
     {error && <div role="alert">{error} <button className={button} onClick={() => void reload()}>Tentar novamente</button></div>}
     {admin && <button className={button} disabled={busy || !selected.length} onClick={() => action(async () => { saveDocumentBlob(await documentoService.backup(selected), 'Davino-Neves-backup-documentos.zip'); toast.success('Backup baixado. Abra o ZIP e confira os PDFs e o manifesto antes de arquivar.'); })}>Baixar backup selecionado ({selected.length}/8)</button>}

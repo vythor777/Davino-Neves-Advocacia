@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { createHash, randomUUID } from 'node:crypto';
 import JSZip from 'jszip';
+import type { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { AccessService, type Actor } from '../access/access.service.js';
 import { DocumentStorageService } from './document-storage.service.js';
@@ -13,14 +14,22 @@ export const documentMetadata = {
 @Injectable()
 export class DocumentosService {
   constructor(private readonly prisma: PrismaService, private readonly access: AccessService, private readonly storage: DocumentStorageService) {}
-  private scope(user: Actor) {
+  private scope(user: Actor): Prisma.DocumentoWhereInput {
     if (user.role === 'ADMINISTRADOR') return {};
     const scope = this.access.processScope(user);
-    return { OR: [{ processo: scope }, { id_processo: null, cliente: { processos: { some: scope } } }, { id_processo: null, id_cliente: null }] };
+    return { OR: [
+      { processo: scope },
+      { id_processo: null, id_cliente: { not: null }, id_usuario: user.id_usuario },
+      { id_processo: null, cliente: { processos: { some: scope } } },
+      { id_processo: null, id_cliente: null },
+    ] };
   }
-  async findAll(user: Actor, id?: number) {
-    if (id !== undefined) await this.access.process(user, id);
-    return this.prisma.documento.findMany({ where: { AND: [this.scope(user), ...(id === undefined ? [] : [{ id_processo: id }])] }, select: documentMetadata, orderBy: { data_upload: 'desc' } });
+  async findAll(user: Actor, processId?: number, clientId?: number) {
+    if (processId !== undefined) await this.access.process(user, processId);
+    const filters: Prisma.DocumentoWhereInput[] = [this.scope(user)];
+    if (processId !== undefined) filters.push({ id_processo: processId });
+    if (clientId !== undefined) filters.push({ OR: [{ id_cliente: clientId }, { processo: { id_cliente: clientId } }] });
+    return this.prisma.documento.findMany({ where: { AND: filters }, select: documentMetadata, orderBy: { data_upload: 'desc' } });
   }
   async findOne(id: number, user: Actor) {
     const item = await this.prisma.documento.findFirst({ where: { id_documento: id, ...this.scope(user) }, select: documentMetadata });
@@ -41,7 +50,7 @@ export class DocumentosService {
       if (dto.id_cliente && dto.id_cliente !== process.id_cliente) throw new BadRequestException('O cliente informado não corresponde ao processo.');
       dto.id_cliente = process.id_cliente;
     } else if (dto.id_cliente) {
-      const client = await this.prisma.cliente.findFirst({ where: { id_cliente: dto.id_cliente, ...(user.role === 'ADMINISTRADOR' ? {} : { processos: { some: this.access.processScope(user) } }) }, select: { id_cliente: true } });
+      const client = await this.prisma.cliente.findUnique({ where: { id_cliente: dto.id_cliente }, select: { id_cliente: true } });
       if (!client) throw new NotFoundException('Cliente não encontrado ou não liberado.');
     } else this.access.requireRole(user, 'ADMINISTRADOR');
     const sha256 = createHash('sha256').update(bytes).digest('hex');

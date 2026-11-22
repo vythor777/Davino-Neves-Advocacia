@@ -22,7 +22,6 @@ import {
   Menu,
   CheckCircle2,
   Clock,
-  Settings,
   AlertCircle,
   CheckCheck,
   RefreshCw,
@@ -211,46 +210,24 @@ export function AppLayout({ children }: AppLayoutProps) {
               />
             </button>
 
-            {/* Dropdown de Configurações do Usuário */}
+            {/* Menu do usuário */}
             {userDropdownOpen && (
               <div className="absolute bottom-full left-0 mb-2 w-full rounded-xl border border-[#0c1f3d]/[0.1] dark:border-white/[0.08] bg-white dark:bg-surface p-1.5 shadow-lg z-50 animate-in fade-in slide-in-from-bottom-2 duration-150">
-                <div className="px-2.5 py-1.5 border-b border-slate-100 dark:border-white/[0.06] text-[10px] text-slate-500 dark:text-slate-400">
-                  Conectado como <strong className="text-[#0c1f3d] dark:text-slate-200">{displayName}</strong>
-                </div>
-                <div className="mt-1 space-y-0.5">
-                  {user?.role === 'ADMINISTRADOR' && (<Link
-                    href="/usuarios"
-                    onClick={() => setUserDropdownOpen(false)}
-                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-[#f7f9fc] dark:hover:bg-white/[0.05] hover:text-[#0c1f3d] dark:hover:text-white transition"
-                  >
-                    <Settings className="h-3.5 w-3.5 stroke-[1.25] text-slate-400" />
-                    <span>Configurações & Equipe</span>
-                  </Link>)}
-                  <Link
-                    href="/datajud"
-                    onClick={() => setUserDropdownOpen(false)}
-                    className="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 hover:bg-[#f7f9fc] dark:hover:bg-white/[0.05] hover:text-[#0c1f3d] dark:hover:text-white transition"
-                  >
-                    <BrandMark />
-                    <span>Status de Conexão CNJ</span>
-                  </Link>
-                  <div className="border-t border-slate-100 dark:border-white/[0.06] my-1" />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setUserDropdownOpen(false);
-                      if (isAuthenticated) {
-                        logout();
-                      } else {
-                        router.push('/login');
-                      }
-                    }}
-                    className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
-                  >
-                    <LogOut className="h-3.5 w-3.5 stroke-[1.25]" />
-                    <span>Sair</span>
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setUserDropdownOpen(false);
+                    if (isAuthenticated) {
+                      logout();
+                    } else {
+                      router.push('/login');
+                    }
+                  }}
+                  className="flex w-full items-center gap-2 rounded-lg px-2.5 py-1.5 text-xs font-medium text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition cursor-pointer"
+                >
+                  <LogOut className="h-3.5 w-3.5 stroke-[1.25]" />
+                  <span>Sair</span>
+                </button>
               </div>
             )}
           </div>
