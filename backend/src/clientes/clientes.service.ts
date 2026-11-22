@@ -10,6 +10,16 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateClienteDto } from './dto/create-cliente.dto.js';
 import { UpdateClienteDto } from './dto/update-cliente.dto.js';
+import { isValidCpfCnpj } from '../common/validation/identifiers.js';
+
+function validateCompanyRegistration(cnpj?: string | null, email?: string | null, telefone?: string | null) {
+  if (!cnpj?.trim() || !email?.trim() || !telefone?.trim()) {
+    throw new BadRequestException('Informe o CNPJ, o e-mail e o telefone da pessoa jurídica.');
+  }
+  if (cnpj.replace(/\D/g, '').length !== 14 || !isValidCpfCnpj(cnpj)) {
+    throw new BadRequestException('Informe um CNPJ válido para a pessoa jurídica.');
+  }
+}
 
 @Injectable()
 export class ClientesService {
@@ -47,6 +57,11 @@ export class ClientesService {
 
   async create(createClienteDto: CreateClienteDto, user: Actor) {
     const classification = this.classification(createClienteDto);
+    const tipoPessoa = createClienteDto.tipo_pessoa
+      ?? ((createClienteDto.cpf_cnpj ?? '').replace(/\D/g, '').length === 14 ? 'pj' : 'pf');
+    if (tipoPessoa === 'pj') {
+      validateCompanyRegistration(createClienteDto.cpf_cnpj, createClienteDto.email, createClienteDto.telefone);
+    }
     await this.validateRepresentative(createClienteDto.id_representante_legal);
     if (createClienteDto.data_nascimento) {
       const birthDate = new Date(createClienteDto.data_nascimento);
@@ -61,7 +76,7 @@ export class ClientesService {
       const data: any = {
         ...createClienteDto,
         ...classification,
-        tipo_pessoa: createClienteDto.tipo_pessoa ?? ((createClienteDto.cpf_cnpj ?? '').replace(/\D/g, '').length === 14 ? 'pj' : 'pf'),
+        tipo_pessoa: tipoPessoa,
         data_nascimento: createClienteDto.data_nascimento
           ? new Date(createClienteDto.data_nascimento)
           : null,
@@ -121,6 +136,13 @@ export class ClientesService {
     // Garante que o cliente existe antes de atualizar
     const current = await this.findOne(id, user);
     const classification = this.classification(updateClienteDto, current);
+    if (updateClienteDto.tipo_pessoa === 'pj' && current.tipo_pessoa !== 'pj') {
+      validateCompanyRegistration(
+        updateClienteDto.cpf_cnpj === undefined ? current.cpf_cnpj : updateClienteDto.cpf_cnpj,
+        updateClienteDto.email === undefined ? current.email : updateClienteDto.email,
+        updateClienteDto.telefone === undefined ? current.telefone : updateClienteDto.telefone,
+      );
+    }
 
     if (updateClienteDto.data_nascimento) {
       const birthDate = new Date(updateClienteDto.data_nascimento);

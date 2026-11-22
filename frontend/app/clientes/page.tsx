@@ -67,6 +67,10 @@ function formatarCpfCnpj(valor: string | null = ''): string {
   return formatarCNPJ(digits);
 }
 
+function tipoPessoaCliente(client: Cliente): 'pf' | 'pj' {
+  return client.tipo_pessoa ?? ((client.cpf_cnpj ?? '').replace(/\D/g, '').length > 11 ? 'pj' : 'pf');
+}
+
 function formatarTelefone(valor: string | null = ''): string {
   if (!valor) return '';
   const digits = valor.replace(/\D/g, '');
@@ -139,6 +143,7 @@ function ClientesContent() {
 
   // Form fields
   const [formTipo, setFormTipo] = useState<'pf' | 'pj'>('pf');
+  const contatosObrigatorios = formTipo === 'pj' && (!editingClient || tipoPessoaCliente(editingClient) !== 'pj');
   const [nome, setNome] = useState<string>('');
   const [cpfCnpj, setCpfCnpj] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -159,8 +164,6 @@ function ClientesContent() {
   // Drawer de Detalhes
   const [detailsModalOpen, setDetailsModalOpen] = useState<boolean>(false);
   const [selectedClient, setSelectedClient] = useState<Cliente | null>(null);
-  const selectedClientType = selectedClient?.tipo_pessoa
-    ?? ((selectedClient?.cpf_cnpj ?? '').replace(/\D/g, '').length > 11 ? 'pj' : 'pf');
 
   // Estado de cópia para clipboard
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -210,8 +213,7 @@ function ClientesContent() {
 
   const openEditModal = (client: Cliente) => {
     setEditingClient(client);
-    const digits = (client.cpf_cnpj ?? '').replace(/\D/g, '');
-    const tipoPessoa = client.tipo_pessoa ?? (digits.length > 11 ? 'pj' : 'pf');
+    const tipoPessoa = tipoPessoaCliente(client);
     setFormTipo(tipoPessoa);
     setProfile(Object.fromEntries([
       ...getClientProfileFields(tipoPessoa).map(({ key }) => [key, client[key] ?? null]),
@@ -237,6 +239,8 @@ function ClientesContent() {
     setFormErrors((prev) => {
       const next = { ...prev };
       delete next.cpfCnpj;
+      delete next.email;
+      delete next.telefone;
       delete next.dataNascimento;
       return next;
     });
@@ -247,6 +251,11 @@ function ClientesContent() {
     if (!nome.trim()) errors.nome = 'O nome ou razão social é obrigatório.';
     const documentError = cpfCnpj.trim() ? cpfCnpjError(cpfCnpj, formTipo) : undefined;
     if (documentError) errors.cpfCnpj = documentError;
+    if (contatosObrigatorios) {
+      if (!cpfCnpj.trim()) errors.cpfCnpj = 'Informe o CNPJ da empresa.';
+      if (!email.trim()) errors.email = 'Informe o e-mail de contato da empresa.';
+      if (!telefone.trim()) errors.telefone = 'Informe o telefone de contato da empresa.';
+    }
     if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       errors.email = 'Insira um endereço de e-mail válido.';
     }
@@ -976,11 +985,12 @@ function ClientesContent() {
                       htmlFor="input-cpf-cnpj"
                       className="block font-medium text-slate-700 dark:text-slate-300 mb-1"
                     >
-                      {formTipo === 'pf' ? 'CPF' : 'CNPJ'}
+                      {formTipo === 'pf' ? 'CPF' : 'CNPJ'}{contatosObrigatorios && ' *'}
                     </label>
                     <input
                       id="input-cpf-cnpj"
                       disabled={intern && !!editingClient}
+                      required={contatosObrigatorios}
                       type="text"
                       inputMode="numeric"
                       maxLength={formTipo === 'pf' ? 14 : 18}
@@ -1028,12 +1038,15 @@ function ClientesContent() {
                       htmlFor="input-telefone-cliente"
                       className="block font-medium text-slate-700 dark:text-slate-300 mb-1"
                     >
-                      Telefone de Contato
+                      Telefone de Contato{contatosObrigatorios && ' *'}
                     </label>
                     <input
                       id="input-telefone-cliente"
                       type="text"
                       inputMode="tel"
+                      required={contatosObrigatorios}
+                      aria-invalid={!!formErrors.telefone}
+                      aria-describedby={formErrors.telefone ? 'cliente-telefone-erro' : undefined}
                       maxLength={15}
                       value={telefone}
                       onChange={(e) =>
@@ -1043,7 +1056,7 @@ function ClientesContent() {
                       className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-hidden font-mono dark:border-white/[0.08] dark:bg-surface dark:text-slate-100 dark:placeholder:text-slate-500 transition"
                     />
                     {formErrors.telefone && (
-                      <p className="text-rose-400 mt-1">
+                      <p id="cliente-telefone-erro" role="alert" className="text-rose-700 dark:text-rose-400 mt-1">
                         {formErrors.telefone}
                       </p>
                     )}
@@ -1055,18 +1068,21 @@ function ClientesContent() {
                     htmlFor="input-email-cliente"
                     className="block font-medium text-slate-700 dark:text-slate-300 mb-1"
                   >
-                    E-mail de Contato
+                    E-mail de Contato{contatosObrigatorios && ' *'}
                   </label>
                   <input
                     id="input-email-cliente"
                     type="email"
+                    required={contatosObrigatorios}
+                    aria-invalid={!!formErrors.email}
+                    aria-describedby={formErrors.email ? 'cliente-email-erro' : undefined}
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="cliente@dominio.com.br"
                     className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 placeholder:text-slate-400 focus:border-brand focus:outline-hidden dark:border-white/[0.08] dark:bg-surface dark:text-slate-100 dark:placeholder:text-slate-500 transition"
                   />
                   {formErrors.email && (
-                    <p className="text-rose-400 mt-1">{formErrors.email}</p>
+                    <p id="cliente-email-erro" role="alert" className="text-rose-700 dark:text-rose-400 mt-1">{formErrors.email}</p>
                   )}
                 </div>
 
@@ -1208,7 +1224,7 @@ function ClientesContent() {
                 </div>
                 <div className="rounded-xl bg-slate-50/90 dark:bg-surface p-3.5 border border-slate-200/80 dark:border-white/[0.08] shadow-xs">
                   <span className="text-slate-400 block text-[10px] uppercase font-semibold">
-                    {selectedClientType === 'pj'
+                    {tipoPessoaCliente(selectedClient) === 'pj'
                       ? 'Data de Fundação / Abertura'
                       : 'Data de Nascimento'}
                   </span>
@@ -1270,7 +1286,7 @@ function ClientesContent() {
                 <div><dt className="text-slate-500">Categoria</dt><dd>{selectedClient.categoria || 'Não informada'}</dd></div>
                 <div><dt className="text-slate-500">Subcategoria</dt><dd>{selectedClient.subcategoria || 'Não informada'}</dd></div>
               </dl>
-              <ClientProfileDetails client={selectedClient} representatives={clientes} tipoPessoa={selectedClientType} />
+              <ClientProfileDetails client={selectedClient} representatives={clientes} tipoPessoa={tipoPessoaCliente(selectedClient)} />
 
               {/* Trilha de Auditoria do Cliente - Real / Empty State sem dados mockados */}
               <div className="pt-2">
