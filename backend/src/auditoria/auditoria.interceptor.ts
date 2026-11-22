@@ -71,6 +71,13 @@ export class AuditoriaInterceptor implements NestInterceptor {
             ? (entity === 'financeiro' ? result.id : result['id_' + entity.replace(/s$/, '')])
             : undefined;
         const record = String(req.params.id ?? resultId ?? '');
+        const documentName = entity === 'documentos' && typeof result?.nome_arquivo === 'string'
+          ? result.nome_arquivo
+          : undefined;
+        const upload = documentName && action === 'CRIACAO' && !operation;
+        const documentDescription = documentName && (upload || operation === 'arquivar')
+          ? `${upload ? 'Anexou' : 'Arquivou'} o documento “${documentName}”.`
+          : undefined;
         // Explicit whitelist: never record passwords, tokens, or document contents.
         const changes = auditChanges(req.body ?? {}, previous);
         if (req.method === 'PATCH' && previous && !operation && !changes && Object.keys(req.body ?? {}).every(key => key in previous!)) return result;
@@ -79,12 +86,12 @@ export class AuditoriaInterceptor implements NestInterceptor {
             id_usuario: user.id_usuario,
             usuario: user.nome,
             cargo: user.role,
-            acao: operation ? 'STATUS' : action,
+            acao: operation ? 'STATUS' : upload ? 'DOCUMENTO' : action,
             entidade: entity,
             registro: record,
-            descricao: operation
+            descricao: documentDescription ?? (operation
               ? `${operation} em ${entity} #${record}${changes ? ": " + changes : ""}`
-              : `${action === 'CRIACAO' ? 'Criação' : action === 'EDICAO' ? 'Edição' : 'Exclusão'} em ${entity} #${record}${changes ? ": " + changes : ""}`,
+              : `${action === 'CRIACAO' ? 'Criação' : action === 'EDICAO' ? 'Edição' : 'Exclusão'} em ${entity} #${record}${changes ? ": " + changes : ""}`),
           },
         });
         return result;

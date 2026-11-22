@@ -165,6 +165,7 @@ function ClientesContent() {
   // Drawer de Detalhes
   const [detailsModalOpen, setDetailsModalOpen] = useState<boolean>(false);
   const [selectedClient, setSelectedClient] = useState<Cliente | null>(null);
+  const [auditRevision, setAuditRevision] = useState(0);
 
   // Estado de cópia para clipboard
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -1300,11 +1301,12 @@ function ClientesContent() {
                 <div><dt className="text-slate-500">Subcategoria</dt><dd>{selectedClient.subcategoria || 'Não informada'}</dd></div>
               </dl>
               <ClientProfileDetails client={selectedClient} representatives={clientes} tipoPessoa={tipoPessoaCliente(selectedClient)} />
-              <ClientDocuments key={selectedClient.id_cliente} clientId={selectedClient.id_cliente} />
+              <ClientDocuments key={selectedClient.id_cliente} clientId={selectedClient.id_cliente}
+                onUploaded={() => setAuditRevision(revision => revision + 1)} />
 
               {/* Trilha de Auditoria do Cliente - Real / Empty State sem dados mockados */}
               <div className="pt-2">
-                <RemoteAuditTrail entity="clientes" record={selectedClient.id_cliente} />
+                <RemoteAuditTrail key={auditRevision} entity="clientes" record={selectedClient.id_cliente} includeDocuments />
               </div>
             </div>
 

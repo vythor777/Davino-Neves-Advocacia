@@ -6,7 +6,7 @@ import { PdfUpload } from '@/components/PdfUpload';
 import { usePermissions } from '@/hooks/usePermissions';
 import { documentoService, saveDocumentBlob, type Documento } from '@/services/documentoService';
 
-export function ClientDocuments({ clientId }: { clientId: number }) {
+export function ClientDocuments({ clientId, onUploaded }: { clientId: number; onUploaded?: () => void }) {
   const { admin, canManageDeadline } = usePermissions();
   const [documents, setDocuments] = useState<Documento[] | null>(null);
   const [error, setError] = useState('');
@@ -52,7 +52,10 @@ export function ClientDocuments({ clientId }: { clientId: number }) {
           ))}
         </ul>
       )}
-      {(admin || canManageDeadline) && <PdfUpload clientId={clientId} onUploaded={load} />}
+      {(admin || canManageDeadline) && <PdfUpload clientId={clientId} onUploaded={async () => {
+        onUploaded?.();
+        await load();
+      }} />}
     </section>
   );
 }
