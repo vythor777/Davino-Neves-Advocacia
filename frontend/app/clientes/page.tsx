@@ -877,8 +877,12 @@ function ClientesContent() {
 
       {/* Modal de Criação / Edição */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/40 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-150">
-          <div className="relative w-full max-w-3xl legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-[90vh] my-auto animate-in zoom-in-95 duration-150">
+        <Dialog
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center bg-slate-950/40 p-3 backdrop-blur-sm sm:p-4"
+        >
+          <DialogPanel className="legal-modal-card fio-de-luz flex max-h-full w-full max-w-3xl flex-col overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-200/60 p-5 dark:border-white/[0.06] shrink-0 bg-slate-50/80 dark:bg-surface">
               <div className="flex items-center gap-2.5">
                 <div className="rounded-xl bg-brand/15 text-brand border border-brand/25 p-2">
@@ -889,9 +893,9 @@ function ClientesContent() {
                   )}
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+                  <DialogTitle as="h3" className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
                     {editingClient ? 'Editar cliente' : 'Novo cliente'}
-                  </h3>
+                  </DialogTitle>
                   <p className="text-[11px] text-slate-400">
                     Preencha os dados do cliente
                   </p>
@@ -899,8 +903,10 @@ function ClientesContent() {
               </div>
               <button
                 type="button"
+                aria-label="Fechar formulário de cliente"
+                data-autofocus
                 onClick={() => setModalOpen(false)}
-                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-200 transition cursor-pointer"
+                className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-2 focus-visible:outline-brand active:bg-slate-200 dark:text-slate-400 dark:hover:bg-white/[0.06] dark:hover:text-slate-200 dark:active:bg-white/10 transition cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -910,7 +916,7 @@ function ClientesContent() {
               onSubmit={handleSaveClient}
               className="flex flex-col flex-1 min-h-0 overflow-hidden"
             >
-              <div className="overflow-y-auto p-5 space-y-4 text-xs flex-1">
+              <div className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain p-5 text-xs">
                 {editingClient ? (
                   <div className="rounded-xl border border-slate-200/80 bg-slate-50/80 px-3 py-2 dark:border-white/[0.08] dark:bg-surface">
                     <span className="block text-slate-500 dark:text-slate-400">Tipo de pessoa</span>
@@ -1164,8 +1170,8 @@ function ClientesContent() {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
+          </DialogPanel>
+        </Dialog>
       )}
 
       {/* Modal de Exclusão Reutilizável & Acessível */}
