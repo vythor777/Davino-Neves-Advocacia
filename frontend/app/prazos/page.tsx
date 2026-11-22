@@ -1,5 +1,6 @@
 'use client';
 
+import { ProcessPicker } from '@/components/ui/EntityPicker';
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { PageHeader } from '@/components/ui/PageHeader';
 import AuthGuard from '@/components/AuthGuard';
@@ -659,18 +660,10 @@ function PrazosContent() {
           </select>
 
           {processos.length > 0 && (
-            <select
-              value={selectedProcessoFilter}
-              onChange={(e) => setSelectedProcessoFilter(e.target.value)}
-              className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-medium text-slate-800 dark:text-slate-100 focus:border-brand focus:outline-hidden max-w-[200px] truncate cursor-pointer"
-            >
-              <option value="todos">Todos os Processos</option>
-              {processos.map((p) => (
-                <option key={p.id_processo} value={String(p.id_processo)}>
-                  {p.numero_processo} - {p.titulo}
-                </option>
-              ))}
-            </select>
+            <div className="w-full sm:w-52">
+              <ProcessPicker id="prazos-filtro-processo" ariaLabel="Filtrar por processo" processes={processos}
+                value={selectedProcessoFilter} onChange={setSelectedProcessoFilter} emptyLabel="Todos os processos" emptyValue="todos" />
+            </div>
           )}
         </div>
       </div>
@@ -1092,30 +1085,10 @@ function PrazosContent() {
             >
               <div className="overflow-y-auto p-5 space-y-4 text-xs flex-1">
                 <div>
-                  <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+                  <label htmlFor="prazo-processo" className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                     Processo Judicial Vinculado *
                   </label>
-                  <select
-                    value={idProcesso}
-                    onChange={(e) => setIdProcesso(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/90 dark:bg-surface px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
-                  >
-                    <option
-                      value=""
-                      className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
-                    >
-                      Selecione o Processo
-                    </option>
-                    {processos.map((p) => (
-                      <option
-                        key={p.id_processo}
-                        value={String(p.id_processo)}
-                        className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
-                      >
-                        {p.numero_processo} — {p.titulo}
-                      </option>
-                    ))}
-                  </select>
+                  <ProcessPicker id="prazo-processo" processes={processos} value={idProcesso} onChange={setIdProcesso} required />
                   {formErrors.idProcesso && (
                     <p className="text-red-500 dark:text-red-400 mt-1">
                       {formErrors.idProcesso}

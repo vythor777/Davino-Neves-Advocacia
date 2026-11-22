@@ -1,4 +1,5 @@
 'use client';
+import { ClientPicker } from '@/components/ui/EntityPicker';
 import { isValidCnj } from '@/utils/identifiers';
 
 import React, { useState } from 'react';
@@ -575,28 +576,12 @@ function DataJudContent() {
               </div>
 
               <div>
-                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+                <label htmlFor="datajud-cliente" className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Cliente Responsável / Titular *
                 </label>
                 {clientes.length > 0 ? (
-                  <select
-                    required
-                    value={clienteSelecionadoId}
-                    onChange={(e) =>
-                      setClienteSelecionadoId(Number(e.target.value))
-                    }
-                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
-                  >
-                    {clientes.map((c) => (
-                      <option
-                        key={c.id_cliente}
-                        value={c.id_cliente}
-                        className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
-                      >
-                        {c.nome} ({c.cpf_cnpj || 'Sem documento'})
-                      </option>
-                    ))}
-                  </select>
+                  <ClientPicker id="datajud-cliente" clients={clientes} required
+                    value={String(clienteSelecionadoId)} onChange={(id) => setClienteSelecionadoId(id ? Number(id) : '')} />
                 ) : (
                   <div className="rounded-xl bg-amber-500/10 p-2.5 text-xs text-amber-600 dark:text-amber-400 border border-amber-500/20">
                     Nenhum cliente cadastrado. Cadastre um cliente primeiro no

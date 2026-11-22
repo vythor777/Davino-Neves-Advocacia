@@ -1,4 +1,5 @@
 'use client';
+import { ClientPicker, ProcessPicker } from '@/components/ui/EntityPicker';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { documentLink } from '@/utils/document-link';
@@ -35,8 +36,16 @@ function DocumentosContent() {
     </section>}
     {(admin || canManageDeadline) && <section className="space-y-3 min-w-0 rounded-xl border border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-700 p-4">
       <h2 className="font-semibold">Enviar documento</h2>
-      <label className="block space-y-2 text-sm font-medium">Processo <select aria-label="Processo" value={processId} onChange={e => { setProcessId(e.target.value); setClientId(''); }} className="block w-full min-w-0 rounded-lg border border-slate-200 p-2.5 bg-white dark:bg-slate-900 dark:border-slate-700 focus-visible:ring-2 focus-visible:ring-blue-700"><option value="">Sem processo</option>{processes.map(p => <option key={p.id_processo} value={p.id_processo}>{p.titulo}</option>)}</select></label>
-      {!processId && <label className="block space-y-2 text-sm font-medium">Cliente <select aria-label="Cliente" value={clientId} onChange={e => setClientId(e.target.value)} className="block w-full min-w-0 rounded-lg border border-slate-200 p-2.5 bg-white dark:bg-slate-900 dark:border-slate-700 focus-visible:ring-2 focus-visible:ring-blue-700"><option value="">Documento geral do escritório (administrador)</option>{clients.map(c => <option key={c.id_cliente} value={c.id_cliente}>{c.nome}</option>)}</select></label>}
+      <div className="space-y-2 text-sm">
+        <label htmlFor="documento-processo" className="font-medium">Processo</label>
+        <ProcessPicker id="documento-processo" value={processId} processes={processes} emptyLabel="Sem processo"
+          onChange={(id) => { setProcessId(id); setClientId(''); }} />
+      </div>
+      {!processId && <div className="space-y-2 text-sm">
+        <label htmlFor="documento-cliente" className="font-medium">Cliente</label>
+        <ClientPicker id="documento-cliente" value={clientId} clients={clients} onChange={setClientId}
+          emptyLabel={admin ? 'Documento geral do escritório (administrador)' : undefined} />
+      </div>}
       <label className="block">PDF <input type="file" accept="application/pdf,.pdf" disabled={busy} onChange={e => { const next = e.target.files?.[0] || null; if (next && next.size > 20e6) { toast.warning('Para otimização, o arquivo deve ter até 20 MB.'); setFile(null); return; } setFile(next); }} className="block mt-2 w-full min-w-0 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-blue-50 file:px-3 file:py-2 file:text-blue-800 dark:file:bg-slate-800 dark:file:text-slate-200" /></label>
       {file && <p className="break-all text-sm">{file.name} - {(file.size / 1e6).toFixed(2)} MB {file.size > 5e6 && '(Acima do limite: otimize antes de enviar)'}</p>}
       <div className="flex flex-wrap gap-2"><button className={button} disabled={busy || !file || file.size > 5e6 || (!admin && !processId && !clientId)} onClick={() => action(async () => { if (!file) return; await documentoService.upload(file, Number(processId) || undefined, Number(clientId) || undefined); setFile(null); toast.success('Documento armazenado.'); await reload(); })}>Enviar PDF</button>

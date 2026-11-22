@@ -1,5 +1,6 @@
 'use client';
 
+import { ClientPicker } from '@/components/ui/EntityPicker';
 import React from 'react';
 
 import type { Cliente, ClienteProfile } from '@/services/clienteService';
@@ -72,10 +73,10 @@ export function ClientProfileFields({ tipoPessoa, value, onChange, representativ
         ))}
         <div className="sm:col-span-2">
           <label htmlFor="cliente-representante-legal" className="mb-1 block font-medium text-slate-700 dark:text-slate-300">Representante legal</label>
-          <select id="cliente-representante-legal" className={inputClass} value={value.id_representante_legal ?? ''} aria-describedby="cliente-representante-ajuda" onChange={(event) => update('id_representante_legal', event.target.value ? Number(event.target.value) : null)}>
-            <option value="">Sem representante legal</option>
-            {representatives.map((client) => <option key={client.id_cliente} value={client.id_cliente}>{client.nome}{client.cpf_cnpj ? ` — ${client.cpf_cnpj}` : ''}</option>)}
-          </select>
+          <ClientPicker id="cliente-representante-legal" clients={representatives} disabled={disabled}
+            value={String(value.id_representante_legal ?? '')}
+            onChange={(id) => update('id_representante_legal', id ? Number(id) : null)}
+            describedBy="cliente-representante-ajuda" emptyLabel="Sem representante legal" />
           <p id="cliente-representante-ajuda" className="mt-1 text-slate-500 dark:text-slate-400">Selecione uma pessoa física já cadastrada como cliente. Se necessário, cadastre-a primeiro.</p>
         </div>
       </div>

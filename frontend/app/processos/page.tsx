@@ -1,4 +1,5 @@
 'use client';
+import { ClientPicker } from '@/components/ui/EntityPicker';
 import { isValidCnj } from '@/utils/identifiers';
 
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
@@ -447,27 +448,10 @@ function ProcessosContent() {
           </select>
 
           {clientes.length > 0 && (
-            <select
-              value={selectedClienteFilter}
-              onChange={(e) => setSelectedClienteFilter(e.target.value)}
-              className="rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-xs font-medium text-slate-900 focus:border-brand focus:outline-hidden dark:border-white/[0.08] dark:bg-surface dark:text-slate-200 cursor-pointer"
-            >
-              <option
-                value="todos"
-                className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
-              >
-                Todos os Clientes
-              </option>
-              {clientes.map((c) => (
-                <option
-                  key={c.id_cliente}
-                  value={String(c.id_cliente)}
-                  className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
-                >
-                  {c.nome}
-                </option>
-              ))}
-            </select>
+            <div className="w-full sm:w-52">
+              <ClientPicker id="processos-filtro-cliente" ariaLabel="Filtrar por cliente" clients={clientes}
+                value={selectedClienteFilter} onChange={setSelectedClienteFilter} emptyLabel="Todos os clientes" emptyValue="todos" />
+            </div>
           )}
         </div>
       </div>
@@ -561,30 +545,10 @@ function ProcessosContent() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+                    <label htmlFor="processo-cliente" className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                       Cliente Vinculado *
                     </label>
-                    <select
-                      value={idCliente}
-                      onChange={(e) => setIdCliente(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 focus:border-brand focus:outline-hidden dark:border-white/[0.08] dark:bg-surface dark:text-slate-100"
-                    >
-                      <option
-                        value=""
-                        className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
-                      >
-                        Selecione o Cliente
-                      </option>
-                      {clientes.map((c) => (
-                        <option
-                          key={c.id_cliente}
-                          value={String(c.id_cliente)}
-                          className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
-                        >
-                          {c.nome} ({c.cpf_cnpj})
-                        </option>
-                      ))}
-                    </select>
+                    <ClientPicker id="processo-cliente" clients={clientes} value={idCliente} onChange={setIdCliente} required />
                     {formErrors.idCliente && (
                       <p className="text-rose-500 mt-1">
                         {formErrors.idCliente}

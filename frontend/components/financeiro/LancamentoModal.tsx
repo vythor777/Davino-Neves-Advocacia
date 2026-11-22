@@ -1,5 +1,6 @@
 'use client';
 
+import { ClientPicker, ProcessPicker } from '@/components/ui/EntityPicker';
 import React, { useState } from 'react';
 import {
   X,
@@ -376,39 +377,19 @@ function LancamentoModalForm({
           {/* Vínculo com Cliente & Processo (Opcionais) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-200/60 dark:border-white/[0.06]">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label htmlFor="lancamento-cliente" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 Vincular ao Cliente (Opcional)
               </label>
-              <select
-                value={clienteId}
-                onChange={(e) => setClienteId(e.target.value)}
-                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden transition"
-              >
-                <option value="" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Nenhum cliente específico</option>
-                {clientes.map((c) => (
-                  <option key={c.id_cliente} value={c.id_cliente} className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">
-                    {c.nome} ({c.cpf_cnpj})
-                  </option>
-                ))}
-              </select>
+              <ClientPicker id="lancamento-cliente" clients={clientes} value={clienteId}
+                onChange={setClienteId} emptyLabel="Nenhum cliente específico" />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label htmlFor="lancamento-processo" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 Vincular ao Processo (Opcional)
               </label>
-              <select
-                value={processoId}
-                onChange={(e) => setProcessoId(e.target.value)}
-                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden transition"
-              >
-                <option value="" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Nenhum processo específico</option>
-                {processos.map((p) => (
-                  <option key={p.id_processo} value={p.id_processo} className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">
-                    {p.numero_processo} - {p.titulo.slice(0, 30)}...
-                  </option>
-                ))}
-              </select>
+              <ProcessPicker id="lancamento-processo" processes={processos} value={processoId}
+                onChange={setProcessoId} emptyLabel="Nenhum processo específico" />
             </div>
           </div>
 

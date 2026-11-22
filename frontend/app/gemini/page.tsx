@@ -1,5 +1,6 @@
 'use client';
 
+import { ProcessPicker } from '@/components/ui/EntityPicker';
 import { useAiTasks, useAiDraft } from '@/context/AiTaskContext';
 import { aiTaskUrl, findAiTask, type AiAction } from '@/utils/ai-tasks';
 import React, { useState, useEffect, useRef, Suspense } from 'react';
@@ -129,6 +130,7 @@ function GeminiContent() {
   }, [acaoParam]);
 
   // Lista de processos do escritório para preenchimento rápido
+  const [processoExistenteId, setProcessoExistenteId] = useState('');
   const [processosEscritorio, setProcessosEscritorio] = useState<Processo[]>([]);
 
   useEffect(() => {
@@ -454,6 +456,7 @@ Fica a parte autora intimada para, no prazo impreterível de 15 (quinze) dias ú
 
   // Processo selecionador de preenchimento rápido
   const handleSelecionarProcessoExistente = (procIdStr: string) => {
+    setProcessoExistenteId(procIdStr);
     if (!procIdStr) return;
     const proc = processosEscritorio.find((p) => p.id_processo === Number(procIdStr));
     if (proc) {
@@ -632,24 +635,8 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                     >
                       Puxar dados de um processo já cadastrado:
                     </label>
-                    <select
-                      id="procExistenteSelect"
-                      onChange={(e) =>
-                        handleSelecionarProcessoExistente(e.target.value)
-                      }
-                      defaultValue=""
-                      className="w-full rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-slate-900 px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-1 focus:ring-[#0047ab]"
-                    >
-                      <option value="">
-                        Selecione um processo do escritório...
-                      </option>
-                      {processosEscritorio.map((p) => (
-                        <option key={p.id_processo} value={p.id_processo}>
-                          {p.numero_processo} - {p.titulo} (
-                          {p.cliente?.nome || 'Sem cliente'})
-                        </option>
-                      ))}
-                    </select>
+                    <ProcessPicker id="procExistenteSelect" processes={processosEscritorio}
+                      value={processoExistenteId} onChange={handleSelecionarProcessoExistente} emptyLabel="Selecione um processo do escritório" />
                   </div>
                 )}
 
@@ -1644,22 +1631,8 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                 >
                   Vincular ao Processo *
                 </label>
-                <select
-                  id="modalProcessoSelect"
-                  value={processoSelecionadoId}
-                  onChange={(e) =>
-                    selecionarProcessoPrazo(e.target.value ? Number(e.target.value) : '')
-                  }
-                  required
-                  className="w-full rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-1 focus:ring-[#0047ab]"
-                >
-                  <option value="">Selecione um processo...</option>
-                  {processosEscritorio.map((p) => (
-                    <option key={p.id_processo} value={p.id_processo}>
-                      {p.numero_processo} - {p.titulo}
-                    </option>
-                  ))}
-                </select>
+                <ProcessPicker id="modalProcessoSelect" processes={processosEscritorio} value={String(processoSelecionadoId)}
+                  onChange={(id) => selecionarProcessoPrazo(id ? Number(id) : '')} required />
               </div>
 
               <div>
