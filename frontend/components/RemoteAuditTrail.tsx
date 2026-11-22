@@ -7,20 +7,27 @@ import { usePermissions } from '@/hooks/usePermissions';
 export function RemoteAuditTrail({
   entity,
   record,
+  from,
+  to,
+  pagination,
 }: {
   entity?: string;
   record?: number;
+  from?: string;
+  to?: string;
+  pagination?: { page: number; onChange: (page: number) => void };
 }) {
   const { admin } = usePermissions();
   const [logs, setLogs] = useState<AuditLogItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const page = pagination?.page;
   useEffect(() => {
     if (!admin) return;
     let active = true;
     api
       .get<AuditLogItem[]>('/auditoria', {
-        params: { entidade: entity, registro: record },
+        params: { entidade: entity, registro: record, de: from || undefined, ate: to || undefined, pagina: page },
       })
       .then(({ data }) => {
         if (active) setLogs(data);
@@ -34,7 +41,7 @@ export function RemoteAuditTrail({
     return () => {
       active = false;
     };
-  }, [admin, entity, record]);
+  }, [admin, entity, record, from, to, page]);
   if (!admin) return null;
   if (loading) return <Skeleton className="h-24 w-full" />;
   if (error)
@@ -44,9 +51,15 @@ export function RemoteAuditTrail({
       </p>
     );
   return (
-    <AuditTrail
-      logs={logs}
-      emptyMessage="Nenhuma ação registrada após a ativação da auditoria."
-    />
+    <>
+      <AuditTrail logs={logs} emptyMessage={from || to ? 'Nenhuma ação encontrada no período.' : 'Nenhuma ação registrada nesta página.'} />
+      {pagination && (pagination.page > 1 || logs.length === 100) && (
+        <nav aria-label="Paginação da auditoria" className="flex flex-wrap items-center justify-end gap-3 text-sm">
+          <button className="ui-button ui-button-secondary" type="button" disabled={pagination.page === 1} onClick={() => pagination.onChange(pagination.page - 1)}>Anterior</button>
+          <span>Página {pagination.page}</span>
+          <button className="ui-button ui-button-secondary" type="button" disabled={logs.length < 100} onClick={() => pagination.onChange(pagination.page + 1)}>Próxima</button>
+        </nav>
+      )}
+    </>
   );
 }

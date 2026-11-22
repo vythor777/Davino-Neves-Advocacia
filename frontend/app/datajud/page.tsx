@@ -1,4 +1,6 @@
 'use client';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import { ClientPicker } from '@/components/ui/EntityPicker';
 import { isValidCnj } from '@/utils/identifiers';
 
 import React, { useState } from 'react';
@@ -539,18 +541,25 @@ function DataJudContent() {
 
       {/* Modal para Vincular Processo ao Sistema */}
       {modalVincularAberto && resultado && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-4 backdrop-blur-sm">
-          <div className="w-full max-w-lg legal-glass-card fio-de-luz p-6 shadow-2xl">
+        <Dialog
+          open={modalVincularAberto}
+          onClose={() => setModalVincularAberto(false)}
+          className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center bg-slate-950/70 p-4 backdrop-blur-sm"
+        >
+          <DialogPanel className="w-full max-w-lg legal-glass-card fio-de-luz p-6 shadow-2xl max-h-full overflow-y-auto overscroll-contain">
             <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] pb-4">
               <div className="flex items-center gap-2.5">
                 <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand/15 text-brand border border-brand/25">
                   <BookmarkPlus className="h-4 w-4" />
                 </span>
-                <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100">
+                <DialogTitle as="h3" className="text-base font-semibold text-slate-900 dark:text-slate-100">
                   Vincular Processo ao Escritório
-                </h3>
+                </DialogTitle>
               </div>
               <button
+                data-autofocus
+                aria-label="Fechar vínculo do DataJud"
+                type="button"
                 onClick={() => setModalVincularAberto(false)}
                 className="rounded-lg p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-white/[0.04] dark:hover:text-slate-200 transition cursor-pointer"
               >
@@ -575,28 +584,12 @@ function DataJudContent() {
               </div>
 
               <div>
-                <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+                <label htmlFor="datajud-cliente" className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                   Cliente Responsável / Titular *
                 </label>
                 {clientes.length > 0 ? (
-                  <select
-                    required
-                    value={clienteSelecionadoId}
-                    onChange={(e) =>
-                      setClienteSelecionadoId(Number(e.target.value))
-                    }
-                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
-                  >
-                    {clientes.map((c) => (
-                      <option
-                        key={c.id_cliente}
-                        value={c.id_cliente}
-                        className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
-                      >
-                        {c.nome} ({c.cpf_cnpj || 'Sem documento'})
-                      </option>
-                    ))}
-                  </select>
+                  <ClientPicker id="datajud-cliente" clients={clientes} required
+                    value={String(clienteSelecionadoId)} onChange={(id) => setClienteSelecionadoId(id ? Number(id) : '')} />
                 ) : (
                   <div className="rounded-xl bg-amber-500/10 p-2.5 text-xs text-amber-600 dark:text-amber-400 border border-amber-500/20">
                     Nenhum cliente cadastrado. Cadastre um cliente primeiro no
@@ -691,8 +684,8 @@ function DataJudContent() {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
+          </DialogPanel>
+        </Dialog>
       )}
 
       {/* Rodapé Institucional */}

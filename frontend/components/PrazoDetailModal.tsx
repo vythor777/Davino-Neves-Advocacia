@@ -1,5 +1,6 @@
 'use client';
 
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import React from 'react';
 import Link from 'next/link';
 import { Prazo } from '@/services/prazoService';
@@ -52,13 +53,12 @@ export function PrazoDetailModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 p-4 backdrop-blur-md animate-fade-in-up">
-      <div
-        className="w-full max-w-lg legal-modal-card fio-de-luz shadow-2xl overflow-hidden text-slate-900 dark:text-slate-100"
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="modal-prazo-title"
-      >
+    <Dialog
+      open={isOpen}
+      onClose={onClose}
+      className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center bg-slate-950/80 p-4 backdrop-blur-md"
+    >
+      <DialogPanel className="w-full max-w-lg max-h-full legal-modal-card fio-de-luz shadow-2xl flex flex-col overflow-hidden text-slate-900 dark:text-slate-100 animate-fade-in-up">
         {/* Cabeçalho do Modal */}
         <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] p-5 bg-slate-50/80 dark:bg-surface">
           <div className="flex items-center gap-2.5">
@@ -74,15 +74,17 @@ export function PrazoDetailModal({
               <Calendar className="h-5 w-5" />
             </div>
             <div>
-              <h3 id="modal-prazo-title" className="text-base font-semibold text-slate-900 dark:text-slate-100">
+              <DialogTitle as="h3" className="text-base font-semibold text-slate-900 dark:text-slate-100">
                 Detalhes do Prazo Judicial
-              </h3>
+              </DialogTitle>
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 Registro processual #{prazo.id_prazo}
               </p>
             </div>
           </div>
           <button
+            data-autofocus
+            type="button"
             onClick={onClose}
             className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.04] hover:text-slate-200 transition cursor-pointer"
             aria-label="Fechar modal"
@@ -92,7 +94,7 @@ export function PrazoDetailModal({
         </div>
 
         {/* Corpo dos Detalhes */}
-        <div className="p-5 space-y-4 max-h-[75vh] overflow-y-auto text-xs">
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-5 space-y-4 text-xs">
           {/* Status e Urgência */}
           <div className="flex items-center justify-between rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/90 dark:bg-surface p-3.5 shadow-xs">
             <div className="flex items-center gap-2">
@@ -271,8 +273,8 @@ export function PrazoDetailModal({
             </button>
           </div>
         </div>
-      </div>
-    </div>
+      </DialogPanel>
+    </Dialog>
   );
 }
 

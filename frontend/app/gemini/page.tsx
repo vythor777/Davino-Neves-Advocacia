@@ -1,5 +1,7 @@
 'use client';
 
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import { ProcessPicker } from '@/components/ui/EntityPicker';
 import { useAiTasks, useAiDraft } from '@/context/AiTaskContext';
 import { aiTaskUrl, findAiTask, type AiAction } from '@/utils/ai-tasks';
 import React, { useState, useEffect, useRef, Suspense } from 'react';
@@ -129,6 +131,7 @@ function GeminiContent() {
   }, [acaoParam]);
 
   // Lista de processos do escritório para preenchimento rápido
+  const [processoExistenteId, setProcessoExistenteId] = useState('');
   const [processosEscritorio, setProcessosEscritorio] = useState<Processo[]>([]);
 
   useEffect(() => {
@@ -454,6 +457,7 @@ Fica a parte autora intimada para, no prazo impreterível de 15 (quinze) dias ú
 
   // Processo selecionador de preenchimento rápido
   const handleSelecionarProcessoExistente = (procIdStr: string) => {
+    setProcessoExistenteId(procIdStr);
     if (!procIdStr) return;
     const proc = processosEscritorio.find((p) => p.id_processo === Number(procIdStr));
     if (proc) {
@@ -632,24 +636,8 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                     >
                       Puxar dados de um processo já cadastrado:
                     </label>
-                    <select
-                      id="procExistenteSelect"
-                      onChange={(e) =>
-                        handleSelecionarProcessoExistente(e.target.value)
-                      }
-                      defaultValue=""
-                      className="w-full rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-slate-900 px-3 py-1.5 text-xs text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-1 focus:ring-[#0047ab]"
-                    >
-                      <option value="">
-                        Selecione um processo do escritório...
-                      </option>
-                      {processosEscritorio.map((p) => (
-                        <option key={p.id_processo} value={p.id_processo}>
-                          {p.numero_processo} - {p.titulo} (
-                          {p.cliente?.nome || 'Sem cliente'})
-                        </option>
-                      ))}
-                    </select>
+                    <ProcessPicker id="procExistenteSelect" processes={processosEscritorio}
+                      value={processoExistenteId} onChange={handleSelecionarProcessoExistente} emptyLabel="Selecione um processo do escritório" />
                   </div>
                 )}
 
@@ -1610,16 +1598,22 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
       {/* MODAL: SALVAR PRAZO EXTRAÍDO NO CALENDÁRIO */}
       {/* ========================================================================= */}
       {modalPrazoAberto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 backdrop-blur-xs p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/[0.1] p-6 shadow-xl space-y-4 animate-fade-in-up">
+        <Dialog
+          open={modalPrazoAberto}
+          onClose={() => setModalPrazoAberto(false)}
+          className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center bg-slate-950/60 backdrop-blur-xs p-4"
+        >
+          <DialogPanel className="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-white/[0.1] p-6 shadow-xl space-y-4 animate-fade-in-up max-h-full overflow-y-auto overscroll-contain">
             <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/[0.06] pb-3">
               <div className="flex items-center gap-2">
                 <CalendarClock className="h-4 w-4 text-[#0047ab] dark:text-brand" />
-                <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+                <DialogTitle as="h3" className="text-sm font-semibold text-slate-900 dark:text-white">
                   Agendar Prazo no Calendário
-                </h3>
+                </DialogTitle>
               </div>
               <button
+                data-autofocus
+                aria-label="Fechar agendamento"
                 type="button"
                 onClick={() => setModalPrazoAberto(false)}
                 className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 text-xs"
@@ -1644,22 +1638,8 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                 >
                   Vincular ao Processo *
                 </label>
-                <select
-                  id="modalProcessoSelect"
-                  value={processoSelecionadoId}
-                  onChange={(e) =>
-                    selecionarProcessoPrazo(e.target.value ? Number(e.target.value) : '')
-                  }
-                  required
-                  className="w-full rounded-lg border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-slate-900 px-3 py-2 text-xs text-slate-800 dark:text-slate-200 focus:outline-hidden focus:ring-1 focus:ring-[#0047ab]"
-                >
-                  <option value="">Selecione um processo...</option>
-                  {processosEscritorio.map((p) => (
-                    <option key={p.id_processo} value={p.id_processo}>
-                      {p.numero_processo} - {p.titulo}
-                    </option>
-                  ))}
-                </select>
+                <ProcessPicker id="modalProcessoSelect" processes={processosEscritorio} value={String(processoSelecionadoId)}
+                  onChange={(id) => selecionarProcessoPrazo(id ? Number(id) : '')} required />
               </div>
 
               <div>
@@ -1713,8 +1693,8 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
                 </button>
               </div>
             </form>
-          </div>
-        </div>
+          </DialogPanel>
+        </Dialog>
       )}
 
       {/* Rodapé institucional */}

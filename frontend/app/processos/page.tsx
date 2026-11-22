@@ -1,7 +1,9 @@
 'use client';
+import { ClientPicker } from '@/components/ui/EntityPicker';
 import { isValidCnj } from '@/utils/identifiers';
 
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { useSearchParams } from 'next/navigation';
 import AuthGuard from '@/components/AuthGuard';
@@ -447,27 +449,10 @@ function ProcessosContent() {
           </select>
 
           {clientes.length > 0 && (
-            <select
-              value={selectedClienteFilter}
-              onChange={(e) => setSelectedClienteFilter(e.target.value)}
-              className="rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-xs font-medium text-slate-900 focus:border-brand focus:outline-hidden dark:border-white/[0.08] dark:bg-surface dark:text-slate-200 cursor-pointer"
-            >
-              <option
-                value="todos"
-                className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
-              >
-                Todos os Clientes
-              </option>
-              {clientes.map((c) => (
-                <option
-                  key={c.id_cliente}
-                  value={String(c.id_cliente)}
-                  className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
-                >
-                  {c.nome}
-                </option>
-              ))}
-            </select>
+            <div className="w-full sm:w-52">
+              <ClientPicker id="processos-filtro-cliente" ariaLabel="Filtrar por cliente" clients={clientes}
+                value={selectedClienteFilter} onChange={setSelectedClienteFilter} emptyLabel="Todos os clientes" emptyValue="todos" />
+            </div>
           )}
         </div>
       </div>
@@ -499,8 +484,12 @@ function ProcessosContent() {
 
       {/* Modal de Criação / Edição */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/40 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-150">
-          <div className="relative w-full max-w-lg legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-[90vh] my-auto animate-in zoom-in-95 duration-150">
+        <Dialog
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center bg-slate-950/40 p-3 backdrop-blur-sm sm:p-4"
+        >
+          <DialogPanel className="legal-modal-card fio-de-luz flex max-h-full w-full max-w-lg flex-col overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-200/60 p-5 dark:border-white/[0.06] shrink-0 bg-slate-50/80 dark:bg-surface">
               <div className="flex items-center gap-2.5">
                 <div className="rounded-xl bg-brand/15 text-brand border border-brand/25 p-2">
@@ -511,9 +500,9 @@ function ProcessosContent() {
                   )}
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+                  <DialogTitle as="h3" className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
                     {editingProcesso ? 'Editar processo' : 'Novo processo'}
-                  </h3>
+                  </DialogTitle>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400">
                     Preencha os dados dos autos e vincule ao cliente
                   </p>
@@ -521,8 +510,10 @@ function ProcessosContent() {
               </div>
               <button
                 type="button"
+                aria-label="Fechar formulário de processo"
+                data-autofocus
                 onClick={() => setModalOpen(false)}
-                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-200 transition cursor-pointer"
+                className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-slate-700 focus-visible:outline-2 focus-visible:outline-brand active:bg-slate-200 dark:text-slate-400 dark:hover:bg-white/[0.06] dark:hover:text-slate-200 dark:active:bg-white/10 transition cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -532,7 +523,7 @@ function ProcessosContent() {
               onSubmit={handleSaveProcesso}
               className="flex flex-col flex-1 min-h-0 overflow-hidden"
             >
-              <div className="overflow-y-auto p-5 space-y-3.5 text-xs flex-1">
+              <div className="min-h-0 flex-1 space-y-3.5 overflow-y-auto overscroll-contain p-5 text-xs">
                 <NumberProcessInput
                   id="modal-numero-processo"
                   label="Número Único CNJ * (20 dígitos)"
@@ -561,30 +552,10 @@ function ProcessosContent() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+                    <label htmlFor="processo-cliente" className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                       Cliente Vinculado *
                     </label>
-                    <select
-                      value={idCliente}
-                      onChange={(e) => setIdCliente(e.target.value)}
-                      className="w-full rounded-xl border border-slate-200/80 bg-white/80 px-3 py-2 text-slate-900 focus:border-brand focus:outline-hidden dark:border-white/[0.08] dark:bg-surface dark:text-slate-100"
-                    >
-                      <option
-                        value=""
-                        className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
-                      >
-                        Selecione o Cliente
-                      </option>
-                      {clientes.map((c) => (
-                        <option
-                          key={c.id_cliente}
-                          value={String(c.id_cliente)}
-                          className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100"
-                        >
-                          {c.nome} ({c.cpf_cnpj})
-                        </option>
-                      ))}
-                    </select>
+                    <ClientPicker id="processo-cliente" clients={clientes} value={idCliente} onChange={setIdCliente} required />
                     {formErrors.idCliente && (
                       <p className="text-rose-500 mt-1">
                         {formErrors.idCliente}
@@ -670,8 +641,8 @@ function ProcessosContent() {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
+          </DialogPanel>
+        </Dialog>
       )}
 
       {/* Modal de Confirmação de Exclusão Reutilizável & Acessível */}
@@ -692,23 +663,29 @@ function ProcessosContent() {
 
       {/* Modal / Drawer de Detalhes */}
       {detailsModalOpen && selectedProcesso && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/40 p-4 backdrop-blur-sm">
-          <div className="legal-modal-card fio-de-luz w-full max-w-3xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
+        <Dialog
+          open={detailsModalOpen}
+          onClose={() => setDetailsModalOpen(false)}
+          className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center bg-slate-950/40 p-4 backdrop-blur-sm"
+        >
+          <DialogPanel className="legal-modal-card fio-de-luz w-full max-w-3xl max-h-full overflow-y-auto p-6 shadow-2xl animate-in fade-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-200/60 pb-4 dark:border-white/[0.06]">
               <div className="flex items-center gap-2.5">
                 <div className="rounded-xl bg-brand/15 text-brand border border-brand/25 p-2">
                   <Scale className="h-5 w-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+                  <DialogTitle as="h3" className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
                     Autos Processuais
-                  </h3>
+                  </DialogTitle>
                   <p className="text-[11px] font-mono text-slate-400">
                     {formatarNumeroCNJ(selectedProcesso.numero_processo)}
                   </p>
                 </div>
               </div>
               <button
+                data-autofocus
+                aria-label="Fechar autos processuais"
                 type="button"
                 onClick={() => setDetailsModalOpen(false)}
                 className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 dark:hover:bg-white/[0.06] hover:text-slate-200 transition cursor-pointer"
@@ -779,8 +756,8 @@ function ProcessosContent() {
                 Fechar Autos
               </button>
             </div>
-          </div>
-        </div>
+          </DialogPanel>
+        </Dialog>
       )}
 
       {/* Rodapé Institucional */}

@@ -1,5 +1,7 @@
 'use client';
 
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import { ProcessPicker } from '@/components/ui/EntityPicker';
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { PageHeader } from '@/components/ui/PageHeader';
 import AuthGuard from '@/components/AuthGuard';
@@ -659,18 +661,10 @@ function PrazosContent() {
           </select>
 
           {processos.length > 0 && (
-            <select
-              value={selectedProcessoFilter}
-              onChange={(e) => setSelectedProcessoFilter(e.target.value)}
-              className="rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 px-3 py-2 text-xs font-medium text-slate-800 dark:text-slate-100 focus:border-brand focus:outline-hidden max-w-[200px] truncate cursor-pointer"
-            >
-              <option value="todos">Todos os Processos</option>
-              {processos.map((p) => (
-                <option key={p.id_processo} value={String(p.id_processo)}>
-                  {p.numero_processo} - {p.titulo}
-                </option>
-              ))}
-            </select>
+            <div className="w-full sm:w-52">
+              <ProcessPicker id="prazos-filtro-processo" ariaLabel="Filtrar por processo" processes={processos}
+                value={selectedProcessoFilter} onChange={setSelectedProcessoFilter} emptyLabel="Todos os processos" emptyValue="todos" />
+            </div>
           )}
         </div>
       </div>
@@ -1056,8 +1050,12 @@ function PrazosContent() {
 
       {/* Modal de Criação / Edição */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-slate-950/40 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-150">
-          <div className="relative w-full max-w-lg legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-[90vh] my-auto text-slate-900 dark:text-slate-100 transition-colors animate-in zoom-in-95 duration-150">
+        <Dialog
+          open={modalOpen}
+          onClose={() => setModalOpen(false)}
+          className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center p-3 sm:p-4 bg-slate-950/40 backdrop-blur-sm animate-in fade-in duration-150"
+        >
+          <DialogPanel className="relative w-full max-w-lg legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-full text-slate-900 dark:text-slate-100 transition-colors animate-in zoom-in-95 duration-150">
             <div className="flex items-center justify-between border-b border-slate-200/60 dark:border-white/[0.06] p-5 shrink-0 bg-slate-50/80 dark:bg-surface">
               <div className="flex items-center gap-2.5">
                 <div className="rounded-xl bg-brand/15 text-brand border border-brand/25 p-2">
@@ -1068,19 +1066,20 @@ function PrazosContent() {
                   )}
                 </div>
                 <div>
-                  <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+                  <DialogTitle as="h3" className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
                     {editingPrazo ? 'Editar prazo' : 'Novo prazo'}
-                  </h3>
+                  </DialogTitle>
                   <p className="text-xs text-slate-500 dark:text-slate-400">
                     Defina o vencimento e o processo vinculado
                   </p>
                 </div>
               </div>
               <button
+                data-autofocus
+                aria-label="Fechar formulário de prazo"
                 type="button"
                 onClick={() => setModalOpen(false)}
                 className="rounded-lg p-1.5 text-slate-400 hover:text-slate-600 dark:hover:text-white transition cursor-pointer hover:bg-slate-100 dark:hover:bg-white/[0.04]"
-                aria-label="Fechar modal"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -1092,30 +1091,10 @@ function PrazosContent() {
             >
               <div className="overflow-y-auto p-5 space-y-4 text-xs flex-1">
                 <div>
-                  <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
+                  <label htmlFor="prazo-processo" className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                     Processo Judicial Vinculado *
                   </label>
-                  <select
-                    value={idProcesso}
-                    onChange={(e) => setIdProcesso(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-slate-50/90 dark:bg-surface px-3 py-2 text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden"
-                  >
-                    <option
-                      value=""
-                      className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
-                    >
-                      Selecione o Processo
-                    </option>
-                    {processos.map((p) => (
-                      <option
-                        key={p.id_processo}
-                        value={String(p.id_processo)}
-                        className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
-                      >
-                        {p.numero_processo} — {p.titulo}
-                      </option>
-                    ))}
-                  </select>
+                  <ProcessPicker id="prazo-processo" processes={processos} value={idProcesso} onChange={setIdProcesso} required />
                   {formErrors.idProcesso && (
                     <p className="text-red-500 dark:text-red-400 mt-1">
                       {formErrors.idProcesso}
@@ -1316,8 +1295,8 @@ function PrazosContent() {
                 </button>
               </div>
             </form>
-          </div>
-        </div>
+          </DialogPanel>
+        </Dialog>
       )}
 
       {/* Modal de Exclusão Reutilizável & Acessível */}

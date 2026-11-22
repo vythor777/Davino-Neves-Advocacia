@@ -1,4 +1,5 @@
 'use client';
+import { ClientDocuments } from '@/components/clientes/ClientDocuments';
 import { ClientClassificationFields } from '@/components/clientes/ClientClassificationFields';
 import { ClientProfileFields, ClientProfileDetails, getClientProfileFields } from '@/components/clientes/ClientProfileFields';
 import type { ClienteProfile } from '@/services/clienteService';
@@ -1147,6 +1148,7 @@ function ClientesContent() {
                   representatives={clientes.filter((client) => client.id_cliente !== editingClient?.id_cliente && (client.tipo_pessoa ? client.tipo_pessoa === 'pf' : (client.cpf_cnpj ?? '').replace(/\D/g, '').length === 11))}
                   disabled={intern && !!editingClient}
                 />
+                {editingClient && <ClientDocuments key={editingClient.id_cliente} clientId={editingClient.id_cliente} />}
               </div>
 
               <div className="shrink-0 flex items-center justify-end gap-2.5 border-t border-slate-200/60 p-4 dark:border-white/[0.06] bg-slate-50/80 dark:bg-surface">
@@ -1298,6 +1300,7 @@ function ClientesContent() {
                 <div><dt className="text-slate-500">Subcategoria</dt><dd>{selectedClient.subcategoria || 'Não informada'}</dd></div>
               </dl>
               <ClientProfileDetails client={selectedClient} representatives={clientes} tipoPessoa={tipoPessoaCliente(selectedClient)} />
+              <ClientDocuments key={selectedClient.id_cliente} clientId={selectedClient.id_cliente} />
 
               {/* Trilha de Auditoria do Cliente - Real / Empty State sem dados mockados */}
               <div className="pt-2">

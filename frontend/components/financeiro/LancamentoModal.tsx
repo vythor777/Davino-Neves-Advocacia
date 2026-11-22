@@ -1,5 +1,7 @@
 'use client';
 
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import { ClientPicker, ProcessPicker } from '@/components/ui/EntityPicker';
 import React, { useState } from 'react';
 import {
   X,
@@ -158,11 +160,12 @@ function LancamentoModalForm({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm animate-in fade-in duration-150">
-      <div
-        className="relative w-full max-w-2xl legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <Dialog
+      open
+      onClose={onClose}
+      className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center p-4 bg-slate-950/40 backdrop-blur-sm animate-in fade-in duration-150"
+    >
+      <DialogPanel className="relative w-full max-w-2xl legal-modal-card fio-de-luz shadow-2xl overflow-hidden flex flex-col max-h-full">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200/60 dark:border-white/[0.06]">
           <div className="flex items-center gap-3">
@@ -176,15 +179,17 @@ function LancamentoModalForm({
               <DollarSign className="h-5 w-5" />
             </div>
             <div>
-              <h3 className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+              <DialogTitle as="h3" className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
                 {initialData ? 'Editar Lançamento Financeiro' : 'Novo Lançamento Financeiro'}
-              </h3>
+              </DialogTitle>
               <p className="text-xs text-slate-500 dark:text-slate-400">
                 Controle de receitas, honorários, despesas operacionais e custas
               </p>
             </div>
           </div>
           <button
+            data-autofocus
+            aria-label="Fechar formulário financeiro"
             type="button"
             onClick={onClose}
             className="rounded-lg p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-white/[0.06] transition cursor-pointer"
@@ -194,7 +199,7 @@ function LancamentoModalForm({
         </div>
 
         {/* Form Body */}
-        <form id="lancamento-form" onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-4">
+        <form id="lancamento-form" onSubmit={handleSubmit} className="min-h-0 flex-1 overflow-y-auto overscroll-contain p-6 space-y-4">
           {errorMessage && (
             <div className="rounded-xl border border-rose-200 dark:border-rose-900/60 bg-rose-50 dark:bg-rose-950/30 p-3 text-xs text-rose-700 dark:text-rose-300 flex items-center gap-2">
               <AlertCircle className="h-4 w-4 shrink-0" />
@@ -376,39 +381,19 @@ function LancamentoModalForm({
           {/* Vínculo com Cliente & Processo (Opcionais) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-200/60 dark:border-white/[0.06]">
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label htmlFor="lancamento-cliente" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 Vincular ao Cliente (Opcional)
               </label>
-              <select
-                value={clienteId}
-                onChange={(e) => setClienteId(e.target.value)}
-                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden transition"
-              >
-                <option value="" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Nenhum cliente específico</option>
-                {clientes.map((c) => (
-                  <option key={c.id_cliente} value={c.id_cliente} className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">
-                    {c.nome} ({c.cpf_cnpj})
-                  </option>
-                ))}
-              </select>
+              <ClientPicker id="lancamento-cliente" clients={clientes} value={clienteId}
+                onChange={setClienteId} emptyLabel="Nenhum cliente específico" />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label htmlFor="lancamento-processo" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 Vincular ao Processo (Opcional)
               </label>
-              <select
-                value={processoId}
-                onChange={(e) => setProcessoId(e.target.value)}
-                className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface px-3 py-2.5 text-xs text-slate-900 dark:text-slate-100 focus:border-brand focus:outline-hidden transition"
-              >
-                <option value="" className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">Nenhum processo específico</option>
-                {processos.map((p) => (
-                  <option key={p.id_processo} value={p.id_processo} className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">
-                    {p.numero_processo} - {p.titulo.slice(0, 30)}...
-                  </option>
-                ))}
-              </select>
+              <ProcessPicker id="lancamento-processo" processes={processos} value={processoId}
+                onChange={setProcessoId} emptyLabel="Nenhum processo específico" />
             </div>
           </div>
 
@@ -452,7 +437,7 @@ function LancamentoModalForm({
             )}
           </button>
         </div>
-      </div>
-    </div>
+      </DialogPanel>
+    </Dialog>
   );
 }

@@ -8,7 +8,14 @@ import { UploadDocumentoDto, BackupDocumentosDto, ArquivarDocumentoDto } from '.
 @Controller('documentos')
 export class DocumentosController {
   constructor(private readonly service: DocumentosService) {}
-  @Get() list(@CurrentUser() user: Actor, @Query('id_processo', new ParseIntPipe({ optional: true })) id?: number) { return this.service.findAll(user, id); }
+  @Get()
+  list(
+    @CurrentUser() user: Actor,
+    @Query('id_processo', new ParseIntPipe({ optional: true })) processId?: number,
+    @Query('id_cliente', new ParseIntPipe({ optional: true })) clientId?: number,
+  ) {
+    return this.service.findAll(user, processId, clientId);
+  }
   @Get('uso') usage(@CurrentUser() user: Actor) { return this.service.usage(user); }
   @Post() @Roles('ADMINISTRADOR', 'ADVOGADO') @UseInterceptors(FileInterceptor('arquivo', { limits: { fileSize: 5_000_000, files: 1 } }))
   upload(@CurrentUser() user: Actor, @Body() dto: UploadDocumentoDto, @UploadedFile() file?: { originalname: string; buffer: Buffer }) {

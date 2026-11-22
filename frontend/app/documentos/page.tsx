@@ -1,4 +1,7 @@
 'use client';
+import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
+import { PdfUpload } from '@/components/PdfUpload';
+import { ClientPicker, ProcessPicker } from '@/components/ui/EntityPicker';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { documentLink } from '@/utils/document-link';
@@ -18,7 +21,6 @@ export default function DocumentosPage() {
 function DocumentosContent() {
   const { admin, canManageDeadline } = usePermissions();
   const { documents, usage, loading, error, reload, run } = useDocuments();
-  const [file, setFile] = useState<File | null>(null);
   const [processes, setProcesses] = useState<Processo[]>([]);
   const [clients, setClients] = useState<Cliente[]>([]);
   const [processId, setProcessId] = useState(''); const [clientId, setClientId] = useState('');
@@ -35,13 +37,22 @@ function DocumentosContent() {
     </section>}
     {(admin || canManageDeadline) && <section className="space-y-3 min-w-0 rounded-xl border border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-700 p-4">
       <h2 className="font-semibold">Enviar documento</h2>
-      <label className="block space-y-2 text-sm font-medium">Processo <select aria-label="Processo" value={processId} onChange={e => { setProcessId(e.target.value); setClientId(''); }} className="block w-full min-w-0 rounded-lg border border-slate-200 p-2.5 bg-white dark:bg-slate-900 dark:border-slate-700 focus-visible:ring-2 focus-visible:ring-blue-700"><option value="">Sem processo</option>{processes.map(p => <option key={p.id_processo} value={p.id_processo}>{p.titulo}</option>)}</select></label>
-      {!processId && <label className="block space-y-2 text-sm font-medium">Cliente <select aria-label="Cliente" value={clientId} onChange={e => setClientId(e.target.value)} className="block w-full min-w-0 rounded-lg border border-slate-200 p-2.5 bg-white dark:bg-slate-900 dark:border-slate-700 focus-visible:ring-2 focus-visible:ring-blue-700"><option value="">Documento geral do escritório (administrador)</option>{clients.map(c => <option key={c.id_cliente} value={c.id_cliente}>{c.nome}</option>)}</select></label>}
-      <label className="block">PDF <input type="file" accept="application/pdf,.pdf" disabled={busy} onChange={e => { const next = e.target.files?.[0] || null; if (next && next.size > 20e6) { toast.warning('Para otimização, o arquivo deve ter até 20 MB.'); setFile(null); return; } setFile(next); }} className="block mt-2 w-full min-w-0 text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-blue-50 file:px-3 file:py-2 file:text-blue-800 dark:file:bg-slate-800 dark:file:text-slate-200" /></label>
-      {file && <p className="break-all text-sm">{file.name} - {(file.size / 1e6).toFixed(2)} MB {file.size > 5e6 && '(Acima do limite: otimize antes de enviar)'}</p>}
-      <div className="flex flex-wrap gap-2"><button className={button} disabled={busy || !file || file.size > 5e6 || (!admin && !processId && !clientId)} onClick={() => action(async () => { if (!file) return; await documentoService.upload(file, Number(processId) || undefined, Number(clientId) || undefined); setFile(null); toast.success('Documento armazenado.'); await reload(); })}>Enviar PDF</button>
-        <button className={button} disabled={busy || !file} onClick={() => action(async () => { if (!file) return; const blob = await documentoService.compress(file); setFile(new File([blob], file.name, { type: 'application/pdf' })); toast.success('PDF otimizado. Confira o arquivo antes de enviar.'); saveDocumentBlob(blob, 'otimizado-' + file.name); })}>Otimizar PDF sem perda</button></div>
-      <p className="text-sm text-slate-500">A otimização não garante redução a 5 MB. PDFs assinados não são alterados. Se continuar grande, divida o arquivo ou reduza as imagens.</p>
+      <div className="space-y-2 text-sm">
+        <label htmlFor="documento-processo" className="font-medium">Processo</label>
+        <ProcessPicker id="documento-processo" value={processId} processes={processes} emptyLabel="Sem processo"
+          onChange={(id) => { setProcessId(id); setClientId(''); }} />
+      </div>
+      {!processId && <div className="space-y-2 text-sm">
+        <label htmlFor="documento-cliente" className="font-medium">Cliente</label>
+        <ClientPicker id="documento-cliente" value={clientId} clients={clients} onChange={setClientId}
+          emptyLabel={admin ? 'Documento geral do escritório (administrador)' : undefined} />
+      </div>}
+      <PdfUpload
+        processId={Number(processId) || undefined}
+        clientId={Number(clientId) || undefined}
+        disabled={!admin && !processId && !clientId}
+        onUploaded={reload}
+      />
     </section>}
     {error && <div role="alert">{error} <button className={button} onClick={() => void reload()}>Tentar novamente</button></div>}
     {admin && <button className={button} disabled={busy || !selected.length} onClick={() => action(async () => { saveDocumentBlob(await documentoService.backup(selected), 'Davino-Neves-backup-documentos.zip'); toast.success('Backup baixado. Abra o ZIP e confira os PDFs e o manifesto antes de arquivar.'); })}>Baixar backup selecionado ({selected.length}/8)</button>}
@@ -50,10 +61,35 @@ function DocumentosContent() {
       <div className="min-w-0 flex-1"><p className="break-all font-medium">{d.nome_arquivo}</p><p className="text-sm">{(d.tamanho_bytes / 1e6).toFixed(2)} MB · {d.situacao} · {new Date(d.data_upload).toLocaleDateString('pt-BR')}</p><p className="text-sm">{documentLink(d, processes, clients).href ? <Link className="text-blue-700 underline hover:text-blue-900 focus-visible:ring-2 active:opacity-80 dark:text-blue-300" href={documentLink(d, processes, clients).href!}>{documentLink(d, processes, clients).label}</Link> : documentLink(d, processes, clients).label}</p></div></div>
       {d.situacao === 'DISPONIVEL' && <div className="flex flex-wrap gap-2"><button className={button} disabled={busy} onClick={() => action(async () => saveDocumentBlob(await documentoService.download(d.id_documento), d.nome_arquivo))}>Baixar PDF</button>{admin && <button className={button} disabled={busy} onClick={() => { setArchiveTarget(d); setConfirmed(false); }}>Arquivar após backup</button>}</div>}
     </li>)}{!documents.length && <li>Nenhum documento cadastrado.</li>}</ul>}
-    {archiveTarget && <section role="dialog" aria-modal="true" aria-label="Conferir backup antes de arquivar" className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4"><div className="max-w-lg rounded-xl bg-white dark:bg-slate-900 p-6 space-y-4">
-      <h2 className="font-semibold">Arquivar {archiveTarget.nome_arquivo}</h2><p>O PDF será removido da nuvem. O histórico e a identificação serão preservados. Abra o backup local e confira a integridade pelo SHA-256 do manifesto.</p><p className="break-all text-xs">SHA-256: {archiveTarget.sha256}</p>
-      <label className="flex gap-2"><input type="checkbox" checked={confirmed} onChange={e => setConfirmed(e.target.checked)} />Baixei, abri e conferi o backup local deste documento.</label>
-      <button className={button} onClick={() => setArchiveTarget(null)}>Cancelar</button> <button className={button} disabled={busy || !confirmed || !archiveTarget.sha256} onClick={() => action(async () => { await documentoService.archive(archiveTarget.id_documento, archiveTarget.sha256!); setArchiveTarget(null); setSelected([]); toast.success('Documento arquivado; histórico preservado.'); await reload(); })}>Confirmar arquivamento</button>
-    </div></section>}
+    {archiveTarget && (
+      <Dialog open onClose={() => setArchiveTarget(null)} className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center bg-slate-950/60 p-4">
+        <DialogPanel className="max-h-full w-full max-w-lg space-y-4 overflow-y-auto overscroll-contain rounded-xl bg-white p-6 dark:bg-slate-900">
+          <DialogTitle as="h2" className="break-words font-semibold">Arquivar {archiveTarget.nome_arquivo}</DialogTitle>
+          <p>O PDF será removido da nuvem. O histórico e a identificação serão preservados. Abra o backup local e confira a integridade pelo SHA-256 do manifesto.</p>
+          <p className="break-all text-xs">SHA-256: {archiveTarget.sha256}</p>
+          <label className="flex gap-2">
+            <input type="checkbox" checked={confirmed} onChange={e => setConfirmed(e.target.checked)} />
+            Baixei, abri e conferi o backup local deste documento.
+          </label>
+          <div className="flex flex-wrap gap-2">
+            <button type="button" data-autofocus className={button} onClick={() => setArchiveTarget(null)}>Cancelar</button>
+            <button
+              type="button"
+              className={button}
+              disabled={busy || !confirmed || !archiveTarget.sha256}
+              onClick={() => action(async () => {
+                await documentoService.archive(archiveTarget.id_documento, archiveTarget.sha256!);
+                setArchiveTarget(null);
+                setSelected([]);
+                toast.success('Documento arquivado; histórico preservado.');
+                await reload();
+              })}
+            >
+              Confirmar arquivamento
+            </button>
+          </div>
+        </DialogPanel>
+      </Dialog>
+    )}
   </main>;
 }

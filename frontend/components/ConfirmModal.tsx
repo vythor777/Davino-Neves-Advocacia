@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
+import { Description, Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { AlertTriangle, Info, X } from 'lucide-react';
 
 export type ConfirmVariant = 'danger' | 'warning' | 'info';
@@ -28,17 +29,6 @@ export function ConfirmModal({
   variant = 'danger',
   isLoading = false,
 }: ConfirmModalProps) {
-  // Fechar com a tecla Escape
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isOpen && !isLoading) {
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, isLoading, onClose]);
-
   if (!isOpen) return null;
 
   const variantStyles = {
@@ -63,17 +53,12 @@ export function ConfirmModal({
   const IconComponent = currentVariant.icon;
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="confirm-modal-title"
-      aria-describedby="confirm-modal-description"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-fade-in-up"
+    <Dialog
+      open={isOpen}
+      onClose={() => { if (!isLoading) onClose(); }}
+      className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center p-4 bg-slate-950/80 backdrop-blur-md"
     >
-      <div
-        className="legal-modal-card fio-de-luz w-full max-w-md p-6 shadow-2xl transition-all transform animate-in fade-in zoom-in-95 duration-150"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <DialogPanel className="legal-modal-card fio-de-luz w-full max-w-md max-h-full overflow-y-auto overscroll-contain p-6 shadow-2xl transition-all animate-fade-in-up">
         <div className="flex items-start gap-3.5">
           <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl ${currentVariant.iconBg}`}>
             <IconComponent className="h-4 w-4" />
@@ -81,9 +66,9 @@ export function ConfirmModal({
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between">
-              <h3 id="confirm-modal-title" className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+              <DialogTitle as="h3" className="text-base font-semibold tracking-tight text-slate-900 dark:text-slate-100">
                 {title}
-              </h3>
+              </DialogTitle>
               <button
                 type="button"
                 onClick={onClose}
@@ -95,15 +80,16 @@ export function ConfirmModal({
               </button>
             </div>
 
-            <p id="confirm-modal-description" className="mt-2 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
+            <Description className="mt-2 text-xs leading-relaxed text-slate-600 dark:text-slate-400">
               {description}
-            </p>
+            </Description>
           </div>
         </div>
 
-        <div className="mt-6 flex items-center justify-end gap-2.5 pt-4 border-t border-slate-200/60 dark:border-white/[0.06]">
+        <div className="mt-6 flex flex-wrap items-center justify-end gap-2.5 pt-4 border-t border-slate-200/60 dark:border-white/[0.06]">
           <button
             type="button"
+            data-autofocus
             onClick={onClose}
             disabled={isLoading}
             className="rounded-xl border border-slate-200/80 bg-white/60 px-4 py-2 text-xs font-medium text-slate-700 hover:bg-slate-100 dark:border-white/[0.08] dark:bg-white/[0.03] dark:text-slate-300 dark:hover:bg-white/[0.06] transition-colors cursor-pointer disabled:opacity-50"
@@ -123,8 +109,8 @@ export function ConfirmModal({
             <span>{confirmLabel}</span>
           </button>
         </div>
-      </div>
-    </div>
+      </DialogPanel>
+    </Dialog>
   );
 }
 
