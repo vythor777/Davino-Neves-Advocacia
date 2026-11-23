@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
 import { createHash, randomUUID } from 'node:crypto';
 import JSZip from 'jszip';
 import type { Prisma } from '@prisma/client';
@@ -9,7 +9,7 @@ import { inspectPdf, PDF_LIMIT, OFFICE_STORAGE_LIMIT } from './pdf-validation.js
 import type { UploadDocumentoDto, ArquivarDocumentoDto } from './dto/upload-documento.dto.js';
 export const documentMetadata = {
   id_documento: true, nome_arquivo: true, tipo: true, tamanho_bytes: true, sha256: true, situacao: true, arquivado_em: true,
-  data_upload: true, id_processo: true, id_cliente: true, id_usuario: true,
+  data_upload: true, id_processo: true, id_cliente: true, id_usuario: true, acesso_restrito: true,
 } as const;
 @Injectable()
 export class DocumentosService {
@@ -19,9 +19,9 @@ export class DocumentosService {
     const scope = this.access.processScope(user);
     if (user.role === 'ESTAGIARIO') {
       // O cadastro de clientes é compartilhado. Documentos dos autos seguem o acesso do processo.
-      return { OR: [{ id_processo: null }, { processo: scope }] };
+      return { acesso_restrito: false, OR: [{ id_processo: null }, { processo: scope }] };
     }
-    return { OR: [
+    return { acesso_restrito: false, OR: [
       { processo: scope },
       { id_processo: null, id_cliente: { not: null }, id_usuario: user.id_usuario },
       { id_processo: null, cliente: { processos: { some: scope } } },
@@ -103,9 +103,33 @@ export class DocumentosService {
     if (!dto.backup_conferido || !metadata.sha256 || dto.sha256 !== metadata.sha256) throw new BadRequestException('Baixe e confira o backup antes de arquivar.');
     if (metadata.situacao === 'ARQUIVADO') return metadata;
     const record = await this.prisma.documento.findUniqueOrThrow({ where: { id_documento: id } });
-    await this.prisma.documento.update({ where: { id_documento: id }, data: { situacao: 'ARQUIVANDO' } });
+    const claimed = await this.prisma.documento.updateMany({
+      where: { id_documento: id, situacao: 'DISPONIVEL' },
+      data: { situacao: 'ARQUIVANDO' },
+    });
+    if (!claimed.count) throw new ConflictException('O documento está sendo alterado. Atualize a lista e tente novamente.');
     try { await this.storage.remove(record.caminho_arquivo); }
     catch (error) { await this.prisma.documento.update({ where: { id_documento: id }, data: { situacao: record.situacao } }); throw error; }
     return this.prisma.documento.update({ where: { id_documento: id }, data: { situacao: 'ARQUIVADO', arquivado_em: new Date() }, select: documentMetadata });
+  }
+
+  async remove(id: number, user: Actor) {
+    this.access.requireRole(user, 'ADMINISTRADOR');
+    const where = { id_documento: id };
+    const document = await this.prisma.documento.findUnique({ where });
+    if (!document) throw new NotFoundException('Documento não encontrado.');
+    if (document.situacao === 'DISPONIVEL' || document.situacao === 'ARQUIVADO') {
+      const claimed = await this.prisma.documento.updateMany({
+        where: { ...where, situacao: document.situacao },
+        data: { situacao: 'EXCLUINDO' },
+      });
+      if (!claimed.count) throw new ConflictException('O documento está sendo alterado. Atualize a lista e tente novamente.');
+    } else if (document.situacao !== 'EXCLUINDO') {
+      throw new ConflictException('Aguarde a operação atual do documento antes de excluir.');
+    }
+    if (document.situacao !== 'ARQUIVADO') await this.storage.remove(document.caminho_arquivo);
+    const deleted = await this.prisma.documento.deleteMany({ where: { ...where, situacao: 'EXCLUINDO' } });
+    if (!deleted.count) throw new NotFoundException('Documento já excluído.');
+    return { id_documento: id, nome_arquivo: document.nome_arquivo };
   }
 }

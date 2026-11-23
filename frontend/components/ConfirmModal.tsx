@@ -16,6 +16,8 @@ interface ConfirmModalProps {
   cancelLabel?: string;
   variant?: ConfirmVariant;
   isLoading?: boolean;
+  confirmDisabled?: boolean;
+  children?: React.ReactNode;
 }
 
 export function ConfirmModal({
@@ -28,6 +30,8 @@ export function ConfirmModal({
   cancelLabel = 'Cancelar',
   variant = 'danger',
   isLoading = false,
+  confirmDisabled = false,
+  children,
 }: ConfirmModalProps) {
   if (!isOpen) return null;
 
@@ -86,6 +90,7 @@ export function ConfirmModal({
           </div>
         </div>
 
+        {children}
         <div className="mt-6 flex flex-wrap items-center justify-end gap-2.5 pt-4 border-t border-slate-200/60 dark:border-white/[0.06]">
           <button
             type="button"
@@ -100,7 +105,7 @@ export function ConfirmModal({
           <button
             type="button"
             onClick={onConfirm}
-            disabled={isLoading}
+            disabled={isLoading || confirmDisabled}
             className={`inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-xs font-semibold shadow-xs transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50 ${currentVariant.button}`}
           >
             {isLoading && (

@@ -1,6 +1,7 @@
 'use client';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
 import { PdfUpload } from '@/components/PdfUpload';
+import { ConfirmModal } from '@/components/ConfirmModal';
 import { ClientPicker, ProcessPicker } from '@/components/ui/EntityPicker';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
@@ -28,6 +29,7 @@ function DocumentosContent() {
   const [clientFilter, setClientFilter] = useState('');
   const [selected, setSelected] = useState<number[]>([]); const [busy, setBusy] = useState(false);
   const [archiveTarget, setArchiveTarget] = useState<Documento | null>(null); const [confirmed, setConfirmed] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<Documento | null>(null);
   useEffect(() => { void Promise.all([processoService.getAll(), clienteService.getAll()]).then(([p, c]) => { setProcesses(p); setClients(c); }).catch(() => toast.error('Não foi possível carregar os vínculos.')); }, []);
   const processClients = useMemo(() => new Map(processes.map(process => [process.id_processo, process.id_cliente])), [processes]);
   const hasFilter = !!(processFilter || clientFilter);
@@ -85,7 +87,16 @@ function DocumentosContent() {
     {loading ? <div aria-label="Carregando documentos" className="animate-pulse space-y-3">{[1,2,3].map(i => <div key={i} className="h-12 rounded bg-slate-200 dark:bg-slate-800" />)}</div> : <ul className="space-y-3">{visibleDocuments.map(d => <li key={d.id_documento} className="flex min-w-0 flex-col gap-4 rounded-xl border border-slate-200 bg-white dark:bg-slate-900 dark:border-slate-700 p-4">
       <div className="flex w-full min-w-0 items-start gap-3">{admin && d.situacao === 'DISPONIVEL' && <input type="checkbox" aria-label={'Selecionar ' + d.nome_arquivo} checked={selected.includes(d.id_documento)} onChange={e => { if (e.target.checked && selected.length >= 8) { toast.warning('Selecione até 8 PDFs por lote de backup.'); return; } setSelected(e.target.checked ? [...selected, d.id_documento] : selected.filter(id => id !== d.id_documento)); }} />}
       <div className="min-w-0 flex-1"><p className="break-all font-medium">{d.nome_arquivo}</p><p className="text-sm">{(d.tamanho_bytes / 1e6).toFixed(2)} MB · {d.situacao} · {new Date(d.data_upload).toLocaleDateString('pt-BR')}</p><p className="text-sm">{documentLink(d, processes, clients).href ? <Link className="text-blue-700 underline hover:text-blue-900 focus-visible:ring-2 active:opacity-80 dark:text-blue-300" href={documentLink(d, processes, clients).href!}>{documentLink(d, processes, clients).label}</Link> : documentLink(d, processes, clients).label}</p></div></div>
-      {d.situacao === 'DISPONIVEL' && <div className="flex flex-wrap gap-2"><button className={button} disabled={busy} onClick={() => action(async () => saveDocumentBlob(await documentoService.download(d.id_documento), d.nome_arquivo))}>Baixar PDF</button>{admin && <button className={button} disabled={busy} onClick={() => { setArchiveTarget(d); setConfirmed(false); }}>Arquivar após backup</button>}</div>}
+      <div className="flex flex-wrap gap-2">
+        {d.situacao === 'DISPONIVEL' && <>
+          <button type="button" className={button} disabled={busy} onClick={() => action(async () => saveDocumentBlob(await documentoService.download(d.id_documento), d.nome_arquivo))}>Baixar PDF</button>
+          {admin && <button type="button" className={button} disabled={busy} onClick={() => { setArchiveTarget(d); setConfirmed(false); }}>Arquivar após backup</button>}
+        </>}
+        {admin && ['DISPONIVEL', 'ARQUIVADO', 'EXCLUINDO'].includes(d.situacao) && (
+          <button type="button" className={`${button} text-rose-700 dark:text-rose-400`} disabled={busy}
+            onClick={() => setDeleteTarget(d)} aria-label={`Excluir ${d.nome_arquivo}`}>Excluir</button>
+        )}
+      </div>
     </li>)}{!visibleDocuments.length && <li>{hasFilter ? 'Nenhum documento corresponde aos filtros.' : 'Nenhum documento cadastrado.'}</li>}</ul>}
     {archiveTarget && (
       <Dialog open onClose={() => setArchiveTarget(null)} className="fixed inset-0 z-50 grid grid-rows-[minmax(0,1fr)] place-items-center bg-slate-950/60 p-4">
@@ -117,5 +128,24 @@ function DocumentosContent() {
         </DialogPanel>
       </Dialog>
     )}
+    <ConfirmModal
+      isOpen={!!deleteTarget}
+      isLoading={busy}
+      onClose={() => setDeleteTarget(null)}
+      title="Excluir documento"
+      description={`A exclusão de “${deleteTarget?.nome_arquivo ?? ''}” é definitiva. O PDF será removido do armazenamento e a ficha do documento será excluída.`}
+      confirmLabel="Excluir definitivamente"
+      onConfirm={() => {
+        if (!deleteTarget) return;
+        const id = deleteTarget.id_documento;
+        action(async () => {
+          await documentoService.delete(id);
+          setDeleteTarget(null);
+          setSelected(prev => prev.filter(selectedId => selectedId !== id));
+          toast.success('Documento excluído.');
+          await reload();
+        });
+      }}
+    />
   </main>;
 }

@@ -6,5 +6,5 @@ export function documentLink(document: Documento, processes: Processo[], clients
   if (process) return { label: `${process.numero_processo} · ${process.titulo}`, href: `/processos?q=${encodeURIComponent(process.numero_processo)}` };
   const client = clients.find(c => c.id_cliente === document.id_cliente);
   if (client) return { label: client.nome, href: `/clientes?q=${encodeURIComponent(client.nome)}` };
-  return { label: document.id_processo ? `Processo #${document.id_processo} (vínculo indisponível)` : document.id_cliente ? `Cliente #${document.id_cliente} (vínculo indisponível)` : 'Escritório', href: null };
+  return { label: document.id_processo ? `Processo #${document.id_processo} (vínculo indisponível)` : document.id_cliente ? `Cliente #${document.id_cliente} (vínculo indisponível)` : document.acesso_restrito ? 'Sem vínculo · acesso administrativo' : 'Escritório', href: null };
 }

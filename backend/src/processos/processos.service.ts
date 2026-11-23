@@ -83,8 +83,16 @@ export class ProcessosService {
 
   async remove(id: number, user: Actor) {
     this.access.requireRole(user, 'ADMINISTRADOR');
-    await this.access.process(user, id);
-    try { return await this.prisma.processo.delete({ where: { id_processo: id } }); }
+    const where = { id_processo: id };
+    try {
+      return await this.prisma.$transaction(async tx => {
+        const process = await tx.processo.findUniqueOrThrow({ where, select: { id_cliente: true } });
+        await tx.documento.updateMany({ where: { ...where, id_cliente: null }, data: { id_cliente: process.id_cliente } });
+        await tx.documento.updateMany({ where, data: { id_processo: null, acesso_restrito: true } });
+        await tx.prazo.deleteMany({ where });
+        return tx.processo.delete({ where });
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
+    }
     catch (error) { this.rethrow(error); }
   }
 
@@ -109,6 +117,7 @@ export class ProcessosService {
       if (error.code === 'P2002') throw new ConflictException('Já existe um processo com este número.');
       if (error.code === 'P2003') throw new ConflictException('Verifique o cliente informado e os registros vinculados ao processo.');
       if (error.code === 'P2025') throw new NotFoundException('Processo não encontrado.');
+      if (error.code === 'P2034') throw new ConflictException('Os vínculos do processo mudaram. Atualize a lista e tente novamente.');
     }
     throw error;
   }

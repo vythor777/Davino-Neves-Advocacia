@@ -10,6 +10,8 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  ParseBoolPipe,
+  Query,
   HttpCode,
   HttpStatus,
 } from '@nestjs/common';
@@ -49,7 +51,8 @@ export class ClientesController {
   @Roles('ADMINISTRADOR')
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  remove(@CurrentUser() user: Actor, @Param('id', ParseIntPipe) id: number) {
-    return this.clientesService.remove(id, user);
+  remove(@CurrentUser() user: Actor, @Param('id', ParseIntPipe) id: number,
+    @Query('confirmar_vinculos', new ParseBoolPipe({ optional: true })) confirmed?: boolean) {
+    return this.clientesService.remove(id, user, confirmed);
   }
 }

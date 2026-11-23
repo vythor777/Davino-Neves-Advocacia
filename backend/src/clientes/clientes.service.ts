@@ -183,27 +183,34 @@ export class ClientesService {
     }
   }
 
-  async remove(id: number, user: Actor) {
+  async remove(id: number, user: Actor, confirmed = false) {
     this.access.requireRole(user, 'ADMINISTRADOR');
-    // Garante que o cliente existe antes de remover
-    await this.findOne(id, user);
-
     try {
-      return await this.prisma.cliente.delete({
-        where: { id_cliente: id },
-      });
+      return await this.prisma.$transaction(async tx => {
+        const processes = { id_cliente: id };
+        const documents = { OR: [{ id_cliente: id }, { processo: processes }] };
+        if (!confirmed) {
+          const [processCount, documentCount] = await Promise.all([
+            tx.processo.count({ where: processes }),
+            tx.documento.count({ where: documents }),
+          ]);
+          if (processCount || documentCount) {
+            throw new ConflictException('Confirme a exclusão do cliente e de seus vínculos.');
+          }
+        }
+        await tx.documento.updateMany({ where: documents, data: { id_cliente: null, id_processo: null, acesso_restrito: true } });
+        await tx.prazo.deleteMany({ where: { processo: processes } });
+        await tx.processo.deleteMany({ where: processes });
+        return tx.cliente.delete({ where: { id_cliente: id } });
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
     } catch (error) {
-      if (
-        error instanceof Prisma.PrismaClientKnownRequestError &&
-        error.code === 'P2003'
-      ) {
-        throw new ConflictException(
-          'Não é possível remover o cliente pois ele possui processos vinculados.',
-        );
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        if (error.code === 'P2025') throw new NotFoundException('Cliente não encontrado.');
+        if (error.code === 'P2003' || error.code === 'P2034') {
+          throw new ConflictException('Os vínculos do cliente mudaram. Atualize a lista e tente novamente.');
+        }
       }
-      throw new InternalServerErrorException(
-        'Erro inesperado ao remover o cliente.',
-      );
+      throw error;
     }
   }
 }

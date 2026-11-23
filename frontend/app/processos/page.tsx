@@ -654,7 +654,7 @@ function ProcessosContent() {
         }}
         onConfirm={handleDeleteProcesso}
         title="Confirmar Exclusão de Processo"
-        description={`Tem certeza que deseja excluir o processo "${processoToDelete?.titulo}" (CNJ: ${processoToDelete ? formatarNumeroCNJ(processoToDelete.numero_processo) : ''})? Esta ação é irreversível e excluirá todos os prazos vinculados a ele.`}
+        description={`A exclusão de "${processoToDelete?.titulo}" é definitiva e também apaga os prazos vinculados. PDFs permanecem na ficha do cliente para administradores. Lançamentos financeiros ficam sem o vínculo ao processo.`}
         confirmLabel="Sim, Excluir Processo"
         cancelLabel="Cancelar"
         variant="danger"

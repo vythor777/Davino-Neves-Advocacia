@@ -72,8 +72,8 @@ export const clienteService = {
     return response.data;
   },
 
-  async delete(id: number): Promise<void> {
-    await api.delete(`/clientes/${id}`);
+  async delete(id: number, confirmLinks = false): Promise<void> {
+    await api.delete(`/clientes/${id}`, { params: { confirmar_vinculos: confirmLinks } });
   },
 };
 
