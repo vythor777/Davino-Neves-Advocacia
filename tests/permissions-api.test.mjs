@@ -207,7 +207,7 @@ const prisma = {
   },
   documento: {
     count: async ({ where }) => db.docs.filter((doc) => matches(doc, where)).length,
-    findUnique: async ({ where }) => db.docs.find((doc) => matches(doc, where)) ?? null,
+    findUnique: async ({ where, select }) => project(db.docs.find((doc) => matches(doc, where)), select),
     updateMany: async ({ where, data }) => {
       const rows = db.docs.filter((doc) => matches(doc, where));
       for (const row of rows) Object.assign(row, data);
@@ -238,6 +238,10 @@ const prisma = {
   agenda: { findMany: async () => [], findFirst: async () => null },
   lancamentoFinanceiro: { findMany: async () => [] },
   auditLog: {
+    createMany: async ({ data }) => {
+      db.logs.push(...data);
+      return { count: data.length };
+    },
     create: async ({ data }) => {
       db.logs.push(data);
       return data;
@@ -508,6 +512,32 @@ test('somente administrador exclui cada documento e o arquivo correspondente', a
   assert.deepEqual(db.removedFiles, ['private/arquivo.txt']);
   assert.deepEqual(db.docs.map((d) => d.id_documento), [402]);
   await api.delete('/api/documentos/401').set(auth(1)).expect(404);
+});
+test('exclusão em lote valida permissões e registra cada documento excluído', async () => {
+  const url = '/api/documentos';
+  const ids = [401, 402, 404, 999];
+  db.docs.push({ id_documento: 404, situacao: 'ARQUIVADO', nome_arquivo: 'arquivado.pdf', caminho_arquivo: 'private/arquivado.pdf' });
+  await api.delete(url).set(auth(2)).send({ ids }).expect(403);
+  await api.delete(url).set(auth(5)).send({ ids }).expect(403);
+  for (const invalidIds of [[], [401, 401], Array.from({ length: 9 }, (_, index) => 401 + index)]) {
+    await api.delete(url).set(auth(1)).send({ ids: invalidIds }).expect(400);
+  }
+  assert.equal(db.docs.length, 3);
+  db.storageFailurePath = 'private/secreto.txt';
+  const result = await api.delete(url).set(auth(1)).send({ ids }).expect(200);
+  assert.deepEqual(result.body.excluidos.map(doc => doc.id_documento), [401, 404]);
+  assert.deepEqual(result.body.ausentes, [999]);
+  assert.equal(result.body.falhas[0].id_documento, 402);
+  assert.equal(db.docs[0].situacao, 'EXCLUINDO');
+  assert.deepEqual(db.removedFiles, ['private/arquivo.txt']);
+  assert.deepEqual(db.logs.map(log => [log.registro, log.acao, log.id_usuario]), [['401', 'EXCLUSAO', 1], ['404', 'EXCLUSAO', 1]]);
+
+  db.storageFailurePath = undefined;
+  const retry = await api.delete(url).set(auth(1)).send({ ids }).expect(200);
+  assert.deepEqual(retry.body.excluidos.map(doc => doc.id_documento), [402]);
+  assert.deepEqual(retry.body.ausentes, [401, 404, 999]);
+  assert.deepEqual(retry.body.falhas, []);
+  assert.equal(db.docs.length, 0);
 });
 test('criação bloqueada ao estagiário; autoria é atribuída no servidor, não no payload', async () => {
   await api.post('/api/processos').set(auth(5)).send(processInput).expect(403);

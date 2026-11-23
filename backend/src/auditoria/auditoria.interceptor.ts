@@ -59,6 +59,19 @@ export class AuditoriaInterceptor implements NestInterceptor {
     }
     return next.handle().pipe(
       concatMap(async (result) => {
+        if (entity === 'documentos' && req.method === 'DELETE' && req.path.replace(/\/$/, '').endsWith('/documentos')) {
+          const entries = result.excluidos.map((doc: { id_documento: number; nome_arquivo: string }) => ({
+            id_usuario: user.id_usuario,
+            usuario: user.nome,
+            cargo: user.role,
+            acao: 'EXCLUSAO',
+            entidade: entity,
+            registro: String(doc.id_documento),
+            descricao: `Excluiu o documento “${doc.nome_arquivo}”.`,
+          }));
+          if (entries.length) await this.prisma.auditLog.createMany({ data: entries });
+          return result;
+        }
         const action =
           req.method === 'DELETE'
             ? 'EXCLUSAO'
