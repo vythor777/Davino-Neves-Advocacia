@@ -19,6 +19,22 @@ import {
 import { Cliente } from '@/services/clienteService';
 import { Processo } from '@/services/processoService';
 
+const formatAmount = new Intl.NumberFormat('pt-BR', {
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+function maskAmount(value: string) {
+  const [whole, fraction] = value.replace(/[^\d,]/g, '').split(',', 2);
+  const grouped = (whole || '0').replace(/^0+(?=\d)/, '').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  if (fraction !== undefined) return `${grouped},${fraction.slice(0, 2)}`;
+  return whole ? grouped : '';
+}
+
+function parseAmount(value: string) {
+  return Number(value.replace(/\./g, '').replace(',', '.'));
+}
+
 interface LancamentoModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -74,7 +90,9 @@ function LancamentoModalForm({
       ? 'HONORARIO_CONTRATUAL'
       : 'CUSTAS_PROCESSUAIS',
   );
-  const [valor, setValor] = useState(initialData ? String(initialData.valor) : '');
+  const [valor, setValor] = useState(() =>
+    initialData ? formatAmount.format(Number(initialData.valor)) : '',
+  );
   const [dataVencimento, setDataVencimento] = useState(
     initialData ? initialData.dataVencimento.split('T')[0] : hoje,
   );
@@ -120,9 +138,14 @@ function LancamentoModalForm({
       return;
     }
 
-    const valorNum = parseFloat(valor.replace(',', '.'));
-    if (isNaN(valorNum) || valorNum <= 0) {
+    const valorNum = parseAmount(valor);
+    if (!Number.isFinite(valorNum) || valorNum <= 0) {
       setErrorMessage('Informe um valor válido e positivo.');
+      return;
+    }
+
+    if (valorNum > 9_999_999_999.99) {
+      setErrorMessage('Informe um valor de até R$ 9.999.999.999,99.');
       return;
     }
 
@@ -285,7 +308,7 @@ function LancamentoModalForm({
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+              <label htmlFor="lancamento-valor" className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
                 Valor (R$) *
               </label>
               <div className="relative">
@@ -293,12 +316,42 @@ function LancamentoModalForm({
                   R$
                 </span>
                 <input
-                  type="number"
-                  step="0.01"
-                  min="0.01"
+                  id="lancamento-valor"
+                  type="text"
+                  inputMode="decimal"
                   required
                   value={valor}
-                  onChange={(e) => setValor(e.target.value)}
+                  onChange={(event) => {
+                    const input = event.currentTarget;
+                    const raw = input.value;
+                    if (/[-−]/.test(raw)) return;
+                    const masked = maskAmount(raw);
+                    const right = raw.slice(input.selectionStart ?? raw.length).replace(/[^\d,]/g, '').length;
+                    setValor(masked);
+                    if (right === 0 || raw === masked) return;
+                    // Keep the caret relative to the digits instead of the inserted separators.
+                    let caret = masked.length;
+                    let remaining = right;
+                    while (caret > 0 && remaining > 0) {
+                      if (masked[--caret] !== '.') remaining--;
+                    }
+                    requestAnimationFrame(() => {
+                      if (document.activeElement === input && input.value === masked) {
+                        input.setSelectionRange(caret, caret);
+                      }
+                    });
+                  }}
+                  onPaste={(event) => {
+                    const pasted = event.clipboardData.getData('text').trim().replace(/^(?:R?\$)\s*/, '');
+                    // Preserve the amount when a spreadsheet uses a decimal point.
+                    if (/^(?:\d+|\d{1,3}(?:,\d{3})+)\.\d{1,2}$/.test(pasted)) {
+                      event.preventDefault();
+                      setValor(maskAmount(pasted.replace(/,/g, '').replace('.', ',')));
+                    }
+                  }}
+                  onBlur={() => {
+                    if (valor) setValor(formatAmount.format(parseAmount(valor)));
+                  }}
                   placeholder="0,00"
                   className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white/80 dark:bg-surface pl-10 pr-3.5 py-2.5 text-xs font-semibold text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:border-brand focus:outline-hidden transition"
                 />
