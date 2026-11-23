@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, ConflictException, HttpException } from '@nestjs/common';
 import { createHash, randomUUID } from 'node:crypto';
 import JSZip from 'jszip';
 import type { Documento, Prisma } from '@prisma/client';
@@ -128,6 +128,29 @@ export class DocumentosService {
     const document = await this.prisma.documento.findUnique({ where: { id_documento: id } });
     if (!document) throw new NotFoundException('Documento não encontrado.');
     return this.deleteDocument(document);
+  }
+
+  async removeBatch(ids: number[], user: Actor) {
+    this.access.requireRole(user, 'ADMINISTRADOR');
+    const results = await Promise.allSettled(ids.map(id => this.remove(id, user)));
+    const excluidos: Awaited<ReturnType<DocumentosService['remove']>>[] = [];
+    const ausentes: number[] = [];
+    const falhas: Array<{ id_documento: number; mensagem: string }> = [];
+    results.forEach((result, index) => {
+      if (result.status === 'fulfilled') {
+        excluidos.push(result.value);
+      } else if (result.reason instanceof NotFoundException) {
+        ausentes.push(ids[index]);
+      } else {
+        falhas.push({
+          id_documento: ids[index],
+          mensagem: result.reason instanceof HttpException
+            ? result.reason.message
+            : 'Não foi possível concluir a exclusão deste documento.',
+        });
+      }
+    });
+    return { excluidos, ausentes, falhas };
   }
 
   private assertRemovable(status: string) {

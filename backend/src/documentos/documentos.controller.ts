@@ -4,7 +4,7 @@ import { Roles } from '../auth/decorators/roles.decorator.js';
 import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
 import type { Actor } from '../access/access.service.js';
 import { DocumentosService } from './documentos.service.js';
-import { UploadDocumentoDto, BackupDocumentosDto, ArquivarDocumentoDto } from './dto/upload-documento.dto.js';
+import { UploadDocumentoDto, BackupDocumentosDto, ArquivarDocumentoDto, ExcluirDocumentosDto } from './dto/upload-documento.dto.js';
 @Controller('documentos')
 export class DocumentosController {
   constructor(private readonly service: DocumentosService) {}
@@ -38,6 +38,11 @@ export class DocumentosController {
   }
   @Roles('ADMINISTRADOR')
   @Post(':id/arquivar') archive(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: Actor, @Body() dto: ArquivarDocumentoDto) { return this.service.archive(id, user, dto); }
+  @Roles('ADMINISTRADOR')
+  @Delete()
+  removeBatch(@Body() dto: ExcluirDocumentosDto, @CurrentUser() user: Actor) {
+    return this.service.removeBatch(dto.ids, user);
+  }
   @Roles('ADMINISTRADOR')
   @Delete(':id')
   remove(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: Actor) {

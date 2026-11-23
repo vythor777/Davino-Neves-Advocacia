@@ -1,8 +1,17 @@
 import api from './api';
 export interface Documento { id_documento: number; nome_arquivo: string; id_processo: number | null; id_cliente: number | null; tamanho_bytes: number; sha256: string | null; situacao: string; acesso_restrito?: boolean; data_upload: string; }
 export interface StorageUsage { usado: number; limite: number; percentual: number; alerta: string; }
+export const documentDeletionBatchSize = 8;
+interface DocumentDeletionResult {
+  excluidos: Array<{ id_documento: number; nome_arquivo: string }>;
+  ausentes: number[];
+  falhas: Array<{ id_documento: number; mensagem: string }>;
+}
 export const documentoService = {
-  async delete(id: number): Promise<void> { await api.delete(`/documentos/${id}`); },
+  async delete(id: number): Promise<void> { await api.delete(`/documentos/${id}`, { timeout: 45_000 }); },
+  async deleteBatch(ids: number[]): Promise<DocumentDeletionResult> {
+    return (await api.delete<DocumentDeletionResult>('/documentos', { data: { ids }, timeout: 45_000 })).data;
+  },
   async list(processId?: number, clientId?: number): Promise<Documento[]> {
     return (await api.get('/documentos', { params: { id_processo: processId, id_cliente: clientId } })).data;
   },
