@@ -6,5 +6,6 @@ import { DocumentosController } from './documentos.controller.js';
 @Module({
   controllers: [DocumentosController],
   providers: [DocumentosService, DocumentStorageService],
+  exports: [DocumentosService],
 })
 export class DocumentosModule {}

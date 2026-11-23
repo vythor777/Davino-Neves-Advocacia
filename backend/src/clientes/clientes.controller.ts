@@ -51,8 +51,12 @@ export class ClientesController {
   @Roles('ADMINISTRADOR')
   @Delete(':id')
   @HttpCode(HttpStatus.OK)
-  remove(@CurrentUser() user: Actor, @Param('id', ParseIntPipe) id: number,
-    @Query('confirmar_vinculos', new ParseBoolPipe({ optional: true })) confirmed?: boolean) {
-    return this.clientesService.remove(id, user, confirmed);
+  remove(
+    @CurrentUser() user: Actor,
+    @Param('id', ParseIntPipe) id: number,
+    @Query('confirmar_vinculos', new ParseBoolPipe({ optional: true })) confirmed?: boolean,
+    @Query('confirmar_exclusao_vinculos', new ParseBoolPipe({ optional: true })) deleteLinked?: boolean,
+  ) {
+    return this.clientesService.remove(id, user, confirmed, deleteLinked);
   }
 }

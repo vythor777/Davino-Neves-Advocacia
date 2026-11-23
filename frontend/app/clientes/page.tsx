@@ -1192,7 +1192,7 @@ function ClientesContent() {
         }}
         onConfirm={handleDeleteClient}
         title="Confirmar Exclusão de Cliente"
-        description={`A exclusão de "${clientToDelete?.nome}" é definitiva. Processos e prazos vinculados também serão excluídos. PDFs serão desvinculados e ficarão disponíveis para administradores. Lançamentos financeiros serão mantidos sem os vínculos excluídos.`}
+        description={`A exclusão de "${clientToDelete?.nome}" é definitiva. Os processos, prazos e documentos vinculados também serão excluídos. Os PDFs serão apagados do armazenamento. Lançamentos financeiros serão mantidos sem os vínculos excluídos.`}
         confirmLabel="Sim, Excluir Cliente"
         cancelLabel="Cancelar"
         variant="danger"
@@ -1202,7 +1202,7 @@ function ClientesContent() {
         <label className="mt-4 flex items-start gap-2 text-sm">
           <input type="checkbox" className="mt-1" checked={confirmDeleteLinks} disabled={deleting}
             onChange={event => setConfirmDeleteLinks(event.target.checked)} />
-          Confirmo a exclusão mesmo que existam registros vinculados ao cliente.
+          Confirmo a exclusão do cliente e de seus processos, prazos e documentos vinculados.
         </label>
         {deleteError && <p role="alert" className="mt-3 text-sm text-rose-700 dark:text-rose-400">{deleteError}</p>}
       </ConfirmModal>

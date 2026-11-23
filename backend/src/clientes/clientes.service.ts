@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { AccessService, type Actor } from '../access/access.service.js';
 import { Prisma } from '@prisma/client';
+import { DocumentosService } from '../documentos/documentos.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateClienteDto } from './dto/create-cliente.dto.js';
 import { UpdateClienteDto } from './dto/update-cliente.dto.js';
@@ -23,7 +24,11 @@ function validateCompanyRegistration(cnpj?: string | null, email?: string | null
 
 @Injectable()
 export class ClientesService {
-  constructor(private readonly prisma: PrismaService, private readonly access: AccessService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly access: AccessService,
+    private readonly documentos: DocumentosService,
+  ) {}
 
   private async validateRepresentative(representativeId?: number | null, clientId?: number) {
     if (representativeId == null) return;
@@ -183,22 +188,24 @@ export class ClientesService {
     }
   }
 
-  async remove(id: number, user: Actor, confirmed = false) {
+  async remove(id: number, user: Actor, confirmed = false, deleteLinked = false) {
     this.access.requireRole(user, 'ADMINISTRADOR');
+    const processes = { id_cliente: id };
+    const documents = { OR: [{ id_cliente: id }, { processo: processes }] };
+
     try {
+      if (deleteLinked) {
+        await this.documentos.removeLinked(documents, user);
+      }
       return await this.prisma.$transaction(async tx => {
-        const processes = { id_cliente: id };
-        const documents = { OR: [{ id_cliente: id }, { processo: processes }] };
-        if (!confirmed) {
-          const [processCount, documentCount] = await Promise.all([
-            tx.processo.count({ where: processes }),
-            tx.documento.count({ where: documents }),
-          ]);
-          if (processCount || documentCount) {
-            throw new ConflictException('Confirme a exclusão do cliente e de seus vínculos.');
-          }
+        if (await tx.documento.count({ where: documents })) {
+          throw new ConflictException(deleteLinked
+            ? 'Ainda há documentos vinculados. Atualize a lista e tente novamente.'
+            : 'Atualize a página e confirme a exclusão permanente dos documentos vinculados.');
         }
-        await tx.documento.updateMany({ where: documents, data: { id_cliente: null, id_processo: null, acesso_restrito: true } });
+        if (!confirmed && !deleteLinked && await tx.processo.count({ where: processes })) {
+          throw new ConflictException('Confirme a exclusão do cliente e de seus vínculos.');
+        }
         await tx.prazo.deleteMany({ where: { processo: processes } });
         await tx.processo.deleteMany({ where: processes });
         return tx.cliente.delete({ where: { id_cliente: id } });

@@ -255,7 +255,10 @@ before(async () => {
     .useValue(prisma)
     .overrideProvider(DocumentStorageService)
     .useValue({
-      remove: async (path) => { db.removedFiles.push(path); },
+      remove: async (path) => {
+        if (path === db.storageFailurePath) throw new Error('Storage indisponível');
+        db.removedFiles.push(path);
+      },
     })
     .overrideProvider(DataJudService)
     .useValue({
@@ -354,6 +357,8 @@ beforeEach(() => {
       },
       {
         id_documento: 402,
+        situacao: 'DISPONIVEL',
+        caminho_arquivo: 'private/secreto.txt',
         id_processo: 102,
         id_usuario: 4,
         nome_arquivo: 'secreto.txt',
@@ -464,16 +469,37 @@ test('somente advogado responsável edita; apenas administrador exclui', async (
   await api.get('/api/documentos/401').set(auth(1)).expect(200);
   await api.get('/api/documentos/401').set(auth(5)).expect(404);
 });
-test('exclusão de cliente vinculado exige confirmação e preserva PDFs com acesso administrativo', async () => {
+test('exclusão de cliente vinculado exige confirmação e apaga somente seus documentos', async () => {
+  db.docs.push(
+    { id_documento: 403, id_cliente: 201, id_processo: null, situacao: 'DISPONIVEL', caminho_arquivo: 'private/cadastro.pdf' },
+    { id_documento: 404, id_cliente: 201, id_processo: null, situacao: 'ARQUIVADO', caminho_arquivo: 'private/arquivado.pdf' },
+    { id_documento: 405, id_cliente: null, id_processo: null, situacao: 'DISPONIVEL', caminho_arquivo: 'private/escritorio.pdf' },
+  );
   await api.delete('/api/clientes/201').set(auth(1)).expect(409);
+  await api.delete('/api/clientes/201?confirmar_vinculos=true').set(auth(1)).expect(409);
   assert.equal(db.clients.length, 1);
   assert.equal(db.processos.length, 3);
-  await api.delete('/api/clientes/201?confirmar_vinculos=true').set(auth(1)).expect(200);
+  assert.deepEqual(db.removedFiles, []);
+  await api.delete('/api/clientes/201?confirmar_exclusao_vinculos=true').set(auth(1)).expect(200);
   assert.equal(db.clients.length, 0);
   assert.equal(db.processos.length, 0);
   assert.equal(db.prazos.length, 0);
-  assert.equal(db.docs.length, 2);
-  assert.ok(db.docs.every((d) => d.id_processo === null && d.id_cliente === null && d.acesso_restrito));
+  assert.deepEqual(db.docs.map((document) => document.id_documento), [405]);
+  assert.deepEqual(db.removedFiles, ['private/arquivo.txt', 'private/secreto.txt', 'private/cadastro.pdf']);
+});
+test('exclusão de cliente pode ser retomada após falha no armazenamento', async () => {
+  const url = '/api/clientes/201?confirmar_exclusao_vinculos=true';
+  db.storageFailurePath = 'private/secreto.txt';
+  await api.delete(url).set(auth(1)).expect(500);
+  assert.equal(db.clients.length, 1);
+  assert.equal(db.processos.length, 3);
+  assert.equal(db.docs[0].situacao, 'EXCLUINDO');
+  assert.deepEqual(db.removedFiles, ['private/arquivo.txt']);
+  db.storageFailurePath = undefined;
+  await api.delete(url).set(auth(1)).expect(200);
+  assert.deepEqual(db.removedFiles, ['private/arquivo.txt', 'private/secreto.txt']);
+  assert.equal(db.docs.length, 0);
+  assert.equal(db.clients.length, 0);
 });
 test('somente administrador exclui cada documento e o arquivo correspondente', async () => {
   await api.delete('/api/documentos/401').set(auth(5)).expect(403);

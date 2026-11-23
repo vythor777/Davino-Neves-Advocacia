@@ -73,7 +73,7 @@ export const clienteService = {
   },
 
   async delete(id: number, confirmLinks = false): Promise<void> {
-    await api.delete(`/clientes/${id}`, { params: { confirmar_vinculos: confirmLinks } });
+    await api.delete(`/clientes/${id}`, { params: { confirmar_exclusao_vinculos: confirmLinks } });
   },
 };
 

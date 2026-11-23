@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
 import { createHash, randomUUID } from 'node:crypto';
 import JSZip from 'jszip';
-import type { Prisma } from '@prisma/client';
+import type { Documento, Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { AccessService, type Actor } from '../access/access.service.js';
 import { DocumentStorageService } from './document-storage.service.js';
@@ -113,21 +113,44 @@ export class DocumentosService {
     return this.prisma.documento.update({ where: { id_documento: id }, data: { situacao: 'ARQUIVADO', arquivado_em: new Date() }, select: documentMetadata });
   }
 
+  async removeLinked(where: Prisma.DocumentoWhereInput, user: Actor) {
+    this.access.requireRole(user, 'ADMINISTRADOR');
+    const documents = await this.prisma.documento.findMany({
+      where,
+      select: { id_documento: true, situacao: true, nome_arquivo: true, caminho_arquivo: true, arquivado_em: true },
+    });
+    for (const document of documents) this.assertRemovable(document.situacao);
+    for (const document of documents) await this.deleteDocument(document, where);
+  }
+
   async remove(id: number, user: Actor) {
     this.access.requireRole(user, 'ADMINISTRADOR');
-    const where = { id_documento: id };
-    const document = await this.prisma.documento.findUnique({ where });
+    const document = await this.prisma.documento.findUnique({ where: { id_documento: id } });
     if (!document) throw new NotFoundException('Documento não encontrado.');
-    if (document.situacao === 'DISPONIVEL' || document.situacao === 'ARQUIVADO') {
-      const claimed = await this.prisma.documento.updateMany({
-        where: { ...where, situacao: document.situacao },
-        data: { situacao: 'EXCLUINDO' },
-      });
-      if (!claimed.count) throw new ConflictException('O documento está sendo alterado. Atualize a lista e tente novamente.');
-    } else if (document.situacao !== 'EXCLUINDO') {
+    return this.deleteDocument(document);
+  }
+
+  private assertRemovable(status: string) {
+    if (status !== 'DISPONIVEL' && status !== 'ARQUIVADO' && status !== 'EXCLUINDO') {
       throw new ConflictException('Aguarde a operação atual do documento antes de excluir.');
     }
-    if (document.situacao !== 'ARQUIVADO') await this.storage.remove(document.caminho_arquivo);
+  }
+
+  private async deleteDocument(
+    document: Pick<Documento, 'id_documento' | 'nome_arquivo' | 'situacao' | 'caminho_arquivo' | 'arquivado_em'>,
+    scope: Prisma.DocumentoWhereInput = {},
+  ) {
+    const id = document.id_documento;
+    const where = { id_documento: id };
+    this.assertRemovable(document.situacao);
+    const claimed = await this.prisma.documento.updateMany({
+      where: { ...scope, ...where, situacao: document.situacao },
+      data: { situacao: 'EXCLUINDO' },
+    });
+    if (!claimed.count) throw new ConflictException('O documento está sendo alterado. Atualize a lista e tente novamente.');
+    if (document.situacao !== 'ARQUIVADO' && !document.arquivado_em) {
+      await this.storage.remove(document.caminho_arquivo);
+    }
     const deleted = await this.prisma.documento.deleteMany({ where: { ...where, situacao: 'EXCLUINDO' } });
     if (!deleted.count) throw new NotFoundException('Documento já excluído.');
     return { id_documento: id, nome_arquivo: document.nome_arquivo };
