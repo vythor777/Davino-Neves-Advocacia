@@ -141,18 +141,12 @@ function DataJudContent() {
       const status = (err as { status?: number })?.status;
       const mensagem = err instanceof Error ? err.message : 'Não foi possível conectar ao tribunal.';
 
-      const isNotFound =
-        status === 404 ||
-        mensagem.toLowerCase().includes('não localizado') ||
-        mensagem.toLowerCase().includes('não encontrado') ||
-        mensagem.toLowerCase().includes('nenhum registro');
-
-      if (isNotFound) {
+      if (status === 404) {
         setNaoEncontrado(true);
       } else {
         setErroConexao({
-          mensagem: 'Não foi possível conectar ao tribunal',
-          statusCode: status || (mensagem.includes('401') ? 401 : 500),
+          mensagem: status === 504 ? 'O DataJud demorou para responder' : 'Não foi possível consultar o DataJud',
+          statusCode: status,
           detalhes: mensagem,
         });
       }
