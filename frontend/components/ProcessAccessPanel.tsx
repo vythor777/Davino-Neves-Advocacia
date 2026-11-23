@@ -18,7 +18,7 @@ export function ProcessAccessPanel({
     <section className="space-y-3 rounded-xl border border-slate-200 p-4 dark:border-slate-800">
       <h3 className="font-semibold">Equipe e acesso ao processo</h3>
       <p className={process.responsavel ? 'text-sm text-slate-500' : 'rounded-lg bg-amber-50 p-3 text-sm font-medium text-amber-800 dark:bg-amber-950/40 dark:text-amber-200'}>
-        Responsável:{' '}
+        Advogado responsável pelo processo:{' '}
         {process.responsavel?.nome ??
           'Aguardando atribuição pelo administrador'}
       </p>

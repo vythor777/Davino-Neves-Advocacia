@@ -48,7 +48,18 @@ export function ProcessWorkspace({ process }: { process: Processo }) {
     }} onClick={() => setTab(name)} className={'rounded-lg border px-3 py-2 hover:bg-blue-50 dark:hover:bg-slate-800 focus-visible:ring-2 focus-visible:ring-blue-700 active:scale-95 ' + (tab === name ? 'border-blue-700 text-blue-700 dark:text-blue-300' : 'border-slate-200 dark:border-slate-700')}>{name}</button>)}</div>
     <div key={tab} className="workspace-enter" role="tabpanel" id="process-panel" aria-labelledby={'process-tab-' + tab}>
       {loading ? <div aria-label="Carregando seção" className="h-24 animate-pulse rounded bg-slate-200 dark:bg-slate-800" /> : error ? <p role="alert" className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900 dark:bg-amber-950 dark:text-amber-200">{error} <button type="button" className="underline" onClick={() => setRetry(n => n + 1)}>Tentar novamente</button></p> : <>
-        {tab === 'Prazos' && <ul className="process-workspace-list space-y-2">{deadlines.map(d => <li key={d.id_prazo}>{d.descricao} · {d.data_vencimento.slice(0,10).split('-').reverse().join('/')} · {d.status}<br />Responsável: {d.responsavel || 'Não definido'}<br />{!process.id_responsavel && <span className="text-amber-700">O processo está sem advogado responsável.</span>}</li>)}{!deadlines.length && <li>Nenhum prazo vinculado.</li>}<li><Link href="/prazos" className="underline hover:text-blue-700 focus-visible:ring-2 active:opacity-80">Gerenciar prazos</Link></li></ul>}
+        {tab === 'Prazos' && (
+          <ul className="process-workspace-list space-y-2">
+            {deadlines.map(deadline => (
+              <li key={deadline.id_prazo}>
+                {deadline.descricao} · {deadline.data_vencimento.slice(0, 10).split('-').reverse().join('/')} · {deadline.status}
+                <div>Responsável pelo prazo: {deadline.responsavel || 'Não definido'}</div>
+              </li>
+            ))}
+            {!deadlines.length && <li>Nenhum prazo vinculado.</li>}
+            <li><Link href="/prazos" className="underline hover:text-blue-700 focus-visible:ring-2 active:opacity-80">Gerenciar prazos</Link></li>
+          </ul>
+        )}
         {tab === 'Movimentações' && (
           validProcessNumber
             ? <ProcessTimeline movimentacoes={moves}
