@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, ParseIntPipe, Query, UploadedFile, UseInterceptors, StreamableFile, BadRequestException } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Body, Param, ParseIntPipe, Query, UploadedFile, UseInterceptors, StreamableFile, BadRequestException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Roles } from '../auth/decorators/roles.decorator.js';
 import { CurrentUser } from '../auth/decorators/current-user.decorator.js';
@@ -38,5 +38,10 @@ export class DocumentosController {
   }
   @Roles('ADMINISTRADOR')
   @Post(':id/arquivar') archive(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: Actor, @Body() dto: ArquivarDocumentoDto) { return this.service.archive(id, user, dto); }
+  @Roles('ADMINISTRADOR')
+  @Delete(':id')
+  remove(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: Actor) {
+    return this.service.remove(id, user);
+  }
   @Get(':id') get(@Param('id', ParseIntPipe) id: number, @CurrentUser() user: Actor) { return this.service.findOne(id, user); }
 }

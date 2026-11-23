@@ -1,7 +1,8 @@
 import api from './api';
-export interface Documento { id_documento: number; nome_arquivo: string; id_processo: number | null; id_cliente: number | null; tamanho_bytes: number; sha256: string | null; situacao: string; data_upload: string; }
+export interface Documento { id_documento: number; nome_arquivo: string; id_processo: number | null; id_cliente: number | null; tamanho_bytes: number; sha256: string | null; situacao: string; acesso_restrito?: boolean; data_upload: string; }
 export interface StorageUsage { usado: number; limite: number; percentual: number; alerta: string; }
 export const documentoService = {
+  async delete(id: number): Promise<void> { await api.delete(`/documentos/${id}`); },
   async list(processId?: number, clientId?: number): Promise<Documento[]> {
     return (await api.get('/documentos', { params: { id_processo: processId, id_cliente: clientId } })).data;
   },

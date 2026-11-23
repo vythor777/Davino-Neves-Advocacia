@@ -12,6 +12,8 @@ process.env.JWT_SECRET =
 const { AppModule } = await import('../backend/dist/app.module.js');
 const { PrismaService } =
   await import('../backend/dist/prisma/prisma.service.js');
+const { DocumentStorageService } =
+  await import('../backend/dist/documentos/document-storage.service.js');
 const { DataJudService } =
   await import('../backend/dist/datajud/datajud.service.js');
 let app, db, api;
@@ -39,6 +41,12 @@ function matches(row, where = {}) {
     if (value === undefined) return true;
     if (key === 'OR') return value.some((w) => matches(row, w));
     if (key === 'AND') return value.every((w) => matches(row, w));
+    if (key === 'acesso_restrito') return (row.acesso_restrito ?? false) === value;
+    if (key === 'cliente') {
+      return row.id_cliente != null && db.processos.some((process) =>
+        process.id_cliente === row.id_cliente && matches(process, value.processos.some),
+      );
+    }
     if (key === 'processo') {
       const process = db.processos.find((p) => p.id_processo === row.id_processo);
       return !!process && matches(process, value);
@@ -65,7 +73,21 @@ function project(row, select) {
       ]),
   );
 }
+function deleteMany(table, where) {
+  const rows = db[table];
+  db[table] = rows.filter((row) => !matches(row, where));
+  return { count: rows.length - db[table].length };
+}
 const prisma = {
+  $transaction: async (run) => {
+    const original = structuredClone(db);
+    try {
+      return await run(prisma);
+    } catch (error) {
+      db = original;
+      throw error;
+    }
+  },
   usuario: {
     update: async ({where, data, select}) => {
       const user = db.users.find(u => matches(u, where));
@@ -82,6 +104,12 @@ const prisma = {
       db.users.filter((u) => matches(u, where)).map((u) => project(u, select)),
   },
   processo: {
+    findUniqueOrThrow: async (query) => {
+      const result = await prisma.processo.findUnique(query);
+      assert.ok(result, 'test process exists');
+      return result;
+    },
+    deleteMany: async ({ where }) => deleteMany('processos', where),
     findUnique: async ({ where, select }) => project(db.processos.find(p => matches(p, where)), select),
     findMany: async ({ where, select } = {}) =>
       db.processos
@@ -155,6 +183,7 @@ const prisma = {
       )[0],
   },
   prazo: {
+    deleteMany: async ({ where }) => deleteMany('prazos', where),
     findUnique: async ({ where, select }) => project(db.prazos.find(p => matches(p, where)), select),
     findMany: async ({ where } = {}) =>
       db.prazos
@@ -177,6 +206,14 @@ const prisma = {
     },
   },
   documento: {
+    count: async ({ where }) => db.docs.filter((doc) => matches(doc, where)).length,
+    findUnique: async ({ where }) => db.docs.find((doc) => matches(doc, where)) ?? null,
+    updateMany: async ({ where, data }) => {
+      const rows = db.docs.filter((doc) => matches(doc, where));
+      for (const row of rows) Object.assign(row, data);
+      return { count: rows.length };
+    },
+    deleteMany: async ({ where }) => deleteMany('docs', where),
     findMany: async ({ where, select }) =>
       db.docs.filter((p) => matches(p, where)).map((p) => project(p, select)),
     findFirst: async ({ where, select }) =>
@@ -216,6 +253,10 @@ before(async () => {
   const module = await Test.createTestingModule({ imports: [AppModule] })
     .overrideProvider(PrismaService)
     .useValue(prisma)
+    .overrideProvider(DocumentStorageService)
+    .useValue({
+      remove: async (path) => { db.removedFiles.push(path); },
+    })
     .overrideProvider(DataJudService)
     .useValue({
       consultarProcesso: async (dto) => ({
@@ -302,6 +343,9 @@ beforeEach(() => {
     docs: [
       {
         id_documento: 401,
+        id_cliente: null,
+        situacao: 'DISPONIVEL',
+        caminho_arquivo: 'private/arquivo.txt',
         id_processo: 101,
         id_usuario: 2,
         nome_arquivo: 'arquivo.txt',
@@ -318,6 +362,7 @@ beforeEach(() => {
       },
     ],
     logs: [],
+    removedFiles: [],
   };
 });
 const auth = (id) => ({ Authorization: `Bearer ${token(id)}` });
@@ -411,6 +456,32 @@ test('somente advogado responsável edita; apenas administrador exclui', async (
   for (const id of [2, 3, 5])
     await api.delete('/api/processos/101').set(auth(id)).expect(403);
   await api.delete('/api/processos/101').set(auth(1)).expect(200);
+  assert.equal(db.prazos.some((p) => p.id_processo === 101), false);
+  const document = db.docs.find((d) => d.id_documento === 401);
+  assert.equal(document.id_cliente, 201);
+  assert.equal(document.id_processo, null);
+  assert.equal(document.acesso_restrito, true);
+  await api.get('/api/documentos/401').set(auth(1)).expect(200);
+  await api.get('/api/documentos/401').set(auth(5)).expect(404);
+});
+test('exclusão de cliente vinculado exige confirmação e preserva PDFs com acesso administrativo', async () => {
+  await api.delete('/api/clientes/201').set(auth(1)).expect(409);
+  assert.equal(db.clients.length, 1);
+  assert.equal(db.processos.length, 3);
+  await api.delete('/api/clientes/201?confirmar_vinculos=true').set(auth(1)).expect(200);
+  assert.equal(db.clients.length, 0);
+  assert.equal(db.processos.length, 0);
+  assert.equal(db.prazos.length, 0);
+  assert.equal(db.docs.length, 2);
+  assert.ok(db.docs.every((d) => d.id_processo === null && d.id_cliente === null && d.acesso_restrito));
+});
+test('somente administrador exclui cada documento e o arquivo correspondente', async () => {
+  await api.delete('/api/documentos/401').set(auth(5)).expect(403);
+  await api.delete('/api/documentos/401').set(auth(2)).expect(403);
+  await api.delete('/api/documentos/401').set(auth(1)).expect(200);
+  assert.deepEqual(db.removedFiles, ['private/arquivo.txt']);
+  assert.deepEqual(db.docs.map((d) => d.id_documento), [402]);
+  await api.delete('/api/documentos/401').set(auth(1)).expect(404);
 });
 test('criação bloqueada ao estagiário; autoria é atribuída no servidor, não no payload', async () => {
   await api.post('/api/processos').set(auth(5)).send(processInput).expect(403);

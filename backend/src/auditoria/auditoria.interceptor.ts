@@ -75,8 +75,8 @@ export class AuditoriaInterceptor implements NestInterceptor {
           ? result.nome_arquivo
           : undefined;
         const upload = documentName && action === 'CRIACAO' && !operation;
-        const documentDescription = documentName && (upload || operation === 'arquivar')
-          ? `${upload ? 'Anexou' : 'Arquivou'} o documento “${documentName}”.`
+        const documentDescription = documentName && (upload || operation === 'arquivar' || action === 'EXCLUSAO')
+          ? `${upload ? 'Anexou' : action === 'EXCLUSAO' ? 'Excluiu' : 'Arquivou'} o documento “${documentName}”.`
           : undefined;
         // Explicit whitelist: never record passwords, tokens, or document contents.
         const changes = auditChanges(req.body ?? {}, previous);

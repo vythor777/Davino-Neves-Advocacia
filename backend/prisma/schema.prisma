@@ -134,6 +134,7 @@ model Documento {
   tamanho_bytes    Int         @default(0)
   sha256           String?     @db.VarChar(64)
   situacao         String      @default("DISPONIVEL") @db.VarChar(20)
+  acesso_restrito  Boolean     @default(false)
   arquivado_em     DateTime?
   @@index([id_cliente])
   id_usuario       Int

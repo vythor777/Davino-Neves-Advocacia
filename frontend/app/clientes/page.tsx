@@ -161,6 +161,8 @@ function ClientesContent() {
   const [deleteModalOpen, setDeleteModalOpen] = useState<boolean>(false);
   const [clientToDelete, setClientToDelete] = useState<Cliente | null>(null);
   const [deleting, setDeleting] = useState<boolean>(false);
+  const [confirmDeleteLinks, setConfirmDeleteLinks] = useState(false);
+  const [deleteError, setDeleteError] = useState('');
 
   // Drawer de Detalhes
   const [detailsModalOpen, setDetailsModalOpen] = useState<boolean>(false);
@@ -328,19 +330,21 @@ function ClientesContent() {
   };
 
   const handleDeleteClient = async () => {
-    if (!admin || !clientToDelete) return;
+    if (!admin || !clientToDelete || !confirmDeleteLinks) return;
     setDeleting(true);
     setErrorMsg(null);
+    setDeleteError('');
     try {
-      await clienteService.delete(clientToDelete.id_cliente);
+      await clienteService.delete(clientToDelete.id_cliente, true);
       setSuccessMsg(`Cliente "${clientToDelete.nome}" removido com sucesso.`);
       setDeleteModalOpen(false);
       setClientToDelete(null);
+      setConfirmDeleteLinks(false);
       await fetchClientes();
       setTimeout(() => setSuccessMsg(null), 4000);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Falha ao remover cliente.';
-      setErrorMsg(msg);
+      setDeleteError(msg);
     } finally {
       setDeleting(false);
     }
@@ -1183,15 +1187,25 @@ function ClientesContent() {
         onClose={() => {
           setDeleteModalOpen(false);
           setClientToDelete(null);
+          setConfirmDeleteLinks(false);
+          setDeleteError('');
         }}
         onConfirm={handleDeleteClient}
         title="Confirmar Exclusão de Cliente"
-        description={`Tem certeza que deseja remover o cliente "${clientToDelete?.nome}"? Caso existam processos ou prazos vinculados a este titular, eles poderão ser desvinculados do acervo.`}
+        description={`A exclusão de "${clientToDelete?.nome}" é definitiva. Processos e prazos vinculados também serão excluídos. PDFs serão desvinculados e ficarão disponíveis para administradores. Lançamentos financeiros serão mantidos sem os vínculos excluídos.`}
         confirmLabel="Sim, Excluir Cliente"
         cancelLabel="Cancelar"
         variant="danger"
         isLoading={deleting}
-      />
+        confirmDisabled={!confirmDeleteLinks}
+      >
+        <label className="mt-4 flex items-start gap-2 text-sm">
+          <input type="checkbox" className="mt-1" checked={confirmDeleteLinks} disabled={deleting}
+            onChange={event => setConfirmDeleteLinks(event.target.checked)} />
+          Confirmo a exclusão mesmo que existam registros vinculados ao cliente.
+        </label>
+        {deleteError && <p role="alert" className="mt-3 text-sm text-rose-700 dark:text-rose-400">{deleteError}</p>}
+      </ConfirmModal>
 
       {/* Modal / Ficha Detalhada */}
       {detailsModalOpen && selectedClient && (
