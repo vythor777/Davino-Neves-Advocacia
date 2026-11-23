@@ -2,14 +2,38 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
-  InternalServerErrorException,
+  BadGatewayException,
+  GatewayTimeoutException,
+  HttpException,
+  ServiceUnavailableException,
   Logger,
 } from '@nestjs/common';
+import { setTimeout as delay } from 'node:timers/promises';
 import { ConsultarProcessoDto } from './dto/consultar-processo.dto.js';
 
 const publicDataJudUrl = 'https://api-publica.datajud.cnj.jus.br';
 // Chave pública publicada pelo CNJ em https://datajud-wiki.cnj.jus.br/api-publica/acesso/
 const publicDataJudKey = 'cDZHYzlZa0JadVREZDJCendQbXY6SkJlTzNjLV9TRENyQk1RdnFKZGRQdw==';
+
+const requestTimeoutMs = 12_000;
+const retryableStatuses = new Set([500, 502, 503]);
+
+type DataJudRecord = {
+  numeroProcesso: string;
+  classe?: { nome: string };
+  orgaoJulgador?: { nome: string };
+  dataAjuizamento?: string;
+  grau?: string;
+  nivelSigilo?: number;
+  assuntos?: Array<{ nome: string }>;
+  movimentos?: Array<{ codigo?: number; nome: string; dataHora: string; complementosTabelados?: unknown[] }>;
+} & Record<string, unknown>;
+
+type DataJudResponse = {
+  timed_out?: boolean;
+  _shards?: { failed?: number };
+  hits?: { hits?: Array<{ _source: DataJudRecord }> };
+};
 
 export class DataJudProcessNotFoundException extends NotFoundException {}
 
@@ -183,59 +207,13 @@ export class DataJudService {
     const baseUrl = this.getBaseUrl();
     const endpoint = `${baseUrl}/api_publica_${siglaTribunal}/_search`;
 
-    this.logger.log(
-      `Consultando processo ${numeroLimpo} no tribunal ${siglaTribunal} (${endpoint})`,
-    );
-
     try {
       const key = this.getApiKey(baseUrl).replace(/^APIKey\s+/i, '');
-      const signal = AbortSignal.timeout(10000);
-      const search = (apiKey: string) => fetch(endpoint, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `APIKey ${apiKey}`,
-        },
-        body: JSON.stringify({
-          query: {
-            match: {
-              numeroProcesso: numeroLimpo,
-            },
-          },
-        }),
-        signal,
-      });
-      let response = await search(key);
-      if (baseUrl === publicDataJudUrl && key !== publicDataJudKey && [401, 403].includes(response.status)) {
-        await response.body?.cancel();
-        response = await search(publicDataJudKey);
+      const data = await this.search(endpoint, numeroLimpo, key, baseUrl === publicDataJudUrl);
+      const hits = data?.hits?.hits;
+      if (!Array.isArray(hits)) {
+        throw new BadGatewayException('O DataJud retornou uma resposta inválida.');
       }
-
-      if (!response.ok) {
-        const errorBody = await response.text();
-        this.logger.error(
-          `[DataJud CNJ Rejeição] HTTP ${response.status} ao consultar ${endpoint} com o processo ${numeroLimpo}. Resposta do CNJ: ${errorBody}`,
-        );
-
-        if (response.status === 401 || response.status === 403) {
-          throw new BadRequestException(
-            `Erro de autenticação na API do DataJud (HTTP ${response.status}): ${errorBody || 'Verifique a chave DATAJUD_API_KEY.'}`,
-          );
-        }
-
-        if (response.status === 404) {
-          throw new NotFoundException(
-            `Tribunal ${siglaTribunal.toUpperCase()} ou processo ${numeroLimpo} não localizado na API do DataJud (HTTP 404): ${errorBody}`,
-          );
-        }
-
-        throw new InternalServerErrorException(
-          `Erro na API pública do DataJud (HTTP ${response.status}) para o tribunal ${siglaTribunal.toUpperCase()}: ${errorBody}`,
-        );
-      }
-
-      const data = await response.json();
-      const hits = data?.hits?.hits || [];
 
       if (hits.length === 0) {
         this.logger.warn(
@@ -246,7 +224,10 @@ export class DataJudService {
         );
       }
 
-      const processoData = hits[0]._source;
+      const processoData = hits[0]?._source;
+      if (typeof processoData?.numeroProcesso !== 'string') {
+        throw new BadGatewayException('O DataJud retornou um registro inválido.');
+      }
 
       return {
         sucesso: true,
@@ -261,11 +242,11 @@ export class DataJudService {
         grau: processoData.grau || 'G1',
         nivelSigilo: processoData.nivelSigilo ?? 0,
         assuntos:
-          processoData.assuntos?.map((a: any) => a.nome) || [
+          processoData.assuntos?.map(a => a.nome) || [
             'Direito Civil',
             'Obrigações / Inadimplemento',
           ],
-        movimentos: (processoData.movimentos || []).map((m: any) => ({
+        movimentos: (processoData.movimentos || []).map(m => ({
           codigo: m.codigo,
           nome: m.nome,
           dataHora: m.dataHora,
@@ -274,23 +255,68 @@ export class DataJudService {
         dadosCompletos: processoData,
       };
     } catch (error) {
-      this.logger.error(
-        `[DataJud CNJ Exception] Falha na consulta do processo ${numeroLimpo} (${siglaTribunal}):`,
-        error instanceof Error ? error.stack || error.message : error,
-      );
-
-      if (
-        error instanceof NotFoundException ||
-        error instanceof BadRequestException ||
-        error instanceof InternalServerErrorException
-      ) {
-        throw error;
-      }
-
-      throw new InternalServerErrorException(
-        `Falha na comunicação com o DataJud do CNJ: ${error instanceof Error ? error.message : 'Erro de conexão/timeout.'}`,
-      );
+      if (error instanceof HttpException) throw error;
+      this.logger.error(`Falha interna ao processar a resposta do DataJud para ${siglaTribunal}.`, error);
+      throw new BadGatewayException('Não foi possível processar a resposta do DataJud.');
     }
+  }
+
+  private async search(endpoint: string, number: string, key: string, allowPublicKey: boolean): Promise<DataJudResponse> {
+    let apiKey = key;
+    const body = JSON.stringify({ size: 1, query: { match: { numeroProcesso: number } } });
+
+    for (let attempt = 1; ; attempt++) {
+      const signal = AbortSignal.timeout(requestTimeoutMs);
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `APIKey ${apiKey}` },
+          body,
+          signal,
+        });
+
+        if (response.ok) {
+          const data: DataJudResponse = await response.json();
+          if (data?.timed_out) throw this.timeout();
+          if (data?._shards?.failed) throw new ServiceUnavailableException('O DataJud retornou uma consulta incompleta.');
+          return data;
+        }
+
+        await response.body?.cancel();
+        this.logger.warn(`DataJud retornou HTTP ${response.status} em ${new URL(endpoint).pathname}.`);
+        if (response.status === 401 || response.status === 403) {
+          if (attempt === 1 && allowPublicKey && apiKey !== publicDataJudKey) {
+            apiKey = publicDataJudKey;
+            continue;
+          }
+          throw new BadGatewayException('O DataJud recusou a chave de acesso. Verifique a configuração do servidor.');
+        }
+        if (response.status === 504) throw this.timeout();
+        if (retryableStatuses.has(response.status)) {
+          throw new ServiceUnavailableException(`O DataJud retornou HTTP ${response.status}. Tente novamente em instantes.`);
+        }
+        if (response.status === 429) {
+          throw new BadGatewayException('O DataJud limitou o volume de consultas. Aguarde alguns instantes antes de tentar novamente.');
+        }
+        throw new BadGatewayException(`O DataJud rejeitou a consulta (HTTP ${response.status}).`);
+      } catch (error) {
+        const failure = signal.aborted
+          ? this.timeout()
+          : error instanceof TypeError
+            ? new ServiceUnavailableException('Falha de conexão entre o servidor e o DataJud.')
+            : error;
+        if (!(failure instanceof ServiceUnavailableException || failure instanceof GatewayTimeoutException)) {
+          throw failure;
+        }
+        this.logger.warn(`DataJud, tentativa ${attempt} em ${new URL(endpoint).pathname}: ${failure.message}`);
+        if (attempt === 2) throw failure;
+        await delay(350);
+      }
+    }
+  }
+
+  private timeout() {
+    return new GatewayTimeoutException('O DataJud não respondeu dentro do tempo limite. Tente novamente em instantes.');
   }
 
   /**

@@ -51,10 +51,13 @@ function getErrorMessageHelper(statusCode?: number | string): string {
   if (code === 401 || code === 403) {
     return 'Houve uma recusa de autorização ou autenticação com a API pública do DataJud. Verifique suas credenciais de acesso ou tente novamente em instantes.';
   }
-  if (code >= 500) {
-    return 'Os servidores do tribunal ou do Conselho Nacional de Justiça estão temporariamente instáveis ou sobrecarregados.';
+  if (code === 504) {
+    return 'O sistema tentou buscar os dados no CNJ, mas a resposta não chegou dentro do tempo limite.';
   }
-  return 'A requisição aos serviços do tribunal não pôde ser completada. Pode haver instabilidade temporária na rede judiciária.';
+  if (code >= 500) {
+    return 'O servidor não conseguiu concluir a consulta ao DataJud do CNJ.';
+  }
+  return 'A consulta ao DataJud não pôde ser concluída.';
 }
 
 /**

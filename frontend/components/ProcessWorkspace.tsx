@@ -34,7 +34,14 @@ export function ProcessWorkspace({ process }: { process: Processo }) {
             setProcessFound(data.encontrado);
           }
         }
-      } catch { if (active) setError(tab === 'Movimentações' ? 'Não foi possível consultar as movimentações no DataJud.' : 'Não foi possível carregar esta seção.'); }
+      } catch (error) {
+        if (active) {
+          const status = (error as { status?: number } | null)?.status;
+          setError(tab === 'Movimentações'
+            ? status === 504 ? 'O DataJud demorou para responder. Tente novamente.' : 'Não foi possível consultar as movimentações no DataJud.'
+            : 'Não foi possível carregar esta seção.');
+        }
+      }
       finally { if (active) setLoading(false); }
     }; void load(); return () => { active = false; };
   }, [tab, process.id_processo, process.numero_processo, canAccessFinance, retry, validProcessNumber]);

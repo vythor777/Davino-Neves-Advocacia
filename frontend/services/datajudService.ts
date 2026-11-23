@@ -1,5 +1,8 @@
 import api from './api';
 
+// Inclui as duas tentativas do backend antes de encerrar a requisição no navegador.
+const dataJudRequestOptions = { timeout: 35_000 };
+
 export interface ComplementoDataJud {
   codigo?: number;
   nome?: string;
@@ -48,19 +51,19 @@ export const datajudService = {
       ...params,
       numero_processo: limparNumeroProcesso(params.numero_processo),
     };
-    const response = await api.post<DataJudProcessoResponse>('/datajud/consultar', payload);
+    const response = await api.post<DataJudProcessoResponse>('/datajud/consultar', payload, dataJudRequestOptions);
     return response.data;
   },
 
   async consultarPorNumero(numeroProcesso: string): Promise<DataJudProcessoResponse> {
     const limpo = limparNumeroProcesso(numeroProcesso);
-    const response = await api.get<DataJudProcessoResponse>(`/datajud/${limpo}`);
+    const response = await api.get<DataJudProcessoResponse>(`/datajud/${limpo}`, dataJudRequestOptions);
     return response.data;
   },
 
   async listarMovimentacoes(numeroProcesso: string): Promise<{ encontrado: boolean; movimentos: MovimentoDataJud[] }> {
     const limpo = limparNumeroProcesso(numeroProcesso);
-    const response = await api.get(`/datajud/${limpo}/movimentacoes`);
+    const response = await api.get(`/datajud/${limpo}/movimentacoes`, dataJudRequestOptions);
     return response.data;
   },
 };
