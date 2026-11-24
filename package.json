@@ -10,11 +10,13 @@
     "dev": "npm run start:dev --workspace=backend & npm run dev --workspace=frontend",
     "build": "npm run build --workspace=backend && npm run build --workspace=frontend",
     "start": "npm run start:prod --workspace=backend & npm run start --workspace=frontend",
-    "lint": "npm run lint --workspace=frontend",
+    "lint": "npm run lint --workspaces --if-present",
     "seed": "npm run seed --workspace=backend",
     "test:session": "node --import tsx --test tests/auth-session.test.ts",
-    "test:ui": "tsx --tsconfig frontend/tsconfig.json --test tests/process-dates.test.ts",
-    "test:permissions": "npm run build --workspace=backend && node --test tests/permissions-api.test.mjs && TSX_TSCONFIG_PATH=frontend/tsconfig.json node --import tsx --test tests/permissions-ui.test.tsx"
+    "test:ui": "TSX_TSCONFIG_PATH=frontend/tsconfig.json node --import tsx --test tests/*.test.ts tests/*.test.tsx",
+    "test:permissions": "npm run build --workspace=backend && node --test tests/permissions-api.test.mjs && TSX_TSCONFIG_PATH=frontend/tsconfig.json node --import tsx --test tests/permissions-ui.test.tsx",
+    "typecheck": "npm exec -w frontend -- tsc --noEmit && npm exec -w backend -- tsc --noEmit",
+    "test": "npm run build -w backend && npm test -w backend && node --test tests/*.test.mjs && npm run test:ui && npm run test:e2e -w backend"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",

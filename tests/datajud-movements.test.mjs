@@ -54,6 +54,10 @@ test('timeout renova o sinal e permite concluir a consulta na segunda tentativa'
   });
   const result = await new DataJudService().consultarProcesso({ numero_processo: '10275757520248260114' });
   assert.equal(result.numeroProcesso, '10275757520248260114');
+  for (const field of ['classe', 'orgaoJulgador', 'dataAjuizamento', 'grau', 'nivelSigilo']) {
+    assert.equal(result[field], undefined);
+  }
+  assert.deepEqual(result.assuntos, []);
   assert.deepEqual(attempts, [firstSignal, secondSignal]);
 });
 
@@ -65,4 +69,15 @@ test('resposta incompleta por timeout não vira processo não encontrado e retor
   const actor = { role: 'ADMINISTRADOR', id_usuario: 1, nome: 'Admin de teste' };
   await assert.rejects(controller.movimentacoes(actor, '10275757520248260114'), { status: 504 });
   assert.equal(fetch.mock.callCount(), 2);
+});
+
+test('consulta eleitoral usa o TRE e o ramo desconhecido exige seleção', async t => {
+  const service = new DataJudService();
+  const transport = t.mock.method(globalThis, 'fetch', async url => {
+    assert.equal(new URL(url).pathname, '/api_publica_tre-sp/_search');
+    return Response.json({ hits: { hits: [] } });
+  });
+  await assert.rejects(service.consultarProcesso({ numero_processo: '10275757520246260114' }), { status: 404 });
+  await assert.rejects(service.consultarProcesso({ numero_processo: '10275757520249260114' }), { status: 400 });
+  assert.equal(transport.mock.callCount(), 1);
 });

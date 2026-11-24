@@ -44,13 +44,14 @@ export class AuditoriaController {
         throw new BadRequestException('Informe um registro válido para consultar os documentos vinculados.');
       }
       const documents = await this.prisma.documento.findMany({
-        where: entidade === 'clientes' ? { OR: [{ id_cliente: id }, { processo: { id_cliente: id } }] } : { id_processo: id },
+        where: entidade === 'clientes' ? { OR: [{ id_processo: null, id_cliente: id }, { processo: { id_cliente: id } }] } : { id_processo: id },
         select: { id_documento: true, nome_arquivo: true },
       });
       for (const document of documents) documentNames.set(String(document.id_documento), document.nome_arquivo);
-      if (documentNames.size) {
-        scope = { OR: [scope, { entidade: 'documentos', registro: { in: [...documentNames.keys()] } }] };
-      }
+      scope = { OR: [scope, {
+        entidade: 'documentos',
+        ...(entidade === 'clientes' ? { cliente_documento: id } : { processo_documento: id }),
+      }] };
     }
     const logs = await this.prisma.auditLog.findMany({
       where: { ...scope, timestamp: gte || lt ? { gte, lt } : undefined },

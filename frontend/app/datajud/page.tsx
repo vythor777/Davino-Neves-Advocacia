@@ -55,7 +55,9 @@ const TRIBUNAIS_OPCOES = [
   { valor: 'trt1', rotulo: 'TRT1 - Tribunal Regional do Trabalho 1ª Região (RJ)' },
   { valor: 'trt3', rotulo: 'TRT3 - Tribunal Regional do Trabalho 3ª Região (MG)' },
   { valor: 'stj', rotulo: 'STJ - Superior Tribunal de Justiça' },
-  { valor: 'stf', rotulo: 'STF - Supremo Tribunal Federal' },
+  { valor: 'tse', rotulo: 'TSE - Tribunal Superior Eleitoral' },
+  { valor: 'tst', rotulo: 'TST - Tribunal Superior do Trabalho' },
+  { valor: 'stm', rotulo: 'STM - Superior Tribunal Militar' },
 ];
 
 export default function DataJudPage() {
@@ -86,6 +88,7 @@ function DataJudContent() {
   const [clientes, setClientes] = useState<Cliente[]>([]);
   const [clienteSelecionadoId, setClienteSelecionadoId] = useState<number | ''>('');
   const [tituloProcesso, setTituloProcesso] = useState('');
+  const [dataAbertura, setDataAbertura] = useState('');
   const [statusProcesso, setStatusProcesso] = useState('Em Andamento');
   const [descricaoProcesso, setDescricaoProcesso] = useState('');
   const [salvandoVinculo, setSalvandoVinculo] = useState(false);
@@ -176,8 +179,9 @@ function DataJudContent() {
       // Caso não consiga buscar clientes
     }
 
-    const classeDesc = resultado.classe || 'Ação Judicial';
-    const orgaoDesc = resultado.orgaoJulgador || resultado.tribunal;
+    setDataAbertura(resultado.dataAjuizamento?.slice(0, 10) ?? '');
+    const classeDesc = resultado.classe || 'Processo';
+    const orgaoDesc = resultado.orgaoJulgador || 'Não informado pelo tribunal';
     const assuntosDesc = resultado.assuntos?.join(', ') || 'Sem assuntos discriminados';
 
     setTituloProcesso(`${classeDesc} - ${resultado.tribunal}`);
@@ -197,15 +201,13 @@ function DataJudContent() {
 
     setSalvandoVinculo(true);
     try {
-      const dataAberturaFormatada = resultado.dataAjuizamento
-        ? resultado.dataAjuizamento.slice(0, 10)
-        : new Date().toISOString().slice(0, 10);
+      if (!dataAbertura) throw new Error('Informe a data de abertura do processo.');
 
       const novoProcesso = await processoService.create({
         numero_processo: formatarCNJ(resultado.numeroProcesso),
         titulo: tituloProcesso.trim() || `Processo ${resultado.tribunal}`,
         descricao: descricaoProcesso.trim(),
-        data_abertura: dataAberturaFormatada,
+        data_abertura: dataAbertura,
         status: statusProcesso,
         id_cliente: Number(clienteSelecionadoId),
       });
@@ -497,7 +499,7 @@ function DataJudContent() {
                   <span>Nível de Sigilo</span>
                 </div>
                 <p className="mt-2 text-xs font-semibold text-slate-800 dark:text-slate-200">
-                  {resultado.nivelSigilo === 0
+                  {resultado.nivelSigilo == null ? 'Não informado pelo tribunal' : resultado.nivelSigilo === 0
                     ? 'Público (Nível 0)'
                     : `Sigiloso (Nível ${resultado.nivelSigilo})`}
                 </p>
@@ -605,6 +607,12 @@ function DataJudContent() {
                   className="w-full rounded-xl border border-slate-200/80 dark:border-white/[0.08] bg-white dark:bg-surface px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:border-brand focus:outline-hidden"
                 />
               </div>
+
+              <label className="block font-medium">
+                Data de abertura {resultado.dataAjuizamento ? '' : '(não informada pelo tribunal)'} *
+                <input type="date" required value={dataAbertura} onChange={event => setDataAbertura(event.target.value)}
+                  className="mt-1 block w-full rounded-xl border border-slate-300 bg-transparent px-3 py-2" />
+              </label>
 
               <div>
                 <label className="block font-medium text-slate-700 dark:text-slate-300 mb-1">

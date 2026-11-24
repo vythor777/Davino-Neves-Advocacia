@@ -5,6 +5,7 @@ import {
   IsNumber,
   IsOptional,
   IsPositive,
+  Max,
   IsString,
   MaxLength,
 } from 'class-validator';
@@ -49,7 +50,8 @@ export class CreateLancamentoDto {
   @IsNotEmpty({ message: 'A categoria do lançamento é obrigatória.' })
   categoria: CategoriaLancamentoDto;
 
-  @IsNumber({}, { message: 'O valor deve ser numérico.' })
+  @Max(9_999_999_999.99, { message: 'O valor excede o limite do lançamento.' })
+  @IsNumber({ maxDecimalPlaces: 2 }, { message: 'Informe um valor com até duas casas decimais.' })
   @IsPositive({ message: 'O valor deve ser maior que zero.' })
   @IsNotEmpty({ message: 'O valor é obrigatório.' })
   valor: number;

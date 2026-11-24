@@ -46,10 +46,10 @@ function EntityPicker({
     if (!terms.length) return options;
     return options.filter(({ label, detail, search, identifiers }) => {
       const text = normalize([label, detail, search].filter(Boolean).join(' '));
-      const digits = identifiers.map((identifier) => identifier.replace(/\D/g, ''));
+      const canonicalIds = identifiers.map(identifier => identifier.toLowerCase().replace(/[^a-z0-9]/g, ''));
       return terms.every((term) => text.includes(term) || (
-        /^[\d.\/-]+$/.test(term) && /\d/.test(term)
-        && digits.some((identifier) => identifier.includes(term.replace(/\D/g, '')))
+        /^[a-z0-9.\/-]+$/.test(term) && /[a-z0-9]/.test(term)
+        && canonicalIds.some(identifier => identifier.includes(term.replace(/[^a-z0-9]/g, '')))
       ));
     });
   }, [debouncedQuery, options]);

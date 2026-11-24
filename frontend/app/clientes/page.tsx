@@ -3,7 +3,7 @@ import { ClientDocuments } from '@/components/clientes/ClientDocuments';
 import { ClientClassificationFields } from '@/components/clientes/ClientClassificationFields';
 import { ClientProfileFields, ClientProfileDetails, getClientProfileFields } from '@/components/clientes/ClientProfileFields';
 import type { ClienteProfile } from '@/services/clienteService';
-import { cpfCnpjError } from '@/utils/identifiers';
+import { canonicalTaxId, cpfCnpjError } from '@/utils/identifiers';
 
 import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
 import { Dialog, DialogPanel, DialogTitle } from '@headlessui/react';
@@ -51,17 +51,16 @@ function formatarCPF(valor: string | null = ''): string {
 
 function formatarCNPJ(valor: string | null = ''): string {
   if (!valor) return '';
-  const digits = valor.replace(/\D/g, '').slice(0, 14);
-  return digits
-    .replace(/^(\d{2})(\d)/, '$1.$2')
-    .replace(/^(\d{2})\.(\d{3})(\d)/, '$1.$2.$3')
-    .replace(/\.(\d{3})(\d)/, '.$1/$2')
-    .replace(/(\d{4})(\d{1,2})$/, '$1-$2');
+  const chars = valor.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 14);
+  return chars.replace(/^(.{2})(.)/, '$1.$2')
+    .replace(/^(.{6})(.)/, '$1.$2')
+    .replace(/^(.{10})(.)/, '$1/$2')
+    .replace(/^(.{15})(.)/, '$1-$2');
 }
 
 function formatarCpfCnpj(valor: string | null = ''): string {
   if (!valor) return '';
-  const digits = valor.replace(/\D/g, '');
+  const digits = canonicalTaxId(valor);
   if (digits.length <= 11) {
     return formatarCPF(digits);
   }
@@ -69,7 +68,7 @@ function formatarCpfCnpj(valor: string | null = ''): string {
 }
 
 function tipoPessoaCliente(client: Cliente): 'pf' | 'pj' {
-  return client.tipo_pessoa ?? ((client.cpf_cnpj ?? '').replace(/\D/g, '').length > 11 ? 'pj' : 'pf');
+  return client.tipo_pessoa ?? (canonicalTaxId(client.cpf_cnpj ?? '').length > 11 ? 'pj' : 'pf');
 }
 
 function formatarTelefone(valor: string | null = ''): string {
@@ -144,7 +143,7 @@ function ClientesContent() {
 
   // Form fields
   const [formTipo, setFormTipo] = useState<'pf' | 'pj'>('pf');
-  const contatosObrigatorios = formTipo === 'pj' && !editingClient;
+  const contatoObrigatorio = (campo: 'cpf_cnpj' | 'email' | 'telefone') => formTipo === 'pj' && (!editingClient || !!editingClient[campo]?.trim());
   const [nome, setNome] = useState<string>('');
   const [cpfCnpj, setCpfCnpj] = useState<string>('');
   const [email, setEmail] = useState<string>('');
@@ -255,11 +254,9 @@ function ClientesContent() {
     if (!nome.trim()) errors.nome = 'O nome ou razão social é obrigatório.';
     const documentError = cpfCnpj.trim() ? cpfCnpjError(cpfCnpj, formTipo) : undefined;
     if (documentError) errors.cpfCnpj = documentError;
-    if (contatosObrigatorios) {
-      if (!cpfCnpj.trim()) errors.cpfCnpj = 'Informe o CNPJ da empresa.';
-      if (!email.trim()) errors.email = 'Informe o e-mail de contato da empresa.';
-      if (!telefone.trim()) errors.telefone = 'Informe o telefone de contato da empresa.';
-    }
+    if (contatoObrigatorio('cpf_cnpj') && !cpfCnpj.trim()) errors.cpfCnpj = 'Informe o CNPJ da empresa.';
+    if (contatoObrigatorio('email') && !email.trim()) errors.email = 'Informe o e-mail de contato da empresa.';
+    if (contatoObrigatorio('telefone') && !telefone.trim()) errors.telefone = 'Informe o telefone de contato da empresa.';
     if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       errors.email = 'Insira um endereço de e-mail válido.';
     }
@@ -353,7 +350,7 @@ function ClientesContent() {
   // Clientes filtrados
   const filteredClientes = useMemo(() => {
     return clientes.filter((client) => {
-      const digits = (client.cpf_cnpj ?? '').replace(/\D/g, '');
+      const digits = canonicalTaxId(client.cpf_cnpj ?? '');
       const isPJ = client.tipo_pessoa ? client.tipo_pessoa === 'pj' : digits.length > 11;
 
       if (filtroTipo === 'pf' && isPJ) return false;
@@ -365,7 +362,7 @@ function ClientesContent() {
         (client.categoria ?? '').toLowerCase().includes(term) ||
         (client.subcategoria ?? '').toLowerCase().includes(term) ||
         client.nome.toLowerCase().includes(term) ||
-        (client.cpf_cnpj ?? '').toLowerCase().includes(term) ||
+        (canonicalTaxId(term) !== '' && digits.includes(canonicalTaxId(term))) ||
         (client.email ?? '').toLowerCase().includes(term) ||
         (client.telefone ?? '').toLowerCase().includes(term) ||
         client.endereco.toLowerCase().includes(term)
@@ -607,7 +604,7 @@ function ClientesContent() {
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-white/[0.04]">
                   {filteredClientes.map((client) => {
-                    const digits = (client.cpf_cnpj ?? '').replace(/\D/g, '');
+                    const digits = canonicalTaxId(client.cpf_cnpj ?? '');
                     const isPJ = client.tipo_pessoa ? client.tipo_pessoa === 'pj' : digits.length > 11;
                     const countProc =
                       client._count?.processos ?? client.processos?.length ?? 0;
@@ -765,7 +762,7 @@ function ClientesContent() {
             {/* Mobile Cards View */}
             <div className="block md:hidden divide-y divide-slate-100 dark:divide-white/[0.04]">
               {filteredClientes.map((client) => {
-                const digits = (client.cpf_cnpj ?? '').replace(/\D/g, '');
+                const digits = canonicalTaxId(client.cpf_cnpj ?? '');
                 const isPJ = client.tipo_pessoa ? client.tipo_pessoa === 'pj' : digits.length > 11;
                 const countProc =
                   client._count?.processos ?? client.processos?.length ?? 0;
@@ -1002,14 +999,14 @@ function ClientesContent() {
                       htmlFor="input-cpf-cnpj"
                       className="block font-medium text-slate-700 dark:text-slate-300 mb-1"
                     >
-                      {formTipo === 'pf' ? 'CPF' : 'CNPJ'}{contatosObrigatorios && ' *'}
+                      {formTipo === 'pf' ? 'CPF' : 'CNPJ'}{contatoObrigatorio('cpf_cnpj') && ' *'}
                     </label>
                     <input
                       id="input-cpf-cnpj"
                       disabled={intern && !!editingClient}
-                      required={contatosObrigatorios}
+                      required={contatoObrigatorio('cpf_cnpj')}
                       type="text"
-                      inputMode="numeric"
+                      inputMode={formTipo === 'pj' ? 'text' : 'numeric'}
                       maxLength={formTipo === 'pf' ? 14 : 18}
                       value={cpfCnpj}
                       aria-invalid={!!formErrors.cpfCnpj}
@@ -1055,13 +1052,13 @@ function ClientesContent() {
                       htmlFor="input-telefone-cliente"
                       className="block font-medium text-slate-700 dark:text-slate-300 mb-1"
                     >
-                      Telefone de Contato{contatosObrigatorios && ' *'}
+                      Telefone de Contato{contatoObrigatorio('telefone') && ' *'}
                     </label>
                     <input
                       id="input-telefone-cliente"
                       type="text"
                       inputMode="tel"
-                      required={contatosObrigatorios}
+                      required={contatoObrigatorio('telefone')}
                       aria-invalid={!!formErrors.telefone}
                       aria-describedby={formErrors.telefone ? 'cliente-telefone-erro' : undefined}
                       maxLength={15}
@@ -1085,12 +1082,12 @@ function ClientesContent() {
                     htmlFor="input-email-cliente"
                     className="block font-medium text-slate-700 dark:text-slate-300 mb-1"
                   >
-                    E-mail de Contato{contatosObrigatorios && ' *'}
+                    E-mail de Contato{contatoObrigatorio('email') && ' *'}
                   </label>
                   <input
                     id="input-email-cliente"
                     type="email"
-                    required={contatosObrigatorios}
+                    required={contatoObrigatorio('email')}
                     aria-invalid={!!formErrors.email}
                     aria-describedby={formErrors.email ? 'cliente-email-erro' : undefined}
                     value={email}
@@ -1150,7 +1147,7 @@ function ClientesContent() {
                   tipoPessoa={formTipo}
                   value={profile}
                   onChange={setProfile}
-                  representatives={clientes.filter((client) => client.id_cliente !== editingClient?.id_cliente && (client.tipo_pessoa ? client.tipo_pessoa === 'pf' : (client.cpf_cnpj ?? '').replace(/\D/g, '').length === 11))}
+                  representatives={clientes.filter((client) => client.id_cliente !== editingClient?.id_cliente && (client.tipo_pessoa ? client.tipo_pessoa === 'pf' : canonicalTaxId(client.cpf_cnpj ?? '').length === 11))}
                   disabled={intern && !!editingClient}
                 />
                 {editingClient && <ClientDocuments key={editingClient.id_cliente} clientId={editingClient.id_cliente} />}

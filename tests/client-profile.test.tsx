@@ -14,21 +14,21 @@ const client: Cliente = {
 const representative: Cliente = { ...client, id_cliente: 2, nome: 'Representante exemplo' };
 
 test('formulário oferece todos os dados complementares sem categoria ou palavras-chave', () => {
-  const html = renderToStaticMarkup(<ClientProfileFields value={{}} onChange={() => {}} representatives={[representative]} />);
+  const html = renderToStaticMarkup(<ClientProfileFields tipoPessoa="pf" value={{}} onChange={() => {}} representatives={[representative]} />);
   for (const label of ['Tratamento', 'Gênero', 'Estado civil', 'Naturalidade', 'Nacionalidade', 'Empresa', 'Profissão', 'Nome da mãe', 'Nome do pai', 'Qualificação', 'Representante legal']) assert.ok(html.includes(label), label);
   assert.ok(!html.includes('Palavras-chave'));
   assert.ok(!html.includes('Categoria'));
-  assert.ok(html.includes('Representante exemplo'));
+  assert.ok(html.includes('role="combobox"'));
   assert.ok(html.includes('Sem representante legal'));
 });
 
 test('ficha apresenta os valores persistidos, o representante e escapa texto do usuário', () => {
-  const html = renderToStaticMarkup(<ClientProfileDetails client={client} representatives={[representative]} />);
+  const html = renderToStaticMarkup(<ClientProfileDetails tipoPessoa="pf" client={client} representatives={[representative]} />);
   for (const value of ['Analista', 'Feminino', 'Representante exemplo', 'Não informado', '&lt;script&gt;']) assert.ok(html.includes(value), value);
   assert.ok(!html.includes('<script>'));
 });
 
 test('edição restrita desabilita todos os campos complementares', () => {
-  const html = renderToStaticMarkup(<ClientProfileFields value={client} onChange={() => {}} representatives={[]} disabled />);
+  const html = renderToStaticMarkup(<ClientProfileFields tipoPessoa="pf" value={client} onChange={() => {}} representatives={[]} disabled />);
   assert.match(html, /<fieldset disabled=""/);
 });

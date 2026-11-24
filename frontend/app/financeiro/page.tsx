@@ -1,7 +1,7 @@
 'use client';
 import { financialPeriods } from '@/utils/financial-period';
 
-import React, { useState, useEffect, useMemo, useCallback, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, useRef, useCallback, Suspense } from 'react';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { useSearchParams } from 'next/navigation';
 import AuthGuard from '@/components/AuthGuard';
@@ -100,8 +100,15 @@ function FinanceiroContent() {
     }
   }, [searchParams]);
 
+  const requestId = useRef(0);
+  const currentPeriod = useRef<string | null>(mesFiltro);
+  const [erroCarga, setErroCarga] = useState('');
+
   // Carregar dados
   const loadData = useCallback(async (showLoading = true) => {
+    if (currentPeriod.current !== mesFiltro) return;
+    const id = ++requestId.current;
+    setErroCarga('');
     try {
       if (showLoading) setLoading(true);
       else setRefreshing(true);
@@ -119,30 +126,36 @@ function FinanceiroContent() {
         processoService.getAll(),
       ]);
 
-      if (lancRes.status === 'fulfilled') {
-        setLancamentos(lancRes.value || []);
+      if (id !== requestId.current || currentPeriod.current !== mesFiltro) return;
+      setClientes(cliRes.status === 'fulfilled' ? cliRes.value : []);
+      setProcessos(procRes.status === 'fulfilled' ? procRes.value : []);
+      if (lancRes.status === 'rejected' || resRes.status === 'rejected') {
+        setLancamentos([]);
+        setResumoData(null);
+        setErroCarga('Não foi possível carregar os lançamentos e o resumo deste período.');
+        return;
       }
-      if (resRes.status === 'fulfilled') {
-        setResumoData(resRes.value);
-      }
-      if (cliRes.status === 'fulfilled') {
-        setClientes(cliRes.value || []);
-      }
-      if (procRes.status === 'fulfilled') {
-        setProcessos(procRes.value || []);
+      setLancamentos(lancRes.value);
+      setResumoData(resRes.value);
+      if (cliRes.status === 'rejected' || procRes.status === 'rejected') {
+        setErroCarga('Não foi possível carregar todos os clientes e processos.');
       }
     } catch (err) {
       console.error('Erro ao carregar módulo financeiro:', err);
       toast.error('Erro ao carregar dados financeiros.');
     } finally {
-      setLoading(false);
-      setRefreshing(false);
+      if (id === requestId.current && currentPeriod.current === mesFiltro) {
+        setLoading(false);
+        setRefreshing(false);
+      }
     }
   }, [mesFiltro]);
 
   useEffect(() => {
+    currentPeriod.current = mesFiltro;
     loadData();
-  }, [loadData]);
+    return () => { currentPeriod.current = null; };
+  }, [loadData, mesFiltro]);
 
   // Handlers de Ações
   const handleCreateOrUpdate = async (data: CreateLancamentoInput) => {
@@ -302,7 +315,14 @@ function FinanceiroContent() {
           <select
             aria-label="Período financeiro"
             value={mesFiltro}
-            onChange={(e) => setMesFiltro(e.target.value)}
+            onChange={(e) => {
+              currentPeriod.current = e.target.value;
+              requestId.current++;
+              setLancamentos([]);
+              setResumoData(null);
+              setLoading(true);
+              setMesFiltro(e.target.value);
+            }}
             className="bg-transparent font-medium text-slate-800 dark:text-slate-200 focus:outline-hidden cursor-pointer"
           >
             {periods.months.map(period => <option key={period.value} value={period.value} className="bg-white text-slate-900 dark:bg-slate-900 dark:text-slate-100">{period.label}</option>)}
@@ -350,6 +370,9 @@ function FinanceiroContent() {
       </PageHeader>
 
       {/* Grid de Métricas em Cards */}
+      {erroCarga && <div role="alert" className="rounded-lg border border-amber-300 p-3">
+        {erroCarga} <button className="underline" onClick={() => loadData()}>Tentar novamente</button>
+      </div>}
       <FinancialMetricsCards data={resumoData} loading={loading} />
 
       {/* Navegação por Abas Segmentadas */}

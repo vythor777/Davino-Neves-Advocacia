@@ -21,15 +21,16 @@ Esta alteração depende da interface do PR #5. A matriz é fixa por cargo; o ad
 | Definir responsável/participantes | Sim | Não | Não |
 | Criar/editar prazos e compromissos processuais | Sim | Nos processos acessíveis | Não |
 | Excluir prazos | Sim | Não | Não |
-| Upload de documentos | Adiado | Adiado | Adiado |
-| Download de documentos | Adiado | Adiado | Adiado |
+| Anexar PDF | Sim | Sim, respeitando o vínculo | Não |
+| Baixar PDF disponível | Sim | Conforme acesso ao documento | Conforme acesso ao documento |
+| Excluir documentos, inclusive em lote | Sim | Não | Não |
 | Auditoria e alteração de configurações | Sim | Não | Não |
 
-Decisões conservadoras para regras não especificadas: exclusão de clientes/prazos apenas pelo administrador. Upload/download foram adiados por decisão do usuário; a matriz de documentos será retomada na etapa de Storage privado. Nome/razão social, CPF/CNPJ e nascimento/fundação são dados de identificação protegidos contra edição pelo estagiário. O cadastro inicial continua permitido com todos os campos necessários.
+Decisões conservadoras para regras não especificadas: exclusão de clientes/prazos apenas pelo administrador. Nome/razão social, CPF/CNPJ e nascimento/fundação são dados de identificação protegidos contra edição pelo estagiário. O cadastro inicial continua permitido com todos os campos necessários.
 
 A agenda independente (`/agenda`) passa a persistir compromissos pessoais: administrador vê todos, advogado administra os próprios, estagiário consulta os seus. A interface de Agenda e Prazos existente continua usando `/prazos` para compromissos ligados a processos.
 
-O financeiro permanece com sua política de acesso anterior entre usuários autenticados. A autenticação JWT global também protege suas rotas, mas sua autorização por cargo, vínculos financeiros e informações processuais presentes nos lançamentos permanecem fora desta etapa, conforme solicitado. Não considerar a separação de informações completa no módulo financeiro antes dessa revisão. A IA continua processando o texto enviado pelo próprio usuário, sem acesso automático ao banco de processos.
+O Financeiro é acessível ao administrador e a quem tiver liberação financeira explícita. A liberação dá acesso aos lançamentos do escritório, inclusive edição e exclusão. A IA continua processando o texto enviado pelo próprio usuário, sem acesso automático ao banco de processos.
 
 ## Comportamento de segurança
 
@@ -38,8 +39,8 @@ O financeiro permanece com sua política de acesso anterior entre usuários aute
 - Acesso por ID, listagens, processos dentro de clientes, contagens, prazos, documentos, notificações processuais e consultas CNJ aplicam o mesmo escopo.
 - Usuários sem vínculo recebem 404 para não confirmar a existência do processo.
 - O responsável é definido pelo servidor na criação feita por advogado. Somente administrador pode reatribuir ou liberar acesso; o payload comum de edição não aceita esses campos.
-- A tabela Documento é preservada sem alteração de colunas. Upload, download e exclusão de arquivos não são publicados nesta etapa; a seção de envio foi retirada da interface. A consulta de metadados permanece autenticada e limitada por vínculo, sem expor caminhos. Armazenamento futuro será avaliado com Supabase Storage privado, sem bytes no PostgreSQL.
-- A auditoria registra mutações bem-sucedidas nos módulos não financeiros, com autor, cargo, entidade, ID e horário. Não armazena senhas, tokens, corpo do documento ou payload completo. A consulta retorna as últimas 100 ações; não oferece alteração/exclusão de logs pela API. Não reconstrói histórico anterior e não equivale a um mecanismo de imutabilidade no banco.
+- PDFs ficam no bucket privado. Os endpoints verificam o perfil e o vínculo. Documentos preservados após excluir um processo ficam restritos ao administrador.
+- A auditoria registra mutações bem-sucedidas nos módulos auditados, inclusive no Financeiro, com autor, cargo, entidade, ID e horário. Não armazena senhas, tokens, corpo do documento ou payload completo. A consulta retorna até 100 ações por página; não oferece alteração/exclusão de logs pela API. Não reconstrói histórico anterior e não equivale a um mecanismo de imutabilidade no banco.
 - A tela de configurações permite ao administrador definir nome do escritório e e-mail de contato; o nome é usado na identificação da interface.
 
 ## Implantação
@@ -50,10 +51,11 @@ Não foi executada migração nem alteração de dados em produção durante o d
 2. Conferir `JWT_SECRET` no backend: deve ser um segredo aleatório com pelo menos 32 caracteres. O fallback conhecido foi removido. Se a chave mudar, os usuários precisarão entrar novamente. Contas existentes não são recriadas. Em banco vazio, o bootstrap exige `INITIAL_ADMIN_EMAIL` e `INITIAL_ADMIN_PASSWORD` (mínimo 12 caracteres), definidos pelo operador.
 3. Com as variáveis do ambiente carregadas, executar `node backend/scripts/preflight-permissions.mjs`. O script é somente leitura e confere administrador ativo e estrutura base.
 4. Conferir `npx prisma migrate status --schema backend/prisma/schema.prisma`. O histórico antigo do repositório não contém todas as alterações prévias de usuários/financeiro; o banco publicado pode ter sido sincronizado via `db push`. Se houver divergência, reconciliar o histórico com o estado real antes de prosseguir. Não executar reset, `migrate dev` nem aceitar perda de dados no banco publicado.
-5. Aplicar `npx prisma migrate deploy --schema backend/prisma/schema.prisma` somente depois de conferir o histórico. A migração `20260928120000_process_access` é aditiva e transacional; cria vínculos, auditoria e configurações. Não inventa responsáveis nem concede acesso automaticamente a processos antigos.
-6. Gerar o cliente Prisma e publicar backend antes do frontend: `npm run build --workspace=backend`. As rotas novas do frontend precisam do backend e da migração novos.
-7. Como administrador, atribuir responsáveis e participantes aos processos existentes. Até essa atribuição eles ficam visíveis somente ao administrador.
-8. Conferir no preview os três cargos, desativação/revogação de acesso, indisponibilidade de upload/download e auditoria, além do layout desktop/mobile. Só então promover a versão publicada.
+5. A reconciliação de 24/11/2026 preserva hashes, normaliza identificadores e protege os vínculos dos documentos. Cargos legados desconhecidos e colisões precisam ser resolvidos com o escritório. Ver [instruções do backend](../backend/README.md#deploy-e-verificação).
+6. Aplicar `npx prisma migrate deploy --schema backend/prisma/schema.prisma` somente depois de conferir o histórico. A migração `20260928120000_process_access` é aditiva e transacional; cria vínculos, auditoria e configurações. Não inventa responsáveis nem concede acesso automaticamente a processos antigos.
+7. Gerar o cliente Prisma e publicar backend antes do frontend: `npm run build --workspace=backend`. As rotas novas do frontend precisam do backend e da migração novos.
+8. Como administrador, atribuir responsáveis e participantes aos processos existentes. Até essa atribuição eles ficam visíveis somente ao administrador.
+9. Conferir no preview os três cargos, desativação/revogação de acesso, as permissões de upload/download e auditoria, além do layout desktop/mobile. Só então promover a versão publicada.
 
 ### Proteção do acesso direto ao Supabase
 
@@ -74,7 +76,7 @@ por concessões sem RLS continua uma pendência de segurança da revisão financ
 não declarar que todo o banco ficou protegido. As regras financeiras do Nest e
 do frontend também permanecem como antes.
 
-### Conferência de 29/09/2026
+### Conferência de 29/09/2026 (registro histórico)
 
 - Os três checksums de migrações anteriores conferem com `_prisma_migrations`;
   existe um administrador ativo e as novas estruturas ainda não existem.

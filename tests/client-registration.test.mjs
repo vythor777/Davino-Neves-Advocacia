@@ -72,11 +72,26 @@ test('edição mantém o tipo do cliente e aceita corrigir um documento do mesmo
   assert.deepEqual(writes, [
     { cpf_cnpj: '11144477735' },
     { endereco: 'Novo endereço' },
-    { cpf_cnpj: companyContacts.cpf_cnpj },
+    { cpf_cnpj: '04252011000110' },
   ]);
 });
 test('edição permite apagar contatos e rejeita categoria inválida', async () => {
   assert.deepEqual(await validate(plainToInstance(UpdateClienteDto,{cpf_cnpj:'',email:'',telefone:''})),[]);
   assert.ok((await validate(plainToInstance(CreateClienteDto,{...base,categoria:'invalida'}))).length);
   assert.ok((await validate(plainToInstance(CreateClienteDto,{...base,tipo_pessoa:null}))).length);
+});
+
+test('CNPJ alfanumérico conserva as letras e a edição mantém os campos obrigatórios', async () => {
+  const empresa = { ...companyContacts, tipo_pessoa: 'pj', cpf_cnpj: '00.000.000/E08G-12' };
+  const service = new ClientesService({ cliente: {
+    create: async ({ data }) => data,
+    findUnique: async () => empresa,
+  } }, { clientUpdate() {}, processScope() { return {}; } });
+  const dto = plainToInstance(CreateClienteDto, { ...base, ...empresa });
+  assert.deepEqual(await validate(dto), []);
+  assert.equal((await service.create(dto, {})).cpf_cnpj, '00000000E08G12');
+  await assert.rejects(service.create({ ...dto, tipo_pessoa: 'pf' }, {}), {status: 400});
+  for (const field of ['cpf_cnpj', 'email', 'telefone']) {
+    await assert.rejects(service.update(2, { [field]: null }, {}), {status: 400});
+  }
 });

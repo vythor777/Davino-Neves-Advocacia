@@ -42,7 +42,7 @@ export class CreatePrazoDto {
   @IsOptional()
   @IsInt()
   @IsPositive()
-  id_responsavel?: number;
+  id_responsavel?: number | null;
 
   @IsString({ message: 'O status deve ser um texto.' })
   @IsNotEmpty({ message: 'O status é obrigatório.' })

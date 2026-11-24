@@ -38,7 +38,7 @@ test('advogado pode anexar PDF diretamente ao cliente sem processo', async () =>
   assert.deepEqual(stored.content, bytes);
 
   await service.findAll(lawyer, undefined, 42);
-  assert.deepEqual(filters[1], { OR: [{ id_cliente: 42 }, { processo: { id_cliente: 42 } }] });
+  assert.deepEqual(filters[1], { OR: [{ id_processo: null, id_cliente: 42 }, { processo: { id_cliente: 42 } }] });
   assert.ok(filters[0].OR.some(rule => rule.id_processo === null && rule.id_usuario === lawyer.id_usuario));
   assert.ok(filters[0].OR.some(rule => rule.processo));
   await assert.rejects(service.upload(lawyer, { id_cliente: 999 }, 'teste.pdf', bytes), { status: 404 });
@@ -76,10 +76,10 @@ test('pop-ups do cliente e do processo incluem auditoria antiga dos documentos v
     auditLog: { findMany: async ({ where }) => { auditScope = where; return recorded; } },
   });
   const client = await controller.list('clientes', '42', undefined, undefined, undefined, true);
-  assert.deepEqual(documentScope, { OR: [{ id_cliente: 42 }, { processo: { id_cliente: 42 } }] });
+  assert.deepEqual(documentScope, { OR: [{ id_processo: null, id_cliente: 42 }, { processo: { id_cliente: 42 } }] });
   assert.deepEqual(auditScope.OR, [
     { entidade: 'clientes', registro: '42' },
-    { entidade: 'documentos', registro: { in: ['11'] } },
+    { entidade: 'documentos', cliente_documento: 42 },
   ]);
   assert.deepEqual(client.map(log => [log.usuario, log.descricao]), [
     ['Ana', 'Anexou o documento “contrato.pdf”.'],

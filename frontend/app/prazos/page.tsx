@@ -191,7 +191,7 @@ function PrazosContent() {
     setDataVencimento(dateFormatted);
     setHora(prazo.hora || '09:00');
     setTipoCompromisso(prazo.tipoCompromisso || 'Prazo Fatal');
-    setResponsavel(prazo.responsavel || '');
+    setResponsavel(prazo.id_responsavel ? String(prazo.id_responsavel) : prazo.responsavel ? 'legado' : '');
     setStatus(prazo.status);
     setIdProcesso(String(prazo.id_processo));
     setFormErrors({});
@@ -200,6 +200,12 @@ function PrazosContent() {
       fetchResponsaveis();
     }
   };
+
+  const processoSelecionado = processos.find(processo => String(processo.id_processo) === idProcesso);
+  const equipeDoProcesso = responsaveis.filter(usuario =>
+    usuario.id_usuario === processoSelecionado?.id_responsavel ||
+    processoSelecionado?.participantes?.some(p => p.id_usuario === usuario.id_usuario)
+  );
 
   const validateForm = () => {
     const errors: Record<string, string> = {};
@@ -243,10 +249,15 @@ function PrazosContent() {
       data_vencimento: dataVencimento,
       hora: hora.trim() || '09:00',
       tipoCompromisso: tipoCompromisso.trim() || 'Prazo Fatal',
-      responsavel: responsavel.trim() ? responsavel.trim() : undefined,
       status: status.trim(),
       id_processo: Number(idProcesso),
     };
+
+    if (responsavel === 'legado') {
+      payload.responsavel = editingPrazo?.responsavel ?? undefined;
+    } else if (!editingPrazo?.id_responsavel || String(editingPrazo.id_responsavel) !== responsavel) {
+      payload.id_responsavel = responsavel ? Number(responsavel) : null;
+    }
 
     try {
       if (editingPrazo) {
@@ -1094,7 +1105,7 @@ function PrazosContent() {
                   <label htmlFor="prazo-processo" className="block font-medium text-slate-700 dark:text-slate-300 mb-1">
                     Processo Judicial Vinculado *
                   </label>
-                  <ProcessPicker id="prazo-processo" processes={processos} value={idProcesso} onChange={setIdProcesso} required />
+                  <ProcessPicker id="prazo-processo" processes={processos} value={idProcesso} onChange={id => { setIdProcesso(id); setResponsavel(''); }} required />
                   {formErrors.idProcesso && (
                     <p className="text-red-500 dark:text-red-400 mt-1">
                       {formErrors.idProcesso}
@@ -1221,28 +1232,26 @@ function PrazosContent() {
                         ? 'Carregando equipe...'
                         : tipoCompromisso.toLowerCase().includes('fatal') ? 'Selecione um Responsável (Obrigatório)' : 'Selecione um Responsável (Opcional)'}
                     </option>
-                    {responsaveis.map((u) => {
+                    {equipeDoProcesso.map((u) => {
                       const cargoFormatado =
                         u.cargo ||
                         (u.role === 'ADVOGADO' ? 'Advogado' : 'Estagiário');
                       return (
                         <option
                           key={u.id || u.id_usuario}
-                          value={u.nome}
+                          value={u.id_usuario ?? u.id}
                           className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
                         >
-                          {u.nome} ({cargoFormatado})
+                          {u.nome} ({cargoFormatado}){equipeDoProcesso.some(outro => outro.id_usuario !== u.id_usuario && outro.nome === u.nome) ? " #" + u.id_usuario : ""}
                         </option>
                       );
                     })}
-                    {responsavel &&
-                      !responsaveis.some((u) => u.nome === responsavel) && (
-                        <option
-                          value={responsavel}
-                          className="bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
-                        >
-                          {responsavel}
-                        </option>
+                    {editingPrazo?.responsavel && !editingPrazo.id_responsavel && (
+                      <option value="legado">{editingPrazo.responsavel} (registro anterior)</option>
+                    )}
+                    {editingPrazo?.id_responsavel && responsavel === String(editingPrazo.id_responsavel) &&
+                      !equipeDoProcesso.some(u => u.id_usuario === editingPrazo.id_responsavel) && (
+                        <option value={responsavel}>{editingPrazo.responsavel} (vínculo anterior)</option>
                       )}
                   </select>
                 </div>

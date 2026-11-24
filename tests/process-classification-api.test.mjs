@@ -22,7 +22,7 @@ test('DTO aceita classificação opcional, todas as categorias e subcategorias p
 
 test('criação persiste categoria e subcategoria e rejeita subcategoria isolada', async () => {
   const {service, writes} = setup();
-  await service.create({ categoria: 'Previdenciário', subcategoria: 'Benefício BPC/LOAS', data_abertura: '2026-10-20' }, actor);
+  await service.create({ numero_processo: '1027575-75.2024.8.26.0114', categoria: 'Previdenciário', subcategoria: 'Benefício BPC/LOAS', data_abertura: '2026-10-20' }, actor);
   assert.equal(writes[0].categoria, 'Previdenciário');
   assert.equal(writes[0].subcategoria, 'Benefício BPC/LOAS');
   await assert.rejects(service.create({ subcategoria: 'Divórcio', data_abertura: '2026-10-20' }, actor), /categoria antes/);

@@ -24,7 +24,7 @@ export class PrazosService {
   async create(createPrazoDto: CreatePrazoDto, user: Actor) {
     this.access.requireRole(user, 'ADMINISTRADOR', 'ADVOGADO');
     await this.access.process(user, createPrazoDto.id_processo);
-    const responsavel = createPrazoDto.id_responsavel === undefined ? null : await this.resolveResponsavel(createPrazoDto.id_responsavel, createPrazoDto.id_processo);
+    const responsavel = createPrazoDto.id_responsavel == null ? null : await this.resolveResponsavel(createPrazoDto.id_responsavel, createPrazoDto.id_processo);
     if ((createPrazoDto.tipoCompromisso || 'Prazo Fatal').toLowerCase().includes('fatal') && !responsavel && !createPrazoDto.responsavel?.trim()) {
       throw new BadRequestException('Defina um responsável pelo cumprimento do prazo fatal.');
     }
@@ -64,12 +64,13 @@ export class PrazosService {
   }
 
   async findAll(user: Actor) {
-    return this.prisma.prazo.findMany({
+    const rows = await this.prisma.prazo.findMany({
       where: { processo: this.access.processScope(user) },
       orderBy: {
         data_vencimento: 'asc',
       },
       include: {
+        usuario_responsavel: { select: { nome: true } },
         processo: {
           include: {
             cliente: true,
@@ -77,12 +78,14 @@ export class PrazosService {
         },
       },
     });
+    return rows.map(row => ({ ...row, responsavel: row.usuario_responsavel?.nome ?? row.responsavel }));
   }
 
   async findOne(id: number, user: Actor) {
     const prazo = await this.prisma.prazo.findFirst({
       where: { id_prazo: id, processo: this.access.processScope(user) },
       include: {
+        usuario_responsavel: { select: { nome: true } },
         processo: {
           include: {
             cliente: true,
@@ -95,7 +98,7 @@ export class PrazosService {
       throw new NotFoundException(`Prazo com ID ${id} não encontrado.`);
     }
 
-    return prazo;
+    return { ...prazo, responsavel: prazo.usuario_responsavel?.nome ?? prazo.responsavel };
   }
 
   async update(id: number, updatePrazoDto: UpdatePrazoDto, user: Actor) {
@@ -103,9 +106,10 @@ export class PrazosService {
     if (updatePrazoDto.id_processo !== undefined) await this.access.process(user, updatePrazoDto.id_processo);
     // Garante que o prazo existe antes de atualizar
     const existing = await this.findOne(id, user);
-    const responsavel = updatePrazoDto.id_responsavel === undefined ? null : await this.resolveResponsavel(updatePrazoDto.id_responsavel, updatePrazoDto.id_processo ?? existing.id_processo);
-    if (updatePrazoDto.id_processo !== undefined && existing.id_responsavel && !responsavel) await this.resolveResponsavel(existing.id_responsavel, updatePrazoDto.id_processo);
-    if ((updatePrazoDto.tipoCompromisso ?? existing.tipoCompromisso).toLowerCase().includes('fatal') && !responsavel && !(updatePrazoDto.responsavel ?? existing.responsavel)?.trim()) {
+    const responsavel = updatePrazoDto.id_responsavel == null ? null : await this.resolveResponsavel(updatePrazoDto.id_responsavel, updatePrazoDto.id_processo ?? existing.id_processo);
+    if (updatePrazoDto.id_processo !== undefined && updatePrazoDto.id_processo !== existing.id_processo && existing.id_responsavel && updatePrazoDto.id_responsavel === undefined) await this.resolveResponsavel(existing.id_responsavel, updatePrazoDto.id_processo);
+    const nomeFinal = updatePrazoDto.id_responsavel === null ? null : responsavel?.nome ?? updatePrazoDto.responsavel ?? existing.responsavel;
+    if ((updatePrazoDto.tipoCompromisso ?? existing.tipoCompromisso).toLowerCase().includes('fatal') && !nomeFinal?.trim()) {
       throw new BadRequestException('Defina um responsável pelo cumprimento do prazo fatal.');
     }
 
@@ -133,6 +137,9 @@ export class PrazosService {
       if (responsavel) {
         dataToUpdate.usuario_responsavel = { connect: { id_usuario: responsavel.id_usuario } };
         dataToUpdate.responsavel = responsavel.nome;
+      } else if (updatePrazoDto.id_responsavel === null) {
+        dataToUpdate.usuario_responsavel = { disconnect: true };
+        dataToUpdate.responsavel = null;
       } else if (updatePrazoDto.responsavel !== undefined && updatePrazoDto.responsavel !== existing.responsavel) {
         dataToUpdate.usuario_responsavel = { disconnect: true };
       }

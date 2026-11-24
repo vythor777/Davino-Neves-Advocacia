@@ -7,8 +7,8 @@ import { auditChanges } from '../backend/src/auditoria/audit-changes';
 
 test('frontend and backend reject reported fake identifiers and corrupted check digits', () => {
   for (const validate of [isValidCpfCnpj, backendDocument]) {
-    for (const value of ['000.000.000-00', '111.111.111-11', '000.123.456-00', '123.456.789-99', '529.982.247-24', '04.252.011/0001-11']) assert.equal(validate(value), false);
-    for (const value of ['529.982.247-25', '04.252.011/0001-10', '52998224725']) assert.equal(validate(value), true);
+    for (const value of ['000.000.000-00', '111.111.111-11', '000.123.456-00', '123.456.789-99', '529.982.247-24', '04.252.011/0001-11', '00.000.000/E08G-13']) assert.equal(validate(value), false);
+    for (const value of ['529.982.247-25', '04.252.011/0001-10', '52998224725', '00.000.000/E08G-12', '00000000e08g12']) assert.equal(validate(value), true);
   }
   for (const validate of [isValidCnj, backendCnj]) {
     for (const value of ['0000000-00.0000.0.00.0000', '9000001-00.2026.8.26.0114', '1027575-76.2024.8.26.0114', 'abc10275757520248260114']) assert.equal(validate(value), false);

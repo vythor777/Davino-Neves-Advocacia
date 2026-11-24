@@ -22,7 +22,7 @@ export class ProcessosService {
     const classification = this.classification(dto);
     try {
       return await this.prisma.processo.create({
-        data: { ...dto, ...classification, data_abertura: new Date(dto.data_abertura),
+        data: { ...dto, ...classification, numero_processo: dto.numero_processo.replace(/\D/g, ''), data_abertura: new Date(dto.data_abertura),
           id_responsavel: user.role === 'ADVOGADO' ? user.id_usuario : null }, include,
       });
     } catch (error) { this.rethrow(error); }
@@ -50,8 +50,23 @@ export class ProcessosService {
       throw new ForbiddenException('Somente o administrador pode restaurar processos encerrados.');
     }
     try {
-      return await this.prisma.processo.update({ where: { id_processo: id },
-        data: { ...dto, ...classification, ...(dto.data_abertura !== undefined ? { data_abertura: new Date(dto.data_abertura) } : {}) }, include });
+      const data = {
+        ...dto, ...classification,
+        ...(dto.numero_processo !== undefined ? { numero_processo: dto.numero_processo.replace(/\D/g, '') } : {}),
+        ...(dto.data_abertura !== undefined ? { data_abertura: new Date(dto.data_abertura) } : {}),
+      };
+      const where = { id_processo: id };
+      if (dto.id_cliente === undefined || dto.id_cliente === current.id_cliente) {
+        return await this.prisma.processo.update({ where, data, include });
+      }
+      return await this.prisma.$transaction(async tx => {
+        // The composite FK transfers the documents in this same transaction.
+        const updated = await tx.processo.update({ where, data, include });
+        if (await tx.documento.count({ where: { ...where, situacao: 'EXCLUINDO' } })) {
+          throw new ConflictException('Conclua a exclusão de documentos antes de transferir o processo.');
+        }
+        return updated;
+      }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
     } catch (error) { this.rethrow(error); }
   }
 

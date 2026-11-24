@@ -89,6 +89,8 @@ model Processo {
   participantes ProcessoParticipante[]
   @@index([id_responsavel])
 
+  @@unique([id_processo, id_cliente])
+
   // Chave Estrangeira
   id_cliente       Int
   cliente          Cliente     @relation(fields: [id_cliente], references: [id_cliente])
@@ -128,7 +130,7 @@ model Documento {
 
   // Chaves Estrangeiras
   id_processo      Int?
-  processo         Processo?   @relation(fields: [id_processo], references: [id_processo], onDelete: Restrict)
+  processo         Processo?   @relation(fields: [id_processo, id_cliente], references: [id_processo, id_cliente], onDelete: Restrict, onUpdate: Cascade)
   id_cliente       Int?
   cliente          Cliente?    @relation(fields: [id_cliente], references: [id_cliente], onDelete: Restrict)
   tamanho_bytes    Int         @default(0)
@@ -214,6 +216,10 @@ model AuditLog {
   acao String
   entidade String
   registro String?
+  cliente_documento Int?
+  processo_documento Int?
+  @@index([cliente_documento, timestamp])
+  @@index([processo_documento, timestamp])
   descricao String
   timestamp DateTime @default(now())
   @@index([entidade, registro, timestamp])

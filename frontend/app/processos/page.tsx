@@ -152,7 +152,7 @@ function ProcessosContent() {
   const openEditModal = (proc: Processo) => {
     if (!canEditProcess(proc)) return;
     setEditingProcesso(proc);
-    setNumeroProcesso(proc.numero_processo);
+    setNumeroProcesso(formatarNumeroCNJ(proc.numero_processo));
     setTitulo(proc.titulo);
     setDescricao(proc.descricao);
     const dateFormatted = proc.data_abertura
@@ -274,6 +274,7 @@ function ProcessosContent() {
 
       return (
         procNum.includes(term) ||
+        (/^[\d.\s-]+$/.test(term) && /\d/.test(term) && procNum.replace(/\D/g, '').includes(term.replace(/\D/g, ''))) ||
         procTitle.includes(term) ||
         procDesc.includes(term) ||
         clientName.includes(term) ||

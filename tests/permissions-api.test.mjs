@@ -530,7 +530,7 @@ test('exclusão em lote valida permissões e registra cada documento excluído',
   assert.equal(result.body.falhas[0].id_documento, 402);
   assert.equal(db.docs[0].situacao, 'EXCLUINDO');
   assert.deepEqual(db.removedFiles, ['private/arquivo.txt']);
-  assert.deepEqual(db.logs.map(log => [log.registro, log.acao, log.id_usuario]), [['401', 'EXCLUSAO', 1], ['404', 'EXCLUSAO', 1]]);
+  assert.deepEqual(db.logs.map(log => [log.registro, log.acao, log.id_usuario]).sort((a, b) => a[0].localeCompare(b[0])), [['401', 'EXCLUSAO', 1], ['404', 'EXCLUSAO', 1]]);
 
   db.storageFailurePath = undefined;
   const retry = await api.delete(url).set(auth(1)).send({ ids }).expect(200);

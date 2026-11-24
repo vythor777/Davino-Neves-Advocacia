@@ -57,18 +57,13 @@ $ npm run test:e2e
 $ npm run test:cov
 ```
 
-## Deployment
+## Deploy e verificação
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+O frontend é publicado na Vercel e a API no Render. O backend precisa de Node compatível, PostgreSQL e das variáveis de ambiente descritas na raiz. Consulte [o guia de implantação](../docs/permissions.md) para as regras de acesso.
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+Na raiz do repositório, compile com `npm run build -w backend`. Use `prisma migrate deploy --schema backend/prisma/schema.prisma` com a conexão do ambiente correto e inicie com `npm run start:prod -w backend`. A aplicação de migrações é independente da inicialização da API.
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+As migrações de reconciliação preservam hashes e perfis legados. Layout misto, cargo desconhecido ou colisões após normalizar e-mail, CPF/CNPJ ou número CNJ precisam ser resolvidos antes da publicação. Valide em uma cópia do banco. Não mescle registros de pessoas ou processos automaticamente. A auditoria preserva os vínculos de documentos nas novas operações. Para eventos anteriores à migração, só é possível associar documentos ainda existentes.
 
 ## Observability
 

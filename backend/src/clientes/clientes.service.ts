@@ -11,13 +11,13 @@ import { DocumentosService } from '../documentos/documentos.service.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateClienteDto } from './dto/create-cliente.dto.js';
 import { UpdateClienteDto } from './dto/update-cliente.dto.js';
-import { isValidCpfCnpj } from '../common/validation/identifiers.js';
+import { canonicalTaxId, isValidCpfCnpj } from '../common/validation/identifiers.js';
 
 function validateCompanyRegistration(cnpj?: string | null, email?: string | null, telefone?: string | null) {
   if (!cnpj?.trim() || !email?.trim() || !telefone?.trim()) {
     throw new BadRequestException('Informe o CNPJ, o e-mail e o telefone da pessoa jurídica.');
   }
-  if (cnpj.replace(/\D/g, '').length !== 14 || !isValidCpfCnpj(cnpj)) {
+  if (canonicalTaxId(cnpj).length !== 14 || !isValidCpfCnpj(cnpj)) {
     throw new BadRequestException('Informe um CNPJ válido para a pessoa jurídica.');
   }
 }
@@ -63,9 +63,12 @@ export class ClientesService {
   async create(createClienteDto: CreateClienteDto, user: Actor) {
     const classification = this.classification(createClienteDto);
     const tipoPessoa = createClienteDto.tipo_pessoa
-      ?? ((createClienteDto.cpf_cnpj ?? '').replace(/\D/g, '').length === 14 ? 'pj' : 'pf');
+      ?? (canonicalTaxId(createClienteDto.cpf_cnpj ?? '').length === 14 ? 'pj' : 'pf');
     if (tipoPessoa === 'pj') {
       validateCompanyRegistration(createClienteDto.cpf_cnpj, createClienteDto.email, createClienteDto.telefone);
+    }
+    if (tipoPessoa === 'pf' && createClienteDto.cpf_cnpj && canonicalTaxId(createClienteDto.cpf_cnpj).length !== 11) {
+      throw new BadRequestException('Informe um CPF válido.');
     }
     await this.validateRepresentative(createClienteDto.id_representante_legal);
     if (createClienteDto.data_nascimento) {
@@ -80,6 +83,7 @@ export class ClientesService {
     try {
       const data: any = {
         ...createClienteDto,
+        cpf_cnpj: createClienteDto.cpf_cnpj ? canonicalTaxId(createClienteDto.cpf_cnpj) : null,
         ...classification,
         tipo_pessoa: tipoPessoa,
         data_nascimento: createClienteDto.data_nascimento
@@ -141,14 +145,21 @@ export class ClientesService {
     // Garante que o cliente existe antes de atualizar
     const current = await this.findOne(id, user);
     const { tipo_pessoa, ...changes } = updateClienteDto;
-    const currentDocument = current.cpf_cnpj?.replace(/\D/g, '');
+    const currentDocument = canonicalTaxId(current.cpf_cnpj ?? '');
     const currentType = current.tipo_pessoa ?? (currentDocument?.length === 14 ? 'pj' : 'pf');
     if (tipo_pessoa !== undefined && tipo_pessoa !== currentType) {
       throw new BadRequestException('O tipo de pessoa não pode ser alterado após o cadastro.');
     }
-    const newDocument = changes.cpf_cnpj?.replace(/\D/g, '');
+    const newDocument = canonicalTaxId(changes.cpf_cnpj ?? '');
     if (newDocument && newDocument !== currentDocument && newDocument.length !== (currentType === 'pj' ? 14 : 11)) {
       throw new BadRequestException(currentType === 'pj' ? 'Informe um CNPJ válido.' : 'Informe um CPF válido.');
+    }
+    if (currentType === 'pj') {
+      for (const key of ['cpf_cnpj', 'email', 'telefone'] as const) {
+        if (current[key]?.trim() && changes[key] !== undefined && !changes[key]?.trim()) {
+          throw new BadRequestException('O CNPJ, o e-mail e o telefone da empresa não podem ser removidos.');
+        }
+      }
     }
     const classification = this.classification(updateClienteDto, current);
 
@@ -163,6 +174,7 @@ export class ClientesService {
 
     try {
       const dataToUpdate: any = { ...changes, ...classification };
+      if (changes.cpf_cnpj !== undefined) dataToUpdate.cpf_cnpj = newDocument || null;
       if (updateClienteDto.data_nascimento !== undefined) {
         dataToUpdate.data_nascimento = updateClienteDto.data_nascimento
           ? new Date(updateClienteDto.data_nascimento)
@@ -191,7 +203,7 @@ export class ClientesService {
   async remove(id: number, user: Actor, confirmed = false, deleteLinked = false) {
     this.access.requireRole(user, 'ADMINISTRADOR');
     const processes = { id_cliente: id };
-    const documents = { OR: [{ id_cliente: id }, { processo: processes }] };
+    const documents = { OR: [{ id_processo: null, id_cliente: id }, { processo: processes }] };
 
     try {
       if (deleteLinked) {

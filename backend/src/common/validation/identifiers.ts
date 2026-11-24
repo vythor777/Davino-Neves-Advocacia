@@ -1,9 +1,12 @@
-/** Validates numeric CPF/CNPJ check digits without consulting personal data. */
+export function canonicalTaxId(value: string): string {
+  return value.replace(/[./\s-]/g, '').toUpperCase();
+}
+
+/** CNPJ uses the ASCII code minus 48, including for letters in its first 12 positions. */
 export function isValidCpfCnpj(value: string): boolean {
-  if (!/^[\d.\-/\s]+$/.test(value)) return false;
-  const digits = value.replace(/\D/g, '');
-  if (![11, 14].includes(digits.length) || /^(\d)\1+$/.test(digits)) return false;
-  const numbers = [...digits].map(Number);
+  const digits = canonicalTaxId(value);
+  if (!/^(?:\d{11}|[A-Z0-9]{12}\d{2})$/.test(digits) || /^(\d)\1+$/.test(digits)) return false;
+  const numbers = [...digits].map(character => character.charCodeAt(0) - 48);
   const check = (length: number, weights: number[]) => {
     const remainder = numbers.slice(0, length).reduce((sum, n, i) => sum + n * weights[i], 0) % 11;
     return remainder < 2 ? 0 : 11 - remainder;

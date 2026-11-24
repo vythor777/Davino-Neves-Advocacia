@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException, ConflictException, HttpException } from '@nestjs/common';
 import { createHash, randomUUID } from 'node:crypto';
 import JSZip from 'jszip';
-import type { Documento, Prisma } from '@prisma/client';
+import { Prisma, type Documento } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { AccessService, type Actor } from '../access/access.service.js';
 import { DocumentStorageService } from './document-storage.service.js';
@@ -32,7 +32,7 @@ export class DocumentosService {
     if (processId !== undefined) await this.access.process(user, processId);
     const filters: Prisma.DocumentoWhereInput[] = [this.scope(user)];
     if (processId !== undefined) filters.push({ id_processo: processId });
-    if (clientId !== undefined) filters.push({ OR: [{ id_cliente: clientId }, { processo: { id_cliente: clientId } }] });
+    if (clientId !== undefined) filters.push({ OR: [{ id_processo: null, id_cliente: clientId }, { processo: { id_cliente: clientId } }] });
     return this.prisma.documento.findMany({ where: { AND: filters }, select: documentMetadata, orderBy: { data_upload: 'desc' } });
   }
   async findOne(id: number, user: Actor) {
@@ -64,6 +64,11 @@ export class DocumentosService {
       const sum = await tx.documento.aggregate({ where: { situacao: { not: 'ARQUIVADO' } }, _sum: { tamanho_bytes: true } });
       if ((sum._sum.tamanho_bytes || 0) + bytes.length > OFFICE_STORAGE_LIMIT) throw new BadRequestException('Espaço reservado esgotado. Solicite backup e arquivamento ao administrador.');
       return tx.documento.create({ data: { nome_arquivo: name.replace(/[\\/\x00-\x1f]/g, '_').slice(0, 250), tipo: 'application/pdf', caminho_arquivo: path, id_processo: dto.id_processo, id_cliente: dto.id_cliente, id_usuario: user.id_usuario, tamanho_bytes: bytes.length, sha256, situacao: 'EM_ENVIO' } });
+    }).catch(error => {
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2003') {
+        throw new ConflictException('O vínculo mudou durante o envio. Atualize o cadastro e tente novamente.');
+      }
+      throw error;
     });
     try { await this.storage.upload(path, bytes); }
     catch (error) { await this.prisma.documento.delete({ where: { id_documento: record.id_documento } }); throw error; }
@@ -117,17 +122,17 @@ export class DocumentosService {
     this.access.requireRole(user, 'ADMINISTRADOR');
     const documents = await this.prisma.documento.findMany({
       where,
-      select: { id_documento: true, situacao: true, nome_arquivo: true, caminho_arquivo: true, arquivado_em: true },
+      select: { id_documento: true, id_cliente: true, situacao: true, nome_arquivo: true, caminho_arquivo: true, arquivado_em: true },
     });
     for (const document of documents) this.assertRemovable(document.situacao);
-    for (const document of documents) await this.deleteDocument(document, where);
+    for (const document of documents) await this.deleteDocument(document, user, where);
   }
 
   async remove(id: number, user: Actor) {
     this.access.requireRole(user, 'ADMINISTRADOR');
     const document = await this.prisma.documento.findUnique({ where: { id_documento: id } });
     if (!document) throw new NotFoundException('Documento não encontrado.');
-    return this.deleteDocument(document);
+    return this.deleteDocument(document, user);
   }
 
   async removeBatch(ids: number[], user: Actor) {
@@ -160,22 +165,32 @@ export class DocumentosService {
   }
 
   private async deleteDocument(
-    document: Pick<Documento, 'id_documento' | 'nome_arquivo' | 'situacao' | 'caminho_arquivo' | 'arquivado_em'>,
+    document: Pick<Documento, 'id_documento' | 'id_cliente' | 'nome_arquivo' | 'situacao' | 'caminho_arquivo' | 'arquivado_em'>,
+    user: Actor,
     scope: Prisma.DocumentoWhereInput = {},
   ) {
     const id = document.id_documento;
     const where = { id_documento: id };
     this.assertRemovable(document.situacao);
     const claimed = await this.prisma.documento.updateMany({
-      where: { ...scope, ...where, situacao: document.situacao },
+      where: { ...scope, ...where, id_cliente: document.id_cliente, situacao: document.situacao },
       data: { situacao: 'EXCLUINDO' },
     });
     if (!claimed.count) throw new ConflictException('O documento está sendo alterado. Atualize a lista e tente novamente.');
     if (document.situacao !== 'ARQUIVADO' && !document.arquivado_em) {
       await this.storage.remove(document.caminho_arquivo);
     }
-    const deleted = await this.prisma.documento.deleteMany({ where: { ...where, situacao: 'EXCLUINDO' } });
-    if (!deleted.count) throw new NotFoundException('Documento já excluído.');
+    await this.prisma.$transaction(async tx => {
+      const row = await tx.documento.findUnique({ where, select: { id_cliente: true, id_processo: true } });
+      const deleted = await tx.documento.deleteMany({ where: { ...where, situacao: 'EXCLUINDO' } });
+      if (!row || !deleted.count) throw new NotFoundException('Documento já excluído.');
+      await tx.auditLog.create({ data: {
+        id_usuario: user.id_usuario, usuario: user.nome, cargo: user.role,
+        acao: 'EXCLUSAO', entidade: 'documentos', registro: String(id),
+        cliente_documento: row.id_cliente, processo_documento: row.id_processo,
+        descricao: `Excluiu o documento “${document.nome_arquivo}”.`,
+      } });
+    });
     return { id_documento: id, nome_arquivo: document.nome_arquivo };
   }
 }

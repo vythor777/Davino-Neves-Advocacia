@@ -5,6 +5,7 @@ import { validate } from 'class-validator';
 import { CreateClienteDto } from '../backend/dist/clientes/dto/create-cliente.dto.js';
 import { UpdateClienteDto } from '../backend/dist/clientes/dto/update-cliente.dto.js';
 import { CreateProcessoDto } from '../backend/dist/processos/dto/create-processo.dto.js';
+import { CreateLancamentoDto } from '../backend/dist/financeiro/dto/create-lancamento.dto.js';
 import { FinanceiroService } from '../backend/dist/financeiro/financeiro.service.js';
 
 test('DTOs reject invalid identifiers on create and update', async () => {
@@ -28,4 +29,11 @@ test('financial month uses the selected year; annual filter covers all months', 
   assert.equal(query.where.dataVencimento.lte.getMonth(), 11);
   await service.findAll();
   assert.equal(query.where.dataVencimento, undefined);
+});
+
+test('valor financeiro segue a escala e a precisão do banco', async () => {
+  for (const [valor, valido] of [[0.01, true], [9999999999.99, true], [0.001, false], [1e10, false], [0, false]]) {
+    const errors = await validate(Object.assign(new CreateLancamentoDto(), { valor }));
+    assert.equal(errors.some(error => error.property === 'valor'), !valido);
+  }
 });
