@@ -24,6 +24,7 @@ function comparable(value: unknown) {
   return value instanceof Date ? value.toISOString().slice(0, 10) : value;
 }
 export function auditChanges(body: Record<string, unknown>, previous: Record<string, unknown> | null) {
+  // Compara apenas os campos permitidos e registra os valores que mudaram.
   return Object.entries(body).filter(([key, value]) => key in labels &&
     !(previous && key in previous && JSON.stringify(comparable(previous[key])) === JSON.stringify(comparable(value))))
     .map(([key, value]) => `${labels[key]}: ${previous && key in previous ? JSON.stringify(comparable(previous[key])) + ' → ' : ''}${JSON.stringify(comparable(value))}`).join('; ');

@@ -1,4 +1,5 @@
 export function financialPeriods(now = new Date()) {
+  // Define o mês atual pelo horário de São Paulo, inclusive nas viradas de mês.
   const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit' }).formatToParts(now);
   const year = Number(parts.find(p => p.type === 'year')!.value);
   const month = Number(parts.find(p => p.type === 'month')!.value);

@@ -182,6 +182,7 @@ export class GeminiService {
 
     for (let mIndex = 0; mIndex < modelsToTry.length; mIndex++) {
       const model = modelsToTry[mIndex];
+      // Pula o modelo enquanto estiver no intervalo de espera após atingir o limite de uso.
       const cooldown = this.modelCooldown.get(model);
       if (cooldown && cooldown.until > Date.now()) { lastError = cooldown.error; continue; }
       this.modelCooldown.delete(model);

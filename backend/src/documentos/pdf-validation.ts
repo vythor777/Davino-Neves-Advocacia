@@ -8,6 +8,7 @@ export async function inspectPdf(bytes: Buffer, limit = PDF_LIMIT) {
   try {
     const pdf = await PDFDocument.load(bytes, { updateMetadata: false });
     if (!pdf.getPageCount()) throw new Error('empty');
+    // Procura indícios de assinatura para evitar regravar um PDF assinado.
     const signed = /\/ByteRange\s*\[/.test(bytes.toString('latin1')) || pdf.getForm().getFields().some(field => field instanceof PDFSignature);
     return { pdf, signed };
   } catch { throw new BadRequestException('PDF inválido, protegido por senha ou não compatível.'); }

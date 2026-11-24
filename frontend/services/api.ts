@@ -43,6 +43,7 @@ api.interceptors.response.use(
     }
 
     let data = error.response?.data;
+    // Recupera a mensagem de erro quando a requisição esperava baixar um arquivo.
     if (data instanceof Blob) {
       try { data = JSON.parse(await data.text()); } catch { data = undefined; }
     }

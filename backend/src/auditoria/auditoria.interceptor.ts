@@ -45,6 +45,7 @@ export class AuditoriaInterceptor implements NestInterceptor {
     if (model && req.params.id && ['PATCH', 'DELETE'].includes(req.method)) {
       const id = model.id === 'id' ? req.params.id : Number(req.params.id);
       if (model.id === 'id' || Number.isInteger(id)) {
+        // Lê os valores anteriores para montar o histórico da alteração.
         previous = await (this.prisma as any)[model.name].findUnique({
           where: { [model.id]: id }, select: Object.fromEntries(allowed.filter(key => {
             const fields: Record<string, string[]> = {

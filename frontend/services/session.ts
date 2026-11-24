@@ -30,5 +30,6 @@ export function clearSession(): void {
   for (const name of COOKIE_NAMES) {
     document.cookie = `${name}=; path=/; max-age=0; SameSite=Lax`;
   }
+  // Avisa a interface que a sessão foi encerrada.
   window.dispatchEvent(new Event(SESSION_CLEARED_EVENT));
 }

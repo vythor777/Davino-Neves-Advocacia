@@ -202,6 +202,7 @@ function PrazosContent() {
   };
 
   const processoSelecionado = processos.find(processo => String(processo.id_processo) === idProcesso);
+  // Limita as opções às pessoas vinculadas ao processo escolhido.
   const equipeDoProcesso = responsaveis.filter(usuario =>
     usuario.id_usuario === processoSelecionado?.id_responsavel ||
     processoSelecionado?.participantes?.some(p => p.id_usuario === usuario.id_usuario)
@@ -253,6 +254,7 @@ function PrazosContent() {
       id_processo: Number(idProcesso),
     };
 
+    // Preserva o nome gravado em prazos antigos que ainda não têm um usuário vinculado.
     if (responsavel === 'legado') {
       payload.responsavel = editingPrazo?.responsavel ?? undefined;
     } else if (!editingPrazo?.id_responsavel || String(editingPrazo.id_responsavel) !== responsavel) {

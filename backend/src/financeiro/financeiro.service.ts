@@ -80,6 +80,7 @@ export class FinanceiroService {
     }
 
     if (filter.status) {
+      // Separa pendentes de atrasados pelo vencimento no horário de São Paulo.
       if (filter.status === 'PENDENTE' || filter.status === 'ATRASADO') {
         const today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo' }).format(new Date());
         where.status = { in: ['PENDENTE', 'ATRASADO'] };

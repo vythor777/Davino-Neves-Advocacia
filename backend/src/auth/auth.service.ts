@@ -62,6 +62,7 @@ export class AuthService implements OnModuleInit {
       throw new UnauthorizedException('Este usuário está inativo. Contate o administrador do escritório.');
     }
 
+    // O bcrypt verifica a senha digitada usando o hash salvo no banco.
     const isMatch = await bcrypt.compare(pass, user.senha_hash);
     if (!isMatch) {
       throw new UnauthorizedException('Credenciais inválidas: e-mail ou senha incorretos.');

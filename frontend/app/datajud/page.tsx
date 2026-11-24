@@ -179,6 +179,7 @@ function DataJudContent() {
       // Caso não consiga buscar clientes
     }
 
+    // Deixa a data em branco para preenchimento manual quando o tribunal não a informou.
     setDataAbertura(resultado.dataAjuizamento?.slice(0, 10) ?? '');
     const classeDesc = resultado.classe || 'Processo';
     const orgaoDesc = resultado.orgaoJulgador || 'Não informado pelo tribunal';

@@ -291,6 +291,7 @@ function ClientesContent() {
     setSaving(true);
     setErrorMsg(null);
 
+    // Envia só os campos complementares aplicáveis ao tipo de cliente.
     const profilePayload = Object.fromEntries(
       getClientProfileFields(formTipo).map(({ key }) => [key, profile[key]?.trim() || null]),
     );

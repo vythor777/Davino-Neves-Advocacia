@@ -31,6 +31,7 @@ function maskAmount(value: string) {
   return whole ? grouped : '';
 }
 
+// Converte o valor exibido em reais no número enviado à API.
 function parseAmount(value: string) {
   return Number(value.replace(/\./g, '').replace(',', '.'));
 }
