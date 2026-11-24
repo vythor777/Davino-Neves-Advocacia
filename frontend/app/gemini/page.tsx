@@ -402,11 +402,15 @@ Fica a parte autora intimada para, no prazo impreterível de 15 (quinze) dias ú
       toast.warning('Cole o texto da publicação ou intimação.');
       return;
     }
+    if (!prazoContagem) {
+      toast.warning('Selecione a regra de contagem.');
+      return;
+    }
     startTask('identificar_prazos', 'Identificação de prazos', async () => {
       const res = await geminiService.identificarPrazos({
         texto_publicacao: prazoTexto,
         data_publicacao: prazoDataPub || undefined,
-        tipo_contagem: prazoContagem || undefined,
+        tipo_contagem: prazoContagem,
       });
       if (!res.sucesso) throw new Error('A IA não conseguiu concluir a solicitação.');
       return res.dados_prazo;
@@ -1304,8 +1308,8 @@ Descrição / Histórico: ${proc.descricao || 'Sem descrição prévia'}`);
 
                   <div>
                     <label htmlFor="prazoContagem" className="block text-xs font-medium text-slate-700 dark:text-slate-300 mb-1">Regra de contagem</label>
-                    <select id="prazoContagem" value={prazoContagem} onChange={(e) => { setPrazoContagem(e.target.value as '' | 'uteis' | 'corridos'); setPrazoResultado(); }} className="w-full rounded-lg border border-slate-200 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-blue-700">
-                      <option value="">Usar o texto; pedir confirmação se faltar</option>
+                    <select id="prazoContagem" required value={prazoContagem} onChange={(e) => { setPrazoContagem(e.target.value as '' | 'uteis' | 'corridos'); setPrazoResultado(); }} className="w-full rounded-lg border border-slate-200 bg-white dark:bg-slate-900 px-3 py-2 text-sm focus-visible:ring-2 focus-visible:ring-blue-700">
+                      <option value="" disabled>Selecione a regra de contagem</option>
                       <option value="uteis">Dias úteis</option>
                       <option value="corridos">Dias corridos</option>
                     </select>
