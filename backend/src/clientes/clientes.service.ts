@@ -154,6 +154,7 @@ export class ClientesService {
     if (newDocument && newDocument !== currentDocument && newDocument.length !== (currentType === 'pj' ? 14 : 11)) {
       throw new BadRequestException(currentType === 'pj' ? 'Informe um CNPJ válido.' : 'Informe um CPF válido.');
     }
+    // Preserva os dados obrigatórios já preenchidos e permite atualizar cadastros antigos incompletos.
     if (currentType === 'pj') {
       for (const key of ['cpf_cnpj', 'email', 'telefone'] as const) {
         if (current[key]?.trim() && changes[key] !== undefined && !changes[key]?.trim()) {
@@ -203,6 +204,7 @@ export class ClientesService {
   async remove(id: number, user: Actor, confirmed = false, deleteLinked = false) {
     this.access.requireRole(user, 'ADMINISTRADOR');
     const processes = { id_cliente: id };
+    // Inclui anexos avulsos do cliente e anexos de processos que ainda pertencem a ele.
     const documents = { OR: [{ id_processo: null, id_cliente: id }, { processo: processes }] };
 
     try {

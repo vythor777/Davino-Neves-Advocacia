@@ -208,6 +208,7 @@ export class DataJudService {
     let apiKey = key;
     const body = JSON.stringify({ size: 1, query: { match: { numeroProcesso: number } } });
 
+    // Dá um novo tempo limite à segunda tentativa quando a falha é temporária.
     for (let attempt = 1; ; attempt++) {
       const signal = AbortSignal.timeout(requestTimeoutMs);
       try {

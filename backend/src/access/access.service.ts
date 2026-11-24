@@ -25,6 +25,7 @@ export class AccessService {
       throw new ForbiddenException('Seu cargo não permite esta operação.');
   }
 
+  // Define quais processos cada perfil pode consultar pelo vínculo com o caso.
   processScope(user: Actor): Prisma.ProcessoWhereInput {
     if (user.role === 'ADMINISTRADOR') return {};
     const linked = { participantes: { some: { id_usuario: user.id_usuario } } };

@@ -22,6 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: JwtPayload) {
+    // Confere no banco se a conta ainda está ativa e quais permissões ela tem.
     const user = await this.prisma.usuario.findUnique({
       where: { id_usuario: payload.sub },
       select: {

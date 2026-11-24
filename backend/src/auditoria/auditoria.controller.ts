@@ -48,6 +48,7 @@ export class AuditoriaController {
         select: { id_documento: true, nome_arquivo: true },
       });
       for (const document of documents) documentNames.set(String(document.id_documento), document.nome_arquivo);
+      // Busca pelos vínculos gravados no evento, mesmo depois de excluir o documento.
       scope = { OR: [scope, {
         entidade: 'documentos',
         ...(entidade === 'clientes' ? { cliente_documento: id } : { processo_documento: id }),

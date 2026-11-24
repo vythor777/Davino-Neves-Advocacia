@@ -39,6 +39,7 @@ function EntityPicker({
 }: PickerProps & { options: Option[]; placeholder: string; noResults: string }) {
   const input = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState('');
+  // Espera uma pausa na digitação antes de filtrar as opções.
   const debouncedQuery = useDebounce(query, 300);
   const pending = query !== debouncedQuery && !!query.trim();
   const matches = useMemo(() => {

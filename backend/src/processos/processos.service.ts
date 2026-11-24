@@ -60,7 +60,7 @@ export class ProcessosService {
         return await this.prisma.processo.update({ where, data, include });
       }
       return await this.prisma.$transaction(async tx => {
-        // The composite FK transfers the documents in this same transaction.
+        // A chave estrangeira atualiza o cliente dos anexos na mesma transação.
         const updated = await tx.processo.update({ where, data, include });
         if (await tx.documento.count({ where: { ...where, situacao: 'EXCLUINDO' } })) {
           throw new ConflictException('Conclua a exclusão de documentos antes de transferir o processo.');

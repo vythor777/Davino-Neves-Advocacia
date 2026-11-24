@@ -108,6 +108,7 @@ export class PrazosService {
     const existing = await this.findOne(id, user);
     const responsavel = updatePrazoDto.id_responsavel == null ? null : await this.resolveResponsavel(updatePrazoDto.id_responsavel, updatePrazoDto.id_processo ?? existing.id_processo);
     if (updatePrazoDto.id_processo !== undefined && updatePrazoDto.id_processo !== existing.id_processo && existing.id_responsavel && updatePrazoDto.id_responsavel === undefined) await this.resolveResponsavel(existing.id_responsavel, updatePrazoDto.id_processo);
+    // A regra do prazo fatal considera o responsável que ficará salvo após a edição.
     const nomeFinal = updatePrazoDto.id_responsavel === null ? null : responsavel?.nome ?? updatePrazoDto.responsavel ?? existing.responsavel;
     if ((updatePrazoDto.tipoCompromisso ?? existing.tipoCompromisso).toLowerCase().includes('fatal') && !nomeFinal?.trim()) {
       throw new BadRequestException('Defina um responsável pelo cumprimento do prazo fatal.');

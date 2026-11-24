@@ -60,6 +60,7 @@ export class DocumentosService {
     const sha256 = createHash('sha256').update(bytes).digest('hex');
     const path = `office/${randomUUID()}.pdf`;
     const record = await this.prisma.$transaction(async tx => {
+      // Serializa a reserva de espaço para que envios simultâneos respeitem a cota.
       await tx.$queryRaw`SELECT 1 FROM pg_advisory_xact_lock(932601)`;
       const sum = await tx.documento.aggregate({ where: { situacao: { not: 'ARQUIVADO' } }, _sum: { tamanho_bytes: true } });
       if ((sum._sum.tamanho_bytes || 0) + bytes.length > OFFICE_STORAGE_LIMIT) throw new BadRequestException('Espaço reservado esgotado. Solicite backup e arquivamento ao administrador.');
@@ -180,6 +181,7 @@ export class DocumentosService {
     if (document.situacao !== 'ARQUIVADO' && !document.arquivado_em) {
       await this.storage.remove(document.caminho_arquivo);
     }
+    // Apaga o registro e grava a auditoria na mesma transação.
     await this.prisma.$transaction(async tx => {
       const row = await tx.documento.findUnique({ where, select: { id_cliente: true, id_processo: true } });
       const deleted = await tx.documento.deleteMany({ where: { ...where, situacao: 'EXCLUINDO' } });

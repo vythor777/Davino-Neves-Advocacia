@@ -126,6 +126,7 @@ function FinanceiroContent() {
         processoService.getAll(),
       ]);
 
+      // Descarta respostas antigas que chegaram depois de uma troca de período.
       if (id !== requestId.current || currentPeriod.current !== mesFiltro) return;
       setClientes(cliRes.status === 'fulfilled' ? cliRes.value : []);
       setProcessos(procRes.status === 'fulfilled' ? procRes.value : []);
